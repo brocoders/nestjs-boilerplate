@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11.9
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - ./.data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+  maildev:
+    build:
+      context: .
+      dockerfile: Dockerfile.maildev
+    ports:
+      - ${MAIL_CLIENT_PORT}:1080
+      - ${MAIL_PORT}:1025
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
+    depends_on:
+      - postgres
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - postgres

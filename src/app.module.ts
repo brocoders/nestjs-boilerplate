@@ -1,10 +1,86 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { FilesModule } from './files/files.module';
+import { AuthModule } from './auth/auth.module';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
+import appConfig from './config/app.config';
+import mailConfig from './config/mail.config';
+import fileConfig from './config/file.config';
+import * as path from 'path';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConnectionOptions } from 'typeorm';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig],
+      envFilePath: ['.env'],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        ({
+          type: configService.get('database.type'),
+          host: configService.get('database.host'),
+          port: configService.get('database.port'),
+          username: configService.get('database.username'),
+          password: configService.get('database.password'),
+          database: configService.get('database.name'),
+          synchronize: configService.get('database.synchronize'),
+          dropSchema: false,
+          keepConnectionAlive: true,
+          logging: configService.get('app.nodeEnv') !== 'production',
+          entities: ['dist/**/*.entity{.ts,.js}'],
+          cli: {
+            entitiesDir: 'src',
+            migrationsDir: 'migrations',
+            subscribersDir: 'subscriber',
+          },
+          extra: {
+            // based on https://node-postgres.com/api/pool
+            // max connection pool size
+            max: 100,
+          },
+        } as ConnectionOptions),
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get('mail.host'),
+          port: configService.get('mail.port'),
+          ignoreTLS: configService.get('mail.ignoreTLS'),
+          secure: configService.get('mail.secure'),
+          requireTLS: configService.get('mail.requireTLS'),
+          auth: {
+            user: configService.get('mail.user'),
+            pass: configService.get('mail.password'),
+          },
+        },
+        defaults: {
+          from: `"${configService.get(
+            'mail.defaultName',
+          )}" <${configService.get('mail.defaultEmail')}>`,
+        },
+        template: {
+          dir: path.join(process.env.PWD, 'mail-templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
+    UsersModule,
+    FilesModule,
+    AuthModule,
+  ],
 })
 export class AppModule {}
