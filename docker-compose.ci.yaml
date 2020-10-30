@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11.9
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+  maildev:
+    build:
+      context: .
+      dockerfile: Dockerfile.maildev
+    expose:
+      - 1080
+      - 1025
+
+  redis:
+    image: redis:6-alpine
+    expose:
+      - 6379
+    depends_on:
+      - postgres
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    depends_on:
+      - postgres

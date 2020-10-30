@@ -6,7 +6,7 @@ const deepMapObject = (data: any | any[], callback) => {
 
     if (value === undefined || value === null) {
     } else if (value.constructor === Object) {
-      for (let k in value) {
+      for (const k in value) {
         map(value[k], k);
       }
     } else if (value.constructor === Array) {

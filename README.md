@@ -60,7 +60,7 @@ $ npm run test:e2e
 ## Test in Docker
 
 ```bash
-docker-compose -f docker-compose.ci.yaml --env-file .env.test -p ci up --build --exit-code-from api && docker-compose -p ci rm -svf
+docker-compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker-compose -p ci rm -svf
 ```
 
 ## Test benchmarking

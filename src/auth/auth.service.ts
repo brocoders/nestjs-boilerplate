@@ -12,7 +12,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { classToPlain, plainToClass } from 'class-transformer';
+import { plainToClass } from 'class-transformer';
 import { Status } from 'src/statuses/status.entity';
 
 @Injectable()

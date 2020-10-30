@@ -16,8 +16,6 @@ export class SerializerInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const request = context.switchToHttp().getRequest();
-
     return next.handle().pipe(
       map(data => {
         return deepMapObject(data, value => {
