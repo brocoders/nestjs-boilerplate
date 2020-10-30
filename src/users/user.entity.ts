@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   AfterLoad,
   CreateDateColumn,
@@ -21,31 +20,30 @@ import { IsNotExist } from '../utils/is-not-exists.validator';
 import { FileEntity } from '../files/file.entity';
 import { IsExist } from '../utils/is-exists.validator';
 import * as bcrypt from 'bcryptjs';
+import { EntityHelper } from 'src/utils/entity-helper';
 
 @Entity()
-export class User extends BaseEntity {
+export class User extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({ example: 'test1@example.com' })
   @Validate(IsNotExist, ['User'], {
-    message: 'An account with this email already exists',
+    message: 'emailAlreadyExists',
   })
   @IsEmail()
   @Column({ unique: true })
   email: string;
 
-  @Exclude({ toPlainOnly: true })
   @ApiProperty()
   @MinLength(6)
   @Column({ nullable: true })
   password: string;
 
-  @Exclude({ toPlainOnly: true })
-  private previousPassword: string;
+  public previousPassword: string;
 
   @AfterLoad()
-  private loadPreviousPassword(): void {
+  public loadPreviousPassword(): void {
     this.previousPassword = this.password;
   }
 

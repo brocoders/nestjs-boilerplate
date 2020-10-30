@@ -12,7 +12,8 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { plainToClass } from 'class-transformer';
+import { classToPlain, plainToClass } from 'class-transformer';
+import { Status } from 'src/statuses/status.entity';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
     email: string,
     password: string,
     onlyAdmin: boolean,
-  ): Promise<{ token: string }> {
+  ): Promise<{ token: string; user: Record<string, any> }> {
     const user = await this.usersRepository.findOne({
       where: {
         email: email.toLowerCase(),
@@ -58,7 +59,7 @@ export class AuthService {
         role: user.role,
       });
 
-      return { token };
+      return { token, user: user };
     } else {
       throw new HttpException(
         {
@@ -97,10 +98,10 @@ export class AuthService {
       subject: 'Confirm email',
       text: `${this.configService.get(
         'app.domain',
-      )}/email-confirmed/${hash} Confirm email`,
+      )}/confirm-email/${hash} Confirm email`,
       template: 'activation',
       context: {
-        url: `${this.configService.get('app.domain')}/email-confirmed/${hash}`,
+        url: `${this.configService.get('app.domain')}/confirm-email/${hash}`,
       },
     });
   }
@@ -123,7 +124,7 @@ export class AuthService {
     user.hash = null;
     user.status = {
       id: StatusEnum.active,
-    };
+    } as Status;
     user.save();
   }
 

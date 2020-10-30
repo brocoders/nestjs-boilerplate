@@ -18,7 +18,7 @@ import { RolesGuard } from '../roles/roles.guard';
   },
   query: {
     maxLimit: 50,
-    alwaysPaginate: true,
+    alwaysPaginate: false,
     join: {
       role: {
         eager: false,

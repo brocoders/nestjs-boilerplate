@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { SerializerInterceptor } from './utils/serializer.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -15,6 +16,7 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(configService.get('app.apiPrefix'));
+  app.useGlobalInterceptors(new SerializerInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
