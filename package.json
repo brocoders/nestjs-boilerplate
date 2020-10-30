@@ -104,7 +104,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint"
+      "pre-commit": "npm run lint"
     }
   }
 }
