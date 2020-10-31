@@ -96,7 +96,7 @@ export class User extends EntityHelper {
 
   @ApiProperty({ type: Status })
   @Validate(IsExist, ['Status', 'id'], {
-    message: 'Status not exists',
+    message: 'statusNotExists',
   })
   @ManyToOne(() => Status, {
     eager: true,

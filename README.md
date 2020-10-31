@@ -29,6 +29,7 @@ cp env-example .env
 ```
 
 Change `DATABASE_HOST=postgres` to `DATABASE_HOST=localhost`
+
 Change `MAIL_HOST=maildev` to `MAIL_HOST=localhost`
 
 Run additional container:

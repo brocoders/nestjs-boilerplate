@@ -243,7 +243,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            email: 'User not found',
+            email: 'notFound',
           },
         },
         HttpStatus.NOT_FOUND,
