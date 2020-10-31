@@ -21,6 +21,7 @@ import {
   AuthConfirmEmailDto,
   AuthRegisterLoginDto,
   AuthUpdateDto,
+  AuthSocialLoginDto,
 } from './auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -45,6 +46,12 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: AuthRegisterLoginDto) {
     return this.service.register(createUserDto);
+  }
+
+  @Post('login/social')
+  @HttpCode(HttpStatus.OK)
+  public async social(@Body() loginDto: AuthSocialLoginDto) {
+    return this.service.validateSocialLogin(loginDto);
   }
 
   @Post('confirm/email')

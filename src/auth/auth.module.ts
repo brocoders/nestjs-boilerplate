@@ -10,6 +10,14 @@ import { User } from '../users/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousStrategy } from './anonymous.strategy';
 import { Forgot } from 'src/forgot/forgot.entity';
+import { AppleModule } from 'src/apple/apple.module';
+import { AppleService } from 'src/apple/apple.service';
+import { FacebookModule } from 'src/facebook/facebook.module';
+import { FacebookService } from 'src/facebook/facebook.service';
+import { GoogleModule } from 'src/google/google.module';
+import { GoogleService } from 'src/google/google.service';
+import { TwitterModule } from 'src/twitter/twitter.module';
+import { TwitterService } from 'src/twitter/twitter.service';
 
 @Module({
   imports: [
@@ -34,6 +42,14 @@ import { Forgot } from 'src/forgot/forgot.entity';
     AnonymousStrategy,
     ConfigModule,
     ConfigService,
+    FacebookModule,
+    FacebookService,
+    GoogleModule,
+    GoogleService,
+    TwitterModule,
+    TwitterService,
+    AppleModule,
+    AppleService,
   ],
 })
 export class AuthModule {}

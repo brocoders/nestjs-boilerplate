@@ -21,6 +21,7 @@ import { FileEntity } from '../files/file.entity';
 import { IsExist } from '../utils/is-exists.validator';
 import * as bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
+import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
 
 @Entity()
 export class User extends EntityHelper {
@@ -32,8 +33,8 @@ export class User extends EntityHelper {
     message: 'emailAlreadyExists',
   })
   @IsEmail()
-  @Column({ unique: true })
-  email: string;
+  @Column({ unique: true, nullable: true })
+  email: string | null;
 
   @ApiProperty()
   @MinLength(6)
@@ -56,35 +57,42 @@ export class User extends EntityHelper {
     }
   }
 
-  @ApiProperty({ example: 'John' })
+  @Column({ default: AuthProvidersEnum.email })
+  provider: string;
+
   @Index()
-  @Column()
+  @Column({ nullable: true })
+  socialId: string | null;
+
+  @ApiProperty({ example: 'John' })
   @IsNotEmpty()
-  firstName: string;
+  @Index()
+  @Column({ nullable: true })
+  firstName: string | null;
 
   @ApiProperty({ example: 'Doe' })
-  @Column()
-  @Index()
   @IsNotEmpty()
-  lastName: string;
+  @Index()
+  @Column({ nullable: true })
+  lastName: string | null;
 
   @ApiProperty({ type: () => FileEntity })
   @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'Image not exists',
+    message: 'imageNotExists',
   })
   @ManyToOne(() => FileEntity, {
     eager: true,
   })
-  photo?: FileEntity;
+  photo?: FileEntity | null;
 
   @ApiProperty({ type: Role })
   @Validate(IsExist, ['Role', 'id'], {
-    message: 'Role not exists',
+    message: 'roleNotExists',
   })
   @ManyToOne(() => Role, {
     eager: true,
   })
-  role?: Role;
+  role?: Role | null;
 
   @ApiProperty({ type: Status })
   @Validate(IsExist, ['Status', 'id'], {
@@ -98,7 +106,7 @@ export class User extends EntityHelper {
   @Exclude({ toPlainOnly: true })
   @Column({ nullable: true })
   @Index()
-  hash: string;
+  hash: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -8,17 +8,35 @@ import authConfig from './config/auth.config';
 import appConfig from './config/app.config';
 import mailConfig from './config/mail.config';
 import fileConfig from './config/file.config';
+import facebookConfig from './config/facebook.config';
+import googleConfig from './config/google.config';
+import twitterConfig from './config/twitter.config';
+import appleConfig from './config/apple.config';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
+import { AppleModule } from './apple/apple.module';
+import { FacebookModule } from './facebook/facebook.module';
+import { GoogleModule } from './google/google.module';
+import { TwitterModule } from './twitter/twitter.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig],
+      load: [
+        databaseConfig,
+        authConfig,
+        appConfig,
+        mailConfig,
+        fileConfig,
+        facebookConfig,
+        googleConfig,
+        twitterConfig,
+        appleConfig,
+      ],
       envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
@@ -81,6 +99,10 @@ import { ConnectionOptions } from 'typeorm';
     UsersModule,
     FilesModule,
     AuthModule,
+    FacebookModule,
+    GoogleModule,
+    TwitterModule,
+    AppleModule,
   ],
 })
 export class AppModule {}

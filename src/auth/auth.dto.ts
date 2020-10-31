@@ -9,11 +9,13 @@ import {
 import { IsNotExist } from '../utils/is-not-exists.validator';
 import { IsExist } from '../utils/is-exists.validator';
 import { FileEntity } from '../files/file.entity';
+import { Tokens } from 'src/social/tokens';
+import { AuthProvidersEnum } from './auth-providers.enum';
 
 export class AuthEmailLoginDto {
   @ApiProperty({ example: 'test1@example.com' })
   @Validate(IsExist, ['User'], {
-    message: 'An account with this email not exists',
+    message: 'emailNotExists',
   })
   email: string;
 
@@ -25,7 +27,7 @@ export class AuthEmailLoginDto {
 export class AuthRegisterLoginDto {
   @ApiProperty({ example: 'test1@example.com' })
   @Validate(IsNotExist, ['User'], {
-    message: 'An account with this email already exists',
+    message: 'emailAlreadyExists',
   })
   @IsEmail()
   email: string;
@@ -41,6 +43,24 @@ export class AuthRegisterLoginDto {
   @ApiProperty({ example: 'Doe' })
   @IsNotEmpty()
   lastName: string;
+}
+
+export class AuthSocialLoginDto {
+  @Allow()
+  @ApiProperty({ type: () => Tokens })
+  tokens: Tokens;
+
+  @ApiProperty({ enum: AuthProvidersEnum })
+  @IsNotEmpty()
+  socialType: AuthProvidersEnum;
+
+  @Allow()
+  @ApiProperty({ required: false })
+  firstName?: string;
+
+  @Allow()
+  @ApiProperty({ required: false })
+  lastName?: string;
 }
 
 export class AuthForgotPasswordDto {
@@ -67,7 +87,7 @@ export class AuthResetPasswordDto {
 
 export class AuthUpdateDto {
   @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'Image not exists',
+    message: 'imageNotExists',
   })
   @ApiProperty({ type: () => FileEntity })
   photo?: FileEntity;
