@@ -1,4 +1,4 @@
-const deepMapObject = (data: any | any[], callback) => {
+const deepMapObject = (data, callback) => {
   const map = (value, key) => {
     if (value !== undefined && value !== null && typeof value === 'object') {
       callback(value, key);

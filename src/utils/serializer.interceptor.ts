@@ -15,7 +15,7 @@ export class SerializerInterceptor implements NestInterceptor {
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Promise<Observable<any>> {
+  ): Promise<Observable<unknown>> {
     return next.handle().pipe(
       map(data => {
         return deepMapObject(data, value => {

@@ -31,7 +31,7 @@ export class AuthService {
     email: string,
     password: string,
     onlyAdmin: boolean,
-  ): Promise<{ token: string; user: Record<string, any> }> {
+  ): Promise<{ token: string; user: User }> {
     const user = await this.usersRepository.findOne({
       where: {
         email: email.toLowerCase(),
@@ -44,7 +44,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            email: 'User not found',
+            email: 'notFound',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -65,7 +65,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            password: 'Incorrect password',
+            password: 'incorrectPassword',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -115,16 +115,16 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: `Not found`,
+          error: `notFound`,
         },
         HttpStatus.NOT_FOUND,
       );
     }
 
     user.hash = null;
-    user.status = {
+    user.status = plainToClass(Status, {
       id: StatusEnum.active,
-    } as Status;
+    });
     user.save();
   }
 

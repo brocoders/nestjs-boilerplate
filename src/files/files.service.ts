@@ -12,13 +12,13 @@ export class FilesService {
     private fileRepository: Repository<FileEntity>,
   ) {}
 
-  async uploadFile(file: any): Promise<FileEntity> {
+  async uploadFile(file): Promise<FileEntity> {
     if (!file) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            file: 'Select file',
+            file: 'selectFile',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
