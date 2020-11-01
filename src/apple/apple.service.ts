@@ -10,7 +10,7 @@ export class AppleService {
 
   async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
     const data = await appleSigninAuth.verifyIdToken(tokens.token1, {
-      audience: this.configService.get('apple.appId'),
+      audience: this.configService.get('apple.appAudience'),
     });
 
     return {
