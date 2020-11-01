@@ -5,6 +5,7 @@ import { User } from '../users/user.entity';
 import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import {
+  AuthEmailLoginDto,
   AuthRegisterLoginDto,
   AuthSocialLoginDto,
   AuthUpdateDto,
@@ -43,13 +44,12 @@ export class AuthService {
   ) {}
 
   async validateLogin(
-    email: string,
-    password: string,
+    loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
   ): Promise<{ token: string; user: User }> {
     const user = await this.usersRepository.findOne({
       where: {
-        email: email.toLowerCase(),
+        email: loginDto.email.toLowerCase(),
         role: onlyAdmin ? In([RoleEnum.admin]) : In([RoleEnum.user]),
       },
     });
@@ -66,7 +66,10 @@ export class AuthService {
       );
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
 
     if (isValidPassword) {
       const token = await this.jwtService.sign({

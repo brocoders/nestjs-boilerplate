@@ -5,6 +5,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { User } from '../users/user.entity';
 import { ConfigService } from '@nestjs/config';
 
+type JwtPayload = Pick<User, 'id' | 'role'> & { iat: number; exp: number };
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -13,16 +15,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      passReqToCallback: true,
       secretOrKey: configService.get('auth.secret'),
     });
   }
 
-  public async validate(payload: unknown, request: Pick<User, 'id' | 'role'>) {
-    if (!request.id) {
+  public async validate(payload: JwtPayload) {
+    if (!payload.id) {
       throw new UnauthorizedException();
     }
 
-    return request;
+    return payload;
   }
 }

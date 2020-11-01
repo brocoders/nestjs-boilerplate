@@ -32,14 +32,14 @@ export class AuthController {
 
   @Post('login/email')
   @HttpCode(HttpStatus.OK)
-  public async login(@Body() login: AuthEmailLoginDto) {
-    return this.service.validateLogin(login.email, login.password, false);
+  public async login(@Body() loginDto: AuthEmailLoginDto) {
+    return this.service.validateLogin(loginDto, false);
   }
 
   @Post('admin/login/email')
   @HttpCode(HttpStatus.OK)
-  public async adminLogin(@Body() login: AuthEmailLoginDto) {
-    return this.service.validateLogin(login.email, login.password, true);
+  public async adminLogin(@Body() loginDTO: AuthEmailLoginDto) {
+    return this.service.validateLogin(loginDTO, true);
   }
 
   @Post('register/email')
