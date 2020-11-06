@@ -16,9 +16,8 @@ export class GoogleService {
   }
 
   async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
-    const { tokens: authTokens } = await this.google.getToken(tokens.token1);
     const ticket = await this.google.verifyIdToken({
-      idToken: authTokens.id_token,
+      idToken: tokens.token1,
       audience: [this.configService.get('google.clientId')],
     });
 
