@@ -21,6 +21,9 @@ import { AppleModule } from './apple/apple.module';
 import { FacebookModule } from './facebook/facebook.module';
 import { GoogleModule } from './google/google.module';
 import { TwitterModule } from './twitter/twitter.module';
+import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
+import { I18nJsonParser } from 'nestjs-i18n/dist/parsers/i18n.json.parser';
+import { HeaderResolver } from 'nestjs-i18n';
 
 @Module({
   imports: [
@@ -95,6 +98,17 @@ import { TwitterModule } from './twitter/twitter.module';
           },
         },
       }),
+    }),
+    I18nModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        fallbackLanguage: configService.get('app.fallbackLanguage'),
+        parserOptions: {
+          path: path.join(process.env.PWD, 'i18n'),
+        },
+      }),
+      parser: I18nJsonParser,
+      inject: [ConfigService],
+      resolvers: [new HeaderResolver(['x-custom-lang'])],
     }),
     UsersModule,
     FilesModule,

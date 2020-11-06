@@ -26,10 +26,12 @@ import { FacebookService } from 'src/facebook/facebook.service';
 import { GoogleService } from 'src/google/google.service';
 import { SocialInterface } from 'src/social/social.interface';
 import { TwitterService } from 'src/twitter/twitter.service';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private i18n: I18nService,
     private mailerService: MailerService,
     private configService: ConfigService,
     private jwtService: JwtService,
@@ -203,13 +205,15 @@ export class AuthService {
 
     await this.mailerService.sendMail({
       to: user.email,
-      subject: 'Confirm email',
+      subject: await this.i18n.t('common.confirmEmail'),
       text: `${this.configService.get(
         'app.domain',
-      )}/confirm-email/${hash} Confirm email`,
+      )}/confirm-email/${hash} ${await this.i18n.t('common.confirmEmail')}`,
       template: 'activation',
       context: {
+        title: await this.i18n.t('common.confirmEmail'),
         url: `${this.configService.get('app.domain')}/confirm-email/${hash}`,
+        actionTitle: await this.i18n.t('common.confirmEmail'),
       },
     });
   }
@@ -264,15 +268,19 @@ export class AuthService {
       );
       await this.mailerService.sendMail({
         to: email,
-        subject: 'Reset password',
+        subject: await this.i18n.t('common.resetPassword'),
         text: `${this.configService.get(
           'app.domain',
-        )}/password-change/${hash} Reset password`,
+        )}/password-change/${hash} ${await this.i18n.t(
+          'common.resetPassword',
+        )}`,
         template: 'reset-password',
         context: {
+          title: await this.i18n.t('common.resetPassword'),
           url: `${this.configService.get(
             'app.domain',
           )}/password-change/${hash}`,
+          actionTitle: await this.i18n.t('common.resetPassword'),
         },
       });
     }
