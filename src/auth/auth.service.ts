@@ -207,13 +207,19 @@ export class AuthService {
       to: user.email,
       subject: await this.i18n.t('common.confirmEmail'),
       text: `${this.configService.get(
-        'app.domain',
+        'app.frontendDomain',
       )}/confirm-email/${hash} ${await this.i18n.t('common.confirmEmail')}`,
       template: 'activation',
       context: {
         title: await this.i18n.t('common.confirmEmail'),
-        url: `${this.configService.get('app.domain')}/confirm-email/${hash}`,
+        url: `${this.configService.get(
+          'app.frontendDomain',
+        )}/confirm-email/${hash}`,
         actionTitle: await this.i18n.t('common.confirmEmail'),
+        app_name: this.configService.get('app.name'),
+        text1: await this.i18n.t('confirm-email.text1'),
+        text2: await this.i18n.t('confirm-email.text2'),
+        text3: await this.i18n.t('confirm-email.text3'),
       },
     });
   }
@@ -270,7 +276,7 @@ export class AuthService {
         to: email,
         subject: await this.i18n.t('common.resetPassword'),
         text: `${this.configService.get(
-          'app.domain',
+          'app.frontendDomain',
         )}/password-change/${hash} ${await this.i18n.t(
           'common.resetPassword',
         )}`,
@@ -278,9 +284,14 @@ export class AuthService {
         context: {
           title: await this.i18n.t('common.resetPassword'),
           url: `${this.configService.get(
-            'app.domain',
+            'app.frontendDomain',
           )}/password-change/${hash}`,
           actionTitle: await this.i18n.t('common.resetPassword'),
+          app_name: this.configService.get('app.name'),
+          text1: await this.i18n.t('reset-password.text1'),
+          text2: await this.i18n.t('reset-password.text2'),
+          text3: await this.i18n.t('reset-password.text3'),
+          text4: await this.i18n.t('reset-password.text4'),
         },
       });
     }

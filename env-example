@@ -1,8 +1,10 @@
 NODE_ENV=development
 APP_PORT=3000
+APP_NAME="NestJS API"
 API_PREFIX=api/v1
-APP_DOMAIN=http://localhost:3000
 APP_FALLBACK_LANGUAGE=en
+FRONTEND_DOMAIN=http://localhost:3000
+BACKEND_DOMAIN=http://localhost:3000
 
 DATABASE_TYPE=postgres
 DATABASE_HOST=postgres
