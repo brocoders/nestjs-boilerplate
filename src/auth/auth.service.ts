@@ -256,10 +256,10 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            email: 'notFound',
+            email: 'emailNotExists',
           },
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     } else {
       const hash = crypto
@@ -305,10 +305,12 @@ export class AuthService {
     if (!forgot) {
       throw new HttpException(
         {
-          status: HttpStatus.NOT_FOUND,
-          error: `notFound`,
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            hash: `notFound`,
+          },
         },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
