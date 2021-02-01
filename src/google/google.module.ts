@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { GoogleService } from './google.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  providers: [GoogleService, ConfigModule, ConfigService],
+  imports: [ConfigModule],
+  providers: [GoogleService],
+  exports: [GoogleService],
 })
 export class GoogleModule {}

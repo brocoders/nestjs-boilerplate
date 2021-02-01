@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TwitterService } from './twitter.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  providers: [TwitterService, ConfigModule, ConfigService],
+  imports: [ConfigModule],
+  providers: [TwitterService],
+  exports: [TwitterService],
 })
 export class TwitterModule {}
