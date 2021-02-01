@@ -26,7 +26,8 @@ import { FilesService } from './files.service';
                   null,
                   `${randomStringGenerator()}.${file.originalname
                     .split('.')
-                    .pop()}`,
+                    .pop()
+                    .toLowerCase()}`,
                 );
               },
             }),
@@ -48,7 +49,8 @@ import { FilesService } from './files.service';
                   null,
                   `${randomStringGenerator()}.${file.originalname
                     .split('.')
-                    .pop()}`,
+                    .pop()
+                    .toLowerCase()}`,
                 );
               },
             });
@@ -57,7 +59,7 @@ import { FilesService } from './files.service';
 
         return {
           fileFilter: (request, file, callback) => {
-            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
               return callback(
                 new HttpException(
                   {
