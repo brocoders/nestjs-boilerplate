@@ -1,5 +1,6 @@
 {
   "conventionalCommits.scopes": [
-    "files"
+    "files",
+    "deploy"
   ]
 }
