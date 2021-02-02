@@ -113,5 +113,8 @@
     "hooks": {
       "pre-commit": "npm run lint"
     }
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

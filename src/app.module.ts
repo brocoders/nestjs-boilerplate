@@ -48,6 +48,7 @@ import { HeaderResolver } from 'nestjs-i18n';
       useFactory: async (configService: ConfigService) =>
         ({
           type: configService.get('database.type'),
+          url: configService.get('database.url'),
           host: configService.get('database.host'),
           port: configService.get('database.port'),
           username: configService.get('database.username'),
