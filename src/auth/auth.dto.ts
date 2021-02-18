@@ -6,8 +6,8 @@ import {
   MinLength,
   Validate,
 } from 'class-validator';
-import { IsNotExist } from '../utils/is-not-exists.validator';
-import { IsExist } from '../utils/is-exists.validator';
+import { IsNotExist } from '../utils/validators/is-not-exists.validator';
+import { IsExist } from '../utils/validators/is-exists.validator';
 import { FileEntity } from '../files/file.entity';
 import { Tokens } from 'src/social/tokens';
 import { AuthProvidersEnum } from './auth-providers.enum';

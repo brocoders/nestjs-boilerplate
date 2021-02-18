@@ -24,7 +24,7 @@ import { AuthProvidersEnum } from './auth-providers.enum';
 import { AppleService } from 'src/apple/apple.service';
 import { FacebookService } from 'src/facebook/facebook.service';
 import { GoogleService } from 'src/google/google.service';
-import { SocialInterface } from 'src/social/social.interface';
+import { SocialInterface } from 'src/social/interfaces/social.interface';
 import { TwitterService } from 'src/twitter/twitter.service';
 import { I18nService } from 'nestjs-i18n';
 
@@ -243,7 +243,7 @@ export class AuthService {
     user.status = plainToClass(Status, {
       id: StatusEnum.active,
     });
-    user.save();
+    await user.save();
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -316,7 +316,7 @@ export class AuthService {
 
     const user = forgot.user;
     user.password = password;
-    user.save();
+    await user.save();
     await this.forgotRepository.softDelete(forgot.id);
   }
 

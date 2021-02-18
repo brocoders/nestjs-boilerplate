@@ -4,7 +4,7 @@ import { Role } from 'src/roles/role.entity';
 import { RoleEnum } from 'src/roles/roles.enum';
 
 export default class CreateRole implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<any> {
+  public async run(factory: Factory, connection: Connection): Promise<void> {
     const countUser = await connection
       .createQueryBuilder()
       .select()

@@ -45,7 +45,7 @@ import { HeaderResolver } from 'nestjs-i18n';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) =>
+      useFactory: (configService: ConfigService) =>
         ({
           type: configService.get('database.type'),
           url: configService.get('database.url'),
@@ -67,7 +67,7 @@ import { HeaderResolver } from 'nestjs-i18n';
           extra: {
             // based on https://node-postgres.com/api/pool
             // max connection pool size
-            max: 100,
+            max: configService.get('database.maxConnections'),
           },
         } as ConnectionOptions),
     }),
@@ -92,7 +92,10 @@ import { HeaderResolver } from 'nestjs-i18n';
           )}" <${configService.get('mail.defaultEmail')}>`,
         },
         template: {
-          dir: path.join(process.env.PWD, 'mail-templates'),
+          dir: path.join(
+            configService.get('app.workingDirectory'),
+            'mail-templates',
+          ),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -104,7 +107,7 @@ import { HeaderResolver } from 'nestjs-i18n';
       useFactory: (configService: ConfigService) => ({
         fallbackLanguage: configService.get('app.fallbackLanguage'),
         parserOptions: {
-          path: path.join(process.env.PWD, 'i18n'),
+          path: path.join(configService.get('app.workingDirectory'), 'i18n'),
         },
       }),
       parser: I18nJsonParser,

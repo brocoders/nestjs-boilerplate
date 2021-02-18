@@ -4,7 +4,7 @@ import { Status } from 'src/statuses/status.entity';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
 export default class CreateStatus implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<any> {
+  public async run(factory: Factory, connection: Connection): Promise<void> {
     const count = await connection
       .createQueryBuilder()
       .select()

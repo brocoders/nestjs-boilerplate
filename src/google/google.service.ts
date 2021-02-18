@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { Tokens } from '../social/tokens';
-import { SocialInterface } from '../social/social.interface';
+import { SocialInterface } from '../social/interfaces/social.interface';
 
 @Injectable()
 export class GoogleService {

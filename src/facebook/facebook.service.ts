@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Facebook } from 'fb';
 import { ConfigService } from '@nestjs/config';
 import { Tokens } from '../social/tokens';
-import { SocialInterface } from '../social/social.interface';
-import { FacebookInterface } from './facebook.interface';
+import { SocialInterface } from '../social/interfaces/social.interface';
+import { FacebookInterface } from './interfaces/facebook.interface';
 
 @Injectable()
 export class FacebookService {

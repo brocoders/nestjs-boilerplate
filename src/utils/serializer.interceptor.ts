@@ -12,10 +12,7 @@ import deepMapObject from './deep-map-object';
 
 @Injectable()
 export class SerializerInterceptor implements NestInterceptor {
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<unknown>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map(data => {
         return deepMapObject(data, value => {

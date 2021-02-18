@@ -6,7 +6,7 @@ import { StatusEnum } from '../src/statuses/statuses.enum';
 import { plainToClass } from 'class-transformer';
 
 export default class CreateAdmin implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<any> {
+  public async run(factory: Factory, connection: Connection): Promise<void> {
     const countUser = await connection
       .createQueryBuilder()
       .select()

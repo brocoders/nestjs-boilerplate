@@ -16,7 +16,7 @@ import { FilesService } from './files.service';
     MulterModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: (configService: ConfigService) => {
         const storages = {
           local: () =>
             diskStorage({

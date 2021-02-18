@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import appleSigninAuth from 'apple-signin-auth';
 import { ConfigService } from '@nestjs/config';
 import { Tokens } from '../social/tokens';
-import { SocialInterface } from '../social/social.interface';
+import { SocialInterface } from '../social/interfaces/social.interface';
 
 @Injectable()
 export class AppleService {
