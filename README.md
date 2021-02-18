@@ -19,7 +19,7 @@ NestJS REST API boilerplate for typical project
 - Swagger. :white_check_mark:
 - E2E and units tests. :white_check_mark:
 - Docker. :white_check_mark:
-- CI (Github Actions).
+- CI (Github Actions). :white_check_mark:
 
 ## Quick run
 
