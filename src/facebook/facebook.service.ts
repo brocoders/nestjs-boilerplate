@@ -20,12 +20,12 @@ export class FacebookService {
   async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
     this.fb.setAccessToken(tokens.token1);
 
-    const data: FacebookInterface = await new Promise(resolve => {
+    const data: FacebookInterface = await new Promise((resolve) => {
       this.fb.api(
         '/me',
         'get',
         { fields: 'id,last_name,email,first_name' },
-        response => {
+        (response) => {
           resolve(response);
         },
       );

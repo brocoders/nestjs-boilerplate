@@ -75,7 +75,7 @@ describe('Auth user (e2e)', () => {
       .then(({ body }) =>
         body
           .find(
-            letter =>
+            (letter) =>
               letter.to[0].address === newUserEmail &&
               /.*confirm\-email\/(\w+).*/g.test(letter.text),
           )
@@ -141,11 +141,9 @@ describe('Auth user (e2e)', () => {
       .send({ email: newUserEmail, password: newUserPassword })
       .then(({ body }) => body.token);
 
-    await request(app)
-      .delete('/api/v1/auth/me')
-      .auth(newUserApiToken, {
-        type: 'bearer',
-      });
+    await request(app).delete('/api/v1/auth/me').auth(newUserApiToken, {
+      type: 'bearer',
+    });
 
     return request(app)
       .post('/api/v1/auth/login/email')

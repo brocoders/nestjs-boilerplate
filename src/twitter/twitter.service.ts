@@ -16,7 +16,7 @@ export class TwitterService {
       access_token_secret: tokens.token2,
     });
 
-    const data: Twitter.ResponseData = await new Promise(resolve => {
+    const data: Twitter.ResponseData = await new Promise((resolve) => {
       twitter.get(
         'account/verify_credentials',
         { include_email: true },
