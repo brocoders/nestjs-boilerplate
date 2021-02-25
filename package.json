@@ -80,7 +80,7 @@
     "@types/twitter": "^1.7.0",
     "@typescript-eslint/eslint-plugin": "4.15.2",
     "@typescript-eslint/parser": "4.15.2",
-    "aws-sdk": "^2.850.0",
+    "aws-sdk": "^2.851.0",
     "env-cmd": "^10.1.0",
     "eslint": "7.20.0",
     "eslint-config-prettier": "^8.1.0",
