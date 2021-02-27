@@ -14,15 +14,13 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  AuthForgotPasswordDto,
-  AuthEmailLoginDto,
-  AuthResetPasswordDto,
-  AuthConfirmEmailDto,
-  AuthRegisterLoginDto,
-  AuthUpdateDto,
-  AuthSocialLoginDto,
-} from './auth.dto';
+import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
+import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
+import { AuthForgotPasswordDto } from './dtos/auth-forgot-password.dto';
+import { AuthConfirmEmailDto } from './dtos/auth-confirm-email.dto';
+import { AuthResetPasswordDto } from './dtos/auth-reset-password.dto';
+import { AuthUpdateDto } from './dtos/auth-update.dto';
+import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')

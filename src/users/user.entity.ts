@@ -11,7 +11,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../roles/role.entity';
 import { IsEmail, IsNotEmpty, MinLength, Validate } from 'class-validator';
@@ -29,6 +29,7 @@ export class User extends EntityHelper {
   id: number;
 
   @ApiProperty({ example: 'test1@example.com' })
+  @Transform((value: string | null) => value?.toLowerCase())
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',
   })

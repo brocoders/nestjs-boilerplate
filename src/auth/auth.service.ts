@@ -4,12 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
 import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import {
-  AuthEmailLoginDto,
-  AuthRegisterLoginDto,
-  AuthSocialLoginDto,
-  AuthUpdateDto,
-} from './auth.dto';
+import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
+import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
+import { AuthUpdateDto } from './dtos/auth-update.dto';
+import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { Forgot } from '../forgot/forgot.entity';
@@ -51,7 +49,7 @@ export class AuthService {
   ): Promise<{ token: string; user: User }> {
     const user = await this.usersRepository.findOne({
       where: {
-        email: loginDto.email.toLowerCase(),
+        email: loginDto.email,
         role: onlyAdmin ? In([RoleEnum.admin]) : In([RoleEnum.user]),
       },
     });
@@ -124,8 +122,10 @@ export class AuthService {
         );
     }
 
+    const socialEmail = socialData.email?.toLowerCase();
+
     const userByEmail = await this.usersRepository.findOne({
-      email: socialData.email?.toLowerCase(),
+      email: socialEmail,
     });
 
     user = await this.usersRepository.findOne({
@@ -134,15 +134,15 @@ export class AuthService {
     });
 
     if (user) {
-      if (socialData.email && !userByEmail) {
-        user.email = socialData.email?.toLowerCase();
+      if (socialEmail && !userByEmail) {
+        user.email = socialEmail;
       }
       await this.usersRepository.save(user);
     } else if (userByEmail) {
       user = userByEmail;
 
-      if (socialData.email && !userByEmail) {
-        user.email = socialData.email?.toLowerCase();
+      if (socialEmail && !userByEmail) {
+        user.email = socialEmail;
       }
 
       await this.usersRepository.save(user);
@@ -158,8 +158,8 @@ export class AuthService {
       const userLastName = socialData.lastName ?? dto.lastName;
 
       user = await this.usersRepository.save(
-        plainToClass(User, {
-          email: socialData.email?.toLowerCase(),
+        this.usersRepository.create({
+          email: socialEmail,
           firstName: userFirstName,
           lastName: userLastName,
           socialId: socialData.id,
@@ -190,9 +190,9 @@ export class AuthService {
       .digest('hex');
 
     const user = await this.usersRepository.save(
-      plainToClass(User, {
+      this.usersRepository.create({
         ...dto,
-        email: dto.email?.toLowerCase(),
+        email: dto.email,
         role: {
           id: RoleEnum.user,
         },
@@ -248,7 +248,7 @@ export class AuthService {
 
   async forgotPassword(email: string): Promise<void> {
     const user = await this.usersRepository.findOne({
-      email: email?.toLowerCase(),
+      email,
     });
 
     if (!user) {
@@ -267,7 +267,7 @@ export class AuthService {
         .update(randomStringGenerator())
         .digest('hex');
       await this.forgotRepository.save(
-        plainToClass(Forgot, {
+        this.forgotRepository.create({
           hash,
           user,
         }),
@@ -328,7 +328,7 @@ export class AuthService {
 
   async update(user: User, userDto: AuthUpdateDto): Promise<User> {
     await this.usersRepository.save(
-      plainToClass(User, {
+      this.usersRepository.create({
         id: user.id,
         ...userDto,
       }),

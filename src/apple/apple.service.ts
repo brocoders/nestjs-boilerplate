@@ -15,7 +15,7 @@ export class AppleService {
 
     return {
       id: data.sub,
-      email: data.email?.toLowerCase(),
+      email: data.email,
     };
   }
 }
