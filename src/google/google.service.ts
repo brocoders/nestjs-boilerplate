@@ -25,7 +25,7 @@ export class GoogleService {
 
     return {
       id: data.sub,
-      email: data.email?.toLowerCase(),
+      email: data.email,
       firstName: data.given_name,
       lastName: data.family_name,
     };

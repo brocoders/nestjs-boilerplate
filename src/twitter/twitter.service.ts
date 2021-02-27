@@ -28,7 +28,7 @@ export class TwitterService {
 
     return {
       id: data.id.toString(),
-      email: data.email?.toLowerCase(),
+      email: data.email,
       firstName: data.name,
     };
   }
