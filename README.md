@@ -15,7 +15,7 @@ NestJS REST API boilerplate for typical project
 - Admin and User roles. :white_check_mark:
 - Nest CRUD ([@nestjsx/crud](https://www.npmjs.com/package/@nestjsx/crud)). :white_check_mark:
 - I18N ([nestjs-i18n](https://www.npmjs.com/package/nestjs-i18n)). :white_check_mark:
-- File upload. Support local and Amazon S3 drivers. :white_check_mark:
+- File uploads. Support local and Amazon S3 drivers. :white_check_mark:
 - Swagger. :white_check_mark:
 - E2E and units tests. :white_check_mark:
 - Docker. :white_check_mark:
