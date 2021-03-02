@@ -2,7 +2,7 @@ name: NestJS API CI
 
 on:
   push:
-    branches: []
+    branches: [master]
   pull_request:
     branches: [master]
 
@@ -12,8 +12,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: docker-compose -f docker-compose.ci.yaml --env-file env-example -p ci pull
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
       - name: Run e2e tests
         run: docker-compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api

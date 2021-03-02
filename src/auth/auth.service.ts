@@ -327,6 +327,39 @@ export class AuthService {
   }
 
   async update(user: User, userDto: AuthUpdateDto): Promise<User> {
+    if (userDto.password) {
+      if (userDto.oldPassword) {
+        const currentUser = await this.usersRepository.findOne(user.id);
+
+        const isValidOldPassword = await bcrypt.compare(
+          userDto.oldPassword,
+          currentUser.password,
+        );
+
+        if (!isValidOldPassword) {
+          throw new HttpException(
+            {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errors: {
+                oldPassword: 'incorrectOldPassword',
+              },
+            },
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          );
+        }
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.UNPROCESSABLE_ENTITY,
+            errors: {
+              oldPassword: 'missingOldPassword',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
     await this.usersRepository.save(
       this.usersRepository.create({
         id: user.id,

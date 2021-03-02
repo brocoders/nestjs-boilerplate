@@ -11,15 +11,19 @@ export class AuthUpdateDto {
   photo?: FileEntity;
 
   @ApiProperty({ example: 'John' })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'mustBeNotEmpty' })
   firstName?: string;
 
   @ApiProperty({ example: 'Doe' })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'mustBeNotEmpty' })
   lastName?: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(6)
   password?: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'mustBeNotEmpty' })
+  oldPassword: string;
 }
