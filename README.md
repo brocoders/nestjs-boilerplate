@@ -67,6 +67,38 @@ npm run seed:run
 npm run start:dev
 ```
 
+## Database utils
+
+Generate migration
+
+```bash
+npm run migration:generate -- CreateNameTable
+```
+
+Run migration
+
+```bash
+npm run migration:run
+```
+
+Revert migration
+
+```bash
+npm run migration:revert
+```
+
+Drop all tables in database
+
+```bash
+npm run schema:drop
+```
+
+Run seed
+
+```bash
+npm run seed:run
+```
+
 ## Test
 
 ```bash

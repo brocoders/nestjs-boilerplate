@@ -12,6 +12,7 @@
     "migration:generate": "npm run typeorm -- migration:generate -n",
     "migration:create": "npm run typeorm -- migration:create -n",
     "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
     "schema:drop": "npm run typeorm -- schema:drop",
     "seed:config": "npm run seeds -- config",
     "seed:run": "npm run seeds -- seed",
