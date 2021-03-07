@@ -18,4 +18,22 @@ module.exports = {
     migrationsDir: 'migrations',
     subscribersDir: 'subscriber',
   },
+  extra: {
+    ssl:
+      process.env.DATABASE_SSL_ENABLED === 'true'
+        ? {
+            rejectUnauthorized:
+              process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
+            ca: process.env.DATABASE_CA
+              ? fs.readFileSync(process.env.DATABASE_CA).toString()
+              : undefined,
+            key: process.env.DATABASE_KEY
+              ? fs.readFileSync(process.env.DATABASE_KEY).toString()
+              : undefined,
+            cert: process.env.DATABASE_CERT
+              ? fs.readFileSync(process.env.DATABASE_CERT).toString()
+              : undefined,
+          }
+        : undefined,
+  },
 };

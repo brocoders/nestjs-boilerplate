@@ -13,6 +13,7 @@ import googleConfig from './config/google.config';
 import twitterConfig from './config/twitter.config';
 import appleConfig from './config/apple.config';
 import * as path from 'path';
+import * as fs from 'fs';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -68,6 +69,28 @@ import { HeaderResolver } from 'nestjs-i18n';
             // based on https://node-postgres.com/api/pool
             // max connection pool size
             max: configService.get('database.maxConnections'),
+            ssl: configService.get('database.sslEnabled')
+              ? {
+                  rejectUnauthorized: configService.get(
+                    'database.rejectUnauthorized',
+                  ),
+                  ca: configService.get('database.ca')
+                    ? fs
+                        .readFileSync(configService.get('database.ca'))
+                        .toString()
+                    : undefined,
+                  key: configService.get('database.key')
+                    ? fs
+                        .readFileSync(configService.get('database.key'))
+                        .toString()
+                    : undefined,
+                  cert: configService.get('database.cert')
+                    ? fs
+                        .readFileSync(configService.get('database.cert'))
+                        .toString()
+                    : undefined,
+                }
+              : undefined,
           },
         } as ConnectionOptions),
     }),
