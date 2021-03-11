@@ -5,7 +5,7 @@ import { Transform } from 'class-transformer';
 
 export class AuthRegisterLoginDto {
   @ApiProperty({ example: 'test1@example.com' })
-  @Transform(({ value }) => value.toLowerCase())
+  @Transform((value: string) => value.toLowerCase())
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',
   })
