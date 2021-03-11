@@ -29,7 +29,7 @@ export class User extends EntityHelper {
   id: number;
 
   @ApiProperty({ example: 'test1@example.com' })
-  @Transform((value: string | null) => value?.toLowerCase())
+  @Transform(({ value }) => value?.toLowerCase())
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',
   })

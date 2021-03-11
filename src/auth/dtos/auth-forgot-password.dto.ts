@@ -4,7 +4,7 @@ import { Transform } from 'class-transformer';
 
 export class AuthForgotPasswordDto {
   @ApiProperty()
-  @Transform((value: string) => value.toLowerCase())
+  @Transform(({ value }) => value.toLowerCase())
   @IsEmail()
   email: string;
 }
