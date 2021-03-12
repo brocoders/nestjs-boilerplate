@@ -27,8 +27,15 @@ describe('Auth user (e2e)', () => {
 
   it('Login via admin endpoint: /api/v1/auth/admin/login/email (POST)', () => {
     return request(app)
-      .post('/api/v1/auth/admin/login/email ')
+      .post('/api/v1/auth/admin/login/email')
       .send({ email: TESTER_EMAIL, password: TESTER_PASSWORD })
+      .expect(422);
+  });
+
+  it('Login via admin endpoint with extra spaced: /api/v1/auth/admin/login/email (POST)', () => {
+    return request(app)
+      .post('/api/v1/auth/admin/login/email')
+      .send({ email: TESTER_EMAIL + '  ', password: TESTER_PASSWORD })
       .expect(422);
   });
 
