@@ -14,7 +14,7 @@ export class IsExist implements ValidatorConstraintInterface {
       [pathToProperty
         ? pathToProperty
         : validationArguments.property]: pathToProperty
-        ? value[pathToProperty]
+        ? value?.[pathToProperty]
         : value,
     });
 

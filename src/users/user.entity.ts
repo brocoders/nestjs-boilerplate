@@ -14,7 +14,13 @@ import {
 import { Exclude, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../roles/role.entity';
-import { IsEmail, IsNotEmpty, MinLength, Validate } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  Validate,
+} from 'class-validator';
 import { Status } from '../statuses/status.entity';
 import { IsNotExist } from '../utils/validators/is-not-exists.validator';
 import { FileEntity } from '../files/file.entity';
@@ -22,6 +28,7 @@ import { IsExist } from '../utils/validators/is-exists.validator';
 import * as bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { CrudValidationGroups } from '@nestjsx/crud';
 
 @Entity()
 export class User extends EntityHelper {
@@ -30,15 +37,21 @@ export class User extends EntityHelper {
 
   @ApiProperty({ example: 'test1@example.com' })
   @Transform((value: string | null) => value?.toLowerCase().trim())
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @IsNotEmpty({ groups: [CrudValidationGroups.CREATE] })
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',
+    groups: [CrudValidationGroups.CREATE],
   })
   @IsEmail()
   @Column({ unique: true, nullable: true })
   email: string | null;
 
   @ApiProperty()
-  @MinLength(6)
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MinLength(6, {
+    groups: [CrudValidationGroups.CREATE],
+  })
   @Column({ nullable: true })
   password: string;
 
@@ -66,18 +79,21 @@ export class User extends EntityHelper {
   socialId: string | null;
 
   @ApiProperty({ example: 'John' })
-  @IsNotEmpty()
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @IsNotEmpty({ groups: [CrudValidationGroups.CREATE] })
   @Index()
   @Column({ nullable: true })
   firstName: string | null;
 
   @ApiProperty({ example: 'Doe' })
-  @IsNotEmpty()
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @IsNotEmpty({ groups: [CrudValidationGroups.CREATE] })
   @Index()
   @Column({ nullable: true })
   lastName: string | null;
 
   @ApiProperty({ type: () => FileEntity })
+  @IsOptional()
   @Validate(IsExist, ['FileEntity', 'id'], {
     message: 'imageNotExists',
   })
@@ -87,8 +103,10 @@ export class User extends EntityHelper {
   photo?: FileEntity | null;
 
   @ApiProperty({ type: Role })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
   @Validate(IsExist, ['Role', 'id'], {
     message: 'roleNotExists',
+    groups: [CrudValidationGroups.CREATE],
   })
   @ManyToOne(() => Role, {
     eager: true,
@@ -96,8 +114,10 @@ export class User extends EntityHelper {
   role?: Role | null;
 
   @ApiProperty({ type: Status })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
   @Validate(IsExist, ['Status', 'id'], {
     message: 'statusNotExists',
+    groups: [CrudValidationGroups.CREATE],
   })
   @ManyToOne(() => Status, {
     eager: true,

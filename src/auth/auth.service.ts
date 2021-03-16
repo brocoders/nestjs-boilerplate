@@ -5,7 +5,6 @@ import { User } from '../users/user.entity';
 import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
-import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 import { AuthUpdateDto } from './dtos/auth-update.dto';
 import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -25,6 +24,7 @@ import { GoogleService } from 'src/google/google.service';
 import { SocialInterface } from 'src/social/interfaces/social.interface';
 import { TwitterService } from 'src/twitter/twitter.service';
 import { I18nService } from 'nestjs-i18n';
+import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 
 @Injectable()
 export class AuthService {

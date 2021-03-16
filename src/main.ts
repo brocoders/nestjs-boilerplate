@@ -1,14 +1,10 @@
-import {
-  ValidationPipe,
-  HttpStatus,
-  ValidationError,
-  HttpException,
-} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SerializerInterceptor } from './utils/serializer.interceptor';
+import validationOptions from './utils/validation-options';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -17,30 +13,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
   app.setGlobalPrefix(configService.get('app.apiPrefix'));
   app.useGlobalInterceptors(new SerializerInterceptor());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-      skipMissingProperties: true,
-      exceptionFactory: (errors: ValidationError[]) =>
-        new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: errors.reduce(
-              (accumulator, currentValue) => ({
-                ...accumulator,
-                [currentValue.property]: Object.values(
-                  currentValue.constraints,
-                ).join(', '),
-              }),
-              {},
-            ),
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(validationOptions));
 
   app.getHttpAdapter().get('/', (request, response) => {
     response.send('API.');

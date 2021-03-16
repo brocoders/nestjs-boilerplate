@@ -9,19 +9,17 @@ import {
   UseGuards,
   Patch,
   Delete,
-  ClassSerializerInterceptor,
-  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
-import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 import { AuthForgotPasswordDto } from './dtos/auth-forgot-password.dto';
 import { AuthConfirmEmailDto } from './dtos/auth-confirm-email.dto';
 import { AuthResetPasswordDto } from './dtos/auth-reset-password.dto';
 import { AuthUpdateDto } from './dtos/auth-update.dto';
 import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -74,7 +72,6 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
@@ -83,7 +80,6 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)

@@ -7,12 +7,14 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { RolesGuard } from '../roles/roles.guard';
+import validationOptions from 'src/utils/validation-options';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Crud({
+  validation: validationOptions,
   model: {
     type: User,
   },
