@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "postinstall": "is-ci || husky install",
+    "pretypeorm": "ts-node -r tsconfig-paths/register ./src/database/scripts/copy-typeorm-config.ts",
     "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "seeds": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate -n",
@@ -22,7 +23,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
+    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
