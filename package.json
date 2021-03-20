@@ -8,8 +8,8 @@
   "scripts": {
     "postinstall": "is-ci || husky install",
     "pretypeorm": "ts-node -r tsconfig-paths/register ./src/database/scripts/copy-typeorm-config.ts",
-    "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "seeds": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "seeds": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate -n",
     "migration:create": "npm run typeorm -- migration:create -n",
     "migration:run": "npm run typeorm -- migration:run",
