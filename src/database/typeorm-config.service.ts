@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
@@ -39,19 +38,13 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
                 'database.rejectUnauthorized',
               ),
               ca: this.configService.get('database.ca')
-                ? fs
-                    .readFileSync(this.configService.get('database.ca'))
-                    .toString()
+                ? this.configService.get('database.ca')
                 : undefined,
               key: this.configService.get('database.key')
-                ? fs
-                    .readFileSync(this.configService.get('database.key'))
-                    .toString()
+                ? this.configService.get('database.key')
                 : undefined,
               cert: this.configService.get('database.cert')
-                ? fs
-                    .readFileSync(this.configService.get('database.cert'))
-                    .toString()
+                ? this.configService.get('database.cert')
                 : undefined,
             }
           : undefined,

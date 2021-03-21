@@ -4,27 +4,26 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousStrategy } from './strategies/anonymous.strategy';
-import { Forgot } from 'src/forgot/forgot.entity';
 import { AppleModule } from 'src/apple/apple.module';
 import { FacebookModule } from 'src/facebook/facebook.module';
 import { GoogleModule } from 'src/google/google.module';
 import { TwitterModule } from 'src/twitter/twitter.module';
 import { UsersModule } from 'src/users/users.module';
+import { ForgotModule } from 'src/forgot/forgot.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Forgot]),
     UsersModule,
+    ForgotModule,
     FacebookModule,
     GoogleModule,
     TwitterModule,
     AppleModule,
-    ConfigModule,
     PassportModule,
+    MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

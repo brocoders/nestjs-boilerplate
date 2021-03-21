@@ -24,6 +24,8 @@ import { I18nJsonParser } from 'nestjs-i18n/dist/parsers/i18n.json.parser';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { MailConfigService } from './mail/mail-config.service';
+import { ForgotModule } from './forgot/forgot.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -71,6 +73,8 @@ import { MailConfigService } from './mail/mail-config.service';
     GoogleModule,
     TwitterModule,
     AppleModule,
+    ForgotModule,
+    MailModule,
   ],
 })
 export class AppModule {}

@@ -1,19 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
-import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
 import { AuthUpdateDto } from './dtos/auth-update.dto';
 import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
-import { MailerService } from '@nestjs-modules/mailer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { Forgot } from '../forgot/forgot.entity';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as crypto from 'crypto';
-import { ConfigService } from '@nestjs/config';
 import { plainToClass } from 'class-transformer';
 import { Status } from 'src/statuses/status.entity';
 import { Role } from 'src/roles/role.entity';
@@ -23,38 +18,41 @@ import { FacebookService } from 'src/facebook/facebook.service';
 import { GoogleService } from 'src/google/google.service';
 import { SocialInterface } from 'src/social/interfaces/social.interface';
 import { TwitterService } from 'src/twitter/twitter.service';
-import { I18nService } from 'nestjs-i18n';
 import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
+import { UsersService } from 'src/users/users.service';
+import { ForgotService } from 'src/forgot/forgot.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private i18n: I18nService,
-    private mailerService: MailerService,
-    private configService: ConfigService,
     private jwtService: JwtService,
     private facebookService: FacebookService,
     private googleService: GoogleService,
     private twitterService: TwitterService,
     private appleService: AppleService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    @InjectRepository(Forgot)
-    private forgotRepository: Repository<Forgot>,
+    private usersService: UsersService,
+    private forgotService: ForgotService,
+    private mailService: MailService,
   ) {}
 
   async validateLogin(
     loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
   ): Promise<{ token: string; user: User }> {
-    const user = await this.usersRepository.findOne({
+    const user = await this.usersService.findOneEntity({
       where: {
         email: loginDto.email,
-        role: onlyAdmin ? In([RoleEnum.admin]) : In([RoleEnum.user]),
       },
     });
 
-    if (!user) {
+    if (
+      !user ||
+      (user &&
+        !(onlyAdmin ? [RoleEnum.admin] : [RoleEnum.user]).includes(
+          user.role.id,
+        ))
+    ) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -124,20 +122,24 @@ export class AuthService {
 
     const socialEmail = socialData.email?.toLowerCase();
 
-    const userByEmail = await this.usersRepository.findOne({
-      email: socialEmail,
+    const userByEmail = await this.usersService.findOneEntity({
+      where: {
+        email: socialEmail,
+      },
     });
 
-    user = await this.usersRepository.findOne({
-      socialId: socialData.id,
-      provider: dto.socialType,
+    user = await this.usersService.findOneEntity({
+      where: {
+        socialId: socialData.id,
+        provider: dto.socialType,
+      },
     });
 
     if (user) {
       if (socialEmail && !userByEmail) {
         user.email = socialEmail;
       }
-      await this.usersRepository.save(user);
+      await this.usersService.saveEntity(user);
     } else if (userByEmail) {
       user = userByEmail;
 
@@ -145,7 +147,7 @@ export class AuthService {
         user.email = socialEmail;
       }
 
-      await this.usersRepository.save(user);
+      await this.usersService.saveEntity(user);
     } else {
       const role = plainToClass(Role, {
         id: RoleEnum.user,
@@ -157,19 +159,21 @@ export class AuthService {
       const userFirstName = socialData.firstName ?? dto.firstName;
       const userLastName = socialData.lastName ?? dto.lastName;
 
-      user = await this.usersRepository.save(
-        this.usersRepository.create({
-          email: socialEmail,
-          firstName: userFirstName,
-          lastName: userLastName,
-          socialId: socialData.id,
-          provider: dto.socialType,
-          role,
-          status,
-        }),
-      );
+      user = await this.usersService.saveEntity({
+        email: socialEmail,
+        firstName: userFirstName,
+        lastName: userLastName,
+        socialId: socialData.id,
+        provider: dto.socialType,
+        role,
+        status,
+      });
 
-      user = await this.usersRepository.findOne(user.id);
+      user = await this.usersService.findOneEntity({
+        where: {
+          id: user.id,
+        },
+      });
     }
 
     const jwtToken = await this.jwtService.sign({
@@ -189,44 +193,31 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    const user = await this.usersRepository.save(
-      this.usersRepository.create({
-        ...dto,
-        email: dto.email,
-        role: {
-          id: RoleEnum.user,
-        },
-        status: {
-          id: StatusEnum.inactive,
-        },
-        hash,
-      }),
-    );
+    const user = await this.usersService.saveEntity({
+      ...dto,
+      email: dto.email,
+      role: {
+        id: RoleEnum.user,
+      },
+      status: {
+        id: StatusEnum.inactive,
+      },
+      hash,
+    });
 
-    await this.mailerService.sendMail({
+    await this.mailService.userSignUp({
       to: user.email,
-      subject: await this.i18n.t('common.confirmEmail'),
-      text: `${this.configService.get(
-        'app.frontendDomain',
-      )}/confirm-email/${hash} ${await this.i18n.t('common.confirmEmail')}`,
-      template: 'activation',
-      context: {
-        title: await this.i18n.t('common.confirmEmail'),
-        url: `${this.configService.get(
-          'app.frontendDomain',
-        )}/confirm-email/${hash}`,
-        actionTitle: await this.i18n.t('common.confirmEmail'),
-        app_name: this.configService.get('app.name'),
-        text1: await this.i18n.t('confirm-email.text1'),
-        text2: await this.i18n.t('confirm-email.text2'),
-        text3: await this.i18n.t('confirm-email.text3'),
+      data: {
+        hash,
       },
     });
   }
 
   async confirmEmail(hash: string): Promise<void> {
-    const user = await this.usersRepository.findOne({
-      hash,
+    const user = await this.usersService.findOneEntity({
+      where: {
+        hash,
+      },
     });
 
     if (!user) {
@@ -247,8 +238,10 @@ export class AuthService {
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.usersRepository.findOne({
-      email,
+    const user = await this.usersService.findOneEntity({
+      where: {
+        email,
+      },
     });
 
     if (!user) {
@@ -266,40 +259,25 @@ export class AuthService {
         .createHash('sha256')
         .update(randomStringGenerator())
         .digest('hex');
-      await this.forgotRepository.save(
-        this.forgotRepository.create({
-          hash,
-          user,
-        }),
-      );
-      await this.mailerService.sendMail({
+      await this.forgotService.saveEntity({
+        hash,
+        user,
+      });
+
+      await this.mailService.forgotPassword({
         to: email,
-        subject: await this.i18n.t('common.resetPassword'),
-        text: `${this.configService.get(
-          'app.frontendDomain',
-        )}/password-change/${hash} ${await this.i18n.t(
-          'common.resetPassword',
-        )}`,
-        template: 'reset-password',
-        context: {
-          title: await this.i18n.t('common.resetPassword'),
-          url: `${this.configService.get(
-            'app.frontendDomain',
-          )}/password-change/${hash}`,
-          actionTitle: await this.i18n.t('common.resetPassword'),
-          app_name: this.configService.get('app.name'),
-          text1: await this.i18n.t('reset-password.text1'),
-          text2: await this.i18n.t('reset-password.text2'),
-          text3: await this.i18n.t('reset-password.text3'),
-          text4: await this.i18n.t('reset-password.text4'),
+        data: {
+          hash,
         },
       });
     }
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
-    const forgot = await this.forgotRepository.findOne({
-      hash,
+    const forgot = await this.forgotService.findOneEntity({
+      where: {
+        hash,
+      },
     });
 
     if (!forgot) {
@@ -317,19 +295,25 @@ export class AuthService {
     const user = forgot.user;
     user.password = password;
     await user.save();
-    await this.forgotRepository.softDelete(forgot.id);
+    await this.forgotService.softDelete(forgot.id);
   }
 
   async me(user: User): Promise<User> {
-    return this.usersRepository.findOne({
-      id: user.id,
+    return this.usersService.findOneEntity({
+      where: {
+        id: user.id,
+      },
     });
   }
 
   async update(user: User, userDto: AuthUpdateDto): Promise<User> {
     if (userDto.password) {
       if (userDto.oldPassword) {
-        const currentUser = await this.usersRepository.findOne(user.id);
+        const currentUser = await this.usersService.findOneEntity({
+          where: {
+            id: user.id,
+          },
+        });
 
         const isValidOldPassword = await bcrypt.compare(
           userDto.oldPassword,
@@ -360,17 +344,19 @@ export class AuthService {
       }
     }
 
-    await this.usersRepository.save(
-      this.usersRepository.create({
-        id: user.id,
-        ...userDto,
-      }),
-    );
+    await this.usersService.saveEntity({
+      id: user.id,
+      ...userDto,
+    });
 
-    return this.usersRepository.findOne(user.id);
+    return this.usersService.findOneEntity({
+      where: {
+        id: user.id,
+      },
+    });
   }
 
   async softDelete(user: User): Promise<void> {
-    await this.usersRepository.softDelete(user.id);
+    await this.usersService.softDelete(user.id);
   }
 }
