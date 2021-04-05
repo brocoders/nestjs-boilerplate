@@ -6,20 +6,20 @@ NestJS REST API boilerplate for typical project
 
 ## Features
 
-- Database ([typeorm](https://www.npmjs.com/package/typeorm)). :white_check_mark:
-- Seeding ([typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding)). :white_check_mark:
-- Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)). :white_check_mark:
-- Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)). :white_check_mark:
-- Sign in and sign up via email. :white_check_mark:
-- Social sign in (Apple, Facebook, Google, Twitter). :white_check_mark:
-- Admin and User roles. :white_check_mark:
-- Nest CRUD ([@nestjsx/crud](https://www.npmjs.com/package/@nestjsx/crud)). :white_check_mark:
-- I18N ([nestjs-i18n](https://www.npmjs.com/package/nestjs-i18n)). :white_check_mark:
-- File uploads. Support local and Amazon S3 drivers. :white_check_mark:
-- Swagger. :white_check_mark:
-- E2E and units tests. :white_check_mark:
-- Docker. :white_check_mark:
-- CI (Github Actions). :white_check_mark:
+- [x] Database ([typeorm](https://www.npmjs.com/package/typeorm)).
+- [x] Seeding ([typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding)).
+- [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
+- [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)). 
+- [x] Sign in and sign up via email.
+- [x] Social sign in (Apple, Facebook, Google, Twitter).
+- [x] Admin and User roles.
+- [x] Nest CRUD ([@nestjsx/crud](https://www.npmjs.com/package/@nestjsx/crud)).
+- [x] I18N ([nestjs-i18n](https://www.npmjs.com/package/nestjs-i18n)).
+- [x] File uploads. Support local and Amazon S3 drivers.
+- [x] Swagger.
+- [x] E2E and units tests.
+- [x] Docker.
+- [x] CI (Github Actions).
 
 ## Quick run
 
