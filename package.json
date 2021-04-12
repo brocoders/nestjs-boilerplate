@@ -48,7 +48,7 @@
     "class-transformer": "^0.3.1",
     "class-validator": "^0.13.1",
     "fb": "^2.0.0",
-    "google-auth-library": "^7.0.3",
+    "google-auth-library": "^7.0.4",
     "handlebars": "^4.7.7",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
