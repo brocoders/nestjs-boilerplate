@@ -80,7 +80,7 @@
     "@types/passport-jwt": "^3.0.5",
     "@types/supertest": "^2.0.11",
     "@types/twitter": "^1.7.0",
-    "@typescript-eslint/eslint-plugin": "4.20.0",
+    "@typescript-eslint/eslint-plugin": "4.21.0",
     "@typescript-eslint/parser": "4.21.0",
     "aws-sdk": "^2.880.0",
     "env-cmd": "^10.1.0",
