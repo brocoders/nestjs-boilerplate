@@ -19,7 +19,7 @@ export class MailService {
       text: `${this.configService.get('app.frontendDomain')}/confirm-email/${
         mailData.data.hash
       } ${await this.i18n.t('common.confirmEmail')}`,
-      template: 'activation',
+      template: './activation',
       context: {
         title: await this.i18n.t('common.confirmEmail'),
         url: `${this.configService.get('app.frontendDomain')}/confirm-email/${
@@ -41,7 +41,7 @@ export class MailService {
       text: `${this.configService.get('app.frontendDomain')}/password-change/${
         mailData.data.hash
       } ${await this.i18n.t('common.resetPassword')}`,
-      template: 'reset-password',
+      template: './reset-password',
       context: {
         title: await this.i18n.t('common.resetPassword'),
         url: `${this.configService.get('app.frontendDomain')}/password-change/${
