@@ -142,12 +142,6 @@ export class AuthService {
       await this.usersService.saveEntity(user);
     } else if (userByEmail) {
       user = userByEmail;
-
-      if (socialEmail && !userByEmail) {
-        user.email = socialEmail;
-      }
-
-      await this.usersService.saveEntity(user);
     } else {
       const role = plainToClass(Role, {
         id: RoleEnum.user,
