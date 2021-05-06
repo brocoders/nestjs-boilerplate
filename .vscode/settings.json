@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": [
     "files",
-    "deploy"
+    "deploy",
+    "auth"
   ]
 }

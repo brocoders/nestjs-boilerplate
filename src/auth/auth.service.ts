@@ -64,6 +64,18 @@ export class AuthService {
       );
     }
 
+    if (user.provider !== AuthProvidersEnum.email) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: `needLoginViaProvider:${user.provider}`,
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const isValidPassword = await bcrypt.compare(
       loginDto.password,
       user.password,
