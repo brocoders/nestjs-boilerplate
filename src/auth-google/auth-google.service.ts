@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
-import { Tokens } from '../social/tokens';
 import { SocialInterface } from '../social/interfaces/social.interface';
+import { AuthGoogleLoginDto } from './dtos/auth-google-login.dto';
 
 @Injectable()
-export class GoogleService {
+export class AuthGoogleService {
   private google: OAuth2Client;
 
   constructor(private configService: ConfigService) {
@@ -15,9 +15,11 @@ export class GoogleService {
     );
   }
 
-  async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
+  async getProfileByToken(
+    loginDto: AuthGoogleLoginDto,
+  ): Promise<SocialInterface> {
     const ticket = await this.google.verifyIdToken({
-      idToken: tokens.token1,
+      idToken: loginDto.idToken,
       audience: [this.configService.get('google.clientId')],
     });
 

@@ -17,7 +17,6 @@ import { AuthForgotPasswordDto } from './dtos/auth-forgot-password.dto';
 import { AuthConfirmEmailDto } from './dtos/auth-confirm-email.dto';
 import { AuthResetPasswordDto } from './dtos/auth-reset-password.dto';
 import { AuthUpdateDto } from './dtos/auth-update.dto';
-import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 
@@ -26,31 +25,25 @@ import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 export class AuthController {
   constructor(public service: AuthService) {}
 
-  @Post('login/email')
+  @Post('email/login')
   @HttpCode(HttpStatus.OK)
   public async login(@Body() loginDto: AuthEmailLoginDto) {
     return this.service.validateLogin(loginDto, false);
   }
 
-  @Post('admin/login/email')
+  @Post('admin/email/login')
   @HttpCode(HttpStatus.OK)
   public async adminLogin(@Body() loginDTO: AuthEmailLoginDto) {
     return this.service.validateLogin(loginDTO, true);
   }
 
-  @Post('register/email')
+  @Post('email/register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: AuthRegisterLoginDto) {
     return this.service.register(createUserDto);
   }
 
-  @Post('login/social')
-  @HttpCode(HttpStatus.OK)
-  public async social(@Body() loginDto: AuthSocialLoginDto) {
-    return this.service.validateSocialLogin(loginDto);
-  }
-
-  @Post('confirm/email')
+  @Post('email/confirm')
   @HttpCode(HttpStatus.OK)
   async confirmEmail(@Body() confirmEmailDto: AuthConfirmEmailDto) {
     return this.service.confirmEmail(confirmEmailDto.hash);

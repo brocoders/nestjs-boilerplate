@@ -1,19 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Twitter from 'twitter';
-import { Tokens } from '../social/tokens';
 import { SocialInterface } from '../social/interfaces/social.interface';
+import { AuthTwitterLoginDto } from './dtos/auth-twitter-login.dto';
 
 @Injectable()
-export class TwitterService {
+export class AuthTwitterService {
   constructor(private configService: ConfigService) {}
 
-  async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
+  async getProfileByToken(
+    loginDto: AuthTwitterLoginDto,
+  ): Promise<SocialInterface> {
     const twitter = new Twitter({
       consumer_key: this.configService.get('twitter.consumerKey'),
       consumer_secret: this.configService.get('twitter.consumerSecret'),
-      access_token_key: tokens.token1,
-      access_token_secret: tokens.token2,
+      access_token_key: loginDto.accessTokenKey,
+      access_token_secret: loginDto.accessTokenSecret,
     });
 
     const data: Twitter.ResponseData = await new Promise((resolve) => {

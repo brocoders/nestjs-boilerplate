@@ -6,10 +6,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AnonymousStrategy } from './strategies/anonymous.strategy';
-import { AppleModule } from 'src/apple/apple.module';
-import { FacebookModule } from 'src/facebook/facebook.module';
-import { GoogleModule } from 'src/google/google.module';
-import { TwitterModule } from 'src/twitter/twitter.module';
 import { UsersModule } from 'src/users/users.module';
 import { ForgotModule } from 'src/forgot/forgot.module';
 import { MailModule } from 'src/mail/mail.module';
@@ -18,10 +14,6 @@ import { MailModule } from 'src/mail/mail.module';
   imports: [
     UsersModule,
     ForgotModule,
-    FacebookModule,
-    GoogleModule,
-    TwitterModule,
-    AppleModule,
     PassportModule,
     MailModule,
     JwtModule.registerAsync({
