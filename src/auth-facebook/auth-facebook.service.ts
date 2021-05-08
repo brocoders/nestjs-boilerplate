@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Facebook } from 'fb';
 import { ConfigService } from '@nestjs/config';
-import { Tokens } from '../social/tokens';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { FacebookInterface } from './interfaces/facebook.interface';
+import { AuthFacebookLoginDto } from './dtos/auth-facebook-login.dto';
 
 @Injectable()
-export class FacebookService {
+export class AuthFacebookService {
   private fb;
 
   constructor(private configService: ConfigService) {
@@ -17,8 +17,10 @@ export class FacebookService {
     });
   }
 
-  async getProfileByToken(tokens: Tokens): Promise<SocialInterface> {
-    this.fb.setAccessToken(tokens.token1);
+  async getProfileByToken(
+    loginDto: AuthFacebookLoginDto,
+  ): Promise<SocialInterface> {
+    this.fb.setAccessToken(loginDto.accessToken);
 
     const data: FacebookInterface = await new Promise((resolve) => {
       this.fb.api(

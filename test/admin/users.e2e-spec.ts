@@ -15,14 +15,14 @@ describe('Users admin (e2e)', () => {
 
   beforeAll(async () => {
     await request(app)
-      .post('/api/v1/auth/admin/login/email')
+      .post('/api/v1/auth/admin/email/login')
       .send({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD })
       .then(({ body }) => {
         apiToken = body.token;
       });
 
     await request(app)
-      .post('/api/v1/auth/register/email')
+      .post('/api/v1/auth/email/register')
       .send({
         email: newUserEmailFirst,
         password: newUserPasswordFirst,
@@ -31,7 +31,7 @@ describe('Users admin (e2e)', () => {
       });
 
     await request(app)
-      .post('/api/v1/auth/login/email')
+      .post('/api/v1/auth/email/login')
       .send({ email: newUserEmailFirst, password: newUserPasswordFirst })
       .then(({ body }) => {
         newUserFirst = body.user;
@@ -48,9 +48,9 @@ describe('Users admin (e2e)', () => {
       .expect(200);
   });
 
-  it('Login via registered user: /api/v1/auth/login/email (GET)', () => {
+  it('Login via registered user: /api/v1/auth/email/login (GET)', () => {
     return request(app)
-      .post('/api/v1/auth/login/email')
+      .post('/api/v1/auth/email/login')
       .send({ email: newUserEmailFirst, password: newUserChangedPasswordFirst })
       .expect(200)
       .expect(({ body }) => {
@@ -89,9 +89,9 @@ describe('Users admin (e2e)', () => {
       .expect(201);
   });
 
-  it('Login via created by admin user: /api/v1/auth/login/email (GET)', () => {
+  it('Login via created by admin user: /api/v1/auth/email/login (GET)', () => {
     return request(app)
-      .post('/api/v1/auth/login/email')
+      .post('/api/v1/auth/email/login')
       .send({
         email: newUserByAdminEmailFirst,
         password: newUserByAdminPasswordFirst,

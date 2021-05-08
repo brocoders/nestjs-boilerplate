@@ -4,7 +4,6 @@ import { User } from '../users/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
 import { AuthUpdateDto } from './dtos/auth-update.dto';
-import { AuthSocialLoginDto } from './dtos/auth-social-login.dto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
@@ -13,11 +12,7 @@ import { plainToClass } from 'class-transformer';
 import { Status } from 'src/statuses/status.entity';
 import { Role } from 'src/roles/role.entity';
 import { AuthProvidersEnum } from './auth-providers.enum';
-import { AppleService } from 'src/apple/apple.service';
-import { FacebookService } from 'src/facebook/facebook.service';
-import { GoogleService } from 'src/google/google.service';
 import { SocialInterface } from 'src/social/interfaces/social.interface';
-import { TwitterService } from 'src/twitter/twitter.service';
 import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
 import { UsersService } from 'src/users/users.service';
 import { ForgotService } from 'src/forgot/forgot.service';
@@ -27,10 +22,6 @@ import { MailService } from 'src/mail/mail.service';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private facebookService: FacebookService,
-    private googleService: GoogleService,
-    private twitterService: TwitterService,
-    private appleService: AppleService,
     private usersService: UsersService,
     private forgotService: ForgotService,
     private mailService: MailService,
@@ -102,36 +93,10 @@ export class AuthService {
   }
 
   async validateSocialLogin(
-    dto: AuthSocialLoginDto,
+    authProvider: string,
+    socialData: SocialInterface,
   ): Promise<{ token: string; user: User }> {
-    let socialData: SocialInterface;
     let user: User;
-
-    switch (dto.socialType) {
-      case AuthProvidersEnum.facebook:
-        socialData = await this.facebookService.getProfileByToken(dto.tokens);
-        break;
-      case AuthProvidersEnum.google:
-        socialData = await this.googleService.getProfileByToken(dto.tokens);
-        break;
-      case AuthProvidersEnum.twitter:
-        socialData = await this.twitterService.getProfileByToken(dto.tokens);
-        break;
-      case AuthProvidersEnum.apple:
-        socialData = await this.appleService.getProfileByToken(dto.tokens);
-        break;
-      default:
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              socialType: 'notFountSocialType',
-            },
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
-    }
-
     const socialEmail = socialData.email?.toLowerCase();
 
     const userByEmail = await this.usersService.findOneEntity({
@@ -143,7 +108,7 @@ export class AuthService {
     user = await this.usersService.findOneEntity({
       where: {
         socialId: socialData.id,
-        provider: dto.socialType,
+        provider: authProvider,
       },
     });
 
@@ -162,15 +127,12 @@ export class AuthService {
         id: StatusEnum.active,
       });
 
-      const userFirstName = socialData.firstName ?? dto.firstName;
-      const userLastName = socialData.lastName ?? dto.lastName;
-
       user = await this.usersService.saveEntity({
         email: socialEmail,
-        firstName: userFirstName,
-        lastName: userLastName,
+        firstName: socialData.firstName,
+        lastName: socialData.lastName,
         socialId: socialData.id,
-        provider: dto.socialType,
+        provider: authProvider,
         role,
         status,
       });
