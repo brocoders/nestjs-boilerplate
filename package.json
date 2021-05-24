@@ -53,7 +53,7 @@
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
     "nestjs-i18n": "^8.1.1",
-    "nodemailer": "^6.6.0",
+    "nodemailer": "^6.6.1",
     "passport": "^0.4.1",
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^4.0.0",
