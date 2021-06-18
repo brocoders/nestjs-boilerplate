@@ -1,4 +1,4 @@
-FROM node:14.16.0
+FROM node:14.17.1
 
 RUN npm i -g @nestjs/cli typescript ts-node
 
