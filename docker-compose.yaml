@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:11.10
+    image: postgres:11.12
     ports:
       - ${DATABASE_PORT}:5432
     volumes:
