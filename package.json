@@ -39,7 +39,7 @@
     "@nestjs/jwt": "7.2.0",
     "@nestjs/passport": "7.1.5",
     "@nestjs/platform-express": "7.6.18",
-    "@nestjs/swagger": "4.8.1",
+    "@nestjs/swagger": "4.8.2",
     "@nestjs/typeorm": "7.1.5",
     "@nestjsx/crud": "4.6.2",
     "@nestjsx/crud-typeorm": "4.6.2",
