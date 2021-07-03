@@ -11,11 +11,8 @@ export class IsExist implements ValidatorConstraintInterface {
     const repository = validationArguments.constraints[0];
     const pathToProperty = validationArguments.constraints[1];
     const entity: unknown = await getRepository(repository).findOne({
-      [pathToProperty
-        ? pathToProperty
-        : validationArguments.property]: pathToProperty
-        ? value?.[pathToProperty]
-        : value,
+      [pathToProperty ? pathToProperty : validationArguments.property]:
+        pathToProperty ? value?.[pathToProperty] : value,
     });
 
     return Boolean(entity);
