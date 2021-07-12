@@ -26,6 +26,7 @@ import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { MailConfigService } from './mail/mail-config.service';
 import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
+import { HomeModule } from './home/home.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { MailModule } from './mail/mail.module';
     AuthAppleModule,
     ForgotModule,
     MailModule,
+    HomeModule,
   ],
 })
 export class AppModule {}

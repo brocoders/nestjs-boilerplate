@@ -5,7 +5,10 @@ import { AuthTwitterService } from './auth-twitter.service';
 import { AuthTwitterLoginDto } from './dtos/auth-twitter-login.dto';
 
 @ApiTags('Auth')
-@Controller('auth/twitter')
+@Controller({
+  path: 'auth/twitter',
+  version: '1',
+})
 export class AuthTwitterController {
   constructor(
     public authService: AuthService,

@@ -14,7 +14,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { FilesService } from './files.service';
 
 @ApiTags('Files')
-@Controller('files')
+@Controller({
+  path: 'files',
+  version: '1',
+})
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 

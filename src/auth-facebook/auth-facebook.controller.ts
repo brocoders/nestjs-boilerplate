@@ -5,7 +5,10 @@ import { AuthFacebookService } from './auth-facebook.service';
 import { AuthFacebookLoginDto } from './dtos/auth-facebook-login.dto';
 
 @ApiTags('Auth')
-@Controller('auth/facebook')
+@Controller({
+  path: 'auth/facebook',
+  version: '1',
+})
 export class AuthFacebookController {
   constructor(
     public authService: AuthService,

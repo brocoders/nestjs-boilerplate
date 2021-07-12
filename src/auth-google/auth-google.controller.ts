@@ -5,7 +5,10 @@ import { AuthGoogleService } from './auth-google.service';
 import { AuthGoogleLoginDto } from './dtos/auth-google-login.dto';
 
 @ApiTags('Auth')
-@Controller('auth/google')
+@Controller({
+  path: 'auth/google',
+  version: '1',
+})
 export class AuthGoogleController {
   constructor(
     public authService: AuthService,
