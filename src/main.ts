@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,13 +11,14 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableShutdownHooks();
-  app.setGlobalPrefix(configService.get('app.apiPrefix'));
+  app.setGlobalPrefix(configService.get('app.apiPrefix'), {
+    exclude: ['/'],
+  });
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   app.useGlobalInterceptors(new SerializerInterceptor());
   app.useGlobalPipes(new ValidationPipe(validationOptions));
-
-  app.getHttpAdapter().get('/', (request, response) => {
-    response.send('API.');
-  });
 
   const options = new DocumentBuilder()
     .setTitle('API')

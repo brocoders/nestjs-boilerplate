@@ -5,7 +5,10 @@ import { AuthAppleService } from './auth-apple.service';
 import { AuthAppleLoginDto } from './dtos/auth-apple-login.dto';
 
 @ApiTags('Auth')
-@Controller('auth/apple')
+@Controller({
+  path: 'auth/apple',
+  version: '1',
+})
 export class AuthAppleController {
   constructor(
     public authService: AuthService,

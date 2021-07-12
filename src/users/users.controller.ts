@@ -34,7 +34,10 @@ import validationOptions from 'src/utils/validation-options';
     },
   },
 })
-@Controller('users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UsersController implements CrudController<User> {
   constructor(public service: UsersService) {}
 
