@@ -63,7 +63,7 @@
     "rxjs": "7.3.0",
     "swagger-ui-express": "4.1.6",
     "twitter": "1.7.1",
-    "typeorm": "0.2.34",
+    "typeorm": "0.2.36",
     "typeorm-seeding": "1.6.1"
   },
   "devDependencies": {
