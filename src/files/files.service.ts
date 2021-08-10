@@ -26,7 +26,7 @@ export class FilesService {
     }
 
     const path = {
-      local: `/${this.configService.get('app.apiPrefix')}/${file.path}`,
+      local: `/${this.configService.get('app.apiPrefix')}/v1/${file.path}`,
       s3: file.location,
     };
 
