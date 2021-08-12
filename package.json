@@ -73,7 +73,7 @@
     "@types/bcryptjs": "2.4.2",
     "@types/express": "4.17.13",
     "@types/facebook-js-sdk": "3.3.4",
-    "@types/jest": "27.0.0",
+    "@types/jest": "27.0.1",
     "@types/multer": "1.4.7",
     "@types/node": "15.6.1",
     "@types/passport-anonymous": "1.0.3",
