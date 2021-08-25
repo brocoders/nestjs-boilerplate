@@ -88,7 +88,7 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.24.1",
     "eslint-plugin-prettier": "3.4.1",
-    "husky": "7.0.1",
+    "husky": "7.0.2",
     "is-ci": "3.0.0",
     "jest": "27.0.6",
     "prettier": "2.3.2",
