@@ -34,7 +34,7 @@
   "dependencies": {
     "@nestjs-modules/mailer": "1.6.0",
     "@nestjs/common": "8.0.10",
-    "@nestjs/config": "1.0.1",
+    "@nestjs/config": "1.0.2",
     "@nestjs/core": "8.0.10",
     "@nestjs/jwt": "8.0.0",
     "@nestjs/passport": "8.0.1",
