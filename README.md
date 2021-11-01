@@ -4,12 +4,21 @@
 
 NestJS REST API boilerplate for typical project
 
+## Table of Contents
+
+- [Features](#features)
+- [Quick run](#quick-run)
+- [Comfortable development](#comfortable-development)
+- [Links](#links)
+- [Database utils](#database-utils)
+- [Tests](#tests)
+
 ## Features
 
 - [x] Database ([typeorm](https://www.npmjs.com/package/typeorm)).
 - [x] Seeding ([typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding)).
 - [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
-- [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)). 
+- [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)).
 - [x] Sign in and sign up via email.
 - [x] Social sign in (Apple, Facebook, Google, Twitter).
 - [x] Admin and User roles.
@@ -24,8 +33,9 @@ NestJS REST API boilerplate for typical project
 ## Quick run
 
 ```bash
+git clone --depth 1 https://github.com/Shchepotin/nestjs-boilerplate.git my-app
+cd my-app/
 cp env-example .env
-
 docker-compose up -d
 ```
 
@@ -35,15 +45,11 @@ For check status run
 docker-compose logs
 ```
 
-## Links
-
-- Swagger: http://localhost:3000/docs
-- Adminer (client for DB): http://localhost:8080
-- Maildev: http://localhost:1080
-
 ## Comfortable development
 
 ```bash
+git clone --depth 1 https://github.com/Shchepotin/nestjs-boilerplate.git my-app
+cd my-app/
 cp env-example .env
 ```
 
@@ -66,6 +72,12 @@ npm run seed:run
 
 npm run start:dev
 ```
+
+## Links
+
+- Swagger: http://localhost:3000/docs
+- Adminer (client for DB): http://localhost:8080
+- Maildev: http://localhost:1080
 
 ## Database utils
 
@@ -99,7 +111,7 @@ Run seed
 npm run seed:run
 ```
 
-## Test
+## Tests
 
 ```bash
 # unit tests
@@ -109,7 +121,7 @@ npm run test
 npm run test:e2e
 ```
 
-## Test in Docker
+## Tests in Docker
 
 ```bash
 docker-compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker-compose -p ci rm -svf
