@@ -84,7 +84,7 @@
     "@typescript-eslint/parser": "5.4.0",
     "aws-sdk": "2.1033.0",
     "env-cmd": "10.1.0",
-    "eslint": "8.2.0",
+    "eslint": "8.3.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-prettier": "4.0.0",
