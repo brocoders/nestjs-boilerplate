@@ -45,7 +45,7 @@
     "@nestjsx/crud-typeorm": "4.6.2",
     "apple-signin-auth": "1.5.1",
     "bcryptjs": "2.4.3",
-    "class-transformer": "0.3.1",
+    "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
     "fb": "2.0.0",
     "google-auth-library": "7.10.2",
