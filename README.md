@@ -33,7 +33,7 @@ NestJS REST API boilerplate for typical project
 ## Quick run
 
 ```bash
-git clone --depth 1 https://github.com/Shchepotin/nestjs-boilerplate.git my-app
+git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
 cd my-app/
 cp env-example .env
 docker-compose up -d
@@ -48,7 +48,7 @@ docker-compose logs
 ## Comfortable development
 
 ```bash
-git clone --depth 1 https://github.com/Shchepotin/nestjs-boilerplate.git my-app
+git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
 cd my-app/
 cp env-example .env
 ```
