@@ -37,7 +37,7 @@
     "@nestjs/config": "1.1.6",
     "@nestjs/core": "8.2.5",
     "@nestjs/jwt": "8.0.0",
-    "@nestjs/passport": "8.0.1",
+    "@nestjs/passport": "8.1.0",
     "@nestjs/platform-express": "8.2.5",
     "@nestjs/swagger": "5.1.5",
     "@nestjs/typeorm": "8.0.2",
