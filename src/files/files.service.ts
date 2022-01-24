@@ -10,9 +10,11 @@ export class FilesService {
     private readonly configService: ConfigService,
     @InjectRepository(FileEntity)
     private fileRepository: Repository<FileEntity>,
-  ) {}
+  ) { }
 
   async uploadFile(file): Promise<FileEntity> {
+    console.log(file);
+
     if (!file) {
       throw new HttpException(
         {
@@ -28,6 +30,7 @@ export class FilesService {
     const path = {
       local: `/${this.configService.get('app.apiPrefix')}/v1/${file.path}`,
       s3: file.location,
+      cloudinary: file.path
     };
 
     return this.fileRepository.save(
