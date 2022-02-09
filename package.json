@@ -60,7 +60,7 @@
     "pg": "8.7.3",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "rxjs": "7.5.3",
+    "rxjs": "7.5.4",
     "swagger-ui-express": "4.3.0",
     "twitter": "1.7.1",
     "typeorm": "0.2.41",
