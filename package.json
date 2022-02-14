@@ -67,7 +67,7 @@
     "typeorm-seeding": "1.6.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "8.2.0",
+    "@nestjs/cli": "8.2.1",
     "@nestjs/schematics": "8.0.6",
     "@nestjs/testing": "8.3.0",
     "@types/bcryptjs": "2.4.2",
