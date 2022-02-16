@@ -32,7 +32,7 @@
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "1.6.0",
+    "@nestjs-modules/mailer": "1.6.1",
     "@nestjs/common": "8.3.1",
     "@nestjs/config": "1.2.0",
     "@nestjs/core": "8.3.1",
