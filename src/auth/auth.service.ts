@@ -1,19 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/user.entity';
+import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { AuthEmailLoginDto } from './dtos/auth-email-login.dto';
-import { AuthUpdateDto } from './dtos/auth-update.dto';
+import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as crypto from 'crypto';
 import { plainToClass } from 'class-transformer';
-import { Status } from 'src/statuses/status.entity';
-import { Role } from 'src/roles/role.entity';
+import { Status } from 'src/statuses/entities/status.entity';
+import { Role } from 'src/roles/entities/role.entity';
 import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from 'src/social/interfaces/social.interface';
-import { AuthRegisterLoginDto } from './dtos/auth-register-login.dto';
+import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { UsersService } from 'src/users/users.service';
 import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
@@ -31,10 +31,8 @@ export class AuthService {
     loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
   ): Promise<{ token: string; user: User }> {
-    const user = await this.usersService.findOneEntity({
-      where: {
-        email: loginDto.email,
-      },
+    const user = await this.usersService.findOne({
+      email: loginDto.email,
     });
 
     if (
@@ -99,24 +97,20 @@ export class AuthService {
     let user: User;
     const socialEmail = socialData.email?.toLowerCase();
 
-    const userByEmail = await this.usersService.findOneEntity({
-      where: {
-        email: socialEmail,
-      },
+    const userByEmail = await this.usersService.findOne({
+      email: socialEmail,
     });
 
-    user = await this.usersService.findOneEntity({
-      where: {
-        socialId: socialData.id,
-        provider: authProvider,
-      },
+    user = await this.usersService.findOne({
+      socialId: socialData.id,
+      provider: authProvider,
     });
 
     if (user) {
       if (socialEmail && !userByEmail) {
         user.email = socialEmail;
       }
-      await this.usersService.saveEntity(user);
+      await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
     } else {
@@ -127,7 +121,7 @@ export class AuthService {
         id: StatusEnum.active,
       });
 
-      user = await this.usersService.saveEntity({
+      user = await this.usersService.create({
         email: socialEmail,
         firstName: socialData.firstName,
         lastName: socialData.lastName,
@@ -137,10 +131,8 @@ export class AuthService {
         status,
       });
 
-      user = await this.usersService.findOneEntity({
-        where: {
-          id: user.id,
-        },
+      user = await this.usersService.findOne({
+        id: user.id,
       });
     }
 
@@ -161,15 +153,15 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    const user = await this.usersService.saveEntity({
+    const user = await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
         id: RoleEnum.user,
-      },
+      } as Role,
       status: {
         id: StatusEnum.inactive,
-      },
+      } as Status,
       hash,
     });
 
@@ -182,10 +174,8 @@ export class AuthService {
   }
 
   async confirmEmail(hash: string): Promise<void> {
-    const user = await this.usersService.findOneEntity({
-      where: {
-        hash,
-      },
+    const user = await this.usersService.findOne({
+      hash,
     });
 
     if (!user) {
@@ -206,10 +196,8 @@ export class AuthService {
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.usersService.findOneEntity({
-      where: {
-        email,
-      },
+    const user = await this.usersService.findOne({
+      email,
     });
 
     if (!user) {
@@ -227,7 +215,7 @@ export class AuthService {
         .createHash('sha256')
         .update(randomStringGenerator())
         .digest('hex');
-      await this.forgotService.saveEntity({
+      await this.forgotService.create({
         hash,
         user,
       });
@@ -242,7 +230,7 @@ export class AuthService {
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
-    const forgot = await this.forgotService.findOneEntity({
+    const forgot = await this.forgotService.findOne({
       where: {
         hash,
       },
@@ -267,20 +255,16 @@ export class AuthService {
   }
 
   async me(user: User): Promise<User> {
-    return this.usersService.findOneEntity({
-      where: {
-        id: user.id,
-      },
+    return this.usersService.findOne({
+      id: user.id,
     });
   }
 
   async update(user: User, userDto: AuthUpdateDto): Promise<User> {
     if (userDto.password) {
       if (userDto.oldPassword) {
-        const currentUser = await this.usersService.findOneEntity({
-          where: {
-            id: user.id,
-          },
+        const currentUser = await this.usersService.findOne({
+          id: user.id,
         });
 
         const isValidOldPassword = await bcrypt.compare(
@@ -312,15 +296,10 @@ export class AuthService {
       }
     }
 
-    await this.usersService.saveEntity({
-      id: user.id,
-      ...userDto,
-    });
+    await this.usersService.update(user.id, userDto);
 
-    return this.usersService.findOneEntity({
-      where: {
-        id: user.id,
-      },
+    return this.usersService.findOne({
+      id: user.id,
     });
   }
 

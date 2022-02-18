@@ -41,11 +41,9 @@
     "@nestjs/platform-express": "8.3.1",
     "@nestjs/swagger": "5.2.0",
     "@nestjs/typeorm": "8.0.3",
-    "@nestjsx/crud": "4.6.2",
-    "@nestjsx/crud-typeorm": "4.6.2",
     "apple-signin-auth": "1.5.1",
     "bcryptjs": "2.4.3",
-    "class-transformer": "0.3.1",
+    "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
     "fb": "2.0.0",
     "google-auth-library": "7.12.0",
@@ -115,6 +113,6 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   }
 }

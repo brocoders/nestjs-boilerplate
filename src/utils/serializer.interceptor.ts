@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import userResponseSerializer from 'src/users/user-response.serializer';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import deepMapObject from './deep-map-object';
 
 @Injectable()
