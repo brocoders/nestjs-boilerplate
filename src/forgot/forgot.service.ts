@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial } from 'src/utils/types/deep-partial.type';
 import { FindOptions } from 'src/utils/types/find-options.type';
 import { Repository } from 'typeorm';
-import { Forgot } from './forgot.entity';
+import { Forgot } from './entities/forgot.entity';
 
 @Injectable()
 export class ForgotService {
@@ -12,19 +12,19 @@ export class ForgotService {
     private forgotRepository: Repository<Forgot>,
   ) {}
 
-  async findOneEntity(options: FindOptions<Forgot>) {
+  async findOne(options: FindOptions<Forgot>) {
     return this.forgotRepository.findOne({
       where: options.where,
     });
   }
 
-  async findManyEntities(options: FindOptions<Forgot>) {
+  async findMany(options: FindOptions<Forgot>) {
     return this.forgotRepository.find({
       where: options.where,
     });
   }
 
-  async saveEntity(data: DeepPartial<Forgot>) {
+  async create(data: DeepPartial<Forgot>) {
     return this.forgotRepository.save(this.forgotRepository.create(data));
   }
 

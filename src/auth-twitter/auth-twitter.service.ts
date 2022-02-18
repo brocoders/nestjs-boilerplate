@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Twitter from 'twitter';
 import { SocialInterface } from '../social/interfaces/social.interface';
-import { AuthTwitterLoginDto } from './dtos/auth-twitter-login.dto';
+import { AuthTwitterLoginDto } from './dto/auth-twitter-login.dto';
 
 @Injectable()
 export class AuthTwitterService {

@@ -1,34 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EntityCondition } from 'src/utils/types/entity-condition.type';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { Repository } from 'typeorm';
-import { FindOptions } from 'src/utils/types/find-options.type';
-import { DeepPartial } from 'src/utils/types/deep-partial.type';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
-export class UsersService extends TypeOrmCrudService<User> {
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {
-    super(usersRepository);
+  ) {}
+
+  create(createProfileDto: CreateUserDto) {
+    return this.usersRepository.save(
+      this.usersRepository.create(createProfileDto),
+    );
   }
 
-  async findOneEntity(options: FindOptions<User>) {
-    return this.usersRepository.findOne({
-      where: options.where,
-    });
-  }
-
-  async findManyEntities(options: FindOptions<User>) {
+  findManyWithPagination(paginationOptions: IPaginationOptions) {
     return this.usersRepository.find({
-      where: options.where,
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
     });
   }
 
-  async saveEntity(data: DeepPartial<User>) {
-    return this.usersRepository.save(this.usersRepository.create(data));
+  findOne(fields: EntityCondition<User>) {
+    return this.usersRepository.findOne({
+      where: fields,
+    });
+  }
+
+  update(id: number, updateProfileDto: UpdateUserDto) {
+    return this.usersRepository.save(
+      this.usersRepository.create({
+        id,
+        ...updateProfileDto,
+      }),
+    );
   }
 
   async softDelete(id: number): Promise<void> {
