@@ -59,9 +59,10 @@
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.5.4",
+    "source-map-support": "^0.5.21",
     "swagger-ui-express": "4.3.0",
     "twitter": "1.7.1",
-    "typeorm": "0.2.41",
+    "typeorm": "0.2.43",
     "typeorm-seeding": "1.6.1"
   },
   "devDependencies": {
@@ -73,7 +74,7 @@
     "@types/facebook-js-sdk": "3.3.5",
     "@types/jest": "27.4.0",
     "@types/multer": "1.4.7",
-    "@types/node": "15.6.1",
+    "@types/node": "16.0.0",
     "@types/passport-anonymous": "1.0.3",
     "@types/passport-jwt": "3.0.6",
     "@types/supertest": "2.0.11",
@@ -105,14 +106,17 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".spec.ts$",
+    "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "16.x"
+    "node": ">=14.0.0"
   }
 }
