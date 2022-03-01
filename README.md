@@ -1,4 +1,4 @@
-# NestJS REST API boilerplate
+# NestJS REST API boilerplate 🇺🇦
 
 ## Description
 
