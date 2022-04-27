@@ -19,7 +19,7 @@ services:
       - 1025
 
   redis:
-    image: redis:6-alpine
+    image: redis:7-alpine
     expose:
       - 6379
     depends_on:
