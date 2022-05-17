@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "8.2.5",
-    "@nestjs/schematics": "8.0.10",
+    "@nestjs/schematics": "8.0.11",
     "@nestjs/testing": "8.4.4",
     "@types/bcryptjs": "2.4.2",
     "@types/express": "4.17.13",
