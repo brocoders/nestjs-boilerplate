@@ -40,7 +40,7 @@
     "@nestjs/passport": "8.2.1",
     "@nestjs/platform-express": "8.4.5",
     "@nestjs/swagger": "5.2.1",
-    "@nestjs/typeorm": "8.0.3",
+    "@nestjs/typeorm": "8.1.4",
     "apple-signin-auth": "1.5.1",
     "bcryptjs": "2.4.3",
     "class-transformer": "0.5.1",
