@@ -62,7 +62,7 @@
     "source-map-support": "0.5.21",
     "swagger-ui-express": "4.3.0",
     "twitter": "1.7.1",
-    "typeorm": "0.2.43",
+    "typeorm": "0.3.7",
     "typeorm-seeding": "1.6.1"
   },
   "devDependencies": {
