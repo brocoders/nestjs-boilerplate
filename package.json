@@ -86,7 +86,7 @@
     "husky": "7.0.4",
     "is-ci": "3.0.1",
     "jest": "28.1.0",
-    "prettier": "2.6.2",
+    "prettier": "2.7.1",
     "supertest": "6.2.4",
     "ts-jest": "28.0.1",
     "ts-loader": "9.3.1",
