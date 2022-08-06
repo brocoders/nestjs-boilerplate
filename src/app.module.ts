@@ -20,7 +20,6 @@ import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
-import { I18nJsonParser } from 'nestjs-i18n/dist/parsers/i18n.json.parser';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { MailConfigService } from './mail/mail-config.service';
@@ -59,18 +58,19 @@ import { DataSource } from 'typeorm';
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         fallbackLanguage: configService.get('app.fallbackLanguage'),
-        parserOptions: {
-          path: path.join(
-            configService.get('app.workingDirectory'),
-            'src',
-            'i18n',
-            'translations',
-          ),
-        },
+        loaderOptions: { path: path.join(__dirname, '/i18n/'), watch: true },
       }),
-      parser: I18nJsonParser,
+      resolvers: [
+        {
+          use: HeaderResolver,
+          useFactory: (configService: ConfigService) => {
+            return configService.get('app.headerLanguage');
+          },
+          inject: [ConfigService],
+        },
+      ],
+      imports: [ConfigModule],
       inject: [ConfigService],
-      resolvers: [new HeaderResolver(['x-custom-lang'])],
     }),
     UsersModule,
     FilesModule,
