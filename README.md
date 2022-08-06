@@ -17,7 +17,7 @@ NestJS REST API boilerplate for typical project
 ## Features
 
 - [x] Database ([typeorm](https://www.npmjs.com/package/typeorm)).
-- [x] Seeding ([typeorm-seeding](https://www.npmjs.com/package/typeorm-seeding)).
+- [x] Seeding.
 - [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
 - [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)).
 - [x] Sign in and sign up via email.
@@ -88,7 +88,7 @@ If you want to automatically update dependencies, you can connect [Renovate](htt
 Generate migration
 
 ```bash
-npm run migration:generate -- CreateNameTable
+npm run migration:generate -- src/database/migrations/CreateNameTable 
 ```
 
 Run migration

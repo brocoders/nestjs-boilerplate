@@ -27,6 +27,7 @@ import { MailConfigService } from './mail/mail-config.service';
 import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -47,6 +48,10 @@ import { HomeModule } from './home/home.module';
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options) => {
+        const dataSource = await new DataSource(options).initialize();
+        return dataSource;
+      },
     }),
     MailerModule.forRootAsync({
       useClass: MailConfigService,

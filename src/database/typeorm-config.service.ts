@@ -21,8 +21,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       logging: this.configService.get('app.nodeEnv') !== 'production',
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      seeds: [__dirname + '/seeds/**/*{.ts,.js}'],
-      factories: [__dirname + '/factories/**/*{.ts,.js}'],
       cli: {
         entitiesDir: 'src',
         migrationsDir: 'src/database/migrations',
@@ -37,15 +35,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
               rejectUnauthorized: this.configService.get(
                 'database.rejectUnauthorized',
               ),
-              ca: this.configService.get('database.ca')
-                ? this.configService.get('database.ca')
-                : undefined,
-              key: this.configService.get('database.key')
-                ? this.configService.get('database.key')
-                : undefined,
-              cert: this.configService.get('database.cert')
-                ? this.configService.get('database.cert')
-                : undefined,
+              ca: this.configService.get('database.ca') ?? undefined,
+              key: this.configService.get('database.key') ?? undefined,
+              cert: this.configService.get('database.cert') ?? undefined,
             }
           : undefined,
       },
