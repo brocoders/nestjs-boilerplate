@@ -12,13 +12,13 @@ import { Injectable } from '@nestjs/common';
 export class IsExist implements ValidatorConstraintInterface {
   constructor(
     @InjectDataSource()
-    private repository: DataSource,
+    private dataSource: DataSource,
   ) {}
 
   async validate(value: string, validationArguments: ValidationArguments) {
     const repository = validationArguments.constraints[0];
     const pathToProperty = validationArguments.constraints[1];
-    const entity: unknown = await this.repository
+    const entity: unknown = await this.dataSource
       .getRepository(repository)
       .findOne({
         where: {

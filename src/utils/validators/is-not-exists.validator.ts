@@ -18,13 +18,13 @@ type ValidationEntity =
 export class IsNotExist implements ValidatorConstraintInterface {
   constructor(
     @InjectDataSource()
-    private repository: DataSource,
+    private dataSource: DataSource,
   ) {}
 
   async validate(value: string, validationArguments: ValidationArguments) {
     const repository = validationArguments.constraints[0] as string;
     const currentValue = validationArguments.object as ValidationEntity;
-    const entity = (await this.repository.getRepository(repository).findOne({
+    const entity = (await this.dataSource.getRepository(repository).findOne({
       where: {
         [validationArguments.property]: value,
       },
