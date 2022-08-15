@@ -70,7 +70,7 @@
     "@types/facebook-js-sdk": "3.3.5",
     "@types/jest": "28.1.6",
     "@types/multer": "1.4.7",
-    "@types/node": "16.11.48",
+    "@types/node": "16.11.49",
     "@types/passport-anonymous": "1.0.3",
     "@types/passport-jwt": "3.0.6",
     "@types/supertest": "2.0.12",
