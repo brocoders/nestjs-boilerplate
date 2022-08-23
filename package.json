@@ -52,7 +52,7 @@
     "passport": "0.6.0",
     "passport-anonymous": "1.0.1",
     "passport-jwt": "4.0.0",
-    "pg": "8.7.3",
+    "pg": "8.8.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.5.6",
