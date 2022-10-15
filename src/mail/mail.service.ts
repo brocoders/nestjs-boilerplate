@@ -1,14 +1,14 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { I18n, I18nService } from 'nestjs-i18n';
+import { I18n, I18nRequestScopeService } from 'nestjs-i18n';
 import { MailData } from './interfaces/mail-data.interface';
 
 @Injectable()
 export class MailService {
   constructor(
     @I18n()
-    private i18n: I18nService,
+    private i18n: I18nRequestScopeService,
     private mailerService: MailerService,
     private configService: ConfigService,
   ) {}

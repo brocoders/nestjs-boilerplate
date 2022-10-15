@@ -64,7 +64,7 @@ import { DataSource } from 'typeorm';
         {
           use: HeaderResolver,
           useFactory: (configService: ConfigService) => {
-            return configService.get('app.headerLanguage');
+            return [configService.get('app.headerLanguage')];
           },
           inject: [ConfigService],
         },
