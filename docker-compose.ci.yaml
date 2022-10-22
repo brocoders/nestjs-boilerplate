@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   postgres:
     image: postgres:15.0
@@ -13,7 +11,7 @@ services:
   maildev:
     build:
       context: .
-      dockerfile: Dockerfile.maildev
+      dockerfile: maildev.Dockerfile
     expose:
       - 1080
       - 1025
@@ -22,12 +20,8 @@ services:
     image: redis:7-alpine
     expose:
       - 6379
-    depends_on:
-      - postgres
 
   api:
     build:
       context: .
-      dockerfile: Dockerfile.e2e
-    depends_on:
-      - postgres
+      dockerfile: e2e.Dockerfile

@@ -36,13 +36,13 @@ NestJS REST API boilerplate for typical project
 git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
 cd my-app/
 cp env-example .env
-docker-compose up -d
+docker compose up -d
 ```
 
 For check status run
 
 ```bash
-docker-compose logs
+docker compose logs
 ```
 
 ## Comfortable development
@@ -60,7 +60,7 @@ Change `MAIL_HOST=maildev` to `MAIL_HOST=localhost`
 Run additional container:
 
 ```bash
-docker-compose up -d postgres adminer maildev redis
+docker compose up -d postgres adminer maildev redis
 ```
 
 ```bash
@@ -128,7 +128,7 @@ npm run test:e2e
 ## Tests in Docker
 
 ```bash
-docker-compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker-compose -p ci rm -svf
+docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
 ```
 
 ## Test benchmarking
