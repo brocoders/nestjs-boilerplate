@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   postgres:
     image: postgres:15.0
@@ -15,7 +13,7 @@ services:
   maildev:
     build:
       context: .
-      dockerfile: Dockerfile.maildev
+      dockerfile: maildev.Dockerfile
     ports:
       - ${MAIL_CLIENT_PORT}:1080
       - ${MAIL_PORT}:1025
@@ -30,8 +28,6 @@ services:
     image: redis:7-alpine
     ports:
       - 6379:6379
-    depends_on:
-      - postgres
 
   api:
     build:
@@ -39,5 +35,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
-    depends_on:
-      - postgres
