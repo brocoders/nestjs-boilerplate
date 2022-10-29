@@ -16,4 +16,4 @@ WORKDIR /usr/src/app
 RUN cp env-example .env
 RUN npm run build
 
-CMD ["/bin/bash", "/opt/startup.ci.sh"]
+CMD ["/opt/startup.ci.sh"]
