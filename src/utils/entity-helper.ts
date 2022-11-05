@@ -1,3 +1,4 @@
+import { instanceToPlain } from 'class-transformer';
 import { AfterLoad, BaseEntity } from 'typeorm';
 
 export class EntityHelper extends BaseEntity {
@@ -6,5 +7,9 @@ export class EntityHelper extends BaseEntity {
   @AfterLoad()
   setEntityName() {
     this.__entity = this.constructor.name;
+  }
+
+  toJSON() {
+    return instanceToPlain(this);
   }
 }

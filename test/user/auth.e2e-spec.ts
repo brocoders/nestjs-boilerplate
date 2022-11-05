@@ -22,6 +22,9 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+        expect(body.hash).not.toBeDefined();
+        expect(body.password).not.toBeDefined();
+        expect(body.previousPassword).not.toBeDefined();
       });
   });
 

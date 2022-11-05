@@ -17,6 +17,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import * as bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends EntityHelper {
@@ -27,8 +28,10 @@ export class User extends EntityHelper {
   email: string | null;
 
   @Column({ nullable: true })
+  @Exclude({ toPlainOnly: true })
   password: string;
 
+  @Exclude({ toPlainOnly: true })
   public previousPassword: string;
 
   @AfterLoad()
@@ -77,6 +80,7 @@ export class User extends EntityHelper {
 
   @Column({ nullable: true })
   @Index()
+  @Exclude({ toPlainOnly: true })
   hash: string | null;
 
   @CreateDateColumn()
