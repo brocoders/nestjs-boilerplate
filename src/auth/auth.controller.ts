@@ -19,6 +19,7 @@ import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
+import { instanceToPlain } from 'class-transformer';
 
 @ApiTags('Auth')
 @Controller({
@@ -72,7 +73,9 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   public async me(@Request() request) {
-    return this.service.me(request.user);
+    return instanceToPlain(await this.service.me(request.user), {
+      groups: ['me'],
+    });
   }
 
   @ApiBearerAuth()

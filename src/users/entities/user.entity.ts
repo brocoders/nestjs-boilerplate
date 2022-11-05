@@ -17,7 +17,7 @@ import { FileEntity } from '../../files/entities/file.entity';
 import * as bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
 export class User extends EntityHelper {
@@ -49,6 +49,7 @@ export class User extends EntityHelper {
   }
 
   @Column({ default: AuthProvidersEnum.email })
+  @Expose({ groups: ['me'] })
   provider: string;
 
   @Index()
