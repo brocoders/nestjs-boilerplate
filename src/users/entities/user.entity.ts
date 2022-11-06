@@ -49,7 +49,7 @@ export class User extends EntityHelper {
   }
 
   @Column({ default: AuthProvidersEnum.email })
-  @Expose({ groups: ['me'] })
+  @Expose({ groups: ['exposeProvider'] })
   provider: string;
 
   @Index()
