@@ -1,4 +1,4 @@
-FROM node:16.18.1
+FROM node:19.1.0
 
 RUN npm i -g maildev@2.0.5
 
