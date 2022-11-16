@@ -9,6 +9,9 @@ import {
   UseGuards,
   Patch,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -25,6 +28,7 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
   path: 'auth',
   version: '1',
 })
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(public service: AuthService) {}
 
@@ -68,6 +72,9 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
+  @SerializeOptions({
+    groups: ['exposeProvider'],
+  })
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)

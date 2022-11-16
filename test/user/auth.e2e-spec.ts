@@ -22,6 +22,10 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+        expect(body.user.provider).not.toBeDefined();
+        expect(body.user.hash).not.toBeDefined();
+        expect(body.user.password).not.toBeDefined();
+        expect(body.user.previousPassword).not.toBeDefined();
       });
   });
 
@@ -105,6 +109,26 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+      });
+  });
+
+  it('Confirmed user retrieve profile: /api/v1/auth/me (GET)', async () => {
+    const newUserApiToken = await request(app)
+      .post('/api/v1/auth/email/login')
+      .send({ email: newUserEmail, password: newUserPassword })
+      .then(({ body }) => body.token);
+
+    await request(app)
+      .get('/api/v1/auth/me')
+      .auth(newUserApiToken, {
+        type: 'bearer',
+      })
+      .send()
+      .expect(({ body }) => {
+        expect(body.provider).toBeDefined();
+        expect(body.hash).not.toBeDefined();
+        expect(body.password).not.toBeDefined();
+        expect(body.previousPassword).not.toBeDefined();
       });
   });
 
