@@ -57,7 +57,7 @@
     "rimraf": "3.0.2",
     "rxjs": "7.5.7",
     "source-map-support": "0.5.21",
-    "swagger-ui-express": "4.5.0",
+    "swagger-ui-express": "4.6.0",
     "twitter": "1.7.1",
     "typeorm": "0.3.10"
   },
