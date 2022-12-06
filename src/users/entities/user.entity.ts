@@ -25,6 +25,7 @@ export class User extends EntityHelper {
   id: number;
 
   @Column({ unique: true, nullable: true })
+  @Expose({ groups: ['me', 'admin'] })
   email: string | null;
 
   @Column({ nullable: true })
@@ -49,11 +50,12 @@ export class User extends EntityHelper {
   }
 
   @Column({ default: AuthProvidersEnum.email })
-  @Expose({ groups: ['exposeProvider'] })
+  @Expose({ groups: ['me', 'admin'] })
   provider: string;
 
   @Index()
   @Column({ nullable: true })
+  @Expose({ groups: ['me', 'admin'] })
   socialId: string | null;
 
   @Index()

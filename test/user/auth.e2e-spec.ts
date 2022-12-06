@@ -22,7 +22,7 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
-        expect(body.user.provider).not.toBeDefined();
+        expect(body.user.email).toBeDefined();
         expect(body.user.hash).not.toBeDefined();
         expect(body.user.password).not.toBeDefined();
         expect(body.user.previousPassword).not.toBeDefined();
@@ -109,6 +109,7 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+        expect(body.user.email).toBeDefined();
       });
   });
 
@@ -126,6 +127,7 @@ describe('Auth user (e2e)', () => {
       .send()
       .expect(({ body }) => {
         expect(body.provider).toBeDefined();
+        expect(body.email).toBeDefined();
         expect(body.hash).not.toBeDefined();
         expect(body.password).not.toBeDefined();
         expect(body.previousPassword).not.toBeDefined();

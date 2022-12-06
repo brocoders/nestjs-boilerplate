@@ -9,8 +9,6 @@ import {
   UseGuards,
   Patch,
   Delete,
-  UseInterceptors,
-  ClassSerializerInterceptor,
   SerializeOptions,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -28,16 +26,21 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
   path: 'auth',
   version: '1',
 })
-@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(public service: AuthService) {}
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Post('email/login')
   @HttpCode(HttpStatus.OK)
   public async login(@Body() loginDto: AuthEmailLoginDto) {
     return this.service.validateLogin(loginDto, false);
   }
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Post('admin/email/login')
   @HttpCode(HttpStatus.OK)
   public async adminLogin(@Body() loginDTO: AuthEmailLoginDto) {
@@ -73,7 +76,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @SerializeOptions({
-    groups: ['exposeProvider'],
+    groups: ['me'],
   })
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
@@ -83,6 +86,9 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)

@@ -4,6 +4,8 @@
 
 NestJS REST API boilerplate for typical project
 
+Full documentation here: https://brocoders.github.io/nestjs-boilerplate/
+
 ## Table of Contents
 
 - [Features](#features)
