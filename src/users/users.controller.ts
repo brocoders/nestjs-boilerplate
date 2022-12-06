@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   HttpStatus,
   HttpCode,
+  SerializeOptions,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,12 +35,18 @@ import { infinityPagination } from 'src/utils/infinity-pagination';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateUserDto) {
     return this.usersService.create(createProfileDto);
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
@@ -59,12 +66,18 @@ export class UsersController {
     );
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne({ id: +id });
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: number, @Body() updateProfileDto: UpdateUserDto) {

@@ -11,6 +11,7 @@ describe('Auth admin (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+        expect(body.user.email).toBeDefined();
       });
   });
 

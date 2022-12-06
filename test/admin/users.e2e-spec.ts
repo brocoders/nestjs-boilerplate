@@ -101,4 +101,21 @@ describe('Users admin (e2e)', () => {
         expect(body.token).toBeDefined();
       });
   });
+
+  it('Get list of users by admin: /api/v1/users (GET)', () => {
+    return request(app)
+      .get(`/api/v1/users`)
+      .auth(apiToken, {
+        type: 'bearer',
+      })
+      .expect(200)
+      .send()
+      .expect(({ body }) => {
+        expect(body.data[0].provider).toBeDefined();
+        expect(body.data[0].email).toBeDefined();
+        expect(body.data[0].hash).not.toBeDefined();
+        expect(body.data[0].password).not.toBeDefined();
+        expect(body.data[0].previousPassword).not.toBeDefined();
+      });
+  });
 });
