@@ -1,5 +1,6 @@
-FROM node:16.19.1
+FROM node:18.14.1-alpine
 
+RUN apk add --no-cache bash
 RUN npm i -g @nestjs/cli typescript ts-node
 
 COPY package*.json /tmp/app/

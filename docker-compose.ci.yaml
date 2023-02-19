@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15.2
+    image: postgres:15.2-alpine
     expose:
       - 5432
     environment:
@@ -16,10 +16,11 @@ services:
       - 1080
       - 1025
 
-  redis:
-    image: redis:7-alpine
-    expose:
-      - 6379
+  # Uncomment to use redis
+  # redis:
+  #   image: redis:7-alpine
+  #   expose:
+  #     - 6379
 
   api:
     build:
