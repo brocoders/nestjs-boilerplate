@@ -62,7 +62,7 @@ Change `MAIL_HOST=maildev` to `MAIL_HOST=localhost`
 Run additional container:
 
 ```bash
-docker compose up -d postgres adminer maildev redis
+docker compose up -d postgres adminer maildev
 ```
 
 ```bash
