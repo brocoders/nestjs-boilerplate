@@ -112,6 +112,5 @@ For auth with external services or social networks you need:
 
 ---
 
+Previous: [Working with database](database.md)
 Next: [Serialization](serialization.md)
-
-GitHub: https://github.com/brocoders/nestjs-boilerplate

@@ -9,7 +9,4 @@
 - [Working with database](database.md)
 - [Auth](auth.md)
 - [Serialization](serialization.md)
-
----
-
-GitHub: https://github.com/brocoders/nestjs-boilerplate
+- [File uploading](file-uploading.md)

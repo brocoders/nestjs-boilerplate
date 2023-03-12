@@ -12,7 +12,9 @@ export class FilesService {
     private fileRepository: Repository<FileEntity>,
   ) {}
 
-  async uploadFile(file): Promise<FileEntity> {
+  async uploadFile(
+    file: Express.Multer.File | Express.MulterS3.File,
+  ): Promise<FileEntity> {
     if (!file) {
       throw new HttpException(
         {
@@ -27,7 +29,7 @@ export class FilesService {
 
     const path = {
       local: `/${this.configService.get('app.apiPrefix')}/v1/${file.path}`,
-      s3: file.location,
+      s3: (file as Express.MulterS3.File).location,
     };
 
     return this.fileRepository.save(

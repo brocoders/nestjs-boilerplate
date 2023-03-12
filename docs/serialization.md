@@ -90,4 +90,5 @@ export class User extends EntityHelper {
 
 ---
 
-GitHub: https://github.com/brocoders/nestjs-boilerplate
+Previous: [Auth](auth.md)
+Next: [File uploading](file-uploading.md)
