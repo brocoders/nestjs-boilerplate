@@ -190,4 +190,5 @@ You can think of this parameter as how many concurrent database connections your
 ---
 
 Previous: [Installing and Running](installing-and-running.md)
+
 Next: [Auth](auth.md)

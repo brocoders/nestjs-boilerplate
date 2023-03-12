@@ -1,5 +1,18 @@
 # Auth
 
+## Table of Contents
+
+- [General info](#general-info)
+- [Configure Auth](#configure-auth)
+- [Auth via Apple](#auth-via-apple)
+- [Auth via Facebook](#auth-via-facebook)
+- [Auth via Google](#auth-via-google)
+- [Auth via Twitter](#auth-via-twitter)
+
+---
+
+## General info
+
 By default boilerplate used sign in and sign up via email and password.
 
 ```mermaid
@@ -12,6 +25,8 @@ sequenceDiagram
     B->>A: 3. Get a JWT token
     A->>B: 4. Make any requests using a JWT token
 ```
+
+https://user-images.githubusercontent.com/6001723/224566194-1c1f4e98-5691-4703-b30e-92f99ec5d929.mp4
 
 Also you can sign up via another external services or social networks like Apple, Facebook, Google, and Twitter.
 
@@ -44,16 +59,6 @@ For auth with external services or social networks you need:
     ```
 
 1. Make any requests using a JWT token
-
----
-
-## Table of Contents
-
-- [Configure Auth](#configure-auth)
-- [Auth via Apple](#auth-via-apple)
-- [Auth via Facebook](#auth-via-facebook)
-- [Auth via Google](#auth-via-google)
-- [Auth via Twitter](#auth-via-twitter)
 
 ---
 
@@ -113,4 +118,5 @@ For auth with external services or social networks you need:
 ---
 
 Previous: [Working with database](database.md)
+
 Next: [Serialization](serialization.md)

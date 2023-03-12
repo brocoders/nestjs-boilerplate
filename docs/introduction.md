@@ -18,6 +18,7 @@
 
 ---
 
-Previous: [Main](index.md)
+Previous: [Main](readme.md)
+
 Next: [Installing and Running](installing-and-running.md)
 

@@ -104,5 +104,5 @@ If you want quick run your app, you can use following commands:
 ---
 
 Previous: [Introduction](introduction.md)
-Next: [Working with database](database.md)
 
+Next: [Working with database](database.md)

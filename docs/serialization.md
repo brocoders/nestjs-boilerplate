@@ -91,4 +91,5 @@ export class User extends EntityHelper {
 ---
 
 Previous: [Auth](auth.md)
+
 Next: [File uploading](file-uploading.md)
