@@ -4,7 +4,7 @@
 
 NestJS REST API boilerplate for typical project
 
-[Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/index.md)
+[Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/readme.md)
 
 ## Table of Contents
 
