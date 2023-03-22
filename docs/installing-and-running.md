@@ -31,7 +31,7 @@
 1. Run additional container:
 
     ```bash
-    docker compose up -d postgres adminer maildev redis
+    docker compose up -d postgres adminer maildev
     ```
 
 1. Install dependency
