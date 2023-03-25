@@ -11,6 +11,9 @@ import { UserSeedModule } from './user/user-seed.module';
 
 @Module({
   imports: [
+    RoleSeedModule,
+    StatusSeedModule,
+    UserSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
@@ -23,9 +26,6 @@ import { UserSeedModule } from './user/user-seed.module';
         return dataSource;
       },
     }),
-    RoleSeedModule,
-    StatusSeedModule,
-    UserSeedModule,
   ],
 })
 export class SeedModule {}
