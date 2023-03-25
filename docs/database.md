@@ -79,88 +79,9 @@ npm run schema:drop
 
 ### Creating seeds
 
-1. Go to `src/database/seeds` and create directory for your seed. For example `post`
-1. Create 2 files: module and service. For example: `post-seed.module.ts` and `post-seed.service.ts`:
-
-    ```ts
-    // /src/database/seeds/post/post-seed.module.ts
-
-    import { Module } from '@nestjs/common';
-    import { TypeOrmModule } from '@nestjs/typeorm';
-    import { Post } from 'src/posts/entities/post.entity';
-    import { PostSeedService } from './post-seed.service';
-
-    @Module({
-      imports: [TypeOrmModule.forFeature([Post])],
-      providers: [PostSeedService],
-      exports: [PostSeedService],
-    })
-    export class PostSeedModule {}
-    ```
-
-    ```ts
-    // /src/database/seeds/post/post-seed.service.ts
-
-    import { Injectable } from '@nestjs/common';
-    import { InjectRepository } from '@nestjs/typeorm';
-    import { Post } from 'src/posts/entities/post.entity';
-    import { Repository } from 'typeorm';
-
-    @Injectable()
-    export class PostSeedService {
-      constructor(
-        @InjectRepository(Post)
-        private repository: Repository<Post>,
-      ) {}
-
-      async run() {
-        const count = await this.repository.count();
-
-        if (count === 0) {
-          await this.repository.save(
-            this.repository.create({
-              title: 'Hello',
-              body: 'World',
-            }),
-          );
-        }
-      }
-    }
-    ```
-
-1. Go to `src/database/seeds/seed.module.ts` and add your module to `imports`. For example:
-
-    ```ts
-    // /src/database/seeds/seed.module.ts
-
-    // Some code here...
-    import { PostSeedModule } from './post/post-seed.module';
-
-    @Module({
-      imports: [
-        // Some code here...
-        PostSeedModule,
-      ],
-    })
-    export class SeedModule {}
-    ```
-
-1. Go to `src/database/seeds/run-seed.ts` and invoke method `run` from your service in `runSeed` function. For example:
-
-    ```ts
-    // /src/database/seeds/run-seed.ts
-
-    // Some code here...
-    import { PostSeedService } from './post/post-seed.service';
-
-    const runSeed = async () => {
-      // Some code here...
-      await app.get(PostSeedService).run();
-      // Some code here...
-    };
-    // Some code here...
-    ```
-
+1. Create seed file with `npm run seed:create -- --name=Post`. Where `Post` is name of entity.
+1. Go to `src/database/seeds/post/post-seed.service.ts`.
+1. In `run` method extend your logic.
 1. Run [npm run seed:run](#run-seed)
 
 ### Run seed
