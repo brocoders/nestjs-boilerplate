@@ -23,6 +23,8 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { infinityPagination } from 'src/utils/infinity-pagination';
+import { User } from './entities/user.entity';
+import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
@@ -40,7 +42,7 @@ export class UsersController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto) {
+  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createProfileDto);
   }
 
@@ -52,7 +54,7 @@ export class UsersController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-  ) {
+  ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
     }
@@ -71,7 +73,7 @@ export class UsersController {
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne({ id: +id });
   }
 
@@ -80,12 +82,16 @@ export class UsersController {
   })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updateProfileDto: UpdateUserDto) {
+  update(
+    @Param('id') id: number,
+    @Body() updateProfileDto: UpdateUserDto,
+  ): Promise<User> {
     return this.usersService.update(id, updateProfileDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id') id: number): Promise<void> {
     return this.usersService.softDelete(id);
   }
 }

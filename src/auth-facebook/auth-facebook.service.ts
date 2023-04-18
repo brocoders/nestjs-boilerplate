@@ -7,7 +7,7 @@ import { AuthFacebookLoginDto } from './dto/auth-facebook-login.dto';
 
 @Injectable()
 export class AuthFacebookService {
-  private fb;
+  private fb: Facebook;
 
   constructor(private configService: ConfigService) {
     this.fb = new Facebook({

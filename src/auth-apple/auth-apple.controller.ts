@@ -3,6 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthAppleService } from './auth-apple.service';
 import { AuthAppleLoginDto } from './dto/auth-apple-login.dto';
+import { SocialInterface } from '../social/interfaces/social.interface';
+import { LoginResponseType } from '../utils/types/auth/login-response.type';
 
 @ApiTags('Auth')
 @Controller({
@@ -11,14 +13,15 @@ import { AuthAppleLoginDto } from './dto/auth-apple-login.dto';
 })
 export class AuthAppleController {
   constructor(
-    public authService: AuthService,
-    public authAppleService: AuthAppleService,
+    private readonly authService: AuthService,
+    private readonly authAppleService: AuthAppleService,
   ) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: AuthAppleLoginDto) {
-    const socialData = await this.authAppleService.getProfileByToken(loginDto);
+  async login(@Body() loginDto: AuthAppleLoginDto): Promise<LoginResponseType> {
+    const socialData: SocialInterface =
+      await this.authAppleService.getProfileByToken(loginDto);
 
     return this.authService.validateSocialLogin('apple', socialData);
   }

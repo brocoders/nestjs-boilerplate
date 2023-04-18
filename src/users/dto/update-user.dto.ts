@@ -9,10 +9,11 @@ import { Status } from '../../statuses/entities/status.entity';
 import { IsNotExist } from '../../utils/validators/is-not-exists.validator';
 import { FileEntity } from '../../files/entities/file.entity';
 import { IsExist } from '../../utils/validators/is-exists.validator';
+import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
-  @Transform(({ value }) => value?.toLowerCase().trim())
+  @Transform(lowerCaseTransformer)
   @IsOptional()
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',

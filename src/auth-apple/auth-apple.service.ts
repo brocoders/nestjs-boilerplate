@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import appleSigninAuth from 'apple-signin-auth';
+import appleSigninAuth, { AppleIdTokenType } from 'apple-signin-auth';
 import { ConfigService } from '@nestjs/config';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthAppleLoginDto } from './dto/auth-apple-login.dto';
@@ -11,9 +11,12 @@ export class AuthAppleService {
   async getProfileByToken(
     loginDto: AuthAppleLoginDto,
   ): Promise<SocialInterface> {
-    const data = await appleSigninAuth.verifyIdToken(loginDto.idToken, {
-      audience: this.configService.get('apple.appAudience'),
-    });
+    const data: AppleIdTokenType = await appleSigninAuth.verifyIdToken(
+      loginDto.idToken,
+      {
+        audience: this.configService.get('apple.appAudience'),
+      },
+    );
 
     return {
       id: data.sub,

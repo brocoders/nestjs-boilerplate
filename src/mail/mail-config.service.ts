@@ -6,7 +6,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 
 @Injectable()
 export class MailConfigService implements MailerOptionsFactory {
-  constructor(private configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
   createMailerOptions(): MailerOptions {
     return {

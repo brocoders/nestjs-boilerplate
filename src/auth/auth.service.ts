@@ -17,6 +17,10 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { UsersService } from 'src/users/users.service';
 import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
+import { NullableType } from '../utils/types/nullable.type';
+import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { MaybeType } from '../utils/types/maybe.type';
+import { Forgot } from '../forgot/entities/forgot.entity';
 
 @Injectable()
 export class AuthService {
@@ -30,8 +34,8 @@ export class AuthService {
   async validateLogin(
     loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
-  ): Promise<{ token: string; user: User }> {
-    const user = await this.usersService.findOne({
+  ): Promise<LoginResponseType> {
+    const user: NullableType<User> = await this.usersService.findOne({
       email: loginDto.email,
     });
 
@@ -65,19 +69,12 @@ export class AuthService {
       );
     }
 
-    const isValidPassword = await bcrypt.compare(
+    const isValidPassword: boolean = await bcrypt.compare(
       loginDto.password,
       user.password,
     );
 
-    if (isValidPassword) {
-      const token = await this.jwtService.sign({
-        id: user.id,
-        role: user.role,
-      });
-
-      return { token, user: user };
-    } else {
+    if (!isValidPassword) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -88,16 +85,23 @@ export class AuthService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+
+    const token: string = this.jwtService.sign({
+      id: user.id,
+      role: user.role,
+    });
+
+    return { token, user };
   }
 
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
-  ): Promise<{ token: string; user: User }> {
+  ): Promise<LoginResponseType> {
     let user: User;
-    const socialEmail = socialData.email?.toLowerCase();
+    const socialEmail: MaybeType<string> = socialData.email?.toLowerCase();
 
-    const userByEmail = await this.usersService.findOne({
+    const userByEmail: NullableType<User> = await this.usersService.findOne({
       email: socialEmail,
     });
 
@@ -114,10 +118,10 @@ export class AuthService {
     } else if (userByEmail) {
       user = userByEmail;
     } else {
-      const role = plainToClass(Role, {
+      const role: Role = plainToClass(Role, {
         id: RoleEnum.user,
       });
-      const status = plainToClass(Status, {
+      const status: Status = plainToClass(Status, {
         id: StatusEnum.active,
       });
 
@@ -136,7 +140,7 @@ export class AuthService {
       });
     }
 
-    const jwtToken = await this.jwtService.sign({
+    const jwtToken: string = this.jwtService.sign({
       id: user.id,
       role: user.role,
     });
@@ -148,12 +152,12 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterLoginDto): Promise<void> {
-    const hash = crypto
+    const hash: string = crypto
       .createHash('sha256')
       .update(randomStringGenerator())
       .digest('hex');
 
-    const user = await this.usersService.create({
+    const user: User = await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
@@ -174,7 +178,7 @@ export class AuthService {
   }
 
   async confirmEmail(hash: string): Promise<void> {
-    const user = await this.usersService.findOne({
+    const user: NullableType<User> = await this.usersService.findOne({
       hash,
     });
 
@@ -196,7 +200,7 @@ export class AuthService {
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.usersService.findOne({
+    const user: NullableType<User> = await this.usersService.findOne({
       email,
     });
 
@@ -210,27 +214,27 @@ export class AuthService {
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    } else {
-      const hash = crypto
-        .createHash('sha256')
-        .update(randomStringGenerator())
-        .digest('hex');
-      await this.forgotService.create({
-        hash,
-        user,
-      });
-
-      await this.mailService.forgotPassword({
-        to: email,
-        data: {
-          hash,
-        },
-      });
     }
+
+    const hash: string = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+    await this.forgotService.create({
+      hash,
+      user,
+    });
+
+    await this.mailService.forgotPassword({
+      to: email,
+      data: {
+        hash,
+      },
+    });
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
-    const forgot = await this.forgotService.findOne({
+    const forgot: NullableType<Forgot> = await this.forgotService.findOne({
       where: {
         hash,
       },
@@ -248,8 +252,9 @@ export class AuthService {
       );
     }
 
-    const user = forgot.user;
+    const user: User = forgot.user;
     user.password = password;
+
     await user.save();
     await this.forgotService.softDelete(forgot.id);
   }
@@ -260,14 +265,19 @@ export class AuthService {
     });
   }
 
-  async update(user: User, userDto: AuthUpdateDto): Promise<User> {
+  async update(
+    user: User,
+    userDto: AuthUpdateDto,
+  ): Promise<NullableType<User>> {
     if (userDto.password) {
       if (userDto.oldPassword) {
-        const currentUser = await this.usersService.findOne({
-          id: user.id,
-        });
+        const currentUser: NullableType<User> = await this.usersService.findOne(
+          {
+            id: user.id,
+          },
+        );
 
-        const isValidOldPassword = await bcrypt.compare(
+        const isValidOldPassword: boolean = await bcrypt.compare(
           userDto.oldPassword,
           currentUser.password,
         );

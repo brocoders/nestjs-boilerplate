@@ -9,7 +9,7 @@ export class FilesService {
   constructor(
     private readonly configService: ConfigService,
     @InjectRepository(FileEntity)
-    private fileRepository: Repository<FileEntity>,
+    private readonly fileRepository: Repository<FileEntity>,
   ) {}
 
   async uploadFile(

@@ -2,10 +2,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '../../users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
-
-type JwtPayload = Pick<User, 'id' | 'role'> & { iat: number; exp: number };
+import { JwtPayloadType } from '../../utils/types/auth/jwt-payload.type';
+import { OrNeverType } from '../../utils/types/or-never.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  public validate(payload: JwtPayload) {
+  public validate(payload: JwtPayloadType): OrNeverType<JwtPayloadType> {
     if (!payload.id) {
       throw new UnauthorizedException();
     }

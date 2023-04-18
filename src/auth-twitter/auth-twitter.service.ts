@@ -11,7 +11,7 @@ export class AuthTwitterService {
   async getProfileByToken(
     loginDto: AuthTwitterLoginDto,
   ): Promise<SocialInterface> {
-    const twitter = new Twitter({
+    const twitter: Twitter = new Twitter({
       consumer_key: this.configService.get('twitter.consumerKey'),
       consumer_secret: this.configService.get('twitter.consumerSecret'),
       access_token_key: loginDto.accessTokenKey,

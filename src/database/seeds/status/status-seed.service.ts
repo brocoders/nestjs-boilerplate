@@ -12,9 +12,9 @@ export class StatusSeedService {
   ) {}
 
   async run() {
-    const count = await this.repository.count();
+    const count: number = await this.repository.count();
 
-    if (count === 0) {
+    if (!count) {
       await this.repository.save([
         this.repository.create({
           id: StatusEnum.active,

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OAuth2Client } from 'google-auth-library';
+import { LoginTicket, OAuth2Client } from 'google-auth-library';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthGoogleLoginDto } from './dto/auth-google-login.dto';
+import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 
 @Injectable()
 export class AuthGoogleService {
@@ -18,12 +19,12 @@ export class AuthGoogleService {
   async getProfileByToken(
     loginDto: AuthGoogleLoginDto,
   ): Promise<SocialInterface> {
-    const ticket = await this.google.verifyIdToken({
+    const ticket: LoginTicket = await this.google.verifyIdToken({
       idToken: loginDto.idToken,
       audience: [this.configService.get('google.clientId')],
     });
 
-    const data = ticket.getPayload();
+    const data: TokenPayload = ticket.getPayload();
 
     return {
       id: data.sub,

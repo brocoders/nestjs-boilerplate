@@ -48,7 +48,7 @@ describe('Users admin (e2e)', () => {
       .expect(200);
   });
 
-  it('Login via registered user: /api/v1/auth/email/login (GET)', () => {
+  it('Login via registered user: /api/v1/auth/email/login (POST)', () => {
     return request(app)
       .post('/api/v1/auth/email/login')
       .send({ email: newUserEmailFirst, password: newUserChangedPasswordFirst })

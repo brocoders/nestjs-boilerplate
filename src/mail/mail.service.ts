@@ -7,12 +7,12 @@ import { MailData } from './interfaces/mail-data.interface';
 @Injectable()
 export class MailService {
   constructor(
-    private mailerService: MailerService,
-    private configService: ConfigService,
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async userSignUp(mailData: MailData<{ hash: string }>) {
-    const i18n = I18nContext.current();
+    const i18n: I18nContext = I18nContext.current();
 
     await this.mailerService.sendMail({
       to: mailData.to,
@@ -36,7 +36,7 @@ export class MailService {
   }
 
   async forgotPassword(mailData: MailData<{ hash: string }>) {
-    const i18n = I18nContext.current();
+    const i18n: I18nContext = I18nContext.current();
 
     await this.mailerService.sendMail({
       to: mailData.to,
