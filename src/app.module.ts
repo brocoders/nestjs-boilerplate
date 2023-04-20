@@ -26,7 +26,8 @@ import { MailConfigService } from './mail/mail-config.service';
 import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { AllConfigType } from './config/config.type';
 
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { DataSource } from 'typeorm';
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
-      dataSourceFactory: async (options) => {
+      dataSourceFactory: async (options: DataSourceOptions) => {
         const dataSource = await new DataSource(options).initialize();
         return dataSource;
       },
@@ -56,8 +57,10 @@ import { DataSource } from 'typeorm';
       useClass: MailConfigService,
     }),
     I18nModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        fallbackLanguage: configService.get('app.fallbackLanguage'),
+      useFactory: (configService: ConfigService<AllConfigType>) => ({
+        fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {
+          infer: true,
+        }),
         loaderOptions: { path: path.join(__dirname, '/i18n/'), watch: true },
       }),
       resolvers: [

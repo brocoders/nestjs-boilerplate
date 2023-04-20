@@ -9,6 +9,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { EntityHelper } from 'src/utils/entity-helper';
 import appConfig from '../../config/app.config';
+import { AppConfig } from 'src/config/config.type';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityHelper {
@@ -24,7 +25,7 @@ export class FileEntity extends EntityHelper {
   @AfterInsert()
   updatePath() {
     if (this.path.indexOf('/') === 0) {
-      this.path = appConfig().backendDomain + this.path;
+      this.path = (appConfig() as AppConfig).backendDomain + this.path;
     }
   }
 }

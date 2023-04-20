@@ -3,11 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from './entities/file.entity';
 import { Repository } from 'typeorm';
+import { AllConfigType } from 'src/config/config.type';
 
 @Injectable()
 export class FilesService {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AllConfigType>,
     @InjectRepository(FileEntity)
     private fileRepository: Repository<FileEntity>,
   ) {}
@@ -28,13 +29,17 @@ export class FilesService {
     }
 
     const path = {
-      local: `/${this.configService.get('app.apiPrefix')}/v1/${file.path}`,
+      local: `/${this.configService.get('app.apiPrefix', { infer: true })}/v1/${
+        file.path
+      }`,
       s3: (file as Express.MulterS3.File).location,
     };
 
     return this.fileRepository.save(
       this.fileRepository.create({
-        path: path[this.configService.get('file.driver')],
+        path: path[
+          this.configService.getOrThrow('file.driver', { infer: true })
+        ],
       }),
     );
   }
