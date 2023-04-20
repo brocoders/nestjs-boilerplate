@@ -37,7 +37,7 @@ export class AuthService {
 
     if (
       !user ||
-      (user &&
+      (user?.role &&
         !(onlyAdmin ? [RoleEnum.admin] : [RoleEnum.user]).includes(
           user.role.id,
         ))
@@ -94,7 +94,7 @@ export class AuthService {
     authProvider: string,
     socialData: SocialInterface,
   ): Promise<{ token: string; user: User }> {
-    let user: User;
+    let user: User | null;
     const socialEmail = socialData.email?.toLowerCase();
 
     const userByEmail = await this.usersService.findOne({
@@ -122,9 +122,9 @@ export class AuthService {
       });
 
       user = await this.usersService.create({
-        email: socialEmail,
-        firstName: socialData.firstName,
-        lastName: socialData.lastName,
+        email: socialEmail ?? null,
+        firstName: socialData.firstName ?? null,
+        lastName: socialData.lastName ?? null,
         socialId: socialData.id,
         provider: authProvider,
         role,
@@ -134,6 +134,18 @@ export class AuthService {
       user = await this.usersService.findOne({
         id: user.id,
       });
+    }
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            user: 'userNotFound',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     const jwtToken = await this.jwtService.sign({
@@ -153,7 +165,7 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    const user = await this.usersService.create({
+    await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
@@ -166,7 +178,7 @@ export class AuthService {
     });
 
     await this.mailService.userSignUp({
-      to: user.email,
+      to: dto.email,
       data: {
         hash,
       },
@@ -254,18 +266,30 @@ export class AuthService {
     await this.forgotService.softDelete(forgot.id);
   }
 
-  async me(user: User): Promise<User> {
+  async me(user: User): Promise<User | null> {
     return this.usersService.findOne({
       id: user.id,
     });
   }
 
-  async update(user: User, userDto: AuthUpdateDto): Promise<User> {
+  async update(user: User, userDto: AuthUpdateDto): Promise<User | null> {
     if (userDto.password) {
       if (userDto.oldPassword) {
         const currentUser = await this.usersService.findOne({
           id: user.id,
         });
+
+        if (!currentUser) {
+          throw new HttpException(
+            {
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errors: {
+                user: 'userNotFound',
+              },
+            },
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          );
+        }
 
         const isValidOldPassword = await bcrypt.compare(
           userDto.oldPassword,
