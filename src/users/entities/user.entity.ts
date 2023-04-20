@@ -24,9 +24,9 @@ export class User extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // For "string | null" we need to use "character varying" type.
+  // For "string | null" we need to use String type.
   // More info: https://github.com/typeorm/typeorm/issues/2567
-  @Column({ type: 'character varying', unique: true, nullable: true })
+  @Column({ type: String, unique: true, nullable: true })
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
 
@@ -56,16 +56,16 @@ export class User extends EntityHelper {
   provider: string;
 
   @Index()
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: String, nullable: true })
   @Expose({ groups: ['me', 'admin'] })
   socialId: string | null;
 
   @Index()
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: String, nullable: true })
   firstName: string | null;
 
   @Index()
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: String, nullable: true })
   lastName: string | null;
 
   @ManyToOne(() => FileEntity, {
@@ -83,7 +83,7 @@ export class User extends EntityHelper {
   })
   status?: Status;
 
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: String, nullable: true })
   @Index()
   @Exclude({ toPlainOnly: true })
   hash: string | null;
