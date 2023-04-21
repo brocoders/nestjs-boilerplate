@@ -12,7 +12,7 @@ export class StatusSeedService {
   ) {}
 
   async run() {
-    const count: number = await this.repository.count();
+    const count = await this.repository.count();
 
     if (!count) {
       await this.repository.save([

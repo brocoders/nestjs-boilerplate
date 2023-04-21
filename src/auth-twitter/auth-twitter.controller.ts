@@ -4,7 +4,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthTwitterService } from './auth-twitter.service';
 import { AuthTwitterLoginDto } from './dto/auth-twitter-login.dto';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
-import { SocialInterface } from '../social/interfaces/social.interface';
 
 @ApiTags('Auth')
 @Controller({
@@ -22,8 +21,9 @@ export class AuthTwitterController {
   async login(
     @Body() loginDto: AuthTwitterLoginDto,
   ): Promise<LoginResponseType> {
-    const socialData: SocialInterface =
-      await this.authTwitterService.getProfileByToken(loginDto);
+    const socialData = await this.authTwitterService.getProfileByToken(
+      loginDto,
+    );
 
     return this.authService.validateSocialLogin('twitter', socialData);
   }

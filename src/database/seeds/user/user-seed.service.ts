@@ -13,7 +13,7 @@ export class UserSeedService {
   ) {}
 
   async run() {
-    const countAdmin: number = await this.repository.count({
+    const countAdmin = await this.repository.count({
       where: {
         role: {
           id: RoleEnum.admin,
@@ -40,7 +40,7 @@ export class UserSeedService {
       );
     }
 
-    const countUser: number = await this.repository.count({
+    const countUser = await this.repository.count({
       where: {
         role: {
           id: RoleEnum.user,

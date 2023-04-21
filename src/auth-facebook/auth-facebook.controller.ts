@@ -4,7 +4,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthFacebookService } from './auth-facebook.service';
 import { AuthFacebookLoginDto } from './dto/auth-facebook-login.dto';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
-import { SocialInterface } from '../social/interfaces/social.interface';
 
 @ApiTags('Auth')
 @Controller({
@@ -22,8 +21,9 @@ export class AuthFacebookController {
   async login(
     @Body() loginDto: AuthFacebookLoginDto,
   ): Promise<LoginResponseType> {
-    const socialData: SocialInterface =
-      await this.authFacebookService.getProfileByToken(loginDto);
+    const socialData = await this.authFacebookService.getProfileByToken(
+      loginDto,
+    );
 
     return this.authService.validateSocialLogin('facebook', socialData);
   }

@@ -4,7 +4,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthGoogleService } from './auth-google.service';
 import { AuthGoogleLoginDto } from './dto/auth-google-login.dto';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
-import { SocialInterface } from '../social/interfaces/social.interface';
 
 @ApiTags('Auth')
 @Controller({
@@ -22,8 +21,7 @@ export class AuthGoogleController {
   async login(
     @Body() loginDto: AuthGoogleLoginDto,
   ): Promise<LoginResponseType> {
-    const socialData: SocialInterface =
-      await this.authGoogleService.getProfileByToken(loginDto);
+    const socialData = await this.authGoogleService.getProfileByToken(loginDto);
 
     return this.authService.validateSocialLogin('google', socialData);
   }

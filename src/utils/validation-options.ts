@@ -17,7 +17,7 @@ const validationOptions: ValidationPipeOptions = {
           (accumulator, currentValue) => ({
             ...accumulator,
             [currentValue.property]: Object.values(
-              currentValue.constraints,
+              currentValue.constraints ?? {},
             ).join(', '),
           }),
           {},

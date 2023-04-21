@@ -22,6 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
 import { User } from '../users/entities/user.entity';
+import { NullableType } from '../utils/types/nullable.type';
 
 @ApiTags('Auth')
 @Controller({
@@ -91,7 +92,7 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public me(@Request() request): Promise<User> {
+  public me(@Request() request): Promise<NullableType<User>> {
     return this.service.me(request.user);
   }
 
@@ -105,7 +106,7 @@ export class AuthController {
   public update(
     @Request() request,
     @Body() userDto: AuthUpdateDto,
-  ): Promise<User> {
+  ): Promise<NullableType<User>> {
     return this.service.update(request.user, userDto);
   }
 
