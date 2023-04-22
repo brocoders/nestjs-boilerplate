@@ -12,7 +12,7 @@ export class AuthTwitterService {
   async getProfileByToken(
     loginDto: AuthTwitterLoginDto,
   ): Promise<SocialInterface> {
-    const twitter: Twitter = new Twitter({
+    const twitter = new Twitter({
       consumer_key: this.configService.getOrThrow('twitter.consumerKey', {
         infer: true,
       }),

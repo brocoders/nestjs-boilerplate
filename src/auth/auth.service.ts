@@ -33,7 +33,7 @@ export class AuthService {
     loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
   ): Promise<LoginResponseType> {
-    const user: NullableType<User> = await this.usersService.findOne({
+    const user = await this.usersService.findOne({
       email: loginDto.email,
     });
 
@@ -67,7 +67,7 @@ export class AuthService {
       );
     }
 
-    const isValidPassword: boolean = await bcrypt.compare(
+    const isValidPassword = await bcrypt.compare(
       loginDto.password,
       user.password,
     );
@@ -84,7 +84,7 @@ export class AuthService {
       );
     }
 
-    const token: string = this.jwtService.sign({
+    const token = this.jwtService.sign({
       id: user.id,
       role: user.role,
     });
@@ -99,7 +99,7 @@ export class AuthService {
     let user: NullableType<User>;
     const socialEmail = socialData.email?.toLowerCase();
 
-    const userByEmail: NullableType<User> = await this.usersService.findOne({
+    const userByEmail = await this.usersService.findOne({
       email: socialEmail,
     });
 
@@ -116,10 +116,10 @@ export class AuthService {
     } else if (userByEmail) {
       user = userByEmail;
     } else {
-      const role: Role = plainToClass(Role, {
+      const role = plainToClass(Role, {
         id: RoleEnum.user,
       });
-      const status: Status = plainToClass(Status, {
+      const status = plainToClass(Status, {
         id: StatusEnum.active,
       });
 
