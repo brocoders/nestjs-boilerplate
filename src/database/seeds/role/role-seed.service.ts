@@ -18,7 +18,7 @@ export class RoleSeedService {
       },
     });
 
-    if (countUser === 0) {
+    if (!countUser) {
       await this.repository.save(
         this.repository.create({
           id: RoleEnum.user,
@@ -33,7 +33,7 @@ export class RoleSeedService {
       },
     });
 
-    if (countAdmin === 0) {
+    if (!countAdmin) {
       await this.repository.save(
         this.repository.create({
           id: RoleEnum.admin,

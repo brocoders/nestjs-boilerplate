@@ -17,6 +17,8 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { UsersService } from 'src/users/users.service';
 import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
+import { NullableType } from '../utils/types/nullable.type';
+import { LoginResponseType } from '../utils/types/auth/login-response.type';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +32,7 @@ export class AuthService {
   async validateLogin(
     loginDto: AuthEmailLoginDto,
     onlyAdmin: boolean,
-  ): Promise<{ token: string; user: User }> {
+  ): Promise<LoginResponseType> {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
@@ -70,14 +72,7 @@ export class AuthService {
       user.password,
     );
 
-    if (isValidPassword) {
-      const token = await this.jwtService.sign({
-        id: user.id,
-        role: user.role,
-      });
-
-      return { token, user: user };
-    } else {
+    if (!isValidPassword) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -88,13 +83,20 @@ export class AuthService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+
+    const token = this.jwtService.sign({
+      id: user.id,
+      role: user.role,
+    });
+
+    return { token, user };
   }
 
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
-  ): Promise<{ token: string; user: User }> {
-    let user: User | null;
+  ): Promise<LoginResponseType> {
+    let user: NullableType<User>;
     const socialEmail = socialData.email?.toLowerCase();
 
     const userByEmail = await this.usersService.findOne({
@@ -148,7 +150,7 @@ export class AuthService {
       );
     }
 
-    const jwtToken = await this.jwtService.sign({
+    const jwtToken = this.jwtService.sign({
       id: user.id,
       role: user.role,
     });
@@ -222,23 +224,23 @@ export class AuthService {
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    } else {
-      const hash = crypto
-        .createHash('sha256')
-        .update(randomStringGenerator())
-        .digest('hex');
-      await this.forgotService.create({
-        hash,
-        user,
-      });
-
-      await this.mailService.forgotPassword({
-        to: email,
-        data: {
-          hash,
-        },
-      });
     }
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+    await this.forgotService.create({
+      hash,
+      user,
+    });
+
+    await this.mailService.forgotPassword({
+      to: email,
+      data: {
+        hash,
+      },
+    });
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
@@ -262,17 +264,21 @@ export class AuthService {
 
     const user = forgot.user;
     user.password = password;
+
     await user.save();
     await this.forgotService.softDelete(forgot.id);
   }
 
-  async me(user: User): Promise<User | null> {
+  async me(user: User): Promise<NullableType<User>> {
     return this.usersService.findOne({
       id: user.id,
     });
   }
 
-  async update(user: User, userDto: AuthUpdateDto): Promise<User | null> {
+  async update(
+    user: User,
+    userDto: AuthUpdateDto,
+  ): Promise<NullableType<User>> {
     if (userDto.password) {
       if (userDto.oldPassword) {
         const currentUser = await this.usersService.findOne({

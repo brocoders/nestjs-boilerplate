@@ -7,7 +7,7 @@ import { AllConfigType } from 'src/config/config.type';
 
 @Injectable()
 export class MailConfigService implements MailerOptionsFactory {
-  constructor(private configService: ConfigService<AllConfigType>) {}
+  constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   createMailerOptions(): MailerOptions {
     return {

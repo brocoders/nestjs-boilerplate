@@ -21,7 +21,7 @@ export class UserSeedService {
       },
     });
 
-    if (countAdmin === 0) {
+    if (!countAdmin) {
       await this.repository.save(
         this.repository.create({
           firstName: 'Super',
@@ -48,7 +48,7 @@ export class UserSeedService {
       },
     });
 
-    if (countUser === 0) {
+    if (!countUser) {
       await this.repository.save(
         this.repository.create({
           firstName: 'John',

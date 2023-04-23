@@ -67,7 +67,7 @@ describe('Auth user (e2e)', () => {
         firstName: newUserFirstName,
         lastName: newUserLastName,
       })
-      .expect(201);
+      .expect(204);
   });
 
   it('Login unconfirmed user: /api/v1/auth/email/login (POST)', () => {
@@ -99,7 +99,7 @@ describe('Auth user (e2e)', () => {
       .send({
         hash,
       })
-      .expect(200);
+      .expect(204);
   });
 
   it('Can not confirm email with same link twice: /api/v1/auth/email/confirm (POST)', async () => {

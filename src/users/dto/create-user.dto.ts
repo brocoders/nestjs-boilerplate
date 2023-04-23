@@ -8,14 +8,15 @@ import {
   MinLength,
   Validate,
 } from 'class-validator';
-import { Status } from '../../statuses/entities/status.entity';
-import { IsNotExist } from '../../utils/validators/is-not-exists.validator';
-import { FileEntity } from '../../files/entities/file.entity';
-import { IsExist } from '../../utils/validators/is-exists.validator';
+import { Status } from 'src/statuses/entities/status.entity';
+import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
+import { FileEntity } from 'src/files/entities/file.entity';
+import { IsExist } from 'src/utils/validators/is-exists.validator';
+import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'test1@example.com' })
-  @Transform(({ value }) => value?.toLowerCase().trim())
+  @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @Validate(IsNotExist, ['User'], {
     message: 'emailAlreadyExists',

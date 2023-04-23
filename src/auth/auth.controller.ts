@@ -20,6 +20,9 @@ import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
+import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { User } from '../users/entities/user.entity';
+import { NullableType } from '../utils/types/nullable.type';
 
 @ApiTags('Auth')
 @Controller({
@@ -27,14 +30,16 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
   version: '1',
 })
 export class AuthController {
-  constructor(public service: AuthService) {}
+  constructor(private readonly service: AuthService) {}
 
   @SerializeOptions({
     groups: ['me'],
   })
   @Post('email/login')
   @HttpCode(HttpStatus.OK)
-  public async login(@Body() loginDto: AuthEmailLoginDto) {
+  public login(
+    @Body() loginDto: AuthEmailLoginDto,
+  ): Promise<LoginResponseType> {
     return this.service.validateLogin(loginDto, false);
   }
 
@@ -43,31 +48,37 @@ export class AuthController {
   })
   @Post('admin/email/login')
   @HttpCode(HttpStatus.OK)
-  public async adminLogin(@Body() loginDTO: AuthEmailLoginDto) {
+  public adminLogin(
+    @Body() loginDTO: AuthEmailLoginDto,
+  ): Promise<LoginResponseType> {
     return this.service.validateLogin(loginDTO, true);
   }
 
   @Post('email/register')
-  @HttpCode(HttpStatus.CREATED)
-  async register(@Body() createUserDto: AuthRegisterLoginDto) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
     return this.service.register(createUserDto);
   }
 
   @Post('email/confirm')
-  @HttpCode(HttpStatus.OK)
-  async confirmEmail(@Body() confirmEmailDto: AuthConfirmEmailDto) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmEmail(
+    @Body() confirmEmailDto: AuthConfirmEmailDto,
+  ): Promise<void> {
     return this.service.confirmEmail(confirmEmailDto.hash);
   }
 
   @Post('forgot/password')
-  @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body() forgotPasswordDto: AuthForgotPasswordDto) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async forgotPassword(
+    @Body() forgotPasswordDto: AuthForgotPasswordDto,
+  ): Promise<void> {
     return this.service.forgotPassword(forgotPasswordDto.email);
   }
 
   @Post('reset/password')
-  @HttpCode(HttpStatus.OK)
-  async resetPassword(@Body() resetPasswordDto: AuthResetPasswordDto) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  resetPassword(@Body() resetPasswordDto: AuthResetPasswordDto): Promise<void> {
     return this.service.resetPassword(
       resetPasswordDto.hash,
       resetPasswordDto.password,
@@ -81,7 +92,7 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async me(@Request() request) {
+  public me(@Request() request): Promise<NullableType<User>> {
     return this.service.me(request.user);
   }
 
@@ -92,15 +103,18 @@ export class AuthController {
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public async update(@Request() request, @Body() userDto: AuthUpdateDto) {
+  public update(
+    @Request() request,
+    @Body() userDto: AuthUpdateDto,
+  ): Promise<NullableType<User>> {
     return this.service.update(request.user, userDto);
   }
 
   @ApiBearerAuth()
   @Delete('me')
   @UseGuards(AuthGuard('jwt'))
-  @HttpCode(HttpStatus.OK)
-  public async delete(@Request() request) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async delete(@Request() request): Promise<void> {
     return this.service.softDelete(request.user);
   }
 }
