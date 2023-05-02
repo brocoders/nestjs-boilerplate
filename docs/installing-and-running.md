@@ -93,6 +93,10 @@ If you want quick run your app, you can use following commands:
 
 1. Open http://localhost:3000
 
+### Video guideline
+
+https://user-images.githubusercontent.com/6001723/235758846-d7d97de8-dea9-46d8-ae12-8cc6b76df03d.mp4
+
 ---
 
 ## Links
