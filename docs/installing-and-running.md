@@ -26,6 +26,7 @@
     ```
 
 1. Change `DATABASE_HOST=postgres` to `DATABASE_HOST=localhost`
+
    Change `MAIL_HOST=maildev` to `MAIL_HOST=localhost`
 
 1. Run additional container:
