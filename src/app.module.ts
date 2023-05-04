@@ -49,8 +49,7 @@ import { AllConfigType } from './config/config.type';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options: DataSourceOptions) => {
-        const dataSource = await new DataSource(options).initialize();
-        return dataSource;
+        return new DataSource(options).initialize();
       },
     }),
     MailerModule.forRootAsync({
