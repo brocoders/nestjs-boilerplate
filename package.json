@@ -60,7 +60,7 @@
     "rimraf": "5.0.0",
     "rxjs": "7.8.1",
     "source-map-support": "0.5.21",
-    "swagger-ui-express": "4.6.2",
+    "swagger-ui-express": "4.6.3",
     "twitter": "1.7.1",
     "typeorm": "0.3.15"
   },
