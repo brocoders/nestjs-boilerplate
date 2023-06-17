@@ -38,7 +38,7 @@
     "@nestjs/jwt": "10.1.0",
     "@nestjs/passport": "9.0.3",
     "@nestjs/platform-express": "9.4.3",
-    "@nestjs/swagger": "6.3.0",
+    "@nestjs/swagger": "7.0.1",
     "@nestjs/typeorm": "9.0.1",
     "@types/multer-s3": "^3.0.0",
     "apple-signin-auth": "1.7.5",
