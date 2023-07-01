@@ -24,7 +24,7 @@ import { UsersService } from 'src/users/users.service';
 import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
-import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { LoginResponseType } from './types/login-response.type';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from 'src/config/config.type';
 import { SessionService } from 'src/session/session.service';
