@@ -17,6 +17,8 @@ export type AppleConfig = {
 export type AuthConfig = {
   secret?: string;
   expires?: string;
+  refreshSecret?: string;
+  refreshExpires?: string;
 };
 
 export type DatabaseConfig = {

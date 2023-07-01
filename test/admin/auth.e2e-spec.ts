@@ -1,4 +1,4 @@
-import * as request from 'supertest';
+import request from 'supertest';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, APP_URL } from '../utils/constants';
 
 describe('Auth admin (e2e)', () => {

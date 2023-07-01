@@ -1,5 +1,5 @@
 import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from '../utils/constants';
-import * as request from 'supertest';
+import request from 'supertest';
 import { RoleEnum } from '../../src/roles/roles.enum';
 import { StatusEnum } from '../../src/statuses/statuses.enum';
 

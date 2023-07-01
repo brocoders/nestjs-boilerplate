@@ -1,4 +1,4 @@
-import * as request from 'supertest';
+import request from 'supertest';
 import {
   APP_URL,
   TESTER_EMAIL,
@@ -22,6 +22,8 @@ describe('Auth user (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body.token).toBeDefined();
+        expect(body.refreshToken).toBeDefined();
+        expect(body.tokenExpires).toBeDefined();
         expect(body.user.email).toBeDefined();
         expect(body.user.hash).not.toBeDefined();
         expect(body.user.password).not.toBeDefined();
@@ -153,6 +155,25 @@ describe('Auth user (e2e)', () => {
         expect(body.hash).not.toBeDefined();
         expect(body.password).not.toBeDefined();
         expect(body.previousPassword).not.toBeDefined();
+      });
+  });
+
+  it('Refresh token: /api/v1/auth/refresh (GET)', async () => {
+    const newUserRefreshToken = await request(app)
+      .post('/api/v1/auth/email/login')
+      .send({ email: newUserEmail, password: newUserPassword })
+      .then(({ body }) => body.refreshToken);
+
+    await request(app)
+      .post('/api/v1/auth/refresh')
+      .auth(newUserRefreshToken, {
+        type: 'bearer',
+      })
+      .send()
+      .expect(({ body }) => {
+        expect(body.token).toBeDefined();
+        expect(body.refreshToken).toBeDefined();
+        expect(body.tokenExpires).toBeDefined();
       });
   });
 

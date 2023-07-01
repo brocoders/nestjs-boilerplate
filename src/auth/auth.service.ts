@@ -1,13 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import ms from 'ms';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
-import * as bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 import { plainToClass } from 'class-transformer';
 import { Status } from 'src/statuses/entities/status.entity';
 import { Role } from 'src/roles/entities/role.entity';
@@ -19,6 +25,11 @@ import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from 'src/config/config.type';
+import { SessionService } from 'src/session/session.service';
+import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
+import { Session } from 'src/session/entities/session.entity';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +37,9 @@ export class AuthService {
     private jwtService: JwtService,
     private usersService: UsersService,
     private forgotService: ForgotService,
+    private sessionService: SessionService,
     private mailService: MailService,
+    private configService: ConfigService<AllConfigType>,
   ) {}
 
   async validateLogin(
@@ -84,12 +97,22 @@ export class AuthService {
       );
     }
 
-    const token = this.jwtService.sign({
-      id: user.id,
-      role: user.role,
+    const session = await this.sessionService.create({
+      user,
     });
 
-    return { token, user };
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+    });
+
+    return {
+      refreshToken,
+      token,
+      tokenExpires,
+      user,
+    };
   }
 
   async validateSocialLogin(
@@ -150,13 +173,24 @@ export class AuthService {
       );
     }
 
-    const jwtToken = this.jwtService.sign({
+    const session = await this.sessionService.create({
+      user,
+    });
+
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+    } = await this.getTokensData({
       id: user.id,
       role: user.role,
+      sessionId: session.id,
     });
 
     return {
+      refreshToken,
       token: jwtToken,
+      tokenExpires,
       user,
     };
   }
@@ -265,6 +299,11 @@ export class AuthService {
     const user = forgot.user;
     user.password = password;
 
+    await this.sessionService.softDelete({
+      user: {
+        id: user.id,
+      },
+    });
     await user.save();
     await this.forgotService.softDelete(forgot.id);
   }
@@ -312,6 +351,12 @@ export class AuthService {
             },
             HttpStatus.UNPROCESSABLE_ENTITY,
           );
+        } else {
+          await this.sessionService.softDelete({
+            user: {
+              id: currentUser.id,
+            },
+          });
         }
       } else {
         throw new HttpException(
@@ -333,7 +378,84 @@ export class AuthService {
     });
   }
 
+  async refreshToken(
+    data: Pick<JwtRefreshPayloadType, 'sessionId'>,
+  ): Promise<Omit<LoginResponseType, 'user'>> {
+    const session = await this.sessionService.findOne({
+      where: {
+        id: data.sessionId,
+      },
+    });
+
+    if (!session) {
+      throw new UnauthorizedException();
+    }
+
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: session.user.id,
+      role: session.user.role,
+      sessionId: session.id,
+    });
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+    };
+  }
+
   async softDelete(user: User): Promise<void> {
     await this.usersService.softDelete(user.id);
+  }
+
+  async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>) {
+    return this.sessionService.softDelete({
+      id: data.sessionId,
+    });
+  }
+
+  private async getTokensData(data: {
+    id: User['id'];
+    role: User['role'];
+    sessionId: Session['id'];
+  }) {
+    const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
+      infer: true,
+    });
+
+    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+
+    const [token, refreshToken] = await Promise.all([
+      await this.jwtService.signAsync(
+        {
+          id: data.id,
+          role: data.role,
+          sessionId: data.sessionId,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.secret', { infer: true }),
+          expiresIn: tokenExpiresIn,
+        },
+      ),
+      await this.jwtService.signAsync(
+        {
+          sessionId: data.sessionId,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.refreshSecret', {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow('auth.refreshExpires', {
+            infer: true,
+          }),
+        },
+      ),
+    ]);
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+    };
   }
 }

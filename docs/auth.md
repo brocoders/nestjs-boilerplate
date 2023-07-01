@@ -8,6 +8,7 @@
 - [Auth via Facebook](#auth-via-facebook)
 - [Auth via Google](#auth-via-google)
 - [Auth via Twitter](#auth-via-twitter)
+- [Logout](#logout)
 
 ---
 
@@ -64,16 +65,17 @@ For auth with external services or social networks you need:
 
 ## Configure Auth
 
-1. Generate secret key
+1. Generate secret keys for `access token` and `refresh token`:
 
     ```bash
-    node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
+    node -e "console.log('\nAUTH_JWT_SECRET=' + require('crypto').randomBytes(256).toString('base64') + '\nAUTH_REFRESH_SECRET=' + require('crypto').randomBytes(256).toString('base64'));"
     ```
 
-1. Go to `/.env` and change value in `AUTH_JWT_SECRET`
+1. Go to `/.env` and replace `AUTH_JWT_SECRET` and `AUTH_REFRESH_SECRET` with output from step 1.
 
     ```text
     AUTH_JWT_SECRET=HERE_SECRET_KEY_FROM_STEP_1
+    AUTH_REFRESH_SECRET=HERE_SECRET_KEY_FROM_STEP_1
     ```
 
 ## Auth via Apple
@@ -114,6 +116,16 @@ For auth with external services or social networks you need:
     TWITTER_CONSUMER_KEY=abc
     TWITTER_CONSUMER_SECRET=abc
     ```
+
+## Logout
+
+1. Call following endpoint:
+
+   ```text
+   POST /api/v1/auth/logout
+   ```
+
+1. Remove `access token` and `refresh token` from your client app (cookies, localStorage, etc).
 
 ---
 

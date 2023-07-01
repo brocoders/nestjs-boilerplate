@@ -4,15 +4,20 @@ import { ConfigService } from '@nestjs/config';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { FacebookInterface } from './interfaces/facebook.interface';
 import { AuthFacebookLoginDto } from './dto/auth-facebook-login.dto';
+import { AllConfigType } from 'src/config/config.type';
 
 @Injectable()
 export class AuthFacebookService {
   private fb: Facebook;
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService<AllConfigType>) {
     this.fb = new Facebook({
-      appId: configService.get('facebook.appId'),
-      appSecret: configService.get('facebook.appSecret'),
+      appId: configService.get('facebook.appId', {
+        infer: true,
+      }),
+      appSecret: configService.get('facebook.appSecret', {
+        infer: true,
+      }),
       version: 'v7.0',
     });
   }

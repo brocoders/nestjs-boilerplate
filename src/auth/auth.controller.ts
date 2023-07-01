@@ -100,6 +100,27 @@ export class AuthController {
   @SerializeOptions({
     groups: ['me'],
   })
+  @Post('refresh')
+  @UseGuards(AuthGuard('jwt-refresh'))
+  @HttpCode(HttpStatus.OK)
+  public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
+    return this.service.refreshToken(request.user.sessionId);
+  }
+
+  @ApiBearerAuth()
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async logout(@Request() request): Promise<void> {
+    await this.service.logout({
+      sessionId: request.user.sessionId,
+    });
+  }
+
+  @ApiBearerAuth()
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
