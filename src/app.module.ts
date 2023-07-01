@@ -12,7 +12,6 @@ import googleConfig from './config/google.config';
 import twitterConfig from './config/twitter.config';
 import appleConfig from './config/apple.config';
 import path from 'path';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthAppleModule } from './auth-apple/auth-apple.module';
@@ -22,13 +21,13 @@ import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
-import { MailConfigService } from './mail/mail-config.service';
 import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -52,9 +51,6 @@ import { SessionModule } from './session/session.module';
       dataSourceFactory: async (options: DataSourceOptions) => {
         return new DataSource(options).initialize();
       },
-    }),
-    MailerModule.forRootAsync({
-      useClass: MailConfigService,
     }),
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService<AllConfigType>) => ({
@@ -89,6 +85,7 @@ import { SessionModule } from './session/session.module';
     ForgotModule,
     SessionModule,
     MailModule,
+    MailerModule,
     HomeModule,
   ],
 })
