@@ -1,10 +1,11 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { I18nContext } from 'nestjs-i18n';
 import { MailData } from './interfaces/mail-data.interface';
 import { AllConfigType } from 'src/config/config.type';
 import { MaybeType } from '../utils/types/maybe.type';
+import { MailerService } from 'src/mailer/mailer.service';
+import path from 'path';
 
 @Injectable()
 export class MailService {
@@ -35,7 +36,15 @@ export class MailService {
       text: `${this.configService.get('app.frontendDomain', {
         infer: true,
       })}/confirm-email/${mailData.data.hash} ${emailConfirmTitle}`,
-      template: 'activation',
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'mail',
+        'mail-templates',
+        'activation.hbs',
+      ),
       context: {
         title: emailConfirmTitle,
         url: `${this.configService.get('app.frontendDomain', {
@@ -74,7 +83,15 @@ export class MailService {
       text: `${this.configService.get('app.frontendDomain', {
         infer: true,
       })}/password-change/${mailData.data.hash} ${resetPasswordTitle}`,
-      template: 'reset-password',
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'mail',
+        'mail-templates',
+        'reset-password.hbs',
+      ),
       context: {
         title: resetPasswordTitle,
         url: `${this.configService.get('app.frontendDomain', {
