@@ -11,7 +11,7 @@ import facebookConfig from './config/facebook.config';
 import googleConfig from './config/google.config';
 import twitterConfig from './config/twitter.config';
 import appleConfig from './config/apple.config';
-import * as path from 'path';
+import path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -28,6 +28,7 @@ import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
+import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [
@@ -65,8 +66,12 @@ import { AllConfigType } from './config/config.type';
       resolvers: [
         {
           use: HeaderResolver,
-          useFactory: (configService: ConfigService) => {
-            return [configService.get('app.headerLanguage')];
+          useFactory: (configService: ConfigService<AllConfigType>) => {
+            return [
+              configService.get('app.headerLanguage', {
+                infer: true,
+              }),
+            ];
           },
           inject: [ConfigService],
         },
@@ -82,6 +87,7 @@ import { AllConfigType } from './config/config.type';
     AuthTwitterModule,
     AuthAppleModule,
     ForgotModule,
+    SessionModule,
     MailModule,
     HomeModule,
   ],

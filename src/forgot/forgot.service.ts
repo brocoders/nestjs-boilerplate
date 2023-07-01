@@ -28,7 +28,7 @@ export class ForgotService {
     return this.forgotRepository.save(this.forgotRepository.create(data));
   }
 
-  async softDelete(id: number): Promise<void> {
+  async softDelete(id: Forgot['id']): Promise<void> {
     await this.forgotRepository.softDelete(id);
   }
 }
