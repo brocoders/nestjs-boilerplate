@@ -30,6 +30,7 @@ import { AllConfigType } from 'src/config/config.type';
 import { SessionService } from 'src/session/session.service';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { Session } from 'src/session/entities/session.entity';
+import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 
 @Injectable()
 export class AuthService {
@@ -308,20 +309,20 @@ export class AuthService {
     await this.forgotService.softDelete(forgot.id);
   }
 
-  async me(user: User): Promise<NullableType<User>> {
+  async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
     return this.usersService.findOne({
-      id: user.id,
+      id: userJwtPayload.id,
     });
   }
 
   async update(
-    user: User,
+    userJwtPayload: JwtPayloadType,
     userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
     if (userDto.password) {
       if (userDto.oldPassword) {
         const currentUser = await this.usersService.findOne({
-          id: user.id,
+          id: userJwtPayload.id,
         });
 
         if (!currentUser) {
@@ -356,6 +357,7 @@ export class AuthService {
             user: {
               id: currentUser.id,
             },
+            excludeId: userJwtPayload.sessionId,
           });
         }
       } else {
@@ -371,10 +373,10 @@ export class AuthService {
       }
     }
 
-    await this.usersService.update(user.id, userDto);
+    await this.usersService.update(userJwtPayload.id, userDto);
 
     return this.usersService.findOne({
-      id: user.id,
+      id: userJwtPayload.id,
     });
   }
 
