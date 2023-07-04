@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptions } from 'src/utils/types/find-options.type';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Not, Repository } from 'typeorm';
 import { Session } from './entities/session.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from 'src/users/entities/user.entity';
@@ -29,10 +29,17 @@ export class SessionService {
     return this.sessionRepository.save(this.sessionRepository.create(data));
   }
 
-  async softDelete(criteria: {
+  async softDelete({
+    excludeId,
+    ...criteria
+  }: {
     id?: Session['id'];
     user?: Pick<User, 'id'>;
+    excludeId?: Session['id'];
   }): Promise<void> {
-    await this.sessionRepository.softDelete(criteria);
+    await this.sessionRepository.softDelete({
+      ...criteria,
+      id: criteria.id ? criteria.id : excludeId ? Not(excludeId) : undefined,
+    });
   }
 }
