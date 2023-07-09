@@ -2,7 +2,7 @@
 
 ## Online demo
 
-https://nestjs-boilerplate-test.herokuapp.com/docs
+<https://nestjs-boilerplate-test.herokuapp.com/docs>
 
 ## Features
 
@@ -25,4 +25,3 @@ https://nestjs-boilerplate-test.herokuapp.com/docs
 Previous: [Main](readme.md)
 
 Next: [Installing and Running](installing-and-running.md)
-
