@@ -2,7 +2,7 @@
 
 ---
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [General info](#general-info)
 - [Drivers support](#drivers-support)
@@ -43,7 +43,7 @@ sequenceDiagram
 
 #### Video example
 
-https://user-images.githubusercontent.com/6001723/224558636-d22480e4-f70a-4789-b6fc-6ea343685dc7.mp4
+<https://user-images.githubusercontent.com/6001723/224558636-d22480e4-f70a-4789-b6fc-6ea343685dc7.mp4>
 
 ---
 

@@ -4,7 +4,7 @@ In NestJS Boilerplate uses [TypeORM](https://www.npmjs.com/package/typeorm) and 
 
 ---
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Working with database schema](#working-with-database-schema)
   - [Generate migration](#generate-migration)
@@ -26,32 +26,32 @@ In NestJS Boilerplate uses [TypeORM](https://www.npmjs.com/package/typeorm) and 
 
 1. Create entity file with extension `.entity.ts`. For example `post.entity.ts`:
 
-    ```ts
-    // /src/posts/entities/post.entity.ts
+   ```ts
+   // /src/posts/entities/post.entity.ts
 
-    import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-    import { EntityHelper } from 'src/utils/entity-helper';
+   import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+   import { EntityHelper } from 'src/utils/entity-helper';
 
-    @Entity()
-    export class Post extends EntityHelper {
-      @PrimaryGeneratedColumn()
-      id: number;
+   @Entity()
+   export class Post extends EntityHelper {
+     @PrimaryGeneratedColumn()
+     id: number;
 
-      @Column()
-      title: string;
+     @Column()
+     title: string;
 
-      @Column()
-      body: string;
+     @Column()
+     body: string;
 
-      // Here any fields what you need
-    }
-    ```
+     // Here any fields what you need
+   }
+   ```
 
 1. Next, generate migration file:
 
-    ```bash
-    npm run migration:generate -- src/database/migrations/CreatePostTable
-    ```
+   ```bash
+   npm run migration:generate -- src/database/migrations/CreatePostTable
+   ```
 
 1. Apply this migration to database via [npm run migration:run](#run-migration).
 

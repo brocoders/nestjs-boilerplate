@@ -3,13 +3,13 @@
 ![github action status](https://github.com/brocoders/nestjs-boilerplate/actions/workflows/docker-e2e.yml/badge.svg)
 [![renovate](https://img.shields.io/badge/renovate-enabled-%231A1F6C?logo=renovatebot)](https://app.renovatebot.com/dashboard)
 
-## Description
+## Description <!-- omit in toc -->
 
 NestJS REST API boilerplate for typical project
 
 [Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/readme.md)
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Features](#features)
 - [Quick run](#quick-run)
@@ -18,6 +18,8 @@ NestJS REST API boilerplate for typical project
 - [Automatic update of dependencies](#automatic-update-of-dependencies)
 - [Database utils](#database-utils)
 - [Tests](#tests)
+- [Tests in Docker](#tests-in-docker)
+- [Test benchmarking](#test-benchmarking)
 
 ## Features
 
@@ -80,9 +82,9 @@ npm run start:dev
 
 ## Links
 
-- Swagger: http://localhost:3000/docs
-- Adminer (client for DB): http://localhost:8080
-- Maildev: http://localhost:1080
+- Swagger: <http://localhost:3000/docs>
+- Adminer (client for DB): <http://localhost:8080>
+- Maildev: <http://localhost:1080>
 
 ## Automatic update of dependencies
 
@@ -93,7 +95,7 @@ If you want to automatically update dependencies, you can connect [Renovate](htt
 Generate migration
 
 ```bash
-npm run migration:generate -- src/database/migrations/CreateNameTable 
+npm run migration:generate -- src/database/migrations/CreateNameTable
 ```
 
 Run migration
