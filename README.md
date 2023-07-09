@@ -1,6 +1,7 @@
 # NestJS REST API boilerplate 🇺🇦
 
 ![github action status](https://github.com/brocoders/nestjs-boilerplate/actions/workflows/docker-e2e.yml/badge.svg)
+[![renovate](https://img.shields.io/badge/renovate-enabled-%231A1F6C?logo=renovatebot)](https://app.renovatebot.com/dashboard)
 
 ## Description
 
