@@ -104,7 +104,9 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
   public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
-    return this.service.refreshToken(request.user.sessionId);
+    return this.service.refreshToken({
+      sessionId: request.user.sessionId
+    });
   }
 
   @ApiBearerAuth()
