@@ -105,7 +105,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
     return this.service.refreshToken({
-      sessionId: request.user.sessionId
+      sessionId: request.user.sessionId,
     });
   }
 
