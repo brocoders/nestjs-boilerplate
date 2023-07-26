@@ -3,6 +3,8 @@
 ## Table of Contents <!-- omit in toc -->
 
 - [General info](#general-info)
+  - [Auth via email flow](#auth-via-email-flow)
+  - [Auth via external services or social networks flow](#auth-via-external-services-or-social-networks-flow)
 - [Configure Auth](#configure-auth)
 - [Auth via Apple](#auth-via-apple)
 - [Auth via Facebook](#auth-via-facebook)
@@ -13,6 +15,8 @@
 ---
 
 ## General info
+
+### Auth via email flow
 
 By default boilerplate used sign in and sign up via email and password.
 
@@ -28,6 +32,8 @@ sequenceDiagram
 ```
 
 <https://user-images.githubusercontent.com/6001723/224566194-1c1f4e98-5691-4703-b30e-92f99ec5d929.mp4>
+
+### Auth via external services or social networks flow
 
 Also you can sign up via another external services or social networks like Apple, Facebook, Google, and Twitter.
 
@@ -80,7 +86,7 @@ For auth with external services or social networks you need:
 
 ## Auth via Apple
 
-1. Set up your service on Apple
+1. [Set up your service on Apple](https://www.npmjs.com/package/apple-signin-auth)
 1. Change `APPLE_APP_AUDIENCE` in `.env`
 
    ```text
@@ -89,11 +95,16 @@ For auth with external services or social networks you need:
 
 ## Auth via Facebook
 
-1. Set up your service on Facebook
-1. Change `FACEBOOK_APP_ID` and `FACEBOOK_APP_SECRET` in `.env`
+1. Go to https://developers.facebook.com/apps/creation/ and create a new app
+   <img alt="image" src="https://github.com/brocoders/nestjs-boilerplate/assets/6001723/05721db2-9d26-466a-ad7a-072680d0d49b">
+
+   <img alt="image" src="https://github.com/brocoders/nestjs-boilerplate/assets/6001723/9f4aae18-61da-4abc-9304-821a0995a306">
+2. Go to `Settings` -> `Basic` and get `App ID` and `App Secret` from your app
+   <img alt="image" src="https://github.com/brocoders/nestjs-boilerplate/assets/6001723/b0fc7d50-4bc6-45d0-8b20-fda0b6c01ac2">
+3. Change `FACEBOOK_APP_ID` and `FACEBOOK_APP_SECRET` in `.env`
 
    ```text
-   FACEBOOK_APP_ID=abc
+   FACEBOOK_APP_ID=123
    FACEBOOK_APP_SECRET=abc
    ```
 
