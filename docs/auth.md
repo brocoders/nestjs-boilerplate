@@ -134,7 +134,7 @@ For auth with external services or social networks you need:
 
 1. On sign in (`POST /api/v1/auth/email/login`) you will receive `token`, `tokenExpires` and `refreshToken` in response.
 1. On each regular request you need to send `token` in `Authorization` header.
-1. If `token` is expired (check with `tokenExpires` property on frontend apps) you need to send `refreshToken` to `POST /api/v1/auth/refresh` in `Authorization` header to refresh `token`. You will receive new `token`, `tokenExpires` and `refreshToken` in response.
+1. If `token` is expired (check with `tokenExpires` property on client app) you need to send `refreshToken` to `POST /api/v1/auth/refresh` in `Authorization` header to refresh `token`. You will receive new `token`, `tokenExpires` and `refreshToken` in response.
 
 ### Video example
 
