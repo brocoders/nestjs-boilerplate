@@ -10,6 +10,8 @@
 - [Auth via Facebook](#auth-via-facebook)
 - [Auth via Google](#auth-via-google)
 - [Auth via Twitter](#auth-via-twitter)
+- [Refresh token flow](#refresh-token-flow)
+  - [Video example](#video-example)
 - [Logout](#logout)
 
 ---
@@ -128,6 +130,16 @@ For auth with external services or social networks you need:
    TWITTER_CONSUMER_SECRET=abc
    ```
 
+## Refresh token flow
+
+1. On sign in (`POST /api/v1/auth/email/login`) you will receive `token`, `tokenExpires` and `refreshToken` in response.
+1. On each regular request you need to send `token` in `Authorization` header.
+1. If `token` is expired (check with `tokenExpires` property on frontend apps) you need to send `refreshToken` to `POST /api/v1/auth/refresh` in `Authorization` header to refresh `token`. You will receive new `token`, `tokenExpires` and `refreshToken` in response.
+
+### Video example
+
+https://github.com/brocoders/nestjs-boilerplate/assets/6001723/f6fdcc89-5ec6-472b-a6fc-d24178ad1bbb
+
 ## Logout
 
 1. Call following endpoint:
@@ -136,7 +148,7 @@ For auth with external services or social networks you need:
    POST /api/v1/auth/logout
    ```
 
-1. Remove `access token` and `refresh token` from your client app (cookies, localStorage, etc).
+2. Remove `access token` and `refresh token` from your client app (cookies, localStorage, etc).
 
 ---
 
