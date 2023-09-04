@@ -68,7 +68,7 @@
     "@nestjs/cli": "10.1.16",
     "@nestjs/schematics": "10.0.2",
     "@nestjs/testing": "10.2.4",
-    "@types/bcryptjs": "2.4.2",
+    "@types/bcryptjs": "2.4.3",
     "@types/express": "4.17.17",
     "@types/facebook-js-sdk": "3.3.6",
     "@types/jest": "29.5.3",
