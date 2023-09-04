@@ -4,7 +4,7 @@ services:
     ports:
       - ${DATABASE_PORT}:5432
     volumes:
-      - ./.data/db:/var/lib/postgresql/data
+      - boilerplate-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -36,3 +36,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
+
+volumes:
+  boilerplate-db:
