@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:15.4-alpine
+    volumes:
+      - boilerplate-db:/var/lib/postgresql/data
     expose:
       - 5432
     environment:
@@ -26,3 +28,7 @@ services:
     build:
       context: .
       dockerfile: e2e.Dockerfile
+
+
+volumes:
+  boilerplate-db:
