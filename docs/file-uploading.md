@@ -9,6 +9,7 @@
 - [Uploading and attach file flow](#uploading-and-attach-file-flow)
   - [An example of uploading an avatar to a user profile](#an-example-of-uploading-an-avatar-to-a-user-profile)
   - [Video example](#video-example)
+- [How to delete files?](#how-to-delete-files)
 
 ---
 
@@ -28,7 +29,7 @@ Out of box boilerplate support two drivers: `local` and `s3`. You can set it in 
 
 Endpoint `/api/v1/files/upload` is used for uploading files, which return `File` entity with `id` and `path`. After receiving `File` entity you can attach this to another entity.
 
-#### An example of uploading an avatar to a user profile
+### An example of uploading an avatar to a user profile
 
 ```mermaid
 sequenceDiagram
@@ -41,9 +42,13 @@ sequenceDiagram
     A->>B: Update user via PATCH /api/v1/auth/me
 ```
 
-#### Video example
+### Video example
 
 <https://user-images.githubusercontent.com/6001723/224558636-d22480e4-f70a-4789-b6fc-6ea343685dc7.mp4>
+
+## How to delete files?
+
+We prefer not to delete files, as this may have negative experience during restoring data. Also for this reason we also use [Soft-Delete](https://orkhan.gitbook.io/typeorm/docs/delete-query-builder#soft-delete) approach in database. However, if you need to delete files you can create your own handler, cronjob, etc.
 
 ---
 
