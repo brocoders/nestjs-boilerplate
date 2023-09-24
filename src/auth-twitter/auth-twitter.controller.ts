@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  SerializeOptions,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthTwitterService } from './auth-twitter.service';
@@ -16,6 +23,9 @@ export class AuthTwitterController {
     private readonly authTwitterService: AuthTwitterService,
   ) {}
 
+  @SerializeOptions({
+    groups: ['me'],
+  })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
