@@ -15,7 +15,7 @@ describe('Users admin (e2e)', () => {
 
   beforeAll(async () => {
     await request(app)
-      .post('/api/v1/auth/admin/email/login')
+      .post('/api/v1/auth/email/login')
       .send({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD })
       .then(({ body }) => {
         apiToken = body.token;
