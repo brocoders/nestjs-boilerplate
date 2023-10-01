@@ -43,21 +43,12 @@ export class AuthService {
     private configService: ConfigService<AllConfigType>,
   ) {}
 
-  async validateLogin(
-    loginDto: AuthEmailLoginDto,
-    onlyAdmin: boolean,
-  ): Promise<LoginResponseType> {
+  async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
 
-    if (
-      !user ||
-      (user?.role &&
-        !(onlyAdmin ? [RoleEnum.admin] : [RoleEnum.user]).includes(
-          user.role.id,
-        ))
-    ) {
+    if (!user) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
