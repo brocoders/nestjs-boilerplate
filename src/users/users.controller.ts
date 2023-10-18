@@ -8,8 +8,6 @@ import {
   Delete,
   UseGuards,
   Query,
-  DefaultValuePipe,
-  ParseIntPipe,
   HttpStatus,
   HttpCode,
   SerializeOptions,
@@ -26,6 +24,7 @@ import { infinityPagination } from 'src/utils/infinity-pagination';
 import { User } from './entities/user.entity';
 import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../utils/types/nullable.type';
+import { QueryUserDto } from './dto/query-user.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
@@ -53,17 +52,22 @@ export class UsersController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query() query: QueryUserDto,
   ): Promise<InfinityPaginationResultType<User>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
     }
 
     return infinityPagination(
       await this.usersService.findManyWithPagination({
-        page,
-        limit,
+        filterOptions: query?.filters,
+        sortOptions: query?.sort,
+        paginationOptions: {
+          page,
+          limit,
+        },
       }),
       { page, limit },
     );
