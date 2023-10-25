@@ -2,7 +2,9 @@
 
 ## Online demo
 
-<https://nestjs-boilerplate-test.herokuapp.com/docs>
+Demo: <https://nestjs-boilerplate-test.herokuapp.com/docs>
+
+Frontend (React, Next.js): <https://github.com/brocoders/react-boilerplate>
 
 ## Features
 

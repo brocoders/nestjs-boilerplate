@@ -9,6 +9,10 @@ NestJS REST API boilerplate for typical project
 
 [Full documentation here](/docs/readme.md)
 
+Demo: <https://nestjs-boilerplate-test.herokuapp.com/docs>
+
+Frontend (React, Next.js): <https://github.com/brocoders/react-boilerplate>
+
 ## Table of Contents <!-- omit in toc -->
 
 - [Features](#features)
