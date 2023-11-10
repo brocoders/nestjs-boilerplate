@@ -76,7 +76,7 @@
     "@types/multer": "1.4.10",
     "@types/node": "18.18.7",
     "@types/passport-anonymous": "1.0.5",
-    "@types/passport-jwt": "3.0.12",
+    "@types/passport-jwt": "3.0.13",
     "@types/supertest": "2.0.15",
     "@types/twitter": "1.7.3",
     "@typescript-eslint/eslint-plugin": "6.9.1",
