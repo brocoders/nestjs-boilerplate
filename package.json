@@ -39,7 +39,7 @@
     "@nestjs/platform-express": "10.2.8",
     "@nestjs/swagger": "7.1.14",
     "@nestjs/typeorm": "10.0.0",
-    "@types/multer-s3": "3.0.2",
+    "@types/multer-s3": "3.0.3",
     "apple-signin-auth": "1.7.5",
     "bcryptjs": "2.4.3",
     "class-transformer": "0.5.1",
