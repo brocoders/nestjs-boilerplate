@@ -24,6 +24,7 @@ Frontend (React, Next.js): <https://github.com/brocoders/react-boilerplate>
 - [Tests](#tests)
 - [Tests in Docker](#tests-in-docker)
 - [Test benchmarking](#test-benchmarking)
+- [Contributors](#contributors)
 
 ## Features
 
@@ -147,3 +148,14 @@ docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build
 ```bash
 docker run --rm jordi/ab -n 100 -c 100 -T application/json -H "Authorization: Bearer USER_TOKEN" -v 2 http://<server_ip>:3000/api/v1/users
 ```
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
