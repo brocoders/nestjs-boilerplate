@@ -1,7 +1,9 @@
 {
-  "projectName": "react-boilerplate",
+  "projectName": "nestjs-boilerplate",
   "projectOwner": "brocoders",
-  "files": ["README.md"],
+  "files": [
+    "README.md"
+  ],
   "commitType": "docs",
   "commitConvention": "angular",
   "contributorsPerLine": 7,
@@ -11,7 +13,20 @@
       "name": "Vladyslav Shchepotin",
       "avatar_url": "https://avatars.githubusercontent.com/u/6001723?v=4",
       "profile": "https://github.com/Shchepotin",
-      "contributions": ["maintenance", "doc", "code"]
+      "contributions": [
+        "maintenance",
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "SergeiLomako",
+      "name": "SergeiLomako",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31205374?v=4",
+      "profile": "https://github.com/SergeiLomako",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
