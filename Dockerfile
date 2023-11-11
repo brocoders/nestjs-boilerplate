@@ -1,4 +1,4 @@
-FROM node:18.18.2-alpine
+FROM node:20.9.0-alpine
 
 RUN apk add --no-cache bash
 RUN npm i -g @nestjs/cli typescript ts-node
