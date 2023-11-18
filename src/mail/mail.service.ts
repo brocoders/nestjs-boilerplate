@@ -30,12 +30,17 @@ export class MailService {
       ]);
     }
 
+    const url = new URL(
+      this.configService.getOrThrow('app.frontendDomain', {
+        infer: true,
+      }) + '/confirm-email',
+    );
+    url.searchParams.set('hash', mailData.data.hash);
+
     await this.mailerService.sendMail({
       to: mailData.to,
       subject: emailConfirmTitle,
-      text: `${this.configService.get('app.frontendDomain', {
-        infer: true,
-      })}/confirm-email?hash=${mailData.data.hash} ${emailConfirmTitle}`,
+      text: `${url.toString()} ${emailConfirmTitle}`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,
@@ -47,9 +52,7 @@ export class MailService {
       ),
       context: {
         title: emailConfirmTitle,
-        url: `${this.configService.get('app.frontendDomain', {
-          infer: true,
-        })}/confirm-email?hash=${mailData.data.hash}`,
+        url: url.toString(),
         actionTitle: emailConfirmTitle,
         app_name: this.configService.get('app.name', { infer: true }),
         text1,
@@ -77,12 +80,17 @@ export class MailService {
       ]);
     }
 
+    const url = new URL(
+      this.configService.getOrThrow('app.frontendDomain', {
+        infer: true,
+      }) + '/password-change',
+    );
+    url.searchParams.set('hash', mailData.data.hash);
+
     await this.mailerService.sendMail({
       to: mailData.to,
       subject: resetPasswordTitle,
-      text: `${this.configService.get('app.frontendDomain', {
-        infer: true,
-      })}/password-change?hash=${mailData.data.hash} ${resetPasswordTitle}`,
+      text: `${url.toString()} ${resetPasswordTitle}`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,
@@ -94,9 +102,7 @@ export class MailService {
       ),
       context: {
         title: resetPasswordTitle,
-        url: `${this.configService.get('app.frontendDomain', {
-          infer: true,
-        })}/password-change?hash=${mailData.data.hash}`,
+        url: url.toString(),
         actionTitle: resetPasswordTitle,
         app_name: this.configService.get('app.name', {
           infer: true,

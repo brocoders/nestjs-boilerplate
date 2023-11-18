@@ -21,7 +21,6 @@ import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
-import { ForgotModule } from './forgot/forgot.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
@@ -82,7 +81,6 @@ import { MailerModule } from './mailer/mailer.module';
     AuthGoogleModule,
     AuthTwitterModule,
     AuthAppleModule,
-    ForgotModule,
     SessionModule,
     MailModule,
     MailerModule,
