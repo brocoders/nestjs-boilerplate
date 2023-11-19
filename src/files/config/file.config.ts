@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { FileConfig } from './config.type';
+import { FileConfig } from 'src/files/config/file-config.type';
 import { IsEnum, IsOptional, IsString, ValidateIf } from 'class-validator';
 import validateConfig from 'src/utils/validate-config';
 

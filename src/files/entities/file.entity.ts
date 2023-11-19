@@ -9,7 +9,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { EntityHelper } from 'src/utils/entity-helper';
 import appConfig from '../../config/app.config';
-import { AppConfig } from 'src/config/config.type';
+import { AppConfig } from 'src/config/app-config.type';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityHelper {

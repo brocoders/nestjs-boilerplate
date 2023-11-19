@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { MailConfig } from './config.type';
+import { MailConfig } from 'src/mail/config/mail-config.type';
 import {
   IsString,
   IsInt,
