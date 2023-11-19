@@ -1,83 +1,12 @@
-export type AppConfig = {
-  nodeEnv: string;
-  name: string;
-  workingDirectory: string;
-  frontendDomain?: string;
-  backendDomain: string;
-  port: number;
-  apiPrefix: string;
-  fallbackLanguage: string;
-  headerLanguage: string;
-};
-
-export type AppleConfig = {
-  appAudience: string[];
-};
-
-export type AuthConfig = {
-  secret?: string;
-  expires?: string;
-  refreshSecret?: string;
-  refreshExpires?: string;
-  forgotSecret?: string;
-  forgotExpires?: string;
-  confirmEmailSecret?: string;
-  confirmEmailExpires?: string;
-};
-
-export type DatabaseConfig = {
-  url?: string;
-  type?: string;
-  host?: string;
-  port?: number;
-  password?: string;
-  name?: string;
-  username?: string;
-  synchronize?: boolean;
-  maxConnections: number;
-  sslEnabled?: boolean;
-  rejectUnauthorized?: boolean;
-  ca?: string;
-  key?: string;
-  cert?: string;
-};
-
-export type FacebookConfig = {
-  appId?: string;
-  appSecret?: string;
-};
-
-export type FileConfig = {
-  driver: string;
-  accessKeyId?: string;
-  secretAccessKey?: string;
-  awsDefaultS3Bucket?: string;
-  awsDefaultS3Url?: string;
-  awsS3Region?: string;
-  maxFileSize: number;
-};
-
-export type GoogleConfig = {
-  clientId?: string;
-  clientSecret?: string;
-};
-
-export type MailConfig = {
-  port: number;
-  host?: string;
-  user?: string;
-  password?: string;
-  defaultEmail?: string;
-  defaultName?: string;
-  ignoreTLS: boolean;
-  secure: boolean;
-  requireTLS: boolean;
-};
-
-export type TwitterConfig = {
-  consumerKey?: string;
-  consumerSecret?: string;
-};
+import { AppConfig } from './app-config.type';
+import { AppleConfig } from '../auth-apple/config/apple-config.type';
+import { AuthConfig } from '../auth/config/auth-config.type';
+import { DatabaseConfig } from '../database/config/database-config.type';
+import { FacebookConfig } from '../auth-facebook/config/facebook-config.type';
+import { FileConfig } from '../files/config/file-config.type';
+import { GoogleConfig } from '../auth-google/config/google-config.type';
+import { MailConfig } from '../mail/config/mail-config.type';
+import { TwitterConfig } from '../auth-twitter/config/twitter-config.type';
 
 export type AllConfigType = {
   app: AppConfig;

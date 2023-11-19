@@ -1,23 +1,23 @@
 import { registerAs } from '@nestjs/config';
-import { GoogleConfig } from './config.type';
+import { FacebookConfig } from 'src/auth-facebook/config/facebook-config.type';
 import { IsOptional, IsString } from 'class-validator';
 import validateConfig from 'src/utils/validate-config';
 
 class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
-  GOOGLE_CLIENT_ID: string;
+  FACEBOOK_APP_ID: string;
 
   @IsString()
   @IsOptional()
-  GOOGLE_CLIENT_SECRET: string;
+  FACEBOOK_APP_SECRET: string;
 }
 
-export default registerAs<GoogleConfig>('google', () => {
+export default registerAs<FacebookConfig>('facebook', () => {
   validateConfig(process.env, EnvironmentVariablesValidator);
 
   return {
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    appId: process.env.FACEBOOK_APP_ID,
+    appSecret: process.env.FACEBOOK_APP_SECRET,
   };
 });

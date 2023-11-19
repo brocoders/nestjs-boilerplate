@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { DatabaseConfig } from './config.type';
+import { DatabaseConfig } from 'src/database/config/database-config.type';
 import {
   IsOptional,
   IsInt,
