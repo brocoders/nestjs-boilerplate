@@ -7,7 +7,7 @@ import {
   SerializeOptions,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { AuthTwitterService } from './auth-twitter.service';
 import { AuthTwitterLoginDto } from './dto/auth-twitter-login.dto';
 import { LoginResponseType } from '../auth/types/login-response.type';

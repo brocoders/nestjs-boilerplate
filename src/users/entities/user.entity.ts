@@ -15,8 +15,8 @@ import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import { FileEntity } from '../../files/entities/file.entity';
 import bcrypt from 'bcryptjs';
-import { EntityHelper } from 'src/utils/entity-helper';
-import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { EntityHelper } from '../../utils/entity-helper';
+import { AuthProvidersEnum } from '../../auth/auth-providers.enum';
 import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
