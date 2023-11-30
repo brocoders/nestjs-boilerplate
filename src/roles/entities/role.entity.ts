@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow, IsNumber } from 'class-validator';
-import { EntityHelper } from 'src/utils/entity-helper';
+import { EntityHelper } from '../../utils/entity-helper';
 
 @Entity()
 export class Role extends EntityHelper {
