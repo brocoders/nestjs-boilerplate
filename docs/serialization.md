@@ -21,7 +21,7 @@ If you need to hide some property in the entity you can use `@Exclude({ toPlainO
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class User extends EntityHelper {
+export class User extends EntityRelationalHelper {
   // Some code here...
 
   @Column({ nullable: true })
@@ -76,7 +76,7 @@ export class User extends EntityHelper {
    import { Expose } from 'class-transformer';
 
    @Entity()
-   export class User extends EntityHelper {
+   export class User extends EntityRelationalHelper {
      // Some code here...
 
      @Column({ unique: true, nullable: true })

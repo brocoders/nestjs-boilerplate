@@ -1,23 +1,18 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../roles/entities/role.entity';
-import { IsEmail, IsOptional, MinLength, Validate } from 'class-validator';
-import { Status } from '../../statuses/entities/status.entity';
-import { IsNotExist } from '../../utils/validators/is-not-exists.validator';
-import { FileEntity } from '../../files/entities/file.entity';
-import { IsExist } from '../../utils/validators/is-exists.validator';
-import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
+import { IsEmail, IsOptional, MinLength } from 'class-validator';
+import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
+import { RoleDto } from 'src/roles/dto/role.dto';
+import { StatusDto } from 'src/statuses/dto/status.dto';
+import { FileDto } from 'src/files/dto/file.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
   @Transform(lowerCaseTransformer)
   @IsOptional()
-  @Validate(IsNotExist, ['User'], {
-    message: 'emailAlreadyExists',
-  })
   @IsEmail()
   email?: string | null;
 
@@ -38,26 +33,19 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   lastName?: string | null;
 
-  @ApiProperty({ type: () => FileEntity })
+  @ApiProperty({ type: FileDto })
   @IsOptional()
-  @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'imageNotExists',
-  })
-  photo?: FileEntity | null;
+  photo?: FileDto | null;
 
-  @ApiProperty({ type: Role })
+  @ApiProperty({ type: RoleDto })
   @IsOptional()
-  @Validate(IsExist, ['Role', 'id'], {
-    message: 'roleNotExists',
-  })
-  role?: Role | null;
+  @Type(() => RoleDto)
+  role?: RoleDto | null;
 
-  @ApiProperty({ type: Status })
+  @ApiProperty({ type: StatusDto })
   @IsOptional()
-  @Validate(IsExist, ['Status', 'id'], {
-    message: 'statusNotExists',
-  })
-  status?: Status;
+  @Type(() => StatusDto)
+  status?: StatusDto;
 
   hash?: string | null;
 }

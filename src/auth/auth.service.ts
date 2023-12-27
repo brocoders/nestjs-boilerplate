@@ -6,28 +6,25 @@ import {
 } from '@nestjs/common';
 import ms from 'ms';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/entities/user.entity';
 import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
-import { RoleEnum } from '../roles/roles.enum';
-import { StatusEnum } from '../statuses/statuses.enum';
-import { plainToClass } from 'class-transformer';
-import { Status } from '../statuses/entities/status.entity';
-import { Role } from '../roles/entities/role.entity';
+import { RoleEnum } from 'src/roles/roles.enum';
+import { StatusEnum } from 'src/statuses/statuses.enum';
 import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
-import { UsersService } from '../users/users.service';
-import { MailService } from '../mail/mail.service';
+import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from './types/login-response.type';
 import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from '../config/config.type';
-import { SessionService } from '../session/session.service';
+import { AllConfigType } from 'src/config/config.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
-import { Session } from '../session/entities/session.entity';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
+import { User } from 'src/users/domain/user';
+import { Session } from 'src/session/domain/session';
+import { UsersService } from 'src/users/users.service';
+import { SessionService } from 'src/session/session.service';
 
 @Injectable()
 export class AuthService {
@@ -62,6 +59,18 @@ export class AuthService {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
             email: `needLoginViaProvider:${user.provider}`,
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    if (!user.password) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            password: 'incorrectPassword',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -132,12 +141,12 @@ export class AuthService {
     } else if (userByEmail) {
       user = userByEmail;
     } else {
-      const role = plainToClass(Role, {
+      const role = {
         id: RoleEnum.user,
-      });
-      const status = plainToClass(Status, {
+      };
+      const status = {
         id: StatusEnum.active,
-      });
+      };
 
       user = await this.usersService.create({
         email: socialEmail ?? null,
@@ -150,7 +159,7 @@ export class AuthService {
       });
 
       user = await this.usersService.findOne({
-        id: user.id,
+        id: user?.id,
       });
     }
 
@@ -194,10 +203,10 @@ export class AuthService {
       email: dto.email,
       role: {
         id: RoleEnum.user,
-      } as Role,
+      },
       status: {
         id: StatusEnum.inactive,
-      } as Status,
+      },
     });
 
     const hash = await this.jwtService.signAsync(
@@ -261,10 +270,11 @@ export class AuthService {
       );
     }
 
-    user.status = plainToClass(Status, {
+    user.status = {
       id: StatusEnum.active,
-    });
-    await user.save();
+    };
+
+    await this.usersService.update(user.id, user);
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -354,7 +364,8 @@ export class AuthService {
         id: user.id,
       },
     });
-    await user.save();
+
+    await this.usersService.update(user.id, user);
   }
 
   async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
@@ -390,6 +401,18 @@ export class AuthService {
             status: HttpStatus.UNPROCESSABLE_ENTITY,
             errors: {
               user: 'userNotFound',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+
+      if (!currentUser.password) {
+        throw new HttpException(
+          {
+            status: HttpStatus.UNPROCESSABLE_ENTITY,
+            errors: {
+              oldPassword: 'incorrectOldPassword',
             },
           },
           HttpStatus.UNPROCESSABLE_ENTITY,
@@ -432,9 +455,7 @@ export class AuthService {
     data: Pick<JwtRefreshPayloadType, 'sessionId'>,
   ): Promise<Omit<LoginResponseType, 'user'>> {
     const session = await this.sessionService.findOne({
-      where: {
-        id: data.sessionId,
-      },
+      id: data.sessionId,
     });
 
     if (!session) {

@@ -1,21 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EntityCondition } from 'src/utils/types/entity-condition.type';
+import { NullableType } from 'src/utils/types/nullable.type';
+import { FileRepository } from './infrastructure/persistence/file.repository';
+import { FileType } from './domain/file';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FileEntity } from './entities/file.entity';
-import { Repository } from 'typeorm';
 import { AllConfigType } from 'src/config/config.type';
 
 @Injectable()
 export class FilesService {
   constructor(
     private readonly configService: ConfigService<AllConfigType>,
-    @InjectRepository(FileEntity)
-    private readonly fileRepository: Repository<FileEntity>,
+    private readonly fileRepository: FileRepository,
   ) {}
 
-  async uploadFile(
+  async create(
     file: Express.Multer.File | Express.MulterS3.File,
-  ): Promise<FileEntity> {
+  ): Promise<FileType> {
     if (!file) {
       throw new HttpException(
         {
@@ -35,12 +35,12 @@ export class FilesService {
       s3: (file as Express.MulterS3.File).location,
     };
 
-    return this.fileRepository.save(
-      this.fileRepository.create({
-        path: path[
-          this.configService.getOrThrow('file.driver', { infer: true })
-        ],
-      }),
-    );
+    return this.fileRepository.create({
+      path: path[this.configService.getOrThrow('file.driver', { infer: true })],
+    });
+  }
+
+  findOne(fields: EntityCondition<FileType>): Promise<NullableType<FileType>> {
+    return this.fileRepository.findOne(fields);
   }
 }
