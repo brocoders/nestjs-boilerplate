@@ -6,14 +6,21 @@ import { diskStorage } from 'multer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileEntity } from './entities/file.entity';
-import { FilesService } from './files.service';
 import { AllConfigType } from 'src/config/config.type';
+import databaseConfig from 'src/database/config/database.config';
+import { DatabaseConfig } from 'src/database/config/database-config.type';
+import { DocumentFilePersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
+import { RelationalFilePersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { FilesService } from './files.service';
+
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentFilePersistenceModule
+  : RelationalFilePersistenceModule;
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FileEntity]),
+    infrastructurePersistenceModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -98,5 +105,6 @@ import { AllConfigType } from 'src/config/config.type';
   ],
   controllers: [FilesController],
   providers: [ConfigModule, ConfigService, FilesService],
+  exports: [FilesService, infrastructurePersistenceModule],
 })
 export class FilesModule {}

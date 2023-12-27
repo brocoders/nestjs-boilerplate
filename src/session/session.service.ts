@@ -1,45 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptions } from 'src/utils/types/find-options.type';
-import { DeepPartial, Not, Repository } from 'typeorm';
-import { Session } from './entities/session.entity';
-import { NullableType } from '../utils/types/nullable.type';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/users/domain/user';
+import { EntityCondition } from 'src/utils/types/entity-condition.type';
+import { SessionRepository } from './infrastructure/persistence/session.repository';
+import { Session } from './domain/session';
+import { NullableType } from 'src/utils/types/nullable.type';
 
 @Injectable()
 export class SessionService {
-  constructor(
-    @InjectRepository(Session)
-    private readonly sessionRepository: Repository<Session>,
-  ) {}
+  constructor(private readonly sessionRepository: SessionRepository) {}
 
-  async findOne(options: FindOptions<Session>): Promise<NullableType<Session>> {
-    return this.sessionRepository.findOne({
-      where: options.where,
-    });
+  findOne(options: EntityCondition<Session>): Promise<NullableType<Session>> {
+    return this.sessionRepository.findOne(options);
   }
 
-  async findMany(options: FindOptions<Session>): Promise<Session[]> {
-    return this.sessionRepository.find({
-      where: options.where,
-    });
+  create(
+    data: Omit<Session, 'id' | 'createdAt' | 'deletedAt'>,
+  ): Promise<Session> {
+    return this.sessionRepository.create(data);
   }
 
-  async create(data: DeepPartial<Session>): Promise<Session> {
-    return this.sessionRepository.save(this.sessionRepository.create(data));
-  }
-
-  async softDelete({
-    excludeId,
-    ...criteria
-  }: {
+  async softDelete(criteria: {
     id?: Session['id'];
     user?: Pick<User, 'id'>;
     excludeId?: Session['id'];
   }): Promise<void> {
-    await this.sessionRepository.softDelete({
-      ...criteria,
-      id: criteria.id ? criteria.id : excludeId ? Not(excludeId) : undefined,
-    });
+    await this.sessionRepository.softDelete(criteria);
   }
 }

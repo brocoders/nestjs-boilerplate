@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16.1-alpine
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+  maildev:
+    build:
+      context: .
+      dockerfile: maildev.Dockerfile
+    expose:
+      - 1080
+      - 1025
+
+  # Uncomment to use redis
+  # redis:
+  #   image: redis:7-alpine
+  #   expose:
+  #     - 6379
+
+  api:
+    build:
+      context: .
+      dockerfile: relational.e2e.Dockerfile

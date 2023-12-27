@@ -1,40 +1,43 @@
 # Work with database
 
-In NestJS Boilerplate uses [TypeORM](https://www.npmjs.com/package/typeorm) and [PostgreSQL](https://www.postgresql.org/) for working with database, and all examples will for [PostgreSQL](https://www.postgresql.org/), but you can use any database.
-
 ---
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Working with database schema](#working-with-database-schema)
+- [Working with database schema (TypeORM)](#working-with-database-schema-typeorm)
   - [Generate migration](#generate-migration)
   - [Run migration](#run-migration)
   - [Revert migration](#revert-migration)
   - [Drop all tables in database](#drop-all-tables-in-database)
-- [Seeding](#seeding)
-  - [Creating seeds](#creating-seeds)
-  - [Run seed](#run-seed)
-  - [Factory and Faker](#factory-and-faker)
-- [Performance optimization](#performance-optimization)
+- [Working with database schema (Mongoose)](#working-with-database-schema-mongoose)
+  - [Create schema](#create-schema)
+- [Seeding (TypeORM)](#seeding-typeorm)
+  - [Creating seeds (TypeORM)](#creating-seeds-typeorm)
+  - [Run seed (TypeORM)](#run-seed-typeorm)
+  - [Factory and Faker (TypeORM)](#factory-and-faker-typeorm)
+- [Seeding (Mongoose)](#seeding-mongoose)
+  - [Creating seeds (Mongoose)](#creating-seeds-mongoose)
+  - [Run seed (Mongoose)](#run-seed-mongoose)
+- [Performance optimization (PostgreSQL + TypeORM)](#performance-optimization-postgresql--typeorm)
   - [Indexes and Foreign Keys](#indexes-and-foreign-keys)
   - [Max connections](#max-connections)
 
 ---
 
-## Working with database schema
+## Working with database schema (TypeORM)
 
 ### Generate migration
 
 1. Create entity file with extension `.entity.ts`. For example `post.entity.ts`:
 
    ```ts
-   // /src/posts/entities/post.entity.ts
+   // /src/posts/infrastructure/persistence/relational/entities/post.entity.ts
 
    import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-   import { EntityHelper } from 'src/utils/entity-helper';
+   import { EntityRelationalHelper } from 'src/utils/relational-entity-helper';
 
    @Entity()
-   export class Post extends EntityHelper {
+   export class Post extends EntityRelationalHelper {
      @PrimaryGeneratedColumn()
      id: number;
 
@@ -44,7 +47,7 @@ In NestJS Boilerplate uses [TypeORM](https://www.npmjs.com/package/typeorm) and 
      @Column()
      body: string;
 
-     // Here any fields what you need
+     // Here any fields that you need
    }
    ```
 
@@ -76,22 +79,58 @@ npm run schema:drop
 
 ---
 
-## Seeding
+## Working with database schema (Mongoose)
 
-### Creating seeds
+### Create schema
 
-1. Create seed file with `npm run seed:create -- --name=Post`. Where `Post` is name of entity.
-1. Go to `src/database/seeds/post/post-seed.service.ts`.
+1. Create entity file with extension `.schema.ts`. For example `post.schema.ts`:
+
+   ```ts
+   // /src/posts/infrastructure/persistence/document/entities/post.schema.ts
+
+   import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+   import { HydratedDocument } from 'mongoose';
+
+   export type PostSchemaDocument = HydratedDocument<PostSchemaClass>;
+
+   @Schema({
+     timestamps: true,
+     toJSON: {
+       virtuals: true,
+       getters: true,
+     },
+   })
+   export class PostSchemaClass extends EntityDocumentHelper {
+     @Prop()
+     title: string;
+
+     @Prop()
+     body: string;
+
+     // Here any fields that you need
+   }
+
+   export const PostSchema = SchemaFactory.createForClass(PostSchemaClass);
+   ```
+
+---
+
+## Seeding (TypeORM)
+
+### Creating seeds (TypeORM)
+
+1. Create seed file with `npm run seed:create:relational -- --name=Post`. Where `Post` is name of entity.
+1. Go to `src/database/seeds/relational/post/post-seed.service.ts`.
 1. In `run` method extend your logic.
-1. Run [npm run seed:run](#run-seed)
+1. Run [npm run seed:run:relational](#run-seed-typeorm)
 
-### Run seed
+### Run seed (TypeORM)
 
 ```bash
-npm run seed:run
+npm run seed:run:relational
 ```
 
-### Factory and Faker
+### Factory and Faker (TypeORM)
 
 1. Install faker:
 
@@ -108,9 +147,9 @@ npm run seed:run
     import { Injectable } from '@nestjs/common';
     import { InjectRepository } from '@nestjs/typeorm';
     import { Repository } from 'typeorm';
-    import { Role } from 'src/roles/entities/role.entity';
-    import { Status } from 'src/statuses/entities/status.entity';
-    import { User } from 'src/users/entities/user.entity';
+    import { Role } from 'src/roles/infrastructure/persistence/relational/entities/role.entity';
+    import { Status } from 'src/statuses/infrastructure/persistence/relational/entities/status.entity';
+    import { User } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
 
     @Injectable()
     export class UserFactory {
@@ -179,8 +218,8 @@ npm run seed:run
     import { User } from 'src/users/entities/user.entity';
     import { UserSeedService } from './user-seed.service';
     import { UserFactory } from './user.factory';
-    import { Role } from 'src/roles/entities/role.entity';
-    import { Status } from 'src/statuses/entities/status.entity';
+    import { Role } from 'src/roles/infrastructure/persistence/relational/entities/role.entity';
+    import { Status } from 'src/statuses/infrastructure/persistence/relational/entities/status.entity';
 
     @Module({
       imports: [TypeOrmModule.forFeature([User, Role, Status])],
@@ -199,7 +238,24 @@ npm run seed:run
 
 ---
 
-## Performance optimization
+## Seeding (Mongoose)
+
+### Creating seeds (Mongoose)
+
+1. Create seed file with `npm run seed:create:document -- --name=Post`. Where `Post` is name of entity.
+1. Go to `src/database/seeds/document/post/post-seed.service.ts`.
+1. In `run` method extend your logic.
+1. Run [npm run seed:run:document](#run-seed-mongoose)
+
+### Run seed (Mongoose)
+
+```bash
+npm run seed:run:document
+```
+
+---
+
+## Performance optimization (PostgreSQL + TypeORM)
 
 ### Indexes and Foreign Keys
 
