@@ -41,7 +41,7 @@
     "@nestjs/mongoose": "^10.0.2",
     "@nestjs/passport": "10.0.3",
     "@nestjs/platform-express": "10.2.10",
-    "@nestjs/swagger": "7.1.16",
+    "@nestjs/swagger": "7.1.17",
     "@nestjs/typeorm": "10.0.1",
     "@types/multer-s3": "3.0.3",
     "apple-signin-auth": "1.7.5",
