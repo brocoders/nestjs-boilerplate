@@ -6,7 +6,6 @@
   - [Auth via email flow](#auth-via-email-flow)
   - [Auth via external services or social networks flow](#auth-via-external-services-or-social-networks-flow)
 - [Configure Auth](#configure-auth)
-- [Auth via Apple](#auth-via-apple)
 - [Auth via Google](#auth-via-google)
 - [Auth via Twitter](#auth-via-twitter)
 - [Refresh token flow](#refresh-token-flow)
@@ -36,11 +35,11 @@ sequenceDiagram
 
 ### Auth via external services or social networks flow
 
-Also you can sign up via another external services or social networks like Apple, Google, and Twitter.
+Also you can sign up via another external services or social networks like Google, and Twitter.
 
 ```mermaid
 sequenceDiagram
-    participant B as External Auth Services (Apple, Google, etc)
+    participant B as External Auth Services (Google, etc)
     participant A as Fronted App (Web, Mobile, Desktop)
     participant C as Backend App
 
@@ -60,8 +59,6 @@ For auth with external services or social networks you need:
    POST /api/v1/auth/google/login
 
    POST /api/v1/auth/twitter/login
-
-   POST /api/v1/auth/apple/login
    ```
 
 1. Make any requests using a JWT token
@@ -81,15 +78,6 @@ For auth with external services or social networks you need:
    ```text
    AUTH_JWT_SECRET=HERE_SECRET_KEY_FROM_STEP_1
    AUTH_REFRESH_SECRET=HERE_SECRET_KEY_FROM_STEP_1
-   ```
-
-## Auth via Apple
-
-1. [Set up your service on Apple](https://www.npmjs.com/package/apple-signin-auth)
-1. Change `APPLE_APP_AUDIENCE` in `.env`
-
-   ```text
-   APPLE_APP_AUDIENCE=["com.company", "com.company.web"]
    ```
 
 ## Auth via Google
