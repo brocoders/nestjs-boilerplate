@@ -4,7 +4,7 @@ import { FileSchemaClass } from '../entities/file.schema';
 export class FileMapper {
   static toDomain(raw: FileSchemaClass): FileType {
     const file = new FileType();
-    file.id = raw._id;
+    file.id = raw._id.toString();
     file.path = raw.path;
     return file;
   }
