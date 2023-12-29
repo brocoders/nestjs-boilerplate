@@ -6,7 +6,6 @@
   - [Auth via email flow](#auth-via-email-flow)
   - [Auth via external services or social networks flow](#auth-via-external-services-or-social-networks-flow)
 - [Configure Auth](#configure-auth)
-- [Auth via Twitter](#auth-via-twitter)
 - [Refresh token flow](#refresh-token-flow)
   - [Video example](#video-example)
 - [Logout](#logout)
@@ -32,36 +31,6 @@ sequenceDiagram
 
 <https://user-images.githubusercontent.com/6001723/224566194-1c1f4e98-5691-4703-b30e-92f99ec5d929.mp4>
 
-### Auth via external services or social networks flow
-
-Also you can sign up via another external services or social networks like Twitter.
-
-```mermaid
-sequenceDiagram
-    participant B as External Auth Services
-    participant A as Fronted App (Web, Mobile, Desktop)
-    participant C as Backend App
-
-    A->>B: 1. Sign in through an external service
-    B->>A: 2. Get Access Token
-    A->>C: 3. Send Access Token to auth endpoint
-    C->>A: 4. Get a JWT token
-    A->>C: 5. Make any requests using a JWT token
-```
-
-For auth with external services or social networks you need:
-
-1. Sign in through an external service and get access token(s).
-1. Call one of endpoints with access token received in frontend app on 1-st step and get JWT token from the backend app.
-
-   ```text
-   POST /api/v1/auth/twitter/login
-   ```
-
-1. Make any requests using a JWT token
-
----
-
 ## Configure Auth
 
 1. Generate secret keys for `access token` and `refresh token`:
@@ -75,16 +44,6 @@ For auth with external services or social networks you need:
    ```text
    AUTH_JWT_SECRET=HERE_SECRET_KEY_FROM_STEP_1
    AUTH_REFRESH_SECRET=HERE_SECRET_KEY_FROM_STEP_1
-   ```
-
-## Auth via Twitter
-
-1. Set up your service on Twitter
-1. Change `TWITTER_CONSUMER_KEY` and `TWITTER_CONSUMER_SECRET` in `.env`
-
-   ```text
-   TWITTER_CONSUMER_KEY=abc
-   TWITTER_CONSUMER_SECRET=abc
    ```
 
 ## Refresh token flow

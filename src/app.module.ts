@@ -7,11 +7,9 @@ import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
 import mailConfig from './mail/config/mail.config';
 import fileConfig from './files/config/file.config';
-import twitterConfig from './auth-twitter/config/twitter.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
@@ -29,14 +27,7 @@ import { DatabaseConfig } from './database/config/database-config.type';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [
-        databaseConfig,
-        authConfig,
-        appConfig,
-        mailConfig,
-        fileConfig,
-        twitterConfig,
-      ],
+      load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig],
       envFilePath: ['.env'],
     }),
     (databaseConfig() as DatabaseConfig).isDocumentDatabase
@@ -75,7 +66,6 @@ import { DatabaseConfig } from './database/config/database-config.type';
     UsersModule,
     FilesModule,
     AuthModule,
-    AuthTwitterModule,
     SessionModule,
     MailModule,
     MailerModule,
