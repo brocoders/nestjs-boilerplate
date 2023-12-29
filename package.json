@@ -85,7 +85,7 @@
     "@types/node": "20.10.5",
     "@types/passport-anonymous": "1.0.5",
     "@types/passport-jwt": "3.0.13",
-    "@types/supertest": "2.0.16",
+    "@types/supertest": "6.0.2",
     "@types/twitter": "1.7.4",
     "@typescript-eslint/eslint-plugin": "6.16.0",
     "@typescript-eslint/parser": "6.16.0",
