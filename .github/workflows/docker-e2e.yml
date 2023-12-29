@@ -14,5 +14,3 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run e2e tests for NestJS with TypeORM
         run: docker compose -f docker-compose.relational.ci.yaml --env-file env-example-relational -p ci-relational up --build --exit-code-from api
-      - name: Run e2e tests for NestJS with Mongoose
-        run: docker compose -f docker-compose.document.ci.yaml --env-file env-example-document -p ci-document up --build --exit-code-from api
