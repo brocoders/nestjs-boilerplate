@@ -6,7 +6,6 @@
   - [Auth via email flow](#auth-via-email-flow)
   - [Auth via external services or social networks flow](#auth-via-external-services-or-social-networks-flow)
 - [Configure Auth](#configure-auth)
-- [Auth via Google](#auth-via-google)
 - [Auth via Twitter](#auth-via-twitter)
 - [Refresh token flow](#refresh-token-flow)
   - [Video example](#video-example)
@@ -35,11 +34,11 @@ sequenceDiagram
 
 ### Auth via external services or social networks flow
 
-Also you can sign up via another external services or social networks like Google, and Twitter.
+Also you can sign up via another external services or social networks like Twitter.
 
 ```mermaid
 sequenceDiagram
-    participant B as External Auth Services (Google, etc)
+    participant B as External Auth Services
     participant A as Fronted App (Web, Mobile, Desktop)
     participant C as Backend App
 
@@ -56,8 +55,6 @@ For auth with external services or social networks you need:
 1. Call one of endpoints with access token received in frontend app on 1-st step and get JWT token from the backend app.
 
    ```text
-   POST /api/v1/auth/google/login
-
    POST /api/v1/auth/twitter/login
    ```
 
@@ -78,16 +75,6 @@ For auth with external services or social networks you need:
    ```text
    AUTH_JWT_SECRET=HERE_SECRET_KEY_FROM_STEP_1
    AUTH_REFRESH_SECRET=HERE_SECRET_KEY_FROM_STEP_1
-   ```
-
-## Auth via Google
-
-1. You need a `CLIENT_ID`, `CLIENT_SECRET`. You can find these pieces of information by going to the [Developer Console](https://console.cloud.google.com/), clicking your project (if doesn't have create it here https://console.cloud.google.com/projectcreate) -> `APIs & services` -> `credentials`.
-1. Change `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`
-
-   ```text
-   GOOGLE_CLIENT_ID=abc
-   GOOGLE_CLIENT_SECRET=abc
    ```
 
 ## Auth via Twitter

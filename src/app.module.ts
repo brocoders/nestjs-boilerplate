@@ -7,12 +7,10 @@ import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
 import mailConfig from './mail/config/mail.config';
 import fileConfig from './files/config/file.config';
-import googleConfig from './auth-google/config/google.config';
 import twitterConfig from './auth-twitter/config/twitter.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
 import { I18nModule } from 'nestjs-i18n/dist/i18n.module';
 import { HeaderResolver } from 'nestjs-i18n';
@@ -37,7 +35,6 @@ import { DatabaseConfig } from './database/config/database-config.type';
         appConfig,
         mailConfig,
         fileConfig,
-        googleConfig,
         twitterConfig,
       ],
       envFilePath: ['.env'],
@@ -78,7 +75,6 @@ import { DatabaseConfig } from './database/config/database-config.type';
     UsersModule,
     FilesModule,
     AuthModule,
-    AuthGoogleModule,
     AuthTwitterModule,
     SessionModule,
     MailModule,
