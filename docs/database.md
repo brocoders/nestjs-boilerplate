@@ -21,6 +21,8 @@
 - [Performance optimization (PostgreSQL + TypeORM)](#performance-optimization-postgresql--typeorm)
   - [Indexes and Foreign Keys](#indexes-and-foreign-keys)
   - [Max connections](#max-connections)
+- [Performance optimization (MongoDB + Mongoose)](#performance-optimization-mongodb--mongoose)
+  - [Design schema](#design-schema)
 
 ---
 
@@ -270,6 +272,15 @@ DATABASE_MAX_CONNECTIONS=100
 ```
 
 You can think of this parameter as how many concurrent database connections your application can handle.
+
+## Performance optimization (MongoDB + Mongoose)
+
+### Design schema
+
+Designing schema for MongoDB is completely different from designing schema for relational databases. For best performance, you should design your schema according to:
+
+1. [MongoDB Schema Design Anti-Patterns](https://www.mongodb.com/developer/products/mongodb/schema-design-anti-pattern-massive-arrays)
+1. [MongoDB Schema Design Best Practices](https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/)
 
 ---
 
