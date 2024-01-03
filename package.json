@@ -68,7 +68,7 @@
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.0",
     "twitter": "1.7.1",
-    "typeorm": "0.3.17"
+    "typeorm": "0.3.19"
   },
   "devDependencies": {
     "@nestjs/cli": "10.2.1",
