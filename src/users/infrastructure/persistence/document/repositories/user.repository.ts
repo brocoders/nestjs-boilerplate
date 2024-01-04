@@ -17,8 +17,8 @@ export class UsersDocumentRepository implements UserRepository {
     private readonly usersModel: Model<UserSchemaClass>,
   ) {}
 
-  async create(createProfileDto: User): Promise<User> {
-    const persistenceModel = UserMapper.toPersistence(createProfileDto);
+  async create(data: User): Promise<User> {
+    const persistenceModel = UserMapper.toPersistence(data);
     const createdUser = new this.usersModel(persistenceModel);
     const userObject = await createdUser.save();
     return UserMapper.toDomain(userObject);
