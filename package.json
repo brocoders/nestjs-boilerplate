@@ -33,7 +33,7 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.485.0",
+    "@aws-sdk/client-s3": "3.490.0",
     "@nestjs/common": "10.3.0",
     "@nestjs/config": "3.1.1",
     "@nestjs/core": "10.3.0",
