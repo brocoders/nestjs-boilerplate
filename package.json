@@ -47,7 +47,7 @@
     "apple-signin-auth": "1.7.5",
     "bcryptjs": "2.4.3",
     "class-transformer": "0.5.1",
-    "class-validator": "0.14.0",
+    "class-validator": "0.14.1",
     "dotenv": "^16.3.1",
     "fb": "2.0.0",
     "google-auth-library": "9.4.1",
