@@ -99,12 +99,6 @@ Switching between TypeORM and Mongoose is implemented based on the [Dependency I
    npm install
    ```
 
-1. Run migrations
-
-   ```bash
-   npm run migration:run
-   ```
-
 1. Run seeds
 
    ```bash
