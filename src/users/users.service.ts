@@ -63,6 +63,7 @@ export class UsersService {
           HttpStatus.UNPROCESSABLE_ENTITY,
         );
       }
+      clonedPayload.photo = fileObject;
     }
 
     if (clonedPayload.role?.id) {
@@ -169,6 +170,7 @@ export class UsersService {
           HttpStatus.UNPROCESSABLE_ENTITY,
         );
       }
+      clonedPayload.photo = fileObject;
     }
 
     if (clonedPayload.role?.id) {
