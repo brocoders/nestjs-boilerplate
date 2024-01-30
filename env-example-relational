@@ -22,7 +22,7 @@ DATABASE_KEY=
 DATABASE_CERT=
 DATABASE_URL=
 
-# Support "local", "s3"
+# Support "local", "s3", "s3-presigned"
 FILE_DRIVER=local
 ACCESS_KEY_ID=
 SECRET_ACCESS_KEY=
