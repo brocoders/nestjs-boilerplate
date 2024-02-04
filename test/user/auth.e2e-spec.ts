@@ -71,16 +71,15 @@ describe('Auth user (e2e)', () => {
   it('Confirm email: /api/v1/auth/email/confirm (POST)', async () => {
     const hash = await request(mail)
       .get('/email')
-      .then(
-        ({ body }) =>
-          body
-            .find(
-              (letter) =>
-                letter.to[0].address.toLowerCase() ===
-                  newUserEmail.toLowerCase() &&
-                /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
-            )
-            ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
+      .then(({ body }) =>
+        body
+          .find(
+            (letter) =>
+              letter.to[0].address.toLowerCase() ===
+                newUserEmail.toLowerCase() &&
+              /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
+          )
+          ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
       );
 
     return request(app)
@@ -94,16 +93,15 @@ describe('Auth user (e2e)', () => {
   it('Can not confirm email with same link twice: /api/v1/auth/email/confirm (POST)', async () => {
     const hash = await request(mail)
       .get('/email')
-      .then(
-        ({ body }) =>
-          body
-            .find(
-              (letter) =>
-                letter.to[0].address.toLowerCase() ===
-                  newUserEmail.toLowerCase() &&
-                /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
-            )
-            ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
+      .then(({ body }) =>
+        body
+          .find(
+            (letter) =>
+              letter.to[0].address.toLowerCase() ===
+                newUserEmail.toLowerCase() &&
+              /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
+          )
+          ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
       );
 
     return request(app)
