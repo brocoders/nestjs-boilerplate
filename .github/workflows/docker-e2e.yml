@@ -12,7 +12,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Run e2e tests for NestJS with TypeORM
+        id: relational
         run: docker compose -f docker-compose.relational.ci.yaml --env-file env-example-relational -p ci-relational up --build --exit-code-from api
+
+      - name: Copy prod.log from container to host
+        if: ${{ failure() && steps.relational.conclusion == 'failure' }}
+        run: docker cp ci-relational-api-1:/usr/src/app/prod.log .
+
       - name: Run e2e tests for NestJS with Mongoose
+        id: document
         run: docker compose -f docker-compose.document.ci.yaml --env-file env-example-document -p ci-document up --build --exit-code-from api
+
+      - name: Copy prod.log from container to host
+        if: ${{ failure() && steps.document.conclusion == 'failure' }}
+        run: docker cp ci-document-api-1:/usr/src/app/prod.log .
+
+      - name: Upload prod.log to artifacts for debugging
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-logs
+          path: prod.log
