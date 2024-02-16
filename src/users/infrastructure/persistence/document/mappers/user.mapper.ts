@@ -18,6 +18,8 @@ export class UserMapper {
     user.lastName = raw.lastName;
     if (raw.photo) {
       user.photo = FileMapper.toDomain(raw.photo);
+    } else if (raw.photo === null) {
+      user.photo = null;
     }
     user.role = raw.role;
     user.status = raw.status;
