@@ -5,7 +5,7 @@ import { FileDto } from 'src/files/dto/file.dto';
 export class AuthUpdateDto {
   @ApiProperty({ type: () => FileDto })
   @IsOptional()
-  photo?: FileDto;
+  photo?: FileDto | null;
 
   @ApiProperty({ example: 'John' })
   @IsOptional()

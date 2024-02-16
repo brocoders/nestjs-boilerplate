@@ -35,11 +35,14 @@ export class UserMapper {
       role.id = user.role.id;
     }
 
-    let photo: FileEntity | undefined = undefined;
+    let photo: FileEntity | undefined | null = undefined;
 
     if (user.photo) {
       photo = new FileEntity();
       photo.id = user.photo.id;
+      photo.path = user.photo.path;
+    } else if (user.photo === null) {
+      photo = null;
     }
 
     let status: StatusEntity | undefined = undefined;
