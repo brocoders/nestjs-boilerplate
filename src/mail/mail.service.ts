@@ -62,7 +62,9 @@ export class MailService {
     });
   }
 
-  async forgotPassword(mailData: MailData<{ hash: string }>): Promise<void> {
+  async forgotPassword(
+    mailData: MailData<{ hash: string; tokenExpires: number }>,
+  ): Promise<void> {
     const i18n = I18nContext.current();
     let resetPasswordTitle: MaybeType<string>;
     let text1: MaybeType<string>;
@@ -86,6 +88,7 @@ export class MailService {
       }) + '/password-change',
     );
     url.searchParams.set('hash', mailData.data.hash);
+    url.searchParams.set('expires', mailData.data.tokenExpires.toString());
 
     await this.mailerService.sendMail({
       to: mailData.to,

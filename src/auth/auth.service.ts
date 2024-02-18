@@ -294,6 +294,12 @@ export class AuthService {
       );
     }
 
+    const tokenExpiresIn = this.configService.getOrThrow('auth.forgotExpires', {
+      infer: true,
+    });
+
+    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+
     const hash = await this.jwtService.signAsync(
       {
         forgotUserId: user.id,
@@ -302,9 +308,7 @@ export class AuthService {
         secret: this.configService.getOrThrow('auth.forgotSecret', {
           infer: true,
         }),
-        expiresIn: this.configService.getOrThrow('auth.forgotExpires', {
-          infer: true,
-        }),
+        expiresIn: tokenExpiresIn,
       },
     );
 
@@ -312,6 +316,7 @@ export class AuthService {
       to: email,
       data: {
         hash,
+        tokenExpires,
       },
     });
   }
