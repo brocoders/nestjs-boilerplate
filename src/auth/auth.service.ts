@@ -140,7 +140,7 @@ export class AuthService {
       await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
-    } else {
+    } else if (socialData.id) {
       const role = {
         id: RoleEnum.user,
       };
