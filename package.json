@@ -34,7 +34,7 @@
     "prepare": "is-ci || husky"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.515.0",
+    "@aws-sdk/client-s3": "3.521.0",
     "@aws-sdk/s3-request-presigner": "^3.498.0",
     "@nestjs/common": "10.3.3",
     "@nestjs/config": "3.2.0",
@@ -47,7 +47,7 @@
     "@nestjs/typeorm": "10.0.2",
     "@types/multer-s3": "3.0.3",
     "@types/prompts": "^2.4.9",
-    "apple-signin-auth": "1.7.5",
+    "apple-signin-auth": "1.7.6",
     "bcryptjs": "2.4.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
