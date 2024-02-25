@@ -16,7 +16,7 @@ RUN sed -i 's/\r//g' /opt/wait-for-it.sh
 RUN sed -i 's/\r//g' /opt/startup.document.ci.sh
 
 WORKDIR /usr/src/app
-RUN if [ ! -f .env ]; then cp env-example-document .env; fi
+RUN echo "" > .env
 RUN npm run build
 
 CMD ["/opt/startup.document.ci.sh"]
