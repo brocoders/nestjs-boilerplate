@@ -43,14 +43,18 @@ export class SessionDocumentRepository implements SessionRepository {
     user?: Pick<User, 'id'>;
     excludeId?: Session['id'];
   }): Promise<void> {
-    const transformedCriteria = {
-      user: criteria.user?.id,
-      _id: criteria.id
-        ? criteria.id
-        : excludeId
-          ? { $not: { $eq: excludeId } }
-          : undefined,
-    };
+    const transformedCriteria: any = {};
+
+    if (criteria.user) {
+      transformedCriteria.user = criteria.user.id;
+    }
+
+    if (excludeId) {
+      transformedCriteria._id = { $ne: excludeId };
+    } else if (criteria.id) {
+      transformedCriteria._id = criteria.id;
+    }
+
     await this.sessionModel.deleteMany(transformedCriteria);
   }
 }

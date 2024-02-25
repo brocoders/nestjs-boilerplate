@@ -490,6 +490,14 @@ export class AuthService {
     });
   }
 
+  async logoutAll(user: User) {
+    await this.sessionService.softDelete({
+      user: {
+        id: user.id,
+      },
+    });
+  }
+
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];

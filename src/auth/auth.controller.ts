@@ -109,6 +109,14 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
+  @Post('logoutAll')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async logoutAll(@Request() request): Promise<void> {
+    await this.service.logoutAll(request.user);
+  }
+
+  @ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
   })
