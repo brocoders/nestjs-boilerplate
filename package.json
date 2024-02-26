@@ -154,6 +154,14 @@
           "name": "conventionalcommits",
           "types": [
             {
+              "type": "chore(deps)",
+              "section": "Dependency Upgrades"
+            },
+            {
+              "type": "fix(deps)",
+              "section": "Dependency Upgrades"
+            },
+            {
               "type": "feat",
               "section": "Features"
             },
@@ -172,10 +180,6 @@
             {
               "type": "docs",
               "section": "Documentation"
-            },
-            {
-              "type": "chore(deps)",
-              "section": "Dependency Upgrades"
             },
             {
               "type": "refactor",
