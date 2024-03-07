@@ -12,7 +12,9 @@ export class SessionMapper {
       session.user = UserMapper.toDomain(raw.user);
     }
 
+    session.hash = raw.hash;
     session.createdAt = raw.createdAt;
+    session.updatedAt = raw.updatedAt;
     session.deletedAt = raw.deletedAt;
     return session;
   }
@@ -24,7 +26,9 @@ export class SessionMapper {
       sessionEntity._id = session.id;
     }
     sessionEntity.user = user;
+    sessionEntity.hash = session.hash;
     sessionEntity.createdAt = session.createdAt;
+    sessionEntity.updatedAt = session.updatedAt;
     sessionEntity.deletedAt = session.deletedAt;
     return sessionEntity;
   }

@@ -16,8 +16,14 @@ export class SessionSchemaClass extends EntityDocumentHelper {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserSchemaClass' })
   user: UserSchemaClass;
 
+  @Prop()
+  hash: string;
+
   @Prop({ default: now })
   createdAt: Date;
+
+  @Prop({ default: now })
+  updatedAt: Date;
 
   @Prop()
   deletedAt: Date;
