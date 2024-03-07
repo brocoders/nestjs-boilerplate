@@ -35,6 +35,25 @@ export class SessionDocumentRepository implements SessionRepository {
     return SessionMapper.toDomain(sessionObject);
   }
 
+  async update(
+    id: Session['id'],
+    payload: Partial<Session>,
+  ): Promise<Session | null> {
+    const clonedPayload = { ...payload };
+    delete clonedPayload.id;
+    delete clonedPayload.createdAt;
+    delete clonedPayload.updatedAt;
+    delete clonedPayload.deletedAt;
+
+    const filter = { _id: id };
+    const sessionObject = await this.sessionModel.findOneAndUpdate(
+      filter,
+      clonedPayload,
+    );
+
+    return sessionObject ? SessionMapper.toDomain(sessionObject) : null;
+  }
+
   async softDelete({
     excludeId,
     ...criteria

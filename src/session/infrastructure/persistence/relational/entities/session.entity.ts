@@ -5,6 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
+  Column,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { EntityRelationalHelper } from 'src/utils/relational-entity-helper';
@@ -23,8 +25,14 @@ export class SessionEntity extends EntityRelationalHelper implements Session {
   @Index()
   user: UserEntity;
 
+  @Column()
+  hash: string;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @DeleteDateColumn()
   deletedAt: Date;

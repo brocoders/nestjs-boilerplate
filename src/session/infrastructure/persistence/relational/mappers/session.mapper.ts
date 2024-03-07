@@ -10,7 +10,9 @@ export class SessionMapper {
     if (raw.user) {
       session.user = UserMapper.toDomain(raw.user);
     }
+    session.hash = raw.hash;
     session.createdAt = raw.createdAt;
+    session.updatedAt = raw.updatedAt;
     session.deletedAt = raw.deletedAt;
     return session;
   }
@@ -23,8 +25,10 @@ export class SessionMapper {
     if (session.id && typeof session.id === 'number') {
       sessionEntity.id = session.id;
     }
+    sessionEntity.hash = session.hash;
     sessionEntity.user = user;
     sessionEntity.createdAt = session.createdAt;
+    sessionEntity.updatedAt = session.updatedAt;
     sessionEntity.deletedAt = session.deletedAt;
     return sessionEntity;
   }

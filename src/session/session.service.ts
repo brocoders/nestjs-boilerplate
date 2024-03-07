@@ -14,9 +14,18 @@ export class SessionService {
   }
 
   create(
-    data: Omit<Session, 'id' | 'createdAt' | 'deletedAt'>,
+    data: Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
   ): Promise<Session> {
     return this.sessionRepository.create(data);
+  }
+
+  update(
+    id: Session['id'],
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null> {
+    return this.sessionRepository.update(id, payload);
   }
 
   async softDelete(criteria: {

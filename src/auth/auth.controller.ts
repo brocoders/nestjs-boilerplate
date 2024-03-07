@@ -95,6 +95,7 @@ export class AuthController {
   public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
     return this.service.refreshToken({
       sessionId: request.user.sessionId,
+      hash: request.user.hash,
     });
   }
 

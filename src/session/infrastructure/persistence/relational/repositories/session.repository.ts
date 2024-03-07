@@ -34,6 +34,32 @@ export class SessionRelationalRepository implements SessionRepository {
     );
   }
 
+  async update(
+    id: Session['id'],
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null> {
+    const entity = await this.sessionRepository.findOne({
+      where: { id: Number(id) },
+    });
+
+    if (!entity) {
+      throw new Error('Session not found');
+    }
+
+    const updatedEntity = await this.sessionRepository.save(
+      this.sessionRepository.create(
+        SessionMapper.toPersistence({
+          ...SessionMapper.toDomain(entity),
+          ...payload,
+        }),
+      ),
+    );
+
+    return SessionMapper.toDomain(updatedEntity);
+  }
+
   async softDelete({
     excludeId,
     ...criteria

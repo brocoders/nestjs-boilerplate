@@ -5,6 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import ms from 'ms';
+import crypto from 'crypto';
+import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
@@ -94,14 +96,21 @@ export class AuthService {
       );
     }
 
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
     const session = await this.sessionService.create({
       user,
+      hash,
     });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
       role: user.role,
       sessionId: session.id,
+      hash,
     });
 
     return {
@@ -175,8 +184,14 @@ export class AuthService {
       );
     }
 
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
     const session = await this.sessionService.create({
       user,
+      hash,
     });
 
     const {
@@ -187,6 +202,7 @@ export class AuthService {
       id: user.id,
       role: user.role,
       sessionId: session.id,
+      hash,
     });
 
     return {
@@ -457,7 +473,7 @@ export class AuthService {
   }
 
   async refreshToken(
-    data: Pick<JwtRefreshPayloadType, 'sessionId'>,
+    data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
   ): Promise<Omit<LoginResponseType, 'user'>> {
     const session = await this.sessionService.findOne({
       id: data.sessionId,
@@ -467,10 +483,24 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+    if (session.hash !== data.hash) {
+      throw new UnauthorizedException();
+    }
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    await this.sessionService.update(session.id, {
+      hash,
+    });
+
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: session.user.id,
       role: session.user.role,
       sessionId: session.id,
+      hash,
     });
 
     return {
@@ -494,6 +524,7 @@ export class AuthService {
     id: User['id'];
     role: User['role'];
     sessionId: Session['id'];
+    hash: Session['hash'];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
@@ -516,6 +547,7 @@ export class AuthService {
       await this.jwtService.signAsync(
         {
           sessionId: data.sessionId,
+          hash: data.hash,
         },
         {
           secret: this.configService.getOrThrow('auth.refreshSecret', {

@@ -148,7 +148,7 @@ describe('Auth Module', () => {
         });
     });
 
-    it('should get new refresh token: /api/v1/auth/refresh (GET)', async () => {
+    it('should get new refresh token: /api/v1/auth/refresh (POST)', async () => {
       const newUserRefreshToken = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
@@ -165,6 +165,28 @@ describe('Auth Module', () => {
           expect(body.refreshToken).toBeDefined();
           expect(body.tokenExpires).toBeDefined();
         });
+    });
+
+    it('should fail on the second attempt to refresh token with the same token: /api/v1/auth/refresh (POST)', async () => {
+      const newUserRefreshToken = await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: newUserEmail, password: newUserPassword })
+        .then(({ body }) => body.refreshToken);
+
+      await request(app)
+        .post('/api/v1/auth/refresh')
+        .auth(newUserRefreshToken, {
+          type: 'bearer',
+        })
+        .send();
+
+      await request(app)
+        .post('/api/v1/auth/refresh')
+        .auth(newUserRefreshToken, {
+          type: 'bearer',
+        })
+        .send()
+        .expect(401);
     });
 
     it('should update profile successfully: /api/v1/auth/me (PATCH)', async () => {
