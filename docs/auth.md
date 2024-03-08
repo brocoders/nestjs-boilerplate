@@ -10,6 +10,7 @@
 - [Auth via Facebook](#auth-via-facebook)
 - [Auth via Google](#auth-via-google)
 - [Auth via Twitter](#auth-via-twitter)
+- [About JWT strategy](#about-jwt-strategy)
 - [Refresh token flow](#refresh-token-flow)
   - [Video example](#video-example)
 - [Logout](#logout)
@@ -129,6 +130,31 @@ For auth with external services or social networks you need:
    TWITTER_CONSUMER_KEY=abc
    TWITTER_CONSUMER_SECRET=abc
    ```
+
+## About JWT strategy
+
+In the `validate` method of the `src/auth/strategies/jwt.strategy.ts` file, you can see that we do not check if the user exists in the database because it is redundant, it may lose the benefits of the JWT approach and can affect the application performance.
+
+To better understand how JWT works, watch the video explanation https://www.youtube.com/watch?v=Y2H3DXDeS3Q and read this article https://jwt.io/introduction/
+
+```typescript
+// src/auth/strategies/jwt.strategy.ts
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  // ...
+
+  public validate(payload) {
+    if (!payload.id) {
+      throw new UnauthorizedException();
+    }
+
+    return payload;
+  }
+}
+```
+
+> If you need to get full user information, get it in services.
 
 ## Refresh token flow
 
