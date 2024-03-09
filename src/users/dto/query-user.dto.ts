@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNumber,
   IsOptional,
@@ -10,7 +10,7 @@ import { User } from '../domain/user';
 import { RoleDto } from 'src/roles/dto/role.dto';
 
 export class FilterUserDto {
-  @ApiProperty({ type: RoleDto })
+  @ApiPropertyOptional({ type: RoleDto })
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => RoleDto)
@@ -19,6 +19,7 @@ export class FilterUserDto {
 
 export class SortUserDto {
   @ApiProperty()
+  @Type(() => String)
   @IsString()
   orderBy: keyof User;
 
@@ -28,23 +29,19 @@ export class SortUserDto {
 }
 
 export class QueryUserDto {
-  @ApiProperty({
-    required: false,
-  })
+  @ApiPropertyOptional()
   @Transform(({ value }) => (value ? Number(value) : 1))
   @IsNumber()
   @IsOptional()
-  page: number;
+  page?: number;
 
-  @ApiProperty({
-    required: false,
-  })
+  @ApiPropertyOptional()
   @Transform(({ value }) => (value ? Number(value) : 10))
   @IsNumber()
   @IsOptional()
-  limit: number;
+  limit?: number;
 
-  @ApiProperty({ type: String, required: false })
+  @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) =>
     value ? plainToInstance(FilterUserDto, JSON.parse(value)) : undefined,
@@ -53,7 +50,7 @@ export class QueryUserDto {
   @Type(() => FilterUserDto)
   filters?: FilterUserDto | null;
 
-  @ApiProperty({ type: String, required: false })
+  @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) => {
     return value ? plainToInstance(SortUserDto, JSON.parse(value)) : undefined;
