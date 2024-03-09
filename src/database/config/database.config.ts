@@ -28,12 +28,10 @@ class EnvironmentVariablesValidator {
   @IsInt()
   @Min(0)
   @Max(65535)
-  @IsOptional()
   DATABASE_PORT: number;
 
   @ValidateIf((envValues) => !envValues.DATABASE_URL)
   @IsString()
-  @IsOptional()
   DATABASE_PASSWORD: string;
 
   @ValidateIf((envValues) => !envValues.DATABASE_URL)

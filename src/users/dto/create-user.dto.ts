@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 import { RoleDto } from 'src/roles/dto/role.dto';
@@ -29,16 +29,16 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastName: string | null;
 
-  @ApiProperty({ type: () => FileDto })
+  @ApiPropertyOptional({ type: () => FileDto })
   @IsOptional()
   photo?: FileDto | null;
 
-  @ApiProperty({ type: RoleDto })
+  @ApiPropertyOptional({ type: RoleDto })
   @IsOptional()
   @Type(() => RoleDto)
   role?: RoleDto | null;
 
-  @ApiProperty({ type: StatusDto })
+  @ApiPropertyOptional({ type: StatusDto })
   @IsOptional()
   @Type(() => StatusDto)
   status?: StatusDto;
