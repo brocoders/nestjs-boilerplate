@@ -36,6 +36,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "sars",
+      "name": "Rodion",
+      "avatar_url": "https://avatars.githubusercontent.com/u/226194?v=4",
+      "profile": "http://brocoders.com",
+      "contributions": [
+        "business"
+      ]
     }
   ]
 }
