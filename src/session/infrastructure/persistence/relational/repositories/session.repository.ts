@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Not, Repository } from 'typeorm';
 import { SessionEntity } from '../entities/session.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
-import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
 import { SessionRepository } from '../../session.repository';
 import { Session } from '../../../../domain/session';
 import { User } from 'src/users/domain/user';
@@ -68,16 +67,18 @@ export class SessionRelationalRepository implements SessionRepository {
     user?: Pick<User, 'id'>;
     excludeId?: Session['id'];
   }): Promise<void> {
-    await this.sessionRepository.softDelete({
-      ...(criteria as {
-        id?: SessionEntity['id'];
-        user?: Pick<UserEntity, 'id'>;
-      }),
-      id: criteria.id
-        ? (criteria.id as SessionEntity['id'])
-        : excludeId
-          ? Not(excludeId as SessionEntity['id'])
-          : undefined,
-    });
+    const conditions: any = {};
+
+    if (criteria.user) {
+      conditions.user = criteria.user.id;
+    }
+
+    if (excludeId) {
+      conditions.id = Not(excludeId);
+    } else if (criteria.id) {
+      conditions.id = criteria.id;
+    }
+
+    await this.sessionRepository.softDelete(conditions);
   }
 }

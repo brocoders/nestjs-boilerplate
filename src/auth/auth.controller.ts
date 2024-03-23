@@ -23,6 +23,7 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { LoginResponseType } from './types/login-response.type';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from 'src/users/domain/user';
+import { AuthSessionGuard } from './auth-session.guard';
 
 @ApiTags('Auth')
 @Controller({
@@ -79,7 +80,7 @@ export class AuthController {
     groups: ['me'],
   })
   @Get('me')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthSessionGuard)
   @HttpCode(HttpStatus.OK)
   public me(@Request() request): Promise<NullableType<User>> {
     return this.service.me(request.user);
@@ -101,7 +102,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthSessionGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async logout(@Request() request): Promise<void> {
     await this.service.logout({
@@ -110,11 +111,19 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
+  @Post('logoutAll')
+  @UseGuards(AuthSessionGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async logoutAll(@Request() request): Promise<void> {
+    await this.service.logoutAll(request.user);
+  }
+
+  @ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
   })
   @Patch('me')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthSessionGuard)
   @HttpCode(HttpStatus.OK)
   public update(
     @Request() request,
@@ -125,7 +134,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Delete('me')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthSessionGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Request() request): Promise<void> {
     return this.service.softDelete(request.user);
