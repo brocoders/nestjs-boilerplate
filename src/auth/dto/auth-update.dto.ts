@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
-import { FileDto } from 'src/files/dto/file.dto';
+import { FileDto } from '../../files/dto/file.dto';
 
 export class AuthUpdateDto {
   @ApiPropertyOptional({ type: () => FileDto })

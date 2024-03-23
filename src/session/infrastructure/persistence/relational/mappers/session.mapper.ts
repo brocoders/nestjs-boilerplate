@@ -1,7 +1,7 @@
-import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
+import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { Session } from '../../../../domain/session';
 import { SessionEntity } from '../entities/session.entity';
-import { UserMapper } from 'src/users/infrastructure/persistence/relational/mappers/user.mapper';
 
 export class SessionMapper {
   static toDomain(raw: SessionEntity): Session {

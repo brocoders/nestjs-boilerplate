@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
+
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 import { User } from '../../../../domain/user';
@@ -9,6 +8,8 @@ import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
+import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
+import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {

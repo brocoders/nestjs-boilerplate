@@ -1,9 +1,10 @@
+import { DeepPartial } from 'typeorm';
+import { EntityCondition } from '../../../utils/types/entity-condition.type';
+import { NullableType } from '../../../utils/types/nullable.type';
+import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { User } from '../../domain/user';
-import { NullableType } from 'src/utils/types/nullable.type';
+
 import { FilterUserDto, SortUserDto } from '../../dto/query-user.dto';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { DeepPartial } from 'src/utils/types/deep-partial.type';
 
 export abstract class UserRepository {
   abstract create(

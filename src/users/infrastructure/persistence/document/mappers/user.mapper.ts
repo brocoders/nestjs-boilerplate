@@ -1,9 +1,9 @@
 import { User } from '../../../../domain/user';
 import { UserSchemaClass } from '../entities/user.schema';
-import { FileSchemaClass } from 'src/files/infrastructure/persistence/document/entities/file.schema';
-import { Status } from 'src/statuses/domain/status';
-import { Role } from 'src/roles/domain/role';
-import { FileMapper } from 'src/files/infrastructure/persistence/document/mappers/file.mapper';
+import { FileSchemaClass } from '../../../../../files/infrastructure/persistence/document/entities/file.schema';
+import { FileMapper } from '../../../../../files/infrastructure/persistence/document/mappers/file.mapper';
+import { Role } from '../../../../../roles/domain/role';
+import { Status } from '../../../../../statuses/domain/status';
 
 export class UserMapper {
   static toDomain(raw: UserSchemaClass): User {

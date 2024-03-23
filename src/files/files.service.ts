@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { NullableType } from 'src/utils/types/nullable.type';
+
 import { FileRepository } from './infrastructure/persistence/file.repository';
 import { FileType } from './domain/file';
+import { EntityCondition } from '../utils/types/entity-condition.type';
+import { NullableType } from '../utils/types/nullable.type';
 
 @Injectable()
 export class FilesService {

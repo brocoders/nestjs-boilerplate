@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FileRepository } from '../../persistence/file.repository';
-import { FileType } from 'src/files/domain/file';
+import { FileType } from '../../../domain/file';
 
 @Injectable()
 export class FilesS3Service {

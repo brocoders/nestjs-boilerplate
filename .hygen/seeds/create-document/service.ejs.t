@@ -4,7 +4,7 @@ to: src/database/seeds/document/<%= h.inflection.transform(name, ['underscore', 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { <%= name %>SchemaClass } from 'src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/infrastructure/persistence/document/entities/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.schema';
+import { <%= name %>SchemaClass } from '../../../../<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/infrastructure/persistence/document/entities/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.schema';
 
 @Injectable()
 export class <%= name %>SeedService {

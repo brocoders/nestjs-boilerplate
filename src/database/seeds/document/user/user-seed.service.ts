@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { RoleEnum } from 'src/roles/roles.enum';
-import { StatusEnum } from 'src/statuses/statuses.enum';
-import { UserSchemaClass } from 'src/users/infrastructure/persistence/document/entities/user.schema';
+import { RoleEnum } from '../../../../roles/roles.enum';
+import { StatusEnum } from '../../../../statuses/statuses.enum';
+import { UserSchemaClass } from '../../../../users/infrastructure/persistence/document/entities/user.schema';
 
 @Injectable()
 export class UserSeedService {

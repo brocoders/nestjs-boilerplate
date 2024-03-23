@@ -11,22 +11,22 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
-import { RoleEnum } from 'src/roles/roles.enum';
-import { StatusEnum } from 'src/statuses/statuses.enum';
 import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
-import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from './types/login-response.type';
 import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from 'src/config/config.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
-import { User } from 'src/users/domain/user';
-import { Session } from 'src/session/domain/session';
-import { UsersService } from 'src/users/users.service';
-import { SessionService } from 'src/session/session.service';
+import { UsersService } from '../users/users.service';
+import { AllConfigType } from '../config/config.type';
+import { MailService } from '../mail/mail.service';
+import { RoleEnum } from '../roles/roles.enum';
+import { Session } from '../session/domain/session';
+import { SessionService } from '../session/session.service';
+import { StatusEnum } from '../statuses/statuses.enum';
+import { User } from '../users/domain/user';
 
 @Injectable()
 export class AuthService {
