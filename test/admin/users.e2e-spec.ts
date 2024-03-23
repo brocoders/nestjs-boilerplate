@@ -19,6 +19,7 @@ describe('Users Module', () => {
   describe('Update', () => {
     let newUser;
     const newUserEmail = `user-first.${Date.now()}@example.com`;
+    const newUserChangedEmail = `user-first-changed.${Date.now()}@example.com`;
     const newUserPassword = `secret`;
     const newUserChangedPassword = `new-secret`;
 
@@ -47,7 +48,10 @@ describe('Users Module', () => {
           .auth(apiToken, {
             type: 'bearer',
           })
-          .send({ password: newUserChangedPassword })
+          .send({
+            email: newUserChangedEmail,
+            password: newUserChangedPassword,
+          })
           .expect(200);
       });
 
@@ -56,7 +60,7 @@ describe('Users Module', () => {
           return request(app)
             .post('/api/v1/auth/email/login')
             .send({
-              email: newUserEmail,
+              email: newUserChangedEmail,
               password: newUserChangedPassword,
             })
             .expect(200)
