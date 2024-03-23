@@ -4,12 +4,14 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { diskStorage } from 'multer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { AllConfigType } from 'src/config/config.type';
+
 import { FilesLocalService } from './files.service';
-import databaseConfig from 'src/database/config/database.config';
-import { DatabaseConfig } from 'src/database/config/database-config.type';
+
 import { DocumentFilePersistenceModule } from '../../persistence/document/document-persistence.module';
 import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
+import { AllConfigType } from '../../../../config/config.type';
+import { DatabaseConfig } from '../../../../database/config/database-config.type';
+import databaseConfig from '../../../../database/config/database.config';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase

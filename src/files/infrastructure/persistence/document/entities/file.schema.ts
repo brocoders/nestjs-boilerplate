@@ -6,11 +6,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 // in your project and return an schema entity directly in response.
 import { Transform } from 'class-transformer';
 import { HydratedDocument } from 'mongoose';
-import { AppConfig } from 'src/config/app-config.type';
-import appConfig from 'src/config/app.config';
-import { FileConfig, FileDriver } from 'src/files/config/file-config.type';
-import fileConfig from 'src/files/config/file.config';
-import { EntityDocumentHelper } from 'src/utils/document-entity-helper';
+import { AppConfig } from '../../../../../config/app-config.type';
+import appConfig from '../../../../../config/app.config';
+import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
+import { FileConfig, FileDriver } from '../../../../config/file-config.type';
+import fileConfig from '../../../../config/file.config';
 
 export type FileSchemaDocument = HydratedDocument<FileSchemaClass>;
 

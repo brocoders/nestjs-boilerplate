@@ -1,17 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { CreateUserDto } from './dto/create-user.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
-import { DeepPartial } from 'src/utils/types/deep-partial.type';
 import { User } from './domain/user';
-import { StatusEnum } from 'src/statuses/statuses.enum';
-import { RoleEnum } from 'src/roles/roles.enum';
-import { FilesService } from 'src/files/files.service';
 import bcrypt from 'bcryptjs';
-import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { DeepPartial } from 'typeorm';
+import { AuthProvidersEnum } from '../auth/auth-providers.enum';
+import { FilesService } from '../files/files.service';
+import { RoleEnum } from '../roles/roles.enum';
+import { StatusEnum } from '../statuses/statuses.enum';
+import { EntityCondition } from '../utils/types/entity-condition.type';
+import { IPaginationOptions } from '../utils/types/pagination-options';
 
 @Injectable()
 export class UsersService {

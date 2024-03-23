@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { EntityRelationalHelper } from 'src/utils/relational-entity-helper';
+
 import { Status } from '../../../../domain/status';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
   name: 'status',

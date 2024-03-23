@@ -36,7 +36,7 @@
    // /src/posts/infrastructure/persistence/relational/entities/post.entity.ts
 
    import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-   import { EntityRelationalHelper } from 'src/utils/relational-entity-helper';
+   import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
    @Entity()
    export class Post extends EntityRelationalHelper {
@@ -140,28 +140,28 @@ npm run seed:run:relational
     npm i --save-dev @faker-js/faker
     ```
 
-1. Create `src/database/seeds/user/user.factory.ts`:
+1. Create `src/database/seeds/relational/user/user.factory.ts`:
 
     ```ts
     import { faker } from '@faker-js/faker';
-    import { RoleEnum } from 'src/roles/roles.enum';
-    import { StatusEnum } from 'src/statuses/statuses.enum';
+    import { RoleEnum } from '../../../../roles/roles.enum';
+    import { StatusEnum } from '../../../../statuses/statuses.enum';
     import { Injectable } from '@nestjs/common';
     import { InjectRepository } from '@nestjs/typeorm';
     import { Repository } from 'typeorm';
-    import { Role } from 'src/roles/infrastructure/persistence/relational/entities/role.entity';
-    import { Status } from 'src/statuses/infrastructure/persistence/relational/entities/status.entity';
-    import { User } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
+    import { RoleEntity } from '../../../../roles/infrastructure/persistence/relational/entities/role.entity';
+    import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
+    import { StatusEntity } from '../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
 
     @Injectable()
     export class UserFactory {
       constructor(
-        @InjectRepository(User)
-        private repositoryUser: Repository<User>,
-        @InjectRepository(Role)
-        private repositoryRole: Repository<Role>,
-        @InjectRepository(Status)
-        private repositoryStatus: Repository<Status>,
+        @InjectRepository(UserEntity)
+        private repositoryUser: Repository<UserEntity>,
+        @InjectRepository(RoleEntity)
+        private repositoryRole: Repository<RoleEntity>,
+        @InjectRepository(StatusEntity)
+        private repositoryStatus: Repository<StatusEntity>,
       ) {}
 
       createRandomUser() {
@@ -186,7 +186,7 @@ npm run seed:run:relational
     }
     ```
 
-1. Make changes in `src/database/seeds/user/user-seed.service.ts`:
+1. Make changes in `src/database/seeds/relational/user/user-seed.service.ts`:
 
     ```ts
     // Some code here...
@@ -212,19 +212,21 @@ npm run seed:run:relational
     }
     ```
 
-1. Make changes in `src/database/seeds/user/user-seed.module.ts`:
+1. Make changes in `src/database/seeds/relational/user/user-seed.module.ts`:
 
     ```ts
     import { Module } from '@nestjs/common';
     import { TypeOrmModule } from '@nestjs/typeorm';
-    import { User } from 'src/users/entities/user.entity';
+    
     import { UserSeedService } from './user-seed.service';
     import { UserFactory } from './user.factory';
-    import { Role } from 'src/roles/infrastructure/persistence/relational/entities/role.entity';
-    import { Status } from 'src/statuses/infrastructure/persistence/relational/entities/status.entity';
+
+    import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
+    import { RoleEntity } from '../../../../roles/infrastructure/persistence/relational/entities/role.entity';
+    import { StatusEntity } from '../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
 
     @Module({
-      imports: [TypeOrmModule.forFeature([User, Role, Status])],
+      imports: [TypeOrmModule.forFeature([UserEntity, Role, Status])],
       providers: [UserSeedService, UserFactory],
       exports: [UserSeedService, UserFactory],
     })

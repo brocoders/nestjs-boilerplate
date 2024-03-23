@@ -1,4 +1,5 @@
 {
   "markdown.extension.toc.levels": "2..6",
-  "markdown.extension.orderedList.autoRenumber": false
+  "markdown.extension.orderedList.autoRenumber": false,
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

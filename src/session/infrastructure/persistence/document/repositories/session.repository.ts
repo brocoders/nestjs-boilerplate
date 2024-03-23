@@ -5,9 +5,9 @@ import { Session } from '../../../../domain/session';
 import { SessionSchemaClass } from '../entities/session.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/users/domain/user';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { SessionMapper } from '../mappers/session.mapper';
+import { User } from '../../../../../users/domain/user';
+import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
 
 @Injectable()
 export class SessionDocumentRepository implements SessionRepository {

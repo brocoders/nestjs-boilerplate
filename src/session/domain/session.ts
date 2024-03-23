@@ -1,4 +1,4 @@
-import { User } from 'src/users/domain/user';
+import { User } from '../../users/domain/user';
 
 export class Session {
   id: number | string;
