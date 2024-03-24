@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Module } from '@nestjs/common';
+import {
+  HttpStatus,
+  Module,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { FilesS3PresignedController } from './files.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -42,15 +46,12 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
           fileFilter: (request, file, callback) => {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
               return callback(
-                new HttpException(
-                  {
-                    status: HttpStatus.UNPROCESSABLE_ENTITY,
-                    errors: {
-                      file: `cantUploadFileType`,
-                    },
+                new UnprocessableEntityException({
+                  status: HttpStatus.UNPROCESSABLE_ENTITY,
+                  errors: {
+                    file: `cantUploadFileType`,
                   },
-                  HttpStatus.UNPROCESSABLE_ENTITY,
-                ),
+                }),
                 false,
               );
             }

@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
@@ -36,15 +40,12 @@ export class UsersService {
         email: clonedPayload.email,
       });
       if (userObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              email: 'emailAlreadyExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: 'emailAlreadyExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
@@ -53,15 +54,12 @@ export class UsersService {
         id: clonedPayload.photo.id,
       });
       if (!fileObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              photo: 'imageNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            photo: 'imageNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
       clonedPayload.photo = fileObject;
     }
@@ -71,15 +69,12 @@ export class UsersService {
         clonedPayload.role.id,
       );
       if (!roleObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              role: 'roleNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            role: 'roleNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
@@ -88,15 +83,12 @@ export class UsersService {
         clonedPayload.status.id,
       );
       if (!statusObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              status: 'statusNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            status: 'statusNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
@@ -143,15 +135,12 @@ export class UsersService {
       });
 
       if (userObject && userObject.id !== id) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              email: 'emailAlreadyExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: 'emailAlreadyExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
@@ -160,15 +149,12 @@ export class UsersService {
         id: clonedPayload.photo.id,
       });
       if (!fileObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              photo: 'imageNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            photo: 'imageNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
       clonedPayload.photo = fileObject;
     }
@@ -178,15 +164,12 @@ export class UsersService {
         clonedPayload.role.id,
       );
       if (!roleObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              role: 'roleNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            role: 'roleNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
@@ -195,15 +178,12 @@ export class UsersService {
         clonedPayload.status.id,
       );
       if (!statusObject) {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNPROCESSABLE_ENTITY,
-            errors: {
-              status: 'statusNotExists',
-            },
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            status: 'statusNotExists',
           },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
+        });
       }
     }
 
