@@ -4,6 +4,7 @@
 
 ## Table of Contents <!-- omit in toc -->
 
+- [About databases](#about-databases)
 - [Working with database schema (TypeORM)](#working-with-database-schema-typeorm)
   - [Generate migration](#generate-migration)
   - [Run migration](#run-migration)
@@ -25,6 +26,12 @@
   - [Design schema](#design-schema)
 
 ---
+
+## About databases
+
+Boilerplate uses two types of databases: PostgreSQL with TypeORM and MongoDB with Mongoose. You can choose one of them or use both in your project. The choice of database depends on the requirements of your project.
+
+For support of both databases used Hexagonal Architecture. Hexagonal architecture takes more effort to implement, but it gives more flexibility and scalability. If the time for your project is critical, you can use Three-tier architecture: use repositories from TypeORM or models from Mongoose directly in [services](https://docs.nestjs.com/providers#services). Entities and Schemas are ready for this.
 
 ## Working with database schema (TypeORM)
 
