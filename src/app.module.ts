@@ -31,6 +31,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
 
+// <database-block>
+const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? MongooseModule.forRootAsync({
+      useClass: MongooseConfigService,
+    })
+  : TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        return new DataSource(options).initialize();
+      },
+    });
+// </database-block>
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -48,16 +62,7 @@ import { DatabaseConfig } from './database/config/database-config.type';
       ],
       envFilePath: ['.env'],
     }),
-    (databaseConfig() as DatabaseConfig).isDocumentDatabase
-      ? MongooseModule.forRootAsync({
-          useClass: MongooseConfigService,
-        })
-      : TypeOrmModule.forRootAsync({
-          useClass: TypeOrmConfigService,
-          dataSourceFactory: async (options: DataSourceOptions) => {
-            return new DataSource(options).initialize();
-          },
-        }),
+    infrastructureDatabaseModule,
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService<AllConfigType>) => ({
         fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {

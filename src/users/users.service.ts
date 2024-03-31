@@ -9,13 +9,13 @@ import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
 import { User } from './domain/user';
 import bcrypt from 'bcryptjs';
-import { DeepPartial } from 'typeorm';
 import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { EntityCondition } from '../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../utils/types/pagination-options';
+import { DeepPartial } from '../utils/types/deep-partial.type';
 
 @Injectable()
 export class UsersService {

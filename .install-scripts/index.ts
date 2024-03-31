@@ -4,10 +4,22 @@ import removeGoogleAuth from './scripts/remove-auth-google';
 import removeAppleAuth from './scripts/remove-auth-apple';
 import removeTwitterAuth from './scripts/remove-auth-twitter';
 import removeInstallScripts from './scripts/remove-install-scripts';
+import removePostgreSql from './scripts/remove-postgresql';
+import removeMongoDb from './scripts/remove-mongodb';
 
 (async () => {
   const response = await prompts(
     [
+      {
+        type: 'select',
+        name: 'database',
+        message: 'Which database do you want to use?',
+        choices: [
+          { title: 'PostgreSQL and MongoDB', value: 'pg-mongo' },
+          { title: 'PostgreSQL', value: 'pg' },
+          { title: 'MongoDB', value: 'mongo' },
+        ],
+      },
       {
         type: 'confirm',
         name: 'isAuthFacebook',
@@ -39,6 +51,14 @@ import removeInstallScripts from './scripts/remove-install-scripts';
       },
     },
   );
+
+  if (response.database === 'mongo') {
+    removePostgreSql();
+  }
+
+  if (response.database === 'pg') {
+    removeMongoDb();
+  }
 
   if (!response.isAuthFacebook) {
     removeFacebookAuth();
