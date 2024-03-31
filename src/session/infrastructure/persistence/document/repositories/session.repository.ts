@@ -45,7 +45,7 @@ export class SessionDocumentRepository implements SessionRepository {
     delete clonedPayload.updatedAt;
     delete clonedPayload.deletedAt;
 
-    const filter = { _id: id };
+    const filter = { _id: id.toString() };
     const sessionObject = await this.sessionModel.findOneAndUpdate(
       filter,
       clonedPayload,
@@ -65,9 +65,9 @@ export class SessionDocumentRepository implements SessionRepository {
     const transformedCriteria = {
       user: criteria.user?.id,
       _id: criteria.id
-        ? criteria.id
+        ? criteria.id.toString()
         : excludeId
-          ? { $not: { $eq: excludeId } }
+          ? { $not: { $eq: excludeId.toString() } }
           : undefined,
     };
     await this.sessionModel.deleteMany(transformedCriteria);
