@@ -9,10 +9,12 @@ import { DatabaseConfig } from '../database/config/database-config.type';
 import databaseConfig from '../database/config/database.config';
 import { FilesModule } from '../files/files.module';
 
+// <database-block>
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
   ? DocumentUserPersistenceModule
   : RelationalUserPersistenceModule;
+// </database-block>
 
 @Module({
   imports: [infrastructurePersistenceModule, FilesModule],

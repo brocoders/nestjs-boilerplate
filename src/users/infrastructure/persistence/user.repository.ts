@@ -1,4 +1,4 @@
-import { DeepPartial } from 'typeorm';
+import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { EntityCondition } from '../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';

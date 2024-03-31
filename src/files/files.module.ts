@@ -11,10 +11,12 @@ import { FilesS3PresignedModule } from './infrastructure/uploader/s3-presigned/f
 import { DatabaseConfig } from '../database/config/database-config.type';
 import databaseConfig from '../database/config/database.config';
 
+// <database-block>
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
   ? DocumentFilePersistenceModule
   : RelationalFilePersistenceModule;
+// </database-block>
 
 const infrastructureUploaderModule =
   (fileConfig() as FileConfig).driver === FileDriver.LOCAL

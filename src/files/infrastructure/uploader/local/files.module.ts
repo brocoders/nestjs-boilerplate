@@ -17,10 +17,12 @@ import { AllConfigType } from '../../../../config/config.type';
 import { DatabaseConfig } from '../../../../database/config/database-config.type';
 import databaseConfig from '../../../../database/config/database.config';
 
+// <database-block>
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
   ? DocumentFilePersistenceModule
   : RelationalFilePersistenceModule;
+// </database-block>
 
 @Module({
   imports: [
