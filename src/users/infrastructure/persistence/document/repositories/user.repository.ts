@@ -73,7 +73,7 @@ export class UsersDocumentRepository implements UserRepository {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
 
-    const filter = { _id: id };
+    const filter = { _id: id.toString() };
     const userObject = await this.usersModel.findOneAndUpdate(
       filter,
       clonedPayload,
@@ -84,7 +84,7 @@ export class UsersDocumentRepository implements UserRepository {
 
   async softDelete(id: User['id']): Promise<void> {
     await this.usersModel.deleteOne({
-      _id: id,
+      _id: id.toString(),
     });
   }
 }
