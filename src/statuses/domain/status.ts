@@ -2,7 +2,7 @@ import { Allow } from 'class-validator';
 
 export class Status {
   @Allow()
-  id: number;
+  id: number | string;
 
   @Allow()
   name?: string;

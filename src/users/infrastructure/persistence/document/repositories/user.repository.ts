@@ -10,6 +10,7 @@ import { Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {
@@ -36,13 +37,13 @@ export class UsersDocumentRepository implements UserRepository {
   }): Promise<User[]> {
     const where: EntityCondition<User> = {};
     if (filterOptions?.roles?.length) {
-      where['role.id'] = {
-        $in: filterOptions.roles.map((role) => role.id),
-      };
+      where.role = filterOptions.roles.map((role) => ({
+        id: role.id.toString(),
+      }));
     }
 
     const userObjects = await this.usersModel
-      .find(where)
+      .find(domainToDocumentCondition(where))
       .sort(
         sortOptions?.reduce(
           (accumulator, sort) => ({
@@ -60,12 +61,9 @@ export class UsersDocumentRepository implements UserRepository {
   }
 
   async findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
-    if (fields.id) {
-      const userObject = await this.usersModel.findById(fields.id);
-      return userObject ? UserMapper.toDomain(userObject) : null;
-    }
-
-    const userObject = await this.usersModel.findOne(fields);
+    const userObject = await this.usersModel.findOne(
+      domainToDocumentCondition(fields),
+    );
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
@@ -74,9 +72,18 @@ export class UsersDocumentRepository implements UserRepository {
     delete clonedPayload.id;
 
     const filter = { _id: id.toString() };
+    const user = await this.usersModel.findOne(filter);
+
+    if (!user) {
+      return null;
+    }
+
     const userObject = await this.usersModel.findOneAndUpdate(
       filter,
-      clonedPayload,
+      UserMapper.toPersistence({
+        ...UserMapper.toDomain(user),
+        ...clonedPayload,
+      }),
     );
 
     return userObject ? UserMapper.toDomain(userObject) : null;

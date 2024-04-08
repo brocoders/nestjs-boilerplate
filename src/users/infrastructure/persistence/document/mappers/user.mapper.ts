@@ -4,6 +4,8 @@ import { FileSchemaClass } from '../../../../../files/infrastructure/persistence
 import { FileMapper } from '../../../../../files/infrastructure/persistence/document/mappers/file.mapper';
 import { Role } from '../../../../../roles/domain/role';
 import { Status } from '../../../../../statuses/domain/status';
+import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
+import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
 
 export class UserMapper {
   static toDomain(raw: UserSchemaClass): User {
@@ -21,8 +23,17 @@ export class UserMapper {
     } else if (raw.photo === null) {
       user.photo = null;
     }
-    user.role = raw.role;
-    user.status = raw.status;
+
+    if (raw.role) {
+      user.role = new Role();
+      user.role.id = raw.role._id;
+    }
+
+    if (raw.status) {
+      user.status = new Status();
+      user.status.id = raw.status._id;
+    }
+
     user.createdAt = raw.createdAt;
     user.updatedAt = raw.updatedAt;
     user.deletedAt = raw.deletedAt;
@@ -30,11 +41,11 @@ export class UserMapper {
   }
 
   static toPersistence(user: User): UserSchemaClass {
-    let role: Role | undefined = undefined;
+    let role: RoleSchema | undefined = undefined;
 
     if (user.role) {
-      role = new Role();
-      role.id = user.role.id;
+      role = new RoleSchema();
+      role._id = user.role.id.toString();
     }
 
     let photo: FileSchemaClass | undefined = undefined;
@@ -45,11 +56,11 @@ export class UserMapper {
       photo.path = user.photo.path;
     }
 
-    let status: Status | undefined = undefined;
+    let status: StatusSchema | undefined = undefined;
 
     if (user.status) {
-      status = new Status();
-      status.id = user.status.id;
+      status = new StatusSchema();
+      status._id = user.status.id.toString();
     }
 
     const userEntity = new UserSchemaClass();

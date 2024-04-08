@@ -259,7 +259,10 @@ export class AuthService {
       id: userId,
     });
 
-    if (!user || user?.status?.id !== StatusEnum.inactive) {
+    if (
+      !user ||
+      user?.status?.id?.toString() !== StatusEnum.inactive.toString()
+    ) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: `notFound`,

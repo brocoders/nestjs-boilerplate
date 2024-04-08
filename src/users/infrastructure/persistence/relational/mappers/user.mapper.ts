@@ -32,7 +32,7 @@ export class UserMapper {
 
     if (user.role) {
       role = new RoleEntity();
-      role.id = user.role.id;
+      role.id = Number(user.role.id);
     }
 
     let photo: FileEntity | undefined | null = undefined;
@@ -49,7 +49,7 @@ export class UserMapper {
 
     if (user.status) {
       status = new StatusEntity();
-      status.id = user.status.id;
+      status.id = Number(user.status.id);
     }
 
     const userEntity = new UserEntity();

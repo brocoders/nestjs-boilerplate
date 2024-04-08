@@ -149,9 +149,17 @@ describe('Auth Module', () => {
     });
 
     it('should get new refresh token: /api/v1/auth/refresh (POST)', async () => {
-      const newUserRefreshToken = await request(app)
+      let newUserRefreshToken = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
+        .then(({ body }) => body.refreshToken);
+
+      newUserRefreshToken = await request(app)
+        .post('/api/v1/auth/refresh')
+        .auth(newUserRefreshToken, {
+          type: 'bearer',
+        })
+        .send()
         .then(({ body }) => body.refreshToken);
 
       await request(app)
