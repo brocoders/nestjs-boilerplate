@@ -28,10 +28,10 @@ export class UserSeedService {
         firstName: 'Super',
         lastName: 'Admin',
         role: {
-          id: RoleEnum.admin,
+          _id: RoleEnum.admin.toString(),
         },
         status: {
-          id: StatusEnum.active,
+          _id: StatusEnum.active.toString(),
         },
       });
       await data.save();
@@ -51,10 +51,10 @@ export class UserSeedService {
         firstName: 'John',
         lastName: 'Doe',
         role: {
-          id: RoleEnum.user,
+          _id: RoleEnum.user.toString(),
         },
         status: {
-          id: StatusEnum.active,
+          _id: StatusEnum.active.toString(),
         },
       });
 

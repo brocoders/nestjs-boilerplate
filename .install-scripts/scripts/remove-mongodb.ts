@@ -2,7 +2,7 @@ import replace from '../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removePostgreSql = async () => {
+const removeMongoDb = async () => {
   const filesToRemove = [
     path.join(
       process.cwd(),
@@ -24,6 +24,22 @@ const removePostgreSql = async () => {
       process.cwd(),
       'src',
       'users',
+      'infrastructure',
+      'persistence',
+      'document',
+    ),
+    path.join(
+      process.cwd(),
+      'src',
+      'roles',
+      'infrastructure',
+      'persistence',
+      'document',
+    ),
+    path.join(
+      process.cwd(),
+      'src',
+      'statuses',
       'infrastructure',
       'persistence',
       'document',
@@ -55,6 +71,13 @@ const removePostgreSql = async () => {
     path.join(process.cwd(), 'document.e2e.Dockerfile'),
     path.join(process.cwd(), '.hygen', 'seeds', 'create-document'),
     path.join(process.cwd(), 'src', 'utils', 'document-entity-helper.ts'),
+    path.join(process.cwd(), 'src', 'utils', 'domain-to-document-condition.ts'),
+    path.join(
+      process.cwd(),
+      'src',
+      'utils',
+      'domain-to-document-condition.spec.ts',
+    ),
   ];
 
   replace({
@@ -264,4 +287,4 @@ const removePostgreSql = async () => {
   });
 };
 
-export default removePostgreSql;
+export default removeMongoDb;

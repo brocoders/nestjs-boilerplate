@@ -1,8 +1,8 @@
-import { Allow, IsNumber } from 'class-validator';
+import { Allow } from 'class-validator';
 
 export class Role {
-  @IsNumber()
-  id: number;
+  @Allow()
+  id: number | string;
 
   @Allow()
   name?: string;

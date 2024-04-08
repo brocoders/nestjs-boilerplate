@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { SessionMapper } from '../mappers/session.mapper';
 import { User } from '../../../../../users/domain/user';
 import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
+import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class SessionDocumentRepository implements SessionRepository {
@@ -19,12 +20,9 @@ export class SessionDocumentRepository implements SessionRepository {
   async findOne(
     fields: EntityCondition<Session>,
   ): Promise<NullableType<Session>> {
-    if (fields.id) {
-      const sessionObject = await this.sessionModel.findById(fields.id);
-      return sessionObject ? SessionMapper.toDomain(sessionObject) : null;
-    }
-
-    const sessionObject = await this.sessionModel.findOne(fields);
+    const sessionObject = await this.sessionModel.findOne(
+      domainToDocumentCondition(fields),
+    );
     return sessionObject ? SessionMapper.toDomain(sessionObject) : null;
   }
 
@@ -46,9 +44,18 @@ export class SessionDocumentRepository implements SessionRepository {
     delete clonedPayload.deletedAt;
 
     const filter = { _id: id.toString() };
+    const session = await this.sessionModel.findOne(filter);
+
+    if (!session) {
+      return null;
+    }
+
     const sessionObject = await this.sessionModel.findOneAndUpdate(
       filter,
-      clonedPayload,
+      SessionMapper.toPersistence({
+        ...SessionMapper.toDomain(session),
+        ...clonedPayload,
+      }),
     );
 
     return sessionObject ? SessionMapper.toDomain(sessionObject) : null;

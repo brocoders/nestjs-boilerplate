@@ -9,6 +9,7 @@ import { FileType } from '../../../../domain/file';
 import { FileMapper } from '../mappers/file.mapper';
 import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../../../utils/types/nullable.type';
+import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class FileDocumentRepository implements FileRepository {
@@ -26,12 +27,9 @@ export class FileDocumentRepository implements FileRepository {
   async findOne(
     fields: EntityCondition<FileType>,
   ): Promise<NullableType<FileType>> {
-    if (fields.id) {
-      const fileObject = await this.fileModel.findById(fields.id);
-      return fileObject ? FileMapper.toDomain(fileObject) : null;
-    }
-
-    const fileObject = await this.fileModel.findOne(fields);
+    const fileObject = await this.fileModel.findOne(
+      domainToDocumentCondition(fields),
+    );
     return fileObject ? FileMapper.toDomain(fileObject) : null;
   }
 }

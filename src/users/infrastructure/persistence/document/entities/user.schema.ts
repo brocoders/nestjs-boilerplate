@@ -7,9 +7,9 @@ import { now, HydratedDocument } from 'mongoose';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { FileSchemaClass } from '../../../../../files/infrastructure/persistence/document/entities/file.schema';
-import { Role } from '../../../../../roles/domain/role';
-import { Status } from '../../../../../statuses/domain/status';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
+import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
+import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
 
@@ -65,14 +65,14 @@ export class UserSchemaClass extends EntityDocumentHelper {
   photo?: FileSchemaClass | null;
 
   @Prop({
-    type: Role,
+    type: RoleSchema,
   })
-  role?: Role | null;
+  role?: RoleSchema | null;
 
   @Prop({
-    type: Status,
+    type: StatusSchema,
   })
-  status?: Status;
+  status?: StatusSchema;
 
   @Prop({ default: now })
   createdAt: Date;
@@ -90,4 +90,4 @@ UserSchema.virtual('previousPassword').get(function () {
   return this.password;
 });
 
-UserSchema.index({ 'role.id': 1 });
+UserSchema.index({ 'role._id': 1 });

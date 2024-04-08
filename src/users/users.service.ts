@@ -65,9 +65,9 @@ export class UsersService {
     }
 
     if (clonedPayload.role?.id) {
-      const roleObject = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
-      );
+      const roleObject = Object.values(RoleEnum)
+        .map(String)
+        .includes(String(clonedPayload.role.id));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -79,9 +79,9 @@ export class UsersService {
     }
 
     if (clonedPayload.status?.id) {
-      const statusObject = Object.values(StatusEnum).includes(
-        clonedPayload.status.id,
-      );
+      const statusObject = Object.values(StatusEnum)
+        .map(String)
+        .includes(String(clonedPayload.status.id));
       if (!statusObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -160,9 +160,9 @@ export class UsersService {
     }
 
     if (clonedPayload.role?.id) {
-      const roleObject = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
-      );
+      const roleObject = Object.values(RoleEnum)
+        .map(String)
+        .includes(String(clonedPayload.role.id));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -174,9 +174,9 @@ export class UsersService {
     }
 
     if (clonedPayload.status?.id) {
-      const statusObject = Object.values(StatusEnum).includes(
-        clonedPayload.status.id,
-      );
+      const statusObject = Object.values(StatusEnum)
+        .map(String)
+        .includes(String(clonedPayload.status.id));
       if (!statusObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
