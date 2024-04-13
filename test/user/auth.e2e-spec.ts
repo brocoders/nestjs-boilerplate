@@ -245,6 +245,90 @@ describe('Auth Module', () => {
         .expect(200);
     });
 
+    it('should update profile email successfully: /api/v1/auth/me (PATCH)', async () => {
+      const newUserFirstName = `Tester${Date.now()}`;
+      const newUserLastName = `E2E`;
+      const newUserEmail = `user.${Date.now()}@example.com`;
+      const newUserPassword = `secret`;
+      const newUserNewEmail = `new.${newUserEmail}`;
+
+      await request(app)
+        .post('/api/v1/auth/email/register')
+        .send({
+          email: newUserEmail,
+          password: newUserPassword,
+          firstName: newUserFirstName,
+          lastName: newUserLastName,
+        })
+        .expect(204);
+
+      const newUserApiToken = await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: newUserEmail, password: newUserPassword })
+        .then(({ body }) => body.token);
+
+      await request(app)
+        .patch('/api/v1/auth/me')
+        .auth(newUserApiToken, {
+          type: 'bearer',
+        })
+        .send({
+          email: newUserNewEmail,
+        })
+        .expect(200);
+
+      const hash = await request(mail)
+        .get('/email')
+        .then(({ body }) =>
+          body
+            .find((letter) => {
+              return (
+                letter.to[0].address.toLowerCase() ===
+                  newUserNewEmail.toLowerCase() &&
+                /.*confirm\-new\-email\?hash\=(\S+).*/g.test(letter.text)
+              );
+            })
+            ?.text.replace(/.*confirm\-new\-email\?hash\=(\S+).*/g, '$1'),
+        );
+
+      await request(app)
+        .get('/api/v1/auth/me')
+        .auth(newUserApiToken, {
+          type: 'bearer',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.email).not.toBe(newUserNewEmail);
+        });
+
+      await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: newUserNewEmail, password: newUserPassword })
+        .expect(422);
+
+      await request(app)
+        .post('/api/v1/auth/email/confirm/new')
+        .send({
+          hash,
+        })
+        .expect(204);
+
+      await request(app)
+        .get('/api/v1/auth/me')
+        .auth(newUserApiToken, {
+          type: 'bearer',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.email).toBe(newUserNewEmail);
+        });
+
+      await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: newUserNewEmail, password: newUserPassword })
+        .expect(200);
+    });
+
     it('should delete profile successfully: /api/v1/auth/me (DELETE)', async () => {
       const newUserApiToken = await request(app)
         .post('/api/v1/auth/email/login')
