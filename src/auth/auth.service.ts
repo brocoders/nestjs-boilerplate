@@ -276,6 +276,50 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
+  async confirmNewEmail(hash: string): Promise<void> {
+    let userId: User['id'];
+    let newEmail: User['email'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+        newEmail: User['email'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+      newEmail = jwtData.newEmail;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: `invalidHash`,
+        },
+      });
+    }
+
+    const user = await this.usersService.findOne({
+      id: userId,
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: `notFound`,
+      });
+    }
+
+    user.email = newEmail;
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
   async forgotPassword(email: string): Promise<void> {
     const user = await this.usersService.findOne({
       email,
@@ -373,25 +417,25 @@ export class AuthService {
     userJwtPayload: JwtPayloadType,
     userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
+    const currentUser = await this.usersService.findOne({
+      id: userJwtPayload.id,
+    });
+
+    if (!currentUser) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: 'userNotFound',
+        },
+      });
+    }
+
     if (userDto.password) {
       if (!userDto.oldPassword) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
             oldPassword: 'missingOldPassword',
-          },
-        });
-      }
-
-      const currentUser = await this.usersService.findOne({
-        id: userJwtPayload.id,
-      });
-
-      if (!currentUser) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            user: 'userNotFound',
           },
         });
       }
@@ -426,6 +470,46 @@ export class AuthService {
         });
       }
     }
+
+    if (userDto.email && userDto.email !== currentUser.email) {
+      const userByEmail = await this.usersService.findOne({
+        email: userDto.email,
+      });
+
+      if (userByEmail && userByEmail.id !== currentUser.id) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: 'emailExists',
+          },
+        });
+      }
+
+      const hash = await this.jwtService.signAsync(
+        {
+          confirmEmailUserId: currentUser.id,
+          newEmail: userDto.email,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
+            infer: true,
+          }),
+        },
+      );
+
+      await this.mailService.confirmNewEmail({
+        to: userDto.email,
+        data: {
+          hash,
+        },
+      });
+    }
+
+    delete userDto.email;
+    delete userDto.oldPassword;
 
     await this.usersService.update(userJwtPayload.id, userDto);
 
