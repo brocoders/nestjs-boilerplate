@@ -1,0 +1,34 @@
+services:
+  mongo:
+    image: mongo:7.0.8
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    expose:
+      - 27017
+
+  maildev:
+    build:
+      context: .
+      dockerfile: maildev.Dockerfile
+    expose:
+      - 1080
+      - 1025
+
+  # Uncomment to use redis
+  # redis:
+  #   image: redis:7-alpine
+  #   expose:
+  #     - 6379
+
+  api:
+    build:
+      context: .
+      dockerfile: document.test.Dockerfile
+    stdin_open: true
+    tty: true
+    env_file:
+      - env-example-document
+    volumes:
+      - .:/usr/src/app
