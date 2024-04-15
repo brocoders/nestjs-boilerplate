@@ -25,13 +25,13 @@ npm run test:e2e
 ### For relational database
 
 ```bash
-docker compose -f docker-compose.relational.ci.yaml --env-file env-example-relational -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
+npm run test:e2e:relational:docker
 ```
 
 ### For document database
 
 ```bash
-docker compose -f docker-compose.document.ci.yaml --env-file env-example-document -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
+npm run test:e2e:document:docker
 ```
 
 ---
