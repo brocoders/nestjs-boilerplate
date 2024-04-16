@@ -28,22 +28,6 @@ const removeMongoDb = async () => {
       'persistence',
       'document',
     ),
-    path.join(
-      process.cwd(),
-      'src',
-      'roles',
-      'infrastructure',
-      'persistence',
-      'document',
-    ),
-    path.join(
-      process.cwd(),
-      'src',
-      'statuses',
-      'infrastructure',
-      'persistence',
-      'document',
-    ),
     path.join(process.cwd(), 'src', 'database', 'mongoose-config.service.ts'),
     path.join(process.cwd(), 'src', 'database', 'seeds', 'document'),
     path.join(
