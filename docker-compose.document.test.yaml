@@ -26,9 +26,8 @@ services:
     build:
       context: .
       dockerfile: document.test.Dockerfile
-    stdin_open: true
-    tty: true
     env_file:
       - env-example-document
     volumes:
-      - .:/usr/src/app
+      - ./src:/usr/src/app/src
+      - ./test:/usr/src/app/test
