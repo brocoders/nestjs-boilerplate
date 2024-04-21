@@ -29,4 +29,5 @@ services:
     env_file:
       - env-example-relational
     volumes:
-      - .:/usr/src/app
+      - ./src:/usr/src/app/src
+      - ./test:/usr/src/app/test
