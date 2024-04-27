@@ -13,11 +13,13 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiOkResponse,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesLocalService } from './files.service';
+import { FileResponseDto } from './dto/file-response.dto';
 
 @ApiTags('Files')
 @Controller({
@@ -27,6 +29,9 @@ import { FilesLocalService } from './files.service';
 export class FilesLocalController {
   constructor(private readonly filesService: FilesLocalService) {}
 
+  @ApiOkResponse({
+    type: FileResponseDto,
+  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('upload')
@@ -43,7 +48,9 @@ export class FilesLocalController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<FileResponseDto> {
     return this.filesService.create(file);
   }
 

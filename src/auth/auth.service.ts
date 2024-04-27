@@ -16,7 +16,7 @@ import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from '../social/interfaces/social.interface';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { NullableType } from '../utils/types/nullable.type';
-import { LoginResponseType } from './types/login-response.type';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
@@ -39,7 +39,7 @@ export class AuthService {
     private configService: ConfigService<AllConfigType>,
   ) {}
 
-  async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
+  async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
@@ -113,7 +113,7 @@ export class AuthService {
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
-  ): Promise<LoginResponseType> {
+  ): Promise<LoginResponseDto> {
     let user: NullableType<User> = null;
     const socialEmail = socialData.email?.toLowerCase();
     let userByEmail: NullableType<User> = null;
@@ -520,7 +520,7 @@ export class AuthService {
 
   async refreshToken(
     data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
-  ): Promise<Omit<LoginResponseType, 'user'>> {
+  ): Promise<Omit<LoginResponseDto, 'user'>> {
     const session = await this.sessionService.findOne({
       id: data.sessionId,
     });

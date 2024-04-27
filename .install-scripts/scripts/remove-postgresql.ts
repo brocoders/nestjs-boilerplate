@@ -240,6 +240,57 @@ const removePostgreSql = async () => {
     ],
   });
   replace({
+    path: path.join(process.cwd(), 'src', 'users', 'domain', 'user.ts'),
+    actions: [
+      {
+        find: /\/\/ <database-block>.*\/\/ <\/database-block>/gs,
+        replace: `const idType = String;`,
+      },
+      {
+        find: /\s*import \{ DatabaseConfig \} from .*/g,
+        replace: '',
+      },
+      {
+        find: /\s*import databaseConfig from .*/g,
+        replace: '',
+      },
+    ],
+  });
+  replace({
+    path: path.join(process.cwd(), 'src', 'statuses', 'domain', 'status.ts'),
+    actions: [
+      {
+        find: /\/\/ <database-block>.*\/\/ <\/database-block>/gs,
+        replace: `const idType = String;`,
+      },
+      {
+        find: /\s*import \{ DatabaseConfig \} from .*/g,
+        replace: '',
+      },
+      {
+        find: /\s*import databaseConfig from .*/g,
+        replace: '',
+      },
+    ],
+  });
+  replace({
+    path: path.join(process.cwd(), 'src', 'roles', 'domain', 'role.ts'),
+    actions: [
+      {
+        find: /\/\/ <database-block>.*\/\/ <\/database-block>/gs,
+        replace: `const idType = String;`,
+      },
+      {
+        find: /\s*import \{ DatabaseConfig \} from .*/g,
+        replace: '',
+      },
+      {
+        find: /\s*import databaseConfig from .*/g,
+        replace: '',
+      },
+    ],
+  });
+  replace({
     path: path.join(process.cwd(), 'package.json'),
     actions: [
       {
