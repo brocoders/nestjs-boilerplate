@@ -14,12 +14,21 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 
-import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
+import {
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from '../utils/dto/infinity-pagination-response.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
@@ -38,6 +47,9 @@ import { infinityPagination } from '../utils/infinity-pagination';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiCreatedResponse({
+    type: User,
+  })
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -47,6 +59,9 @@ export class UsersController {
     return this.usersService.create(createProfileDto);
   }
 
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(User),
+  })
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -54,7 +69,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() query: QueryUserDto,
-  ): Promise<InfinityPaginationResultType<User>> {
+  ): Promise<InfinityPaginationResponseDto<User>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -74,6 +89,9 @@ export class UsersController {
     );
   }
 
+  @ApiOkResponse({
+    type: User,
+  })
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -88,6 +106,9 @@ export class UsersController {
     return this.usersService.findOne({ id });
   }
 
+  @ApiOkResponse({
+    type: User,
+  })
   @SerializeOptions({
     groups: ['admin'],
   })

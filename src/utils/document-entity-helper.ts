@@ -1,6 +1,10 @@
+import { ApiResponseProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
 export class EntityDocumentHelper {
+  @ApiResponseProperty({
+    type: String,
+  })
   @Transform(
     (value) => {
       if ('value' in value) {

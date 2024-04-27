@@ -10,6 +10,7 @@ import { FileSchemaClass } from '../../../../../files/infrastructure/persistence
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
 import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
 
@@ -21,6 +22,10 @@ export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
   },
 })
 export class UserSchemaClass extends EntityDocumentHelper {
+  @ApiResponseProperty({
+    type: String,
+    example: 'john.doe@example.com',
+  })
   @Prop({
     type: String,
     unique: true,
@@ -35,12 +40,20 @@ export class UserSchemaClass extends EntityDocumentHelper {
   @Exclude({ toPlainOnly: true })
   previousPassword?: string;
 
+  @ApiResponseProperty({
+    type: String,
+    example: 'email',
+  })
   @Expose({ groups: ['me', 'admin'], toPlainOnly: true })
   @Prop({
     default: AuthProvidersEnum.email,
   })
   provider: string;
 
+  @ApiResponseProperty({
+    type: String,
+    example: '1234567890',
+  })
   @Expose({ groups: ['me', 'admin'], toPlainOnly: true })
   @Prop({
     type: String,
@@ -48,38 +61,58 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   socialId?: string | null;
 
+  @ApiResponseProperty({
+    type: String,
+    example: 'John',
+  })
   @Prop({
     type: String,
   })
   firstName: string | null;
 
+  @ApiResponseProperty({
+    type: String,
+    example: 'Doe',
+  })
   @Prop({
     type: String,
   })
   lastName: string | null;
 
+  @ApiResponseProperty({
+    type: () => FileSchemaClass,
+  })
   @Prop({
     type: FileSchemaClass,
   })
   @Type(() => FileSchemaClass)
   photo?: FileSchemaClass | null;
 
+  @ApiResponseProperty({
+    type: () => RoleSchema,
+  })
   @Prop({
     type: RoleSchema,
   })
   role?: RoleSchema | null;
 
+  @ApiResponseProperty({
+    type: () => StatusSchema,
+  })
   @Prop({
     type: StatusSchema,
   })
   status?: StatusSchema;
 
+  @ApiResponseProperty()
   @Prop({ default: now })
   createdAt: Date;
 
+  @ApiResponseProperty()
   @Prop({ default: now })
   updatedAt: Date;
 
+  @ApiResponseProperty()
   @Prop()
   deletedAt: Date;
 }

@@ -6,11 +6,11 @@ import {
   Post,
   SerializeOptions,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { AuthTwitterService } from './auth-twitter.service';
 import { AuthTwitterLoginDto } from './dto/auth-twitter-login.dto';
-import { LoginResponseType } from '../auth/types/login-response.type';
+import { LoginResponseDto } from '../auth/dto/login-response.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -23,6 +23,9 @@ export class AuthTwitterController {
     private readonly authTwitterService: AuthTwitterService,
   ) {}
 
+  @ApiOkResponse({
+    type: LoginResponseDto,
+  })
   @SerializeOptions({
     groups: ['me'],
   })
@@ -30,7 +33,7 @@ export class AuthTwitterController {
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginDto: AuthTwitterLoginDto,
-  ): Promise<LoginResponseType> {
+  ): Promise<LoginResponseDto> {
     const socialData =
       await this.authTwitterService.getProfileByToken(loginDto);
 
