@@ -6,6 +6,7 @@
 
 - [Introduction](introduction.md)
 - [Installing and Running](installing-and-running.md)
+- [Architecture](architecture.md)
 - [Working with database](database.md)
 - [Auth](auth.md)
 - [Serialization](serialization.md)

@@ -13,7 +13,6 @@ import { RoleEntity } from '../../../../../roles/infrastructure/persistence/rela
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
 
-import { User } from '../../../../domain/user';
 import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -26,7 +25,7 @@ import { ApiResponseProperty } from '@nestjs/swagger';
 @Entity({
   name: 'user',
 })
-export class UserEntity extends EntityRelationalHelper implements User {
+export class UserEntity extends EntityRelationalHelper {
   @ApiResponseProperty({
     type: Number,
   })
