@@ -293,6 +293,6 @@ Designing schema for MongoDB is completely different from designing schema for r
 
 ---
 
-Previous: [Installing and Running](installing-and-running.md)
+Previous: [Architecture](architecture.md)
 
 Next: [Auth](auth.md)
