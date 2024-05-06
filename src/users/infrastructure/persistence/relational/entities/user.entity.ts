@@ -8,6 +8,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -90,9 +92,10 @@ export class UserEntity extends EntityRelationalHelper {
   @ApiResponseProperty({
     type: () => FileEntity,
   })
-  @ManyToOne(() => FileEntity, {
+  @OneToOne(() => FileEntity, {
     eager: true,
   })
+  @JoinColumn()
   photo?: FileEntity | null;
 
   @ApiResponseProperty({
