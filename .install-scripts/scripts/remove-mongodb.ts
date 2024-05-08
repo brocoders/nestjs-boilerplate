@@ -68,6 +68,15 @@ const removeMongoDb = async () => {
   ];
 
   replace({
+    path: path.join(process.cwd(), '.github', 'workflows', 'docker-e2e.yml'),
+    actions: [
+      {
+        find: /\# <database-document-block>.*\# <\/database-document-block>/gs,
+        replace: '',
+      },
+    ],
+  });
+  replace({
     path: path.join(process.cwd(), 'src', 'app.module.ts'),
     actions: [
       {
