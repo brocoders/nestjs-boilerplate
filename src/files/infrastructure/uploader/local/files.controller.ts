@@ -13,8 +13,8 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiExcludeEndpoint,
   ApiOkResponse,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -55,10 +55,7 @@ export class FilesLocalController {
   }
 
   @Get(':path')
-  @ApiParam({
-    name: 'path',
-    type: 'string',
-  })
+  @ApiExcludeEndpoint()
   download(@Param('path') path, @Response() response) {
     return response.sendFile(path, { root: './files' });
   }
