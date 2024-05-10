@@ -41,7 +41,11 @@ const removeTwitterAuth = async () => {
     path: path.join(process.cwd(), 'package.json'),
     actions: [
       {
-        find: /\s*\"twitter\":.*/g,
+        find: /,\s*\"twitter\":.*\"/g,
+        replace: '',
+      },
+      {
+        find: /\s*\"twitter\":.*\,/g,
         replace: '',
       },
       {
