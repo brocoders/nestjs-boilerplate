@@ -307,11 +307,11 @@ const removePostgreSql = async () => {
         replace: '',
       },
       {
-        find: /,\s*\"typeorm\":.*/g,
+        find: /,\s*\"typeorm\":.*\"/g,
         replace: '',
       },
       {
-        find: /\s*\"typeorm\":.*/g,
+        find: /\s*\"typeorm\":.*\,/g,
         replace: '',
       },
       {
