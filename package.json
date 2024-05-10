@@ -69,7 +69,7 @@
     "passport-jwt": "4.0.1",
     "pg": "8.11.5",
     "reflect-metadata": "0.2.2",
-    "rimraf": "5.0.5",
+    "rimraf": "5.0.6",
     "rxjs": "7.8.1",
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.0",
