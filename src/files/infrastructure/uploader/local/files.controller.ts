@@ -13,8 +13,8 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiExcludeEndpoint,
-  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -29,7 +29,7 @@ import { FileResponseDto } from './dto/file-response.dto';
 export class FilesLocalController {
   constructor(private readonly filesService: FilesLocalService) {}
 
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: FileResponseDto,
   })
   @ApiBearerAuth()

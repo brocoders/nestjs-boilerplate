@@ -10,7 +10,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiOkResponse,
+  ApiCreatedResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,7 +25,7 @@ import { FileResponseDto } from './dto/file-response.dto';
 export class FilesS3Controller {
   constructor(private readonly filesService: FilesS3Service) {}
 
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: FileResponseDto,
   })
   @ApiBearerAuth()
