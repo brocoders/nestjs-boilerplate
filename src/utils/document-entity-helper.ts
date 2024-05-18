@@ -1,8 +1,8 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
 export class EntityDocumentHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
   })
   @Transform(
