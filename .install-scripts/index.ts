@@ -6,6 +6,9 @@ import removeTwitterAuth from './scripts/remove-auth-twitter';
 import removeInstallScripts from './scripts/remove-install-scripts';
 import removePostgreSql from './scripts/remove-postgresql';
 import removeMongoDb from './scripts/remove-mongodb';
+import removeRelationalResourceGeneration from './scripts/resource-generation-scripts/remove-relational';
+import removeDocumentResourceGeneration from './scripts/resource-generation-scripts/remove-document';
+import removeAllDbResourceGeneration from './scripts/resource-generation-scripts/remove-all-db';
 
 (async () => {
   const response = await prompts(
@@ -52,12 +55,21 @@ import removeMongoDb from './scripts/remove-mongodb';
     },
   );
 
+  if (response.database === 'pg-mongo') {
+    removeRelationalResourceGeneration();
+    removeDocumentResourceGeneration();
+  }
+
   if (response.database === 'mongo') {
     removePostgreSql();
+    removeRelationalResourceGeneration();
+    removeAllDbResourceGeneration();
   }
 
   if (response.database === 'pg') {
     removeMongoDb();
+    removeDocumentResourceGeneration();
+    removeAllDbResourceGeneration();
   }
 
   if (!response.isAuthFacebook) {
