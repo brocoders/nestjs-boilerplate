@@ -84,6 +84,7 @@ export class UsersDocumentRepository implements UserRepository {
         ...UserMapper.toDomain(user),
         ...clonedPayload,
       }),
+      { new: true },
     );
 
     return userObject ? UserMapper.toDomain(userObject) : null;
