@@ -56,6 +56,7 @@ export class SessionDocumentRepository implements SessionRepository {
         ...SessionMapper.toDomain(session),
         ...clonedPayload,
       }),
+      { new: true },
     );
 
     return sessionObject ? SessionMapper.toDomain(sessionObject) : null;

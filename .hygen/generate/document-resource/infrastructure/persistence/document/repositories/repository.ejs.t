@@ -65,6 +65,7 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
         ...<%= name %>Mapper.toDomain(entity),
         ...clonedPayload,
       }),
+      { new: true },
     );
 
     return entityObject ? <%= name %>Mapper.toDomain(entityObject) : null;
