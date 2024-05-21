@@ -7,8 +7,6 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SessionMapper } from '../mappers/session.mapper';
 import { User } from '../../../../../users/domain/user';
-import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
-import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class SessionDocumentRepository implements SessionRepository {
@@ -17,12 +15,8 @@ export class SessionDocumentRepository implements SessionRepository {
     private sessionModel: Model<SessionSchemaClass>,
   ) {}
 
-  async findOne(
-    fields: EntityCondition<Session>,
-  ): Promise<NullableType<Session>> {
-    const sessionObject = await this.sessionModel.findOne(
-      domainToDocumentCondition(fields),
-    );
+  async findById(id: Session['id']): Promise<NullableType<Session>> {
+    const sessionObject = await this.sessionModel.findById(id);
     return sessionObject ? SessionMapper.toDomain(sessionObject) : null;
   }
 
@@ -62,21 +56,24 @@ export class SessionDocumentRepository implements SessionRepository {
     return sessionObject ? SessionMapper.toDomain(sessionObject) : null;
   }
 
-  async softDelete({
-    excludeId,
-    ...criteria
+  async deleteById(id: Session['id']): Promise<void> {
+    await this.sessionModel.deleteOne({ _id: id.toString() });
+  }
+
+  async deleteByUserId({ userId }: { userId: User['id'] }): Promise<void> {
+    await this.sessionModel.deleteMany({ user: userId.toString() });
+  }
+
+  async deleteByUserIdWithExclude({
+    userId,
+    excludeSessionId,
   }: {
-    id?: Session['id'];
-    user?: Pick<User, 'id'>;
-    excludeId?: Session['id'];
+    userId: User['id'];
+    excludeSessionId: Session['id'];
   }): Promise<void> {
     const transformedCriteria = {
-      user: criteria.user?.id,
-      _id: criteria.id
-        ? criteria.id.toString()
-        : excludeId
-          ? { $not: { $eq: excludeId.toString() } }
-          : undefined,
+      user: userId.toString(),
+      _id: { $not: { $eq: excludeSessionId.toString() } },
     };
     await this.sessionModel.deleteMany(transformedCriteria);
   }

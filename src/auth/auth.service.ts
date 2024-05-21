@@ -40,9 +40,7 @@ export class AuthService {
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const user = await this.usersService.findOne({
-      email: loginDto.email,
-    });
+    const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
       throw new UnprocessableEntityException({
@@ -119,13 +117,11 @@ export class AuthService {
     let userByEmail: NullableType<User> = null;
 
     if (socialEmail) {
-      userByEmail = await this.usersService.findOne({
-        email: socialEmail,
-      });
+      userByEmail = await this.usersService.findByEmail(socialEmail);
     }
 
     if (socialData.id) {
-      user = await this.usersService.findOne({
+      user = await this.usersService.findBySocialIdAndProvider({
         socialId: socialData.id,
         provider: authProvider,
       });
@@ -156,9 +152,7 @@ export class AuthService {
         status,
       });
 
-      user = await this.usersService.findOne({
-        id: user?.id,
-      });
+      user = await this.usersService.findById(user.id);
     }
 
     if (!user) {
@@ -255,9 +249,7 @@ export class AuthService {
       });
     }
 
-    const user = await this.usersService.findOne({
-      id: userId,
-    });
+    const user = await this.usersService.findById(userId);
 
     if (
       !user ||
@@ -301,9 +293,7 @@ export class AuthService {
       });
     }
 
-    const user = await this.usersService.findOne({
-      id: userId,
-    });
+    const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new NotFoundException({
@@ -321,9 +311,7 @@ export class AuthService {
   }
 
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.usersService.findOne({
-      email,
-    });
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) {
       throw new UnprocessableEntityException({
@@ -383,9 +371,7 @@ export class AuthService {
       });
     }
 
-    const user = await this.usersService.findOne({
-      id: userId,
-    });
+    const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new UnprocessableEntityException({
@@ -398,28 +384,22 @@ export class AuthService {
 
     user.password = password;
 
-    await this.sessionService.softDelete({
-      user: {
-        id: user.id,
-      },
+    await this.sessionService.deleteByUserId({
+      userId: user.id,
     });
 
     await this.usersService.update(user.id, user);
   }
 
   async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
-    return this.usersService.findOne({
-      id: userJwtPayload.id,
-    });
+    return this.usersService.findById(userJwtPayload.id);
   }
 
   async update(
     userJwtPayload: JwtPayloadType,
     userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
-    const currentUser = await this.usersService.findOne({
-      id: userJwtPayload.id,
-    });
+    const currentUser = await this.usersService.findById(userJwtPayload.id);
 
     if (!currentUser) {
       throw new UnprocessableEntityException({
@@ -462,19 +442,15 @@ export class AuthService {
           },
         });
       } else {
-        await this.sessionService.softDelete({
-          user: {
-            id: currentUser.id,
-          },
-          excludeId: userJwtPayload.sessionId,
+        await this.sessionService.deleteByUserIdWithExclude({
+          userId: currentUser.id,
+          excludeSessionId: userJwtPayload.sessionId,
         });
       }
     }
 
     if (userDto.email && userDto.email !== currentUser.email) {
-      const userByEmail = await this.usersService.findOne({
-        email: userDto.email,
-      });
+      const userByEmail = await this.usersService.findByEmail(userDto.email);
 
       if (userByEmail && userByEmail.id !== currentUser.id) {
         throw new UnprocessableEntityException({
@@ -513,17 +489,13 @@ export class AuthService {
 
     await this.usersService.update(userJwtPayload.id, userDto);
 
-    return this.usersService.findOne({
-      id: userJwtPayload.id,
-    });
+    return this.usersService.findById(userJwtPayload.id);
   }
 
   async refreshToken(
     data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
   ): Promise<Omit<LoginResponseDto, 'user'>> {
-    const session = await this.sessionService.findOne({
-      id: data.sessionId,
-    });
+    const session = await this.sessionService.findById(data.sessionId);
 
     if (!session) {
       throw new UnauthorizedException();
@@ -538,9 +510,7 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    const user = await this.usersService.findOne({
-      id: session.user.id,
-    });
+    const user = await this.usersService.findById(session.user.id);
 
     if (!user?.role) {
       throw new UnauthorizedException();
@@ -567,13 +537,11 @@ export class AuthService {
   }
 
   async softDelete(user: User): Promise<void> {
-    await this.usersService.softDelete(user.id);
+    await this.usersService.remove(user.id);
   }
 
   async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>) {
-    return this.sessionService.softDelete({
-      id: data.sessionId,
-    });
+    return this.sessionService.deleteById(data.sessionId);
   }
 
   private async getTokensData(data: {

@@ -1,12 +1,9 @@
 import { User } from '../../../users/domain/user';
-import { EntityCondition } from '../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { Session } from '../../domain/session';
 
 export abstract class SessionRepository {
-  abstract findOne(
-    options: EntityCondition<Session>,
-  ): Promise<NullableType<Session>>;
+  abstract findById(id: Session['id']): Promise<NullableType<Session>>;
 
   abstract create(
     data: Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
@@ -19,12 +16,12 @@ export abstract class SessionRepository {
     >,
   ): Promise<Session | null>;
 
-  abstract softDelete({
-    excludeId,
-    ...criteria
-  }: {
-    id?: Session['id'];
-    user?: Pick<User, 'id'>;
-    excludeId?: Session['id'];
+  abstract deleteById(id: Session['id']): Promise<void>;
+
+  abstract deleteByUserId(conditions: { userId: User['id'] }): Promise<void>;
+
+  abstract deleteByUserIdWithExclude(conditions: {
+    userId: User['id'];
+    excludeSessionId: Session['id'];
   }): Promise<void>;
 }

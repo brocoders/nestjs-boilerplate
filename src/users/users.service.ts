@@ -13,7 +13,6 @@ import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { StatusEnum } from '../statuses/statuses.enum';
-import { EntityCondition } from '../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { DeepPartial } from '../utils/types/deep-partial.type';
 
@@ -36,9 +35,9 @@ export class UsersService {
     }
 
     if (clonedPayload.email) {
-      const userObject = await this.usersRepository.findOne({
-        email: clonedPayload.email,
-      });
+      const userObject = await this.usersRepository.findByEmail(
+        clonedPayload.email,
+      );
       if (userObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -50,9 +49,9 @@ export class UsersService {
     }
 
     if (clonedPayload.photo?.id) {
-      const fileObject = await this.filesService.findOne({
-        id: clonedPayload.photo.id,
-      });
+      const fileObject = await this.filesService.findById(
+        clonedPayload.photo.id,
+      );
       if (!fileObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -111,8 +110,25 @@ export class UsersService {
     });
   }
 
-  findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
-    return this.usersRepository.findOne(fields);
+  findById(id: User['id']): Promise<NullableType<User>> {
+    return this.usersRepository.findById(id);
+  }
+
+  findByEmail(email: User['email']): Promise<NullableType<User>> {
+    return this.usersRepository.findByEmail(email);
+  }
+
+  findBySocialIdAndProvider({
+    socialId,
+    provider,
+  }: {
+    socialId: User['socialId'];
+    provider: User['provider'];
+  }): Promise<NullableType<User>> {
+    return this.usersRepository.findBySocialIdAndProvider({
+      socialId,
+      provider,
+    });
   }
 
   async update(
@@ -130,9 +146,9 @@ export class UsersService {
     }
 
     if (clonedPayload.email) {
-      const userObject = await this.usersRepository.findOne({
-        email: clonedPayload.email,
-      });
+      const userObject = await this.usersRepository.findByEmail(
+        clonedPayload.email,
+      );
 
       if (userObject && userObject.id !== id) {
         throw new UnprocessableEntityException({
@@ -145,9 +161,9 @@ export class UsersService {
     }
 
     if (clonedPayload.photo?.id) {
-      const fileObject = await this.filesService.findOne({
-        id: clonedPayload.photo.id,
-      });
+      const fileObject = await this.filesService.findById(
+        clonedPayload.photo.id,
+      );
       if (!fileObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -190,7 +206,7 @@ export class UsersService {
     return this.usersRepository.update(id, clonedPayload);
   }
 
-  async softDelete(id: User['id']): Promise<void> {
-    await this.usersRepository.softDelete(id);
+  async remove(id: User['id']): Promise<void> {
+    await this.usersRepository.remove(id);
   }
 }

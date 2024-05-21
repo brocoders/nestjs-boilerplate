@@ -1,5 +1,4 @@
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
-import { EntityCondition } from '../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { User } from '../../domain/user';
@@ -21,12 +20,20 @@ export abstract class UserRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<User[]>;
 
-  abstract findOne(fields: EntityCondition<User>): Promise<NullableType<User>>;
+  abstract findById(id: User['id']): Promise<NullableType<User>>;
+  abstract findByEmail(email: User['email']): Promise<NullableType<User>>;
+  abstract findBySocialIdAndProvider({
+    socialId,
+    provider,
+  }: {
+    socialId: User['socialId'];
+    provider: User['provider'];
+  }): Promise<NullableType<User>>;
 
   abstract update(
     id: User['id'],
     payload: DeepPartial<User>,
   ): Promise<User | null>;
 
-  abstract softDelete(id: User['id']): Promise<void>;
+  abstract remove(id: User['id']): Promise<void>;
 }
