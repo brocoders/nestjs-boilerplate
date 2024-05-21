@@ -103,7 +103,7 @@ export class UsersController {
     required: true,
   })
   findOne(@Param('id') id: User['id']): Promise<NullableType<User>> {
-    return this.usersService.findOne({ id });
+    return this.usersService.findById(id);
   }
 
   @ApiOkResponse({
@@ -134,6 +134,6 @@ export class UsersController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: User['id']): Promise<void> {
-    return this.usersService.softDelete(id);
+    return this.usersService.remove(id);
   }
 }

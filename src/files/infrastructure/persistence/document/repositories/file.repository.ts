@@ -7,9 +7,7 @@ import { Model } from 'mongoose';
 import { FileType } from '../../../../domain/file';
 
 import { FileMapper } from '../mappers/file.mapper';
-import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../../../utils/types/nullable.type';
-import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class FileDocumentRepository implements FileRepository {
@@ -24,12 +22,8 @@ export class FileDocumentRepository implements FileRepository {
     return FileMapper.toDomain(fileObject);
   }
 
-  async findOne(
-    fields: EntityCondition<FileType>,
-  ): Promise<NullableType<FileType>> {
-    const fileObject = await this.fileModel.findOne(
-      domainToDocumentCondition(fields),
-    );
+  async findById(id: FileType['id']): Promise<NullableType<FileType>> {
+    const fileObject = await this.fileModel.findById(id);
     return fileObject ? FileMapper.toDomain(fileObject) : null;
   }
 }

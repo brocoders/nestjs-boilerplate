@@ -6,11 +6,9 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
-import { EntityCondition } from '../../../../../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import domainToDocumentCondition from '../../../../../utils/domain-to-document-condition';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {
@@ -35,15 +33,15 @@ export class UsersDocumentRepository implements UserRepository {
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<User[]> {
-    const where: EntityCondition<User> = {};
+    const where: FilterQuery<UserSchemaClass> = {};
     if (filterOptions?.roles?.length) {
-      where.role = filterOptions.roles.map((role) => ({
-        id: role.id.toString(),
-      }));
+      where['role._id'] = {
+        $in: filterOptions.roles.map((role) => role.id.toString()),
+      };
     }
 
     const userObjects = await this.usersModel
-      .find(domainToDocumentCondition(where))
+      .find(where)
       .sort(
         sortOptions?.reduce(
           (accumulator, sort) => ({
@@ -60,10 +58,32 @@ export class UsersDocumentRepository implements UserRepository {
     return userObjects.map((userObject) => UserMapper.toDomain(userObject));
   }
 
-  async findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
-    const userObject = await this.usersModel.findOne(
-      domainToDocumentCondition(fields),
-    );
+  async findById(id: User['id']): Promise<NullableType<User>> {
+    const userObject = await this.usersModel.findById(id);
+    return userObject ? UserMapper.toDomain(userObject) : null;
+  }
+
+  async findByEmail(email: User['email']): Promise<NullableType<User>> {
+    if (!email) return null;
+
+    const userObject = await this.usersModel.findOne({ email });
+    return userObject ? UserMapper.toDomain(userObject) : null;
+  }
+
+  async findBySocialIdAndProvider({
+    socialId,
+    provider,
+  }: {
+    socialId: User['socialId'];
+    provider: User['provider'];
+  }): Promise<NullableType<User>> {
+    if (!socialId || !provider) return null;
+
+    const userObject = await this.usersModel.findOne({
+      socialId,
+      provider,
+    });
+
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
@@ -90,7 +110,7 @@ export class UsersDocumentRepository implements UserRepository {
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
-  async softDelete(id: User['id']): Promise<void> {
+  async remove(id: User['id']): Promise<void> {
     await this.usersModel.deleteOne({
       _id: id.toString(),
     });

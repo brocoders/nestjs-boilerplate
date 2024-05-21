@@ -58,13 +58,6 @@ const removeMongoDb = async () => {
     path.join(process.cwd(), 'document.test.Dockerfile'),
     path.join(process.cwd(), '.hygen', 'seeds', 'create-document'),
     path.join(process.cwd(), 'src', 'utils', 'document-entity-helper.ts'),
-    path.join(process.cwd(), 'src', 'utils', 'domain-to-document-condition.ts'),
-    path.join(
-      process.cwd(),
-      'src',
-      'utils',
-      'domain-to-document-condition.spec.ts',
-    ),
   ];
 
   replace({
