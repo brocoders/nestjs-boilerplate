@@ -19,6 +19,8 @@ NestJS REST API boilerplate for a typical project
 
 Demo: <https://nestjs-boilerplate-test.herokuapp.com/docs>
 
+A fully compatible frontend boilerplate: <https://github.com/brocoders/extensive-react-boilerplate>
+
 Belongs to the [bc boilerplates](https://bcboilerplates.com/) ecosystem
 
 ## Table of Contents <!-- omit in toc -->
