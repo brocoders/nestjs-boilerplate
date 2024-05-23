@@ -40,4 +40,4 @@ Database example: Just keep the existing approach of getting data from the datab
 
 Previous: [Installing and Running](installing-and-running.md)
 
-Next: [Working with database](database.md)
+Next: [Command Line Interface](cli.md)

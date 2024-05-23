@@ -31,7 +31,7 @@
 
 Boilerplate supports two types of databases: PostgreSQL with TypeORM and MongoDB with Mongoose. You can choose one of them or use both in your project. The choice of database depends on the requirements of your project.
 
-For support of both databases used Hexagonal Architecture. Hexagonal architecture takes more effort to implement, but it gives more flexibility and scalability. If the time for your project is critical, you can use Three-tier architecture: use repositories from TypeORM or models from Mongoose directly in [services](https://docs.nestjs.com/providers#services). Entities and Schemas are ready for this.
+For support of both databases used [Hexagonal Architecture](architecture.md#hexagonal-architecture).
 
 ## Working with database schema (TypeORM)
 
@@ -293,6 +293,6 @@ Designing schema for MongoDB is completely different from designing schema for r
 
 ---
 
-Previous: [Architecture](architecture.md)
+Previous: [Command Line Interface](cli.md)
 
 Next: [Auth](auth.md)
