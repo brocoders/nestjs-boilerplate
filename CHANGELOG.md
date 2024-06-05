@@ -1,5 +1,105 @@
 
 
+## [1.2.0](https://github.com/brocoders/nestjs-boilerplate/compare/1.1.0...1.2.0) (2024-06-05)
+
+
+### Features
+
+* **auth:** update email ([9e180c9](https://github.com/brocoders/nestjs-boilerplate/commit/9e180c985bf4730405da8acb0b7e26c96c630252))
+* **document:** add domain condition to document ([becb3c3](https://github.com/brocoders/nestjs-boilerplate/commit/becb3c368ee0df2eeca72176eb9d8250fdd5d46e))
+* **install-scripts:** add option to select database ([2c204a6](https://github.com/brocoders/nestjs-boilerplate/commit/2c204a67198c3879a13123f2e3293d5dd322bbab))
+* **resource:** generate for hexagonal architecture ([81b54b1](https://github.com/brocoders/nestjs-boilerplate/commit/81b54b10c9542abc9ff537e5ebbc4616e4c0de7a))
+* **swagger:** add DTOs to responses [#1504](https://github.com/brocoders/nestjs-boilerplate/issues/1504) ([0071202](https://github.com/brocoders/nestjs-boilerplate/commit/0071202a90e9071eeb217326fefec4eccab85550))
+* **tests:** add separated container ([16c9f0b](https://github.com/brocoders/nestjs-boilerplate/commit/16c9f0b671c1f249511dbe5a8b3f4655381e6510))
+
+
+### Bug Fixes
+
+* **auth:** missing role after refresh token flow [#1442](https://github.com/brocoders/nestjs-boilerplate/issues/1442) ([493742c](https://github.com/brocoders/nestjs-boilerplate/commit/493742c39dec7ff1d2299befec7bcdfd8295b96b))
+* **auth:** refresh token only one time use ([0e58e08](https://github.com/brocoders/nestjs-boilerplate/commit/0e58e0872a852eaa5e0013fd2e81a9fffe2740b1))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.525.0 ([71fbeb3](https://github.com/brocoders/nestjs-boilerplate/commit/71fbeb3c94d3db9d6963687ccfa7efa2a63bb539))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.529.1 ([9cc6a60](https://github.com/brocoders/nestjs-boilerplate/commit/9cc6a60fb61ae2c3c3d18eface8a7b94b315fd7f))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.535.0 ([0245df7](https://github.com/brocoders/nestjs-boilerplate/commit/0245df72bb01724862db55b5a5cd9a0390fcdb48))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.540.0 ([4e79414](https://github.com/brocoders/nestjs-boilerplate/commit/4e794146e6769fdddacfd1d3a07a89ae8f039dda))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.554.0 ([33a0fe1](https://github.com/brocoders/nestjs-boilerplate/commit/33a0fe1d3c46196b135e14da670a08c29c0a4a4e))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.556.0 ([ba66854](https://github.com/brocoders/nestjs-boilerplate/commit/ba668542284a203f049fbe4b3825dc51c19d213a))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.564.0 ([d8cea5f](https://github.com/brocoders/nestjs-boilerplate/commit/d8cea5f3ce2493577f12c370957e22dcc0b62d25))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.565.0 ([87ba95d](https://github.com/brocoders/nestjs-boilerplate/commit/87ba95d75ea96fc5a12c2d51aadd59811c911885))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.567.0 ([2ad8c32](https://github.com/brocoders/nestjs-boilerplate/commit/2ad8c3248227a1d9c8526674bfa5253abcaa4043))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.569.0 ([dafecc7](https://github.com/brocoders/nestjs-boilerplate/commit/dafecc7d31084f95304f612c823ac70d61ff3ee1))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.582.0 ([6e8cee0](https://github.com/brocoders/nestjs-boilerplate/commit/6e8cee0cc9f6581a4d1e906ae3b3cd5cbc31cc4f))
+* **deps:** update aws-sdk-js-v3 monorepo to v3.583.0 ([05556dd](https://github.com/brocoders/nestjs-boilerplate/commit/05556dd5d994fa29c6b24f16250d591326edde0c))
+* **deps:** update dependency @nestjs/config to v3.2.1 ([a0ca2d0](https://github.com/brocoders/nestjs-boilerplate/commit/a0ca2d03efadd71db6cf29d89f43d489434eb487))
+* **deps:** update dependency @nestjs/config to v3.2.2 ([85e6888](https://github.com/brocoders/nestjs-boilerplate/commit/85e6888b19dca38f00d5339f0d2ee3b6ee20563d))
+* **deps:** update dependency @nestjs/mongoose to v10.0.5 ([5f0912c](https://github.com/brocoders/nestjs-boilerplate/commit/5f0912cc5867adbcdcff93a7518a61684a1eee7a))
+* **deps:** update dependency @nestjs/mongoose to v10.0.6 ([48e484a](https://github.com/brocoders/nestjs-boilerplate/commit/48e484a14b8bc7a4b8cac6f67553038ca6a65fa8))
+* **deps:** update dependency @nestjs/swagger to v7.3.1 ([4f28a24](https://github.com/brocoders/nestjs-boilerplate/commit/4f28a2496e619b9196e93b48b790eff340c99e9d))
+* **deps:** update dependency google-auth-library to v9.10.0 ([a26b138](https://github.com/brocoders/nestjs-boilerplate/commit/a26b1380e1fe4c1337ab45e9bce3e4af1726d3df))
+* **deps:** update dependency google-auth-library to v9.7.0 ([1e22eea](https://github.com/brocoders/nestjs-boilerplate/commit/1e22eeacba5270591361815cf3185a19a1627186))
+* **deps:** update dependency google-auth-library to v9.8.0 ([60924ae](https://github.com/brocoders/nestjs-boilerplate/commit/60924ae59f8bee3cb5345b645eb022edc1ff01c0))
+* **deps:** update dependency google-auth-library to v9.9.0 ([6bbd949](https://github.com/brocoders/nestjs-boilerplate/commit/6bbd94959feadfb221ed4d93f93cb54a47a6a3f7))
+* **deps:** update dependency mongoose to v8.2.1 ([b16f037](https://github.com/brocoders/nestjs-boilerplate/commit/b16f0373b8606dce25c8b702f79c92f4d6d901dc))
+* **deps:** update dependency mongoose to v8.2.2 ([8fb2d23](https://github.com/brocoders/nestjs-boilerplate/commit/8fb2d2310d1f6023594d273cdf2b6791e63509ad))
+* **deps:** update dependency mongoose to v8.3.1 ([67b5b01](https://github.com/brocoders/nestjs-boilerplate/commit/67b5b010b3e54180522db6b99cef0830fe692e23))
+* **deps:** update dependency mongoose to v8.3.2 ([802ff5a](https://github.com/brocoders/nestjs-boilerplate/commit/802ff5aad8d3edc5c2ee2d59221f5023d01cb3cf))
+* **deps:** update dependency mongoose to v8.3.3 ([ee7a2b6](https://github.com/brocoders/nestjs-boilerplate/commit/ee7a2b69bbd1e2142538adf260bdedcad63126e6))
+* **deps:** update dependency mongoose to v8.3.4 ([dd76916](https://github.com/brocoders/nestjs-boilerplate/commit/dd769161587ef767919f9835d78d38f1fc68a697))
+* **deps:** update dependency mongoose to v8.4.0 ([85c97e1](https://github.com/brocoders/nestjs-boilerplate/commit/85c97e1df7132eece3779a14e7f4034e48568a18))
+* **deps:** update dependency mongoose to v8.4.1 ([adb7713](https://github.com/brocoders/nestjs-boilerplate/commit/adb7713f697408b9e8225508022ec6845cf41631))
+* **deps:** update dependency nodemailer to v6.9.11 ([f7dafaa](https://github.com/brocoders/nestjs-boilerplate/commit/f7dafaa295ac99a7cd8c2d43194986fab33a54ed))
+* **deps:** update dependency nodemailer to v6.9.12 ([0c26e2a](https://github.com/brocoders/nestjs-boilerplate/commit/0c26e2aa37f06899d0c3c6b4db38661dbf415b6d))
+* **deps:** update dependency nodemailer to v6.9.13 ([bf42e74](https://github.com/brocoders/nestjs-boilerplate/commit/bf42e74cc4f11833608837d0b658a1c1f6e8687b))
+* **deps:** update dependency pg to v8.11.4 ([a343c03](https://github.com/brocoders/nestjs-boilerplate/commit/a343c03caecdc3fb81a531b81ff9dcec04d822fb))
+* **deps:** update dependency pg to v8.11.5 ([bd69be5](https://github.com/brocoders/nestjs-boilerplate/commit/bd69be570e57903f7b3bc1f214b00f00e738b874))
+* **deps:** update dependency reflect-metadata to v0.2.2 ([33009b3](https://github.com/brocoders/nestjs-boilerplate/commit/33009b3462d01d8bab8c1764a24cc1c5473bbf1e))
+* **deps:** update dependency rimraf to v5.0.6 ([45ef8e0](https://github.com/brocoders/nestjs-boilerplate/commit/45ef8e02497edba13af9fc87e8e6e5bcd8deb93b))
+* **deps:** update dependency rimraf to v5.0.7 ([b9220a0](https://github.com/brocoders/nestjs-boilerplate/commit/b9220a062bff7a81ae28136574fb6c7e3f027cc1))
+* **deps:** update dependency swagger-ui-express to v5.0.1 ([0da3df0](https://github.com/brocoders/nestjs-boilerplate/commit/0da3df031c8d5e0560f21015542ff7ecb34dbffd))
+* **deps:** update nest monorepo to v10.3.4 ([cfe1f18](https://github.com/brocoders/nestjs-boilerplate/commit/cfe1f1823f11c503a1939a1c62f93f318d44bb79))
+* **deps:** update nest monorepo to v10.3.5 ([210df19](https://github.com/brocoders/nestjs-boilerplate/commit/210df19c01a1036e135b8960162d7d2d03907c17))
+* **deps:** update nest monorepo to v10.3.6 ([50e2d4b](https://github.com/brocoders/nestjs-boilerplate/commit/50e2d4b2d9ec414975c19a7f744c7e544f42993a))
+* **deps:** update nest monorepo to v10.3.7 ([b7e8a9b](https://github.com/brocoders/nestjs-boilerplate/commit/b7e8a9b5be6d67bd22c8678c39aa3b3a5d38d8dd))
+* **deps:** update nest monorepo to v10.3.8 ([766ab6e](https://github.com/brocoders/nestjs-boilerplate/commit/766ab6ec21beecc672808ea97044ea1ad50c63b8))
+* **deps:** upgrade mongoose ([acc79ac](https://github.com/brocoders/nestjs-boilerplate/commit/acc79acbddfe7fb5bcc5c487c494119d98c10b1a))
+* **document:** find one and update ([9e2b0c5](https://github.com/brocoders/nestjs-boilerplate/commit/9e2b0c592411883d61f7670fdf8325366e33dfcd))
+* **files:** remove endpoint for download file from swagger [#1533](https://github.com/brocoders/nestjs-boilerplate/issues/1533) ([2e9f73e](https://github.com/brocoders/nestjs-boilerplate/commit/2e9f73ef8e570f456f78165ecf4f2e1a4d067802))
+* **files:** swagger ([11ae998](https://github.com/brocoders/nestjs-boilerplate/commit/11ae998015bad234a85f15d22d19c82501e798a4))
+* **install-scripts:** correct removing twitter deps ([7fc7d8f](https://github.com/brocoders/nestjs-boilerplate/commit/7fc7d8fa498a87a6e8cce4bf5c0fc685c447cbc6))
+* **swc:** change path to relative ([0e80661](https://github.com/brocoders/nestjs-boilerplate/commit/0e8066139faf055d0b527a02659c2cfa45076153))
+* **tests:** add --passWithNoTests to pre-commit [#1498](https://github.com/brocoders/nestjs-boilerplate/issues/1498) ([c5c4c2b](https://github.com/brocoders/nestjs-boilerplate/commit/c5c4c2b251b1cd551c76e694517c0e1e62003c06))
+* **tests:** overriding .env file ([d9a7fd9](https://github.com/brocoders/nestjs-boilerplate/commit/d9a7fd9a5ff74491e629ea9c5fca1e66ecea316b))
+* **users:** emailAlreadyExists error in update function ([ab530c4](https://github.com/brocoders/nestjs-boilerplate/commit/ab530c4da7559bf2487698982799920a4d10e345))
+
+
+### Documentation
+
+* **architecture:** add new page [#1512](https://github.com/brocoders/nestjs-boilerplate/issues/1512) ([726d978](https://github.com/brocoders/nestjs-boilerplate/commit/726d978296dee03de40a8fec6633ea4776172df8))
+* **architecture:** add Q&A ([afbc519](https://github.com/brocoders/nestjs-boilerplate/commit/afbc5193d08549703602c78ff17976cbb69ee8ab))
+* **auth:** add info about JWT strategy ([4ab0da9](https://github.com/brocoders/nestjs-boilerplate/commit/4ab0da9836772b0dde63cf391e68e061b971d8da))
+* **cli:** add new page ([d3a1b59](https://github.com/brocoders/nestjs-boilerplate/commit/d3a1b5915833b0fee62de143bf7a310e7c3b4456))
+* **database:** add section about databases ([11b58ea](https://github.com/brocoders/nestjs-boilerplate/commit/11b58eacee2975d2795acf64a1ef7def669b416b))
+* **database:** typos ([b60d4ec](https://github.com/brocoders/nestjs-boilerplate/commit/b60d4ec4ce3fc065c59e84db73c539b0654edd3f))
+* update .all-contributorsrc ([d523e26](https://github.com/brocoders/nestjs-boilerplate/commit/d523e2638a649817883c57971914cdeccdd04bde))
+* update README.md ([37af8e8](https://github.com/brocoders/nestjs-boilerplate/commit/37af8e8e9695b4d0db919fd461e6aa4a8dd3995f))
+
+
+### Code Refactoring
+
+* correct optional properties ([c108a30](https://github.com/brocoders/nestjs-boilerplate/commit/c108a30bc36787501cdee22de6e223ecb37824da))
+* **database:** change relation ([8c1df7a](https://github.com/brocoders/nestjs-boilerplate/commit/8c1df7a8a3ba708c4fac416b99b1bbadad69b52b))
+* replace http exception ([9b38243](https://github.com/brocoders/nestjs-boilerplate/commit/9b382431e4c432f1f2bc286afc0893de7f13a6c7))
+* **repositories:** simplify ([2896589](https://github.com/brocoders/nestjs-boilerplate/commit/2896589f52d2df025f12069ba82ba4fac1db8ebd))
+
+
+### Tests
+
+* **user:** add test for updating email ([3110e44](https://github.com/brocoders/nestjs-boilerplate/commit/3110e449350f2808dc374a4f1fbbd6bec96c7849))
+
+
+### Continuous Integration
+
+* add database selection ([e0a4f32](https://github.com/brocoders/nestjs-boilerplate/commit/e0a4f32711e7b0e5c821d67be6e3c7504320dcfd))
+
 ## 1.1.0 (2024-02-25)
 
 
