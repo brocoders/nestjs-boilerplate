@@ -25,7 +25,7 @@ The main reason for using Hexagonal Architecture is to separate the business log
 
 ## Pitfalls
 
-Hexagonal Architecture takes more effort to implement, but it gives more flexibility and scalability. [If the time for your project is critical, you can use Three-tier architecture.](#i-dont-want-to-use-hexagonal-architecture-how-can-i-use-a-traditional-three-tier-architecture-for-nestjs)
+Hexagonal Architecture can take more effort to implement, but it gives more flexibility and scalability. [You still can use Three-tier architecture](#i-dont-want-to-use-hexagonal-architecture-how-can-i-use-a-traditional-three-tier-architecture-for-nestjs), but we recommend using Hexagonal Architecture. Try to create resources via our [CLI](cli.md), you will be sure that makes the same time (maybe even less 🤔) as Three-tier architecture.
 
 ---
 
