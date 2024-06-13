@@ -6,6 +6,8 @@
 
 - [Hexagonal Architecture](#hexagonal-architecture)
 - [Motivation](#motivation)
+- [Recommendations](#recommendations)
+  - [Repository](#repository)
 - [Pitfalls](#pitfalls)
 - [FAQ](#faq)
   - [Is there a way to generate a new resource (controller, service, DTOs, etc) with Hexagonal Architecture?](#is-there-a-way-to-generate-a-new-resource-controller-service-dtos-etc-with-hexagonal-architecture)
@@ -22,6 +24,36 @@ NestJS Boilerplate is based on [Hexagonal Architecture](https://en.wikipedia.org
 ## Motivation
 
 The main reason for using Hexagonal Architecture is to separate the business logic from the infrastructure. This separation allows us to easily change the database, the way of uploading files, or any other infrastructure without changing the business logic.
+
+## Recommendations
+
+### Repository
+
+Don't try to create universal methods in the repository because they are difficult to extend during the project's life. Instead of this create methods with a single responsibility.
+
+```typescript
+// ❌
+export class UsersRelationalRepository implements UserRepository {
+  async find(condition: UniversalConditionInterface): Promise<User> {
+    // ...
+  }
+}
+
+// ✅
+export class UsersRelationalRepository implements UserRepository {
+  async findByEmail(email: string): Promise<User> {
+    // ...
+  }
+  
+  async findByRoles(roles: string[]): Promise<User> {
+    // ...
+  }
+  
+  async findByIds(ids: string[]): Promise<User> {
+    // ...
+  }
+}
+```
 
 ## Pitfalls
 
