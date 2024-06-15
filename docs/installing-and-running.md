@@ -52,6 +52,8 @@ Switching between TypeORM and Mongoose is implemented based on the [Dependency I
 
    > You should run this command only the first time on initialization of your project, all next time skip it.
 
+   > If you want to contribute to the boilerplate, you should NOT run this command.
+
    ```bash
    npm run app:config
    ```
@@ -110,6 +112,8 @@ Switching between TypeORM and Mongoose is implemented based on the [Dependency I
 1. Run app configuration
 
    > You should run this command only the first time on initialization of your project, all next time skip it.
+
+   > If you want to contribute to the boilerplate, you should NOT run this command.
 
    ```bash
    npm run app:config
