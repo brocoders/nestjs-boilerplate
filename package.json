@@ -52,7 +52,7 @@
     "@nestjs/mongoose": "10.0.6",
     "@nestjs/passport": "10.0.3",
     "@nestjs/platform-express": "10.3.10",
-    "@nestjs/swagger": "7.3.1",
+    "@nestjs/swagger": "7.4.0",
     "@nestjs/typeorm": "10.0.2",
     "@types/multer-s3": "3.0.3",
     "@types/prompts": "2.4.9",
