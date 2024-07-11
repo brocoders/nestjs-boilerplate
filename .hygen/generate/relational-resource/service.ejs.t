@@ -10,10 +10,10 @@ import { <%= name %> } from './domain/<%= h.inflection.transform(name, ['undersc
 
 @Injectable()
 export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
-  constructor(private readonly <%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository: <%= name %>Repository) {}
+  constructor(private readonly <%= h.inflection.camelize(name, true) %>Repository: <%= name %>Repository) {}
 
   create(create<%= name %>Dto: Create<%= name %>Dto) {
-    return this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.create(create<%= name %>Dto);
+    return this.<%= h.inflection.camelize(name, true) %>Repository.create(create<%= name %>Dto);
   }
 
   findAllWithPagination({
@@ -21,7 +21,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
   }: {
     paginationOptions: IPaginationOptions;
   }) {
-    return this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.findAllWithPagination({
+    return this.<%= h.inflection.camelize(name, true) %>Repository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
@@ -30,14 +30,14 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
   }
 
   findOne(id: <%= name %>['id']) {
-    return this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.findById(id);
+    return this.<%= h.inflection.camelize(name, true) %>Repository.findById(id);
   }
 
   update(id: <%= name %>['id'], update<%= name %>Dto: Update<%= name %>Dto) {
-    return this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.update(id, update<%= name %>Dto);
+    return this.<%= h.inflection.camelize(name, true) %>Repository.update(id, update<%= name %>Dto);
   }
 
   remove(id: <%= name %>['id']) {
-    return this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.remove(id);
+    return this.<%= h.inflection.camelize(name, true) %>Repository.remove(id);
   }
 }

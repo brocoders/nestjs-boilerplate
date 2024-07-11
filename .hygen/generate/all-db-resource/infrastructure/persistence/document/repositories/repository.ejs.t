@@ -15,12 +15,12 @@ import { IPaginationOptions } from '../../../../../utils/types/pagination-option
 export class <%= name %>DocumentRepository implements <%= name %>Repository {
   constructor(
     @InjectModel(<%= name %>SchemaClass.name)
-    private readonly <%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model: Model<<%= name %>SchemaClass>,
+    private readonly <%= h.inflection.camelize(name, true) %>Model: Model<<%= name %>SchemaClass>,
   ) {}
 
   async create(data: <%= name %>): Promise<<%= name %>> {
     const persistenceModel = <%= name %>Mapper.toPersistence(data);
-    const createdEntity = new this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model(persistenceModel);
+    const createdEntity = new this.<%= h.inflection.camelize(name, true) %>Model(persistenceModel);
     const entityObject = await createdEntity.save();
     return <%= name %>Mapper.toDomain(entityObject);
   }
@@ -30,7 +30,7 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<<%= name %>[]> {
-    const entityObjects = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model
+    const entityObjects = await this.<%= h.inflection.camelize(name, true) %>Model
       .find()
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
@@ -41,7 +41,7 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
   }
 
   async findById(id: <%= name %>['id']): Promise<NullableType<<%= name %>>> {
-    const entityObject = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model.findById(id);
+    const entityObject = await this.<%= h.inflection.camelize(name, true) %>Model.findById(id);
     return entityObject ? <%= name %>Mapper.toDomain(entityObject) : null;
   }
 
@@ -53,13 +53,13 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
     delete clonedPayload.id;
 
     const filter = { _id: id.toString() };
-    const entity = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model.findOne(filter);
+    const entity = await this.<%= h.inflection.camelize(name, true) %>Model.findOne(filter);
 
     if (!entity) {
       throw new Error('Record not found');
     }
 
-    const entityObject = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model.findOneAndUpdate(
+    const entityObject = await this.<%= h.inflection.camelize(name, true) %>Model.findOneAndUpdate(
       filter,
       <%= name %>Mapper.toPersistence({
         ...<%= name %>Mapper.toDomain(entity),
@@ -72,6 +72,6 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
   }
 
   async remove(id: <%= name %>['id']): Promise<void> {
-    await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Model.deleteOne({ _id: id });
+    await this.<%= h.inflection.camelize(name, true) %>Model.deleteOne({ _id: id });
   }
 }
