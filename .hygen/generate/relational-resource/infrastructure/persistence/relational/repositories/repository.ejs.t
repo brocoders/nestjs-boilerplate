@@ -15,13 +15,13 @@ import { IPaginationOptions } from '../../../../../utils/types/pagination-option
 export class <%= name %>RelationalRepository implements <%= name %>Repository {
   constructor(
     @InjectRepository(<%= name %>Entity)
-    private readonly <%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository: Repository<<%= name %>Entity>,
+    private readonly <%= h.inflection.camelize(name, true) %>Repository: Repository<<%= name %>Entity>,
   ) {}
 
   async create(data: <%= name %>): Promise<<%= name %>> {
     const persistenceModel = <%= name %>Mapper.toPersistence(data);
-    const newEntity = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.save(
-      this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.create(persistenceModel),
+    const newEntity = await this.<%= h.inflection.camelize(name, true) %>Repository.save(
+      this.<%= h.inflection.camelize(name, true) %>Repository.create(persistenceModel),
     );
     return <%= name %>Mapper.toDomain(newEntity);
   }
@@ -31,7 +31,7 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<<%= name %>[]> {
-    const entities = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.find({
+    const entities = await this.<%= h.inflection.camelize(name, true) %>Repository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });
@@ -40,7 +40,7 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
   }
 
   async findById(id: <%= name %>['id']): Promise<NullableType<<%= name %>>> {
-    const entity = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.findOne({
+    const entity = await this.<%= h.inflection.camelize(name, true) %>Repository.findOne({
       where: { id },
     });
 
@@ -51,7 +51,7 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
     id: <%= name %>['id'],
     payload: Partial<<%= name %>>,
   ): Promise<<%= name %>> {
-    const entity = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.findOne({
+    const entity = await this.<%= h.inflection.camelize(name, true) %>Repository.findOne({
       where: { id },
     });
 
@@ -59,8 +59,8 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
       throw new Error('Record not found');
     }
 
-    const updatedEntity = await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.save(
-      this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.create(
+    const updatedEntity = await this.<%= h.inflection.camelize(name, true) %>Repository.save(
+      this.<%= h.inflection.camelize(name, true) %>Repository.create(
         <%= name %>Mapper.toPersistence({
           ...<%= name %>Mapper.toDomain(entity),
           ...payload,
@@ -72,6 +72,6 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
   }
 
   async remove(id: <%= name %>['id']): Promise<void> {
-    await this.<%= h.inflection.transform(name, ['camelize', 'underscore']) %>Repository.delete(id);
+    await this.<%= h.inflection.camelize(name, true) %>Repository.delete(id);
   }
 }

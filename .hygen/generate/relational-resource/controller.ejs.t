@@ -39,14 +39,14 @@ import { FindAll<%= h.inflection.transform(name, ['pluralize']) %>Dto } from './
   version: '1',
 })
 export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
-  constructor(private readonly <%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service: <%= h.inflection.transform(name, ['pluralize']) %>Service) {}
+  constructor(private readonly <%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service: <%= h.inflection.transform(name, ['pluralize']) %>Service) {}
 
   @Post()
   @ApiCreatedResponse({
     type: <%= name %>,
   })
   create(@Body() create<%= name %>Dto: Create<%= name %>Dto) {
-    return this.<%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service.create(create<%= name %>Dto);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.create(create<%= name %>Dto);
   }
 
   @Get()
@@ -63,7 +63,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     }
 
     return infinityPagination(
-      await this.<%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service.findAllWithPagination({
+      await this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -80,7 +80,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     required: true,
   })
   findOne(@Param('id') id: string) {
-    return this.<%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service.findOne(id);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findOne(id);
   }
 
   @Patch(':id')
@@ -96,7 +96,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     @Param('id') id: string,
     @Body() update<%= name %>Dto: Update<%= name %>Dto,
   ) {
-    return this.<%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service.update(id, update<%= name %>Dto);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.update(id, update<%= name %>Dto);
   }
 
   @Delete(':id')
@@ -106,6 +106,6 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     required: true,
   })
   remove(@Param('id') id: string) {
-    return this.<%= h.inflection.transform(name, ['pluralize', 'camelize', 'underscore']) %>Service.remove(id);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.remove(id);
   }
 }
