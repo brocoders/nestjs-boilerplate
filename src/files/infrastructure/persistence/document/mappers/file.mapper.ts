@@ -3,17 +3,17 @@ import { FileSchemaClass } from '../entities/file.schema';
 
 export class FileMapper {
   static toDomain(raw: FileSchemaClass): FileType {
-    const file = new FileType();
-    file.id = raw._id.toString();
-    file.path = raw.path;
-    return file;
+    const domainEntity = new FileType();
+    domainEntity.id = raw._id.toString();
+    domainEntity.path = raw.path;
+    return domainEntity;
   }
-  static toPersistence(file) {
-    const fileEntity = new FileSchemaClass();
-    if (file.id) {
-      fileEntity._id = file.id;
+  static toPersistence(domainEntity: FileType): FileSchemaClass {
+    const persistenceSchema = new FileSchemaClass();
+    if (domainEntity.id) {
+      persistenceSchema._id = domainEntity.id;
     }
-    fileEntity.path = file.path;
-    return fileEntity;
+    persistenceSchema.path = domainEntity.path;
+    return persistenceSchema;
   }
 }

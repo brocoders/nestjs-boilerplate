@@ -3,16 +3,16 @@ import { FileEntity } from '../entities/file.entity';
 
 export class FileMapper {
   static toDomain(raw: FileEntity): FileType {
-    const file = new FileType();
-    file.id = raw.id;
-    file.path = raw.path;
-    return file;
+    const domainEntity = new FileType();
+    domainEntity.id = raw.id;
+    domainEntity.path = raw.path;
+    return domainEntity;
   }
 
-  static toPersistence(file: FileType): FileEntity {
-    const fileEntity = new FileEntity();
-    fileEntity.id = file.id;
-    fileEntity.path = file.path;
-    return fileEntity;
+  static toPersistence(domainEntity: FileType): FileEntity {
+    const persistenceEntity = new FileEntity();
+    persistenceEntity.id = domainEntity.id;
+    persistenceEntity.path = domainEntity.path;
+    return persistenceEntity;
   }
 }
