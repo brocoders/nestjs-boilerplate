@@ -9,77 +9,78 @@ import { StatusSchema } from '../../../../../statuses/infrastructure/persistence
 
 export class UserMapper {
   static toDomain(raw: UserSchemaClass): User {
-    const user = new User();
-    user.id = raw._id.toString();
-    user.email = raw.email;
-    user.password = raw.password;
-    user.previousPassword = raw.previousPassword;
-    user.provider = raw.provider;
-    user.socialId = raw.socialId;
-    user.firstName = raw.firstName;
-    user.lastName = raw.lastName;
+    const domainEntity = new User();
+    domainEntity.id = raw._id.toString();
+    domainEntity.email = raw.email;
+    domainEntity.password = raw.password;
+    domainEntity.previousPassword = raw.previousPassword;
+    domainEntity.provider = raw.provider;
+    domainEntity.socialId = raw.socialId;
+    domainEntity.firstName = raw.firstName;
+    domainEntity.lastName = raw.lastName;
     if (raw.photo) {
-      user.photo = FileMapper.toDomain(raw.photo);
+      domainEntity.photo = FileMapper.toDomain(raw.photo);
     } else if (raw.photo === null) {
-      user.photo = null;
+      domainEntity.photo = null;
     }
 
     if (raw.role) {
-      user.role = new Role();
-      user.role.id = raw.role._id;
+      domainEntity.role = new Role();
+      domainEntity.role.id = raw.role._id;
     }
 
     if (raw.status) {
-      user.status = new Status();
-      user.status.id = raw.status._id;
+      domainEntity.status = new Status();
+      domainEntity.status.id = raw.status._id;
     }
 
-    user.createdAt = raw.createdAt;
-    user.updatedAt = raw.updatedAt;
-    user.deletedAt = raw.deletedAt;
-    return user;
+    domainEntity.createdAt = raw.createdAt;
+    domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.deletedAt = raw.deletedAt;
+
+    return domainEntity;
   }
 
-  static toPersistence(user: User): UserSchemaClass {
+  static toPersistence(domainEntity: User): UserSchemaClass {
     let role: RoleSchema | undefined = undefined;
 
-    if (user.role) {
+    if (domainEntity.role) {
       role = new RoleSchema();
-      role._id = user.role.id.toString();
+      role._id = domainEntity.role.id.toString();
     }
 
     let photo: FileSchemaClass | undefined = undefined;
 
-    if (user.photo) {
+    if (domainEntity.photo) {
       photo = new FileSchemaClass();
-      photo._id = user.photo.id;
-      photo.path = user.photo.path;
+      photo._id = domainEntity.photo.id;
+      photo.path = domainEntity.photo.path;
     }
 
     let status: StatusSchema | undefined = undefined;
 
-    if (user.status) {
+    if (domainEntity.status) {
       status = new StatusSchema();
-      status._id = user.status.id.toString();
+      status._id = domainEntity.status.id.toString();
     }
 
-    const userEntity = new UserSchemaClass();
-    if (user.id && typeof user.id === 'string') {
-      userEntity._id = user.id;
+    const persistenceSchema = new UserSchemaClass();
+    if (domainEntity.id && typeof domainEntity.id === 'string') {
+      persistenceSchema._id = domainEntity.id;
     }
-    userEntity.email = user.email;
-    userEntity.password = user.password;
-    userEntity.previousPassword = user.previousPassword;
-    userEntity.provider = user.provider;
-    userEntity.socialId = user.socialId;
-    userEntity.firstName = user.firstName;
-    userEntity.lastName = user.lastName;
-    userEntity.photo = photo;
-    userEntity.role = role;
-    userEntity.status = status;
-    userEntity.createdAt = user.createdAt;
-    userEntity.updatedAt = user.updatedAt;
-    userEntity.deletedAt = user.deletedAt;
-    return userEntity;
+    persistenceSchema.email = domainEntity.email;
+    persistenceSchema.password = domainEntity.password;
+    persistenceSchema.previousPassword = domainEntity.previousPassword;
+    persistenceSchema.provider = domainEntity.provider;
+    persistenceSchema.socialId = domainEntity.socialId;
+    persistenceSchema.firstName = domainEntity.firstName;
+    persistenceSchema.lastName = domainEntity.lastName;
+    persistenceSchema.photo = photo;
+    persistenceSchema.role = role;
+    persistenceSchema.status = status;
+    persistenceSchema.createdAt = domainEntity.createdAt;
+    persistenceSchema.updatedAt = domainEntity.updatedAt;
+    persistenceSchema.deletedAt = domainEntity.deletedAt;
+    return persistenceSchema;
   }
 }

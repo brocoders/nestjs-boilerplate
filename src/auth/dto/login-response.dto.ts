@@ -1,17 +1,17 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/domain/user';
 
 export class LoginResponseDto {
-  @ApiResponseProperty()
+  @ApiProperty()
   token: string;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   refreshToken: string;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   tokenExpires: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => User,
   })
   user: User;

@@ -1,4 +1,4 @@
-import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { Transform } from 'class-transformer';
 import fileConfig from '../config/file.config';
@@ -17,7 +17,7 @@ export class FileType {
   @Allow()
   id: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'https://example.com/path/to/file.jpg',
   })

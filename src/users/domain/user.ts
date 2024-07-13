@@ -2,7 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { FileType } from '../../files/domain/file';
 import { Role } from '../../roles/domain/role';
 import { Status } from '../../statuses/domain/status';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import databaseConfig from '../../database/config/database.config';
 import { DatabaseConfig } from '../../database/config/database-config.type';
 
@@ -13,12 +13,12 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 // </database-block>
 
 export class User {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: idType,
   })
   id: number | string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'john.doe@example.com',
   })
@@ -31,53 +31,53 @@ export class User {
   @Exclude({ toPlainOnly: true })
   previousPassword?: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'email',
   })
   @Expose({ groups: ['me', 'admin'] })
   provider: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: '1234567890',
   })
   @Expose({ groups: ['me', 'admin'] })
   socialId?: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'John',
   })
   firstName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'Doe',
   })
   lastName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => FileType,
   })
   photo?: FileType | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => Role,
   })
   role?: Role | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => Status,
   })
   status?: Status;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   createdAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   updatedAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   deletedAt: Date;
 }

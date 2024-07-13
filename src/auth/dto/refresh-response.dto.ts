@@ -1,12 +1,12 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RefreshResponseDto {
-  @ApiResponseProperty()
+  @ApiProperty()
   token: string;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   refreshToken: string;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   tokenExpires: number;
 }

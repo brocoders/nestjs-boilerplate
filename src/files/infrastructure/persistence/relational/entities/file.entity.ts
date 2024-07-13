@@ -10,18 +10,18 @@ import appConfig from '../../../../../config/app.config';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { FileConfig, FileDriver } from '../../../../config/file-config.type';
 import fileConfig from '../../../../config/file.config';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityRelationalHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae',
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'https://example.com/path/to/file.jpg',
   })

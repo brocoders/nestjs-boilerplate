@@ -1,4 +1,4 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import databaseConfig from '../../database/config/database.config';
 import { DatabaseConfig } from '../../database/config/database-config.type';
@@ -11,13 +11,13 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 
 export class Status {
   @Allow()
-  @ApiResponseProperty({
+  @ApiProperty({
     type: idType,
   })
   id: number | string;
 
   @Allow()
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'active',
   })

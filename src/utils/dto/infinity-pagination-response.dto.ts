@@ -1,5 +1,5 @@
 import { Type } from '@nestjs/common';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class InfinityPaginationResponseDto<T> {
   data: T[];
@@ -8,10 +8,10 @@ export class InfinityPaginationResponseDto<T> {
 
 export function InfinityPaginationResponse<T>(classReference: Type<T>) {
   abstract class Pagination {
-    @ApiResponseProperty({ type: [classReference] })
+    @ApiProperty({ type: [classReference] })
     data!: T[];
 
-    @ApiResponseProperty({
+    @ApiProperty({
       type: Boolean,
       example: true,
     })
