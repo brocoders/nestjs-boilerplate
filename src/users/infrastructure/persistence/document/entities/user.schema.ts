@@ -10,7 +10,7 @@ import { FileSchemaClass } from '../../../../../files/infrastructure/persistence
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
 import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
 
@@ -22,7 +22,7 @@ export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
   },
 })
 export class UserSchemaClass extends EntityDocumentHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'john.doe@example.com',
   })
@@ -40,7 +40,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   @Exclude({ toPlainOnly: true })
   previousPassword?: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'email',
   })
@@ -50,7 +50,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   provider: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: '1234567890',
   })
@@ -61,7 +61,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   socialId?: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'John',
   })
@@ -70,7 +70,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   firstName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'Doe',
   })
@@ -79,7 +79,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   lastName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => FileSchemaClass,
   })
   @Prop({
@@ -88,7 +88,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   @Type(() => FileSchemaClass)
   photo?: FileSchemaClass | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => RoleSchema,
   })
   @Prop({
@@ -96,7 +96,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   role?: RoleSchema | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => StatusSchema,
   })
   @Prop({
@@ -104,15 +104,15 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   status?: StatusSchema;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @Prop({ default: now })
   createdAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @Prop({ default: now })
   updatedAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @Prop()
   deletedAt: Date;
 }

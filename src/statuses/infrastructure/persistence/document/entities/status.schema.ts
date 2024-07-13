@@ -1,12 +1,12 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class StatusSchema {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
   })
   _id: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'active',
   })

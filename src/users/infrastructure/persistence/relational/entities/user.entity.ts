@@ -22,19 +22,19 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 // We duplicate these rules because you can choose not to use adapters
 // in your project and return an ORM entity directly in response.
 import { Exclude, Expose } from 'class-transformer';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: Number,
   })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'john.doe@example.com',
   })
@@ -56,7 +56,7 @@ export class UserEntity extends EntityRelationalHelper {
     this.previousPassword = this.password;
   }
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'email',
   })
@@ -64,7 +64,7 @@ export class UserEntity extends EntityRelationalHelper {
   @Expose({ groups: ['me', 'admin'] })
   provider: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: '1234567890',
   })
@@ -73,7 +73,7 @@ export class UserEntity extends EntityRelationalHelper {
   @Expose({ groups: ['me', 'admin'] })
   socialId?: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'John',
   })
@@ -81,7 +81,7 @@ export class UserEntity extends EntityRelationalHelper {
   @Column({ type: String, nullable: true })
   firstName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'Doe',
   })
@@ -89,7 +89,7 @@ export class UserEntity extends EntityRelationalHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => FileEntity,
   })
   @OneToOne(() => FileEntity, {
@@ -98,7 +98,7 @@ export class UserEntity extends EntityRelationalHelper {
   @JoinColumn()
   photo?: FileEntity | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => RoleEntity,
   })
   @ManyToOne(() => RoleEntity, {
@@ -106,7 +106,7 @@ export class UserEntity extends EntityRelationalHelper {
   })
   role?: RoleEntity | null;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: () => StatusEntity,
   })
   @ManyToOne(() => StatusEntity, {
@@ -114,15 +114,15 @@ export class UserEntity extends EntityRelationalHelper {
   })
   status?: StatusEntity;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ApiResponseProperty()
+  @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
 }

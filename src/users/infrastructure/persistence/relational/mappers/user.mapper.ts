@@ -7,68 +7,68 @@ import { UserEntity } from '../entities/user.entity';
 
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
-    const user = new User();
-    user.id = raw.id;
-    user.email = raw.email;
-    user.password = raw.password;
-    user.previousPassword = raw.previousPassword;
-    user.provider = raw.provider;
-    user.socialId = raw.socialId;
-    user.firstName = raw.firstName;
-    user.lastName = raw.lastName;
+    const domainEntity = new User();
+    domainEntity.id = raw.id;
+    domainEntity.email = raw.email;
+    domainEntity.password = raw.password;
+    domainEntity.previousPassword = raw.previousPassword;
+    domainEntity.provider = raw.provider;
+    domainEntity.socialId = raw.socialId;
+    domainEntity.firstName = raw.firstName;
+    domainEntity.lastName = raw.lastName;
     if (raw.photo) {
-      user.photo = FileMapper.toDomain(raw.photo);
+      domainEntity.photo = FileMapper.toDomain(raw.photo);
     }
-    user.role = raw.role;
-    user.status = raw.status;
-    user.createdAt = raw.createdAt;
-    user.updatedAt = raw.updatedAt;
-    user.deletedAt = raw.deletedAt;
-    return user;
+    domainEntity.role = raw.role;
+    domainEntity.status = raw.status;
+    domainEntity.createdAt = raw.createdAt;
+    domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.deletedAt = raw.deletedAt;
+    return domainEntity;
   }
 
-  static toPersistence(user: User): UserEntity {
+  static toPersistence(domainEntity: User): UserEntity {
     let role: RoleEntity | undefined = undefined;
 
-    if (user.role) {
+    if (domainEntity.role) {
       role = new RoleEntity();
-      role.id = Number(user.role.id);
+      role.id = Number(domainEntity.role.id);
     }
 
     let photo: FileEntity | undefined | null = undefined;
 
-    if (user.photo) {
+    if (domainEntity.photo) {
       photo = new FileEntity();
-      photo.id = user.photo.id;
-      photo.path = user.photo.path;
-    } else if (user.photo === null) {
+      photo.id = domainEntity.photo.id;
+      photo.path = domainEntity.photo.path;
+    } else if (domainEntity.photo === null) {
       photo = null;
     }
 
     let status: StatusEntity | undefined = undefined;
 
-    if (user.status) {
+    if (domainEntity.status) {
       status = new StatusEntity();
-      status.id = Number(user.status.id);
+      status.id = Number(domainEntity.status.id);
     }
 
-    const userEntity = new UserEntity();
-    if (user.id && typeof user.id === 'number') {
-      userEntity.id = user.id;
+    const persistenceEntity = new UserEntity();
+    if (domainEntity.id && typeof domainEntity.id === 'number') {
+      persistenceEntity.id = domainEntity.id;
     }
-    userEntity.email = user.email;
-    userEntity.password = user.password;
-    userEntity.previousPassword = user.previousPassword;
-    userEntity.provider = user.provider;
-    userEntity.socialId = user.socialId;
-    userEntity.firstName = user.firstName;
-    userEntity.lastName = user.lastName;
-    userEntity.photo = photo;
-    userEntity.role = role;
-    userEntity.status = status;
-    userEntity.createdAt = user.createdAt;
-    userEntity.updatedAt = user.updatedAt;
-    userEntity.deletedAt = user.deletedAt;
-    return userEntity;
+    persistenceEntity.email = domainEntity.email;
+    persistenceEntity.password = domainEntity.password;
+    persistenceEntity.previousPassword = domainEntity.previousPassword;
+    persistenceEntity.provider = domainEntity.provider;
+    persistenceEntity.socialId = domainEntity.socialId;
+    persistenceEntity.firstName = domainEntity.firstName;
+    persistenceEntity.lastName = domainEntity.lastName;
+    persistenceEntity.photo = photo;
+    persistenceEntity.role = role;
+    persistenceEntity.status = status;
+    persistenceEntity.createdAt = domainEntity.createdAt;
+    persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.deletedAt = domainEntity.deletedAt;
+    return persistenceEntity;
   }
 }

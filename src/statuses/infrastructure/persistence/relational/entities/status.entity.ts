@@ -1,19 +1,19 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({
   name: 'status',
 })
 export class StatusEntity extends EntityRelationalHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: Number,
   })
   @PrimaryColumn()
   id: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'active',
   })

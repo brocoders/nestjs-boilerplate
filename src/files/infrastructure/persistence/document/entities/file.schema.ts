@@ -11,7 +11,7 @@ import appConfig from '../../../../../config/app.config';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { FileConfig, FileDriver } from '../../../../config/file-config.type';
 import fileConfig from '../../../../config/file.config';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type FileSchemaDocument = HydratedDocument<FileSchemaClass>;
 
@@ -22,7 +22,7 @@ export type FileSchemaDocument = HydratedDocument<FileSchemaClass>;
   },
 })
 export class FileSchemaClass extends EntityDocumentHelper {
-  @ApiResponseProperty({
+  @ApiProperty({
     type: String,
     example: 'https://example.com/path/to/file.jpg',
   })
