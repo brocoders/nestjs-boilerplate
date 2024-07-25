@@ -9,9 +9,9 @@ Switching between TypeORM and Mongoose is implemented based on the [Hexagonal Ar
 ## Table of Contents <!-- omit in toc -->
 
 - [Comfortable development (PostgreSQL + TypeORM)](#comfortable-development-postgresql--typeorm)
+  - [Video guideline (PostgreSQL + TypeORM)](#video-guideline-postgresql--typeorm)
 - [Comfortable development (MongoDB + Mongoose)](#comfortable-development-mongodb--mongoose)
 - [Quick run (PostgreSQL + TypeORM)](#quick-run-postgresql--typeorm)
-  - [Video guideline](#video-guideline)
 - [Quick run (MongoDB + Mongoose)](#quick-run-mongodb--mongoose)
 - [Links](#links)
 
@@ -77,6 +77,10 @@ Switching between TypeORM and Mongoose is implemented based on the [Hexagonal Ar
    ```
 
 1. Open <http://localhost:3000>
+
+### Video guideline (PostgreSQL + TypeORM)
+
+<https://github.com/user-attachments/assets/136a16aa-f94a-4b20-8eaf-6b4262964315>
 
 ---
 
@@ -165,10 +169,6 @@ If you want quick run your app, you can use following commands:
    ```
 
 1. Open <http://localhost:3000>
-
-### Video guideline
-
-<https://user-images.githubusercontent.com/6001723/235758846-d7d97de8-dea9-46d8-ae12-8cc6b76df03d.mp4>
 
 ---
 
