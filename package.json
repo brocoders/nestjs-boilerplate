@@ -89,7 +89,7 @@
     "typeorm": "0.3.20"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.3.0",
+    "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
     "@nestjs/cli": "10.4.2",
     "@nestjs/schematics": "10.1.3",
