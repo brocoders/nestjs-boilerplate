@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16.3-alpine
+    image: postgres:16.4-alpine
     expose:
       - 5432
     environment:
