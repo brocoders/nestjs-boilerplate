@@ -113,7 +113,6 @@
     "env-cmd": "10.1.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-import": "2.29.1",
     "eslint-plugin-prettier": "5.2.1",
     "husky": "9.1.4",
     "hygen": "6.2.11",
