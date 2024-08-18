@@ -36,7 +36,7 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
       take: paginationOptions.limit,
     });
 
-    return entities.map((user) => <%= name %>Mapper.toDomain(user));
+    return entities.map((entity) => <%= name %>Mapper.toDomain(entity));
   }
 
   async findById(id: <%= name %>['id']): Promise<NullableType<<%= name %>>> {
