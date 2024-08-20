@@ -68,7 +68,7 @@
     "class-validator": "0.14.1",
     "dotenv": "16.4.5",
     "fb": "2.0.0",
-    "google-auth-library": "9.11.0",
+    "google-auth-library": "9.14.0",
     "handlebars": "4.7.8",
     "mongoose": "8.6.0",
     "ms": "2.1.3",
