@@ -125,7 +125,7 @@
     "prompts": "2.4.2",
     "release-it": "17.6.0",
     "supertest": "7.0.0",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.5",
     "ts-loader": "9.5.1",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
