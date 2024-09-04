@@ -40,6 +40,7 @@ services:
       dockerfile: document.Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
-
+    env_file:
+      - .env
 volumes:
   boilerplate-mongo-db:
