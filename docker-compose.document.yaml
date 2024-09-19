@@ -8,7 +8,7 @@ services:
       - ${MAIL_PORT}:1025
 
   mongo:
-    image: mongo:7.0.14
+    image: mongo:8.0.0
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USERNAME}
