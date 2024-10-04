@@ -45,6 +45,13 @@ export class <%= name %>DocumentRepository implements <%= name %>Repository {
     return entityObject ? <%= name %>Mapper.toDomain(entityObject) : null;
   }
 
+  async findByIds(ids: <%= name %>['id'][]): Promise<<%= name %>[]> {
+    const entityObjects = await this.<%= h.inflection.camelize(name, true) %>Model.find({ _id: { $in: ids } });
+    return entityObjects.map((entityObject) =>
+      <%= name %>Mapper.toDomain(entityObject),
+    );
+  }
+
   async update(
     id: <%= name %>['id'],
     payload: Partial<<%= name %>>,

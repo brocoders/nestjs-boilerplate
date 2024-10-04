@@ -319,6 +319,10 @@ const removePostgreSql = async () => {
         replace: '',
       },
       {
+        find: /\s*\"postmigration:generate\":.*/g,
+        replace: '',
+      },
+      {
         find: /\s*\"migration:create\":.*/g,
         replace: '',
       },

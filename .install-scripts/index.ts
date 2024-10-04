@@ -9,6 +9,9 @@ import removeMongoDb from './scripts/remove-mongodb';
 import removeRelationalResourceGeneration from './scripts/resource-generation-scripts/remove-relational';
 import removeDocumentResourceGeneration from './scripts/resource-generation-scripts/remove-document';
 import removeAllDbResourceGeneration from './scripts/resource-generation-scripts/remove-all-db';
+import removeAllDbPropertyGeneration from './scripts/property-generation-scripts/remove-all-db';
+import removeDocumentPropertyGeneration from './scripts/property-generation-scripts/remove-document';
+import removeRelationalPropertyGeneration from './scripts/property-generation-scripts/remove-relational';
 
 (async () => {
   const response = await prompts(
@@ -58,18 +61,24 @@ import removeAllDbResourceGeneration from './scripts/resource-generation-scripts
   if (response.database === 'pg-mongo') {
     removeRelationalResourceGeneration();
     removeDocumentResourceGeneration();
+    removeDocumentPropertyGeneration();
+    removeRelationalPropertyGeneration();
   }
 
   if (response.database === 'mongo') {
     removePostgreSql();
     removeRelationalResourceGeneration();
+    removeRelationalPropertyGeneration();
     removeAllDbResourceGeneration();
+    removeAllDbPropertyGeneration();
   }
 
   if (response.database === 'pg') {
     removeMongoDb();
     removeDocumentResourceGeneration();
+    removeDocumentPropertyGeneration();
     removeAllDbResourceGeneration();
+    removeAllDbPropertyGeneration();
   }
 
   if (!response.isAuthFacebook) {

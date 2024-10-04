@@ -1,4 +1,8 @@
-import { Transform, Type } from 'class-transformer';
+import {
+  // decorators here
+  Transform,
+  Type,
+} from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   // decorators here
@@ -48,6 +52,4 @@ export class CreateUserDto {
   @IsOptional()
   @Type(() => StatusDto)
   status?: StatusDto;
-
-  hash?: string | null;
 }

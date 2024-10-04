@@ -7,7 +7,10 @@ import { <%= h.inflection.transform(name, ['pluralize']) %>Controller } from './
 import { Relational<%= name %>PersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
 @Module({
-  imports: [Relational<%= name %>PersistenceModule],
+  imports: [
+    // import modules, etc.
+    Relational<%= name %>PersistenceModule,
+  ],
   controllers: [<%= h.inflection.transform(name, ['pluralize']) %>Controller],
   providers: [<%= h.inflection.transform(name, ['pluralize']) %>Service],
   exports: [<%= h.inflection.transform(name, ['pluralize']) %>Service, Relational<%= name %>PersistenceModule],

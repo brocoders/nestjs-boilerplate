@@ -4,4 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: from \'typeorm\'
 skip_if: \sColumn,
 ---
-Column,
+<% if (kind === 'primitive' || kind === 'duplication') { -%>
+  Column,
+<% } -%>

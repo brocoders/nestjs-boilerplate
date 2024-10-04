@@ -15,7 +15,10 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   : Relational<%= name %>PersistenceModule;
 
 @Module({
-  imports: [infrastructurePersistenceModule],
+  imports: [
+    // import modules, etc.
+    infrastructurePersistenceModule,
+  ],
   controllers: [<%= h.inflection.transform(name, ['pluralize']) %>Controller],
   providers: [<%= h.inflection.transform(name, ['pluralize']) %>Service],
   exports: [<%= h.inflection.transform(name, ['pluralize']) %>Service, infrastructurePersistenceModule],

@@ -11,4 +11,8 @@ export class FilesService {
   findById(id: FileType['id']): Promise<NullableType<FileType>> {
     return this.fileRepository.findById(id);
   }
+
+  findByIds(ids: FileType['id'][]): Promise<FileType[]> {
+    return this.fileRepository.findByIds(ids);
+  }
 }

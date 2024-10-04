@@ -17,7 +17,11 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
 // </database-block>
 
 @Module({
-  imports: [infrastructurePersistenceModule, FilesModule],
+  imports: [
+    // import modules, etc.
+    infrastructurePersistenceModule,
+    FilesModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService, infrastructurePersistenceModule],

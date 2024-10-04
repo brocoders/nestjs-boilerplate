@@ -5,6 +5,7 @@ import {
   MongooseOptionsFactory,
 } from '@nestjs/mongoose';
 import { AllConfigType } from '../config/config.type';
+import mongooseAutoPopulate from 'mongoose-autopopulate';
 
 @Injectable()
 export class MongooseConfigService implements MongooseOptionsFactory {
@@ -16,6 +17,10 @@ export class MongooseConfigService implements MongooseOptionsFactory {
       dbName: this.configService.get('database.name', { infer: true }),
       user: this.configService.get('database.username', { infer: true }),
       pass: this.configService.get('database.password', { infer: true }),
+      connectionFactory(connection) {
+        connection.plugin(mongooseAutoPopulate);
+        return connection;
+      },
     };
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository, In } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
@@ -37,7 +37,7 @@ export class UsersRelationalRepository implements UserRepository {
     const where: FindOptionsWhere<UserEntity> = {};
     if (filterOptions?.roles?.length) {
       where.role = filterOptions.roles.map((role) => ({
-        id: role.id,
+        id: Number(role.id),
       }));
     }
 
@@ -63,6 +63,14 @@ export class UsersRelationalRepository implements UserRepository {
     });
 
     return entity ? UserMapper.toDomain(entity) : null;
+  }
+
+  async findByIds(ids: User['id'][]): Promise<User[]> {
+    const entities = await this.usersRepository.find({
+      where: { id: In(ids) },
+    });
+
+    return entities.map((user) => UserMapper.toDomain(user));
   }
 
   async findByEmail(email: User['email']): Promise<NullableType<User>> {

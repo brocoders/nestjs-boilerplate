@@ -10,10 +10,22 @@ import { <%= name %> } from './domain/<%= h.inflection.transform(name, ['undersc
 
 @Injectable()
 export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
-  constructor(private readonly <%= h.inflection.camelize(name, true) %>Repository: <%= name %>Repository) {}
+  constructor(
+    // Dependencies here
+    private readonly <%= h.inflection.camelize(name, true) %>Repository: <%= name %>Repository,
+  ) {}
 
-  create(create<%= name %>Dto: Create<%= name %>Dto) {
-    return this.<%= h.inflection.camelize(name, true) %>Repository.create(create<%= name %>Dto);
+  async create(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    create<%= name %>Dto: Create<%= name %>Dto
+  ) {
+    // Do not remove comment below.
+    // <creating-property />
+
+    return this.<%= h.inflection.camelize(name, true) %>Repository.create({
+      // Do not remove comment below.
+      // <creating-property-payload />
+    });
   }
 
   findAllWithPagination({
@@ -29,12 +41,26 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
     });
   }
 
-  findOne(id: <%= name %>['id']) {
+  findById(id: <%= name %>['id']) {
     return this.<%= h.inflection.camelize(name, true) %>Repository.findById(id);
   }
 
-  update(id: <%= name %>['id'], update<%= name %>Dto: Update<%= name %>Dto) {
-    return this.<%= h.inflection.camelize(name, true) %>Repository.update(id, update<%= name %>Dto);
+  findByIds(ids: <%= name %>['id'][]) {
+    return this.<%= h.inflection.camelize(name, true) %>Repository.findByIds(ids);
+  }
+
+  async update(
+    id: <%= name %>['id'],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    update<%= name %>Dto: Update<%= name %>Dto,
+  ) {
+    // Do not remove comment below.
+    // <updating-property />
+
+    return this.<%= h.inflection.camelize(name, true) %>Repository.update(id, {
+      // Do not remove comment below.
+      // <updating-property-payload />
+    });
   }
 
   remove(id: <%= name %>['id']) {
