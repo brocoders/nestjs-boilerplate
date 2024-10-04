@@ -45,6 +45,4 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @Type(() => StatusDto)
   status?: StatusDto;
-
-  hash?: string | null;
 }

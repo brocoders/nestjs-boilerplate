@@ -19,6 +19,8 @@ export abstract class <%= name %>Repository {
 
   abstract findById(id: <%= name %>['id']): Promise<NullableType<<%= name %>>>;
 
+  abstract findByIds(ids: <%= name %>['id'][]): Promise<<%= name %>[]>;
+
   abstract update(
     id: <%= name %>['id'],
     payload: DeepPartial<<%= name %>>,

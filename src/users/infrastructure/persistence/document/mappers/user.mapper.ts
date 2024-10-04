@@ -13,7 +13,6 @@ export class UserMapper {
     domainEntity.id = raw._id.toString();
     domainEntity.email = raw.email;
     domainEntity.password = raw.password;
-    domainEntity.previousPassword = raw.previousPassword;
     domainEntity.provider = raw.provider;
     domainEntity.socialId = raw.socialId;
     domainEntity.firstName = raw.firstName;
@@ -70,7 +69,6 @@ export class UserMapper {
     }
     persistenceSchema.email = domainEntity.email;
     persistenceSchema.password = domainEntity.password;
-    persistenceSchema.previousPassword = domainEntity.previousPassword;
     persistenceSchema.provider = domainEntity.provider;
     persistenceSchema.socialId = domainEntity.socialId;
     persistenceSchema.firstName = domainEntity.firstName;

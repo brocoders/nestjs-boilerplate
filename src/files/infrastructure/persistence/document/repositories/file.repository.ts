@@ -26,4 +26,9 @@ export class FileDocumentRepository implements FileRepository {
     const fileObject = await this.fileModel.findById(id);
     return fileObject ? FileMapper.toDomain(fileObject) : null;
   }
+
+  async findByIds(ids: FileType['id'][]): Promise<FileType[]> {
+    const fileObjects = await this.fileModel.find({ _id: { $in: ids } });
+    return fileObjects.map((fileObject) => FileMapper.toDomain(fileObject));
+  }
 }

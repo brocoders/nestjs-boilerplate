@@ -4,7 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { ApiProperty } from '@nestjs/swagger';
 
 export type <%= name %>SchemaDocument = HydratedDocument<<%= name %>SchemaClass>;
 
@@ -16,11 +15,9 @@ export type <%= name %>SchemaDocument = HydratedDocument<<%= name %>SchemaClass>
   },
 })
 export class <%= name %>SchemaClass extends EntityDocumentHelper {
-  @ApiProperty()
   @Prop({ default: now })
   createdAt: Date;
 
-  @ApiProperty()
   @Prop({ default: now })
   updatedAt: Date;
 }

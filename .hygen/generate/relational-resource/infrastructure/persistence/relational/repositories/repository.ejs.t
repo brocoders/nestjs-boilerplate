@@ -3,7 +3,7 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 ---
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { <%= name %>Entity } from '../entities/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { <%= name %> } from '../../../../domain/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>';
@@ -45,6 +45,14 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
     });
 
     return entity ? <%= name %>Mapper.toDomain(entity) : null;
+  }
+
+  async findByIds(ids: <%= name %>['id'][]): Promise<<%= name %>[]> {
+    const entities = await this.<%= h.inflection.camelize(name, true) %>Repository.find({
+      where: { id: In(ids) },
+    });
+
+    return entities.map((entity) => <%= name %>Mapper.toDomain(entity));
   }
 
   async update(

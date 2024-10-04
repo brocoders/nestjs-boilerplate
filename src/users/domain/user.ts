@@ -28,9 +28,6 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password?: string;
 
-  @Exclude({ toPlainOnly: true })
-  previousPassword?: string;
-
   @ApiProperty({
     type: String,
     example: 'email',

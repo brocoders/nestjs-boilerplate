@@ -115,7 +115,6 @@ describe('Auth Module', () => {
           expect(body.user.email).toBeDefined();
           expect(body.user.hash).not.toBeDefined();
           expect(body.user.password).not.toBeDefined();
-          expect(body.user.previousPassword).not.toBeDefined();
         });
     });
   });
@@ -144,7 +143,6 @@ describe('Auth Module', () => {
           expect(body.email).toBeDefined();
           expect(body.hash).not.toBeDefined();
           expect(body.password).not.toBeDefined();
-          expect(body.previousPassword).not.toBeDefined();
         });
     });
 

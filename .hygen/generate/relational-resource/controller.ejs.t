@@ -82,8 +82,8 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
   @ApiOkResponse({
     type: <%= name %>,
   })
-  findOne(@Param('id') id: string) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findOne(id);
+  findById(@Param('id') id: string) {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findById(id);
   }
 
   @Patch(':id')

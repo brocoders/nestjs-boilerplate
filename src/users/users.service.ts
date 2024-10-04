@@ -14,7 +14,10 @@ import { FilesService } from '../files/files.service';
 import { RoleEnum } from '../roles/roles.enum';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { IPaginationOptions } from '../utils/types/pagination-options';
-import { DeepPartial } from '../utils/types/deep-partial.type';
+import { FileType } from '../files/domain/file';
+import { Role } from '../roles/domain/role';
+import { Status } from '../statuses/domain/status';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,20 +26,22 @@ export class UsersService {
     private readonly filesService: FilesService,
   ) {}
 
-  async create(createProfileDto: CreateUserDto): Promise<User> {
-    const clonedPayload = {
-      provider: AuthProvidersEnum.email,
-      ...createProfileDto,
-    };
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    // Do not remove comment below.
+    // <creating-property />
 
-    if (clonedPayload.password) {
+    let password: string | undefined = undefined;
+
+    if (createUserDto.password) {
       const salt = await bcrypt.genSalt();
-      clonedPayload.password = await bcrypt.hash(clonedPayload.password, salt);
+      password = await bcrypt.hash(createUserDto.password, salt);
     }
 
-    if (clonedPayload.email) {
+    let email: string | null = null;
+
+    if (createUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
-        clonedPayload.email,
+        createUserDto.email,
       );
       if (userObject) {
         throw new UnprocessableEntityException({
@@ -46,11 +51,14 @@ export class UsersService {
           },
         });
       }
+      email = createUserDto.email;
     }
 
-    if (clonedPayload.photo?.id) {
+    let photo: FileType | null | undefined = undefined;
+
+    if (createUserDto.photo?.id) {
       const fileObject = await this.filesService.findById(
-        clonedPayload.photo.id,
+        createUserDto.photo.id,
       );
       if (!fileObject) {
         throw new UnprocessableEntityException({
@@ -60,13 +68,17 @@ export class UsersService {
           },
         });
       }
-      clonedPayload.photo = fileObject;
+      photo = fileObject;
+    } else if (createUserDto.photo === null) {
+      photo = null;
     }
 
-    if (clonedPayload.role?.id) {
+    let role: Role | undefined = undefined;
+
+    if (createUserDto.role?.id) {
       const roleObject = Object.values(RoleEnum)
         .map(String)
-        .includes(String(clonedPayload.role.id));
+        .includes(String(createUserDto.role.id));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -75,12 +87,18 @@ export class UsersService {
           },
         });
       }
+
+      role = {
+        id: createUserDto.role.id,
+      };
     }
 
-    if (clonedPayload.status?.id) {
+    let status: Status | undefined = undefined;
+
+    if (createUserDto.status?.id) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
-        .includes(String(clonedPayload.status.id));
+        .includes(String(createUserDto.status.id));
       if (!statusObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -89,9 +107,25 @@ export class UsersService {
           },
         });
       }
+
+      status = {
+        id: createUserDto.status.id,
+      };
     }
 
-    return this.usersRepository.create(clonedPayload);
+    return this.usersRepository.create({
+      // Do not remove comment below.
+      // <creating-property-payload />
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+      email: email,
+      password: password,
+      photo: photo,
+      role: role,
+      status: status,
+      provider: createUserDto.provider ?? AuthProvidersEnum.email,
+      socialId: createUserDto.socialId,
+    });
   }
 
   findManyWithPagination({
@@ -114,6 +148,10 @@ export class UsersService {
     return this.usersRepository.findById(id);
   }
 
+  findByIds(ids: User['id'][]): Promise<User[]> {
+    return this.usersRepository.findByIds(ids);
+  }
+
   findByEmail(email: User['email']): Promise<NullableType<User>> {
     return this.usersRepository.findByEmail(email);
   }
@@ -133,21 +171,27 @@ export class UsersService {
 
   async update(
     id: User['id'],
-    payload: DeepPartial<User>,
+    updateUserDto: UpdateUserDto,
   ): Promise<User | null> {
-    const clonedPayload = { ...payload };
+    // Do not remove comment below.
+    // <updating-property />
 
-    if (
-      clonedPayload.password &&
-      clonedPayload.previousPassword !== clonedPayload.password
-    ) {
-      const salt = await bcrypt.genSalt();
-      clonedPayload.password = await bcrypt.hash(clonedPayload.password, salt);
+    let password: string | undefined = undefined;
+
+    if (updateUserDto.password) {
+      const userObject = await this.usersRepository.findById(id);
+
+      if (userObject && userObject?.password !== updateUserDto.password) {
+        const salt = await bcrypt.genSalt();
+        password = await bcrypt.hash(updateUserDto.password, salt);
+      }
     }
 
-    if (clonedPayload.email) {
+    let email: string | null | undefined = undefined;
+
+    if (updateUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
-        clonedPayload.email,
+        updateUserDto.email,
       );
 
       if (userObject && userObject.id !== id) {
@@ -158,11 +202,17 @@ export class UsersService {
           },
         });
       }
+
+      email = updateUserDto.email;
+    } else if (updateUserDto.email === null) {
+      email = null;
     }
 
-    if (clonedPayload.photo?.id) {
+    let photo: FileType | null | undefined = undefined;
+
+    if (updateUserDto.photo?.id) {
       const fileObject = await this.filesService.findById(
-        clonedPayload.photo.id,
+        updateUserDto.photo.id,
       );
       if (!fileObject) {
         throw new UnprocessableEntityException({
@@ -172,13 +222,17 @@ export class UsersService {
           },
         });
       }
-      clonedPayload.photo = fileObject;
+      photo = fileObject;
+    } else if (updateUserDto.photo === null) {
+      photo = null;
     }
 
-    if (clonedPayload.role?.id) {
+    let role: Role | undefined = undefined;
+
+    if (updateUserDto.role?.id) {
       const roleObject = Object.values(RoleEnum)
         .map(String)
-        .includes(String(clonedPayload.role.id));
+        .includes(String(updateUserDto.role.id));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -187,12 +241,18 @@ export class UsersService {
           },
         });
       }
+
+      role = {
+        id: updateUserDto.role.id,
+      };
     }
 
-    if (clonedPayload.status?.id) {
+    let status: Status | undefined = undefined;
+
+    if (updateUserDto.status?.id) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
-        .includes(String(clonedPayload.status.id));
+        .includes(String(updateUserDto.status.id));
       if (!statusObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -201,9 +261,25 @@ export class UsersService {
           },
         });
       }
+
+      status = {
+        id: updateUserDto.status.id,
+      };
     }
 
-    return this.usersRepository.update(id, clonedPayload);
+    return this.usersRepository.update(id, {
+      // Do not remove comment below.
+      // <updating-property-payload />
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      email,
+      password,
+      photo,
+      role,
+      status,
+      provider: updateUserDto.provider,
+      socialId: updateUserDto.socialId,
+    });
   }
 
   async remove(id: User['id']): Promise<void> {
