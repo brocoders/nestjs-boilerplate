@@ -100,7 +100,7 @@
     "@nestjs/testing": "10.4.4",
     "@release-it/conventional-changelog": "8.0.2",
     "@swc/cli": "0.4.0",
-    "@swc/core": "1.7.28",
+    "@swc/core": "1.7.35",
     "@types/bcryptjs": "2.4.6",
     "@types/express": "5.0.0",
     "@types/facebook-js-sdk": "3.3.12",
