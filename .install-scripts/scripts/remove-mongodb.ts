@@ -304,7 +304,7 @@ const removeMongoDb = async () => {
         replace: '',
       },
       {
-        find: /\s*\"mongoose\":.*/g,
+        find: /\s*\"mongoose(-autopopulate)?\":.*/g,
         replace: '',
       },
       {
