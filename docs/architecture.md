@@ -9,10 +9,8 @@
 - [Description of the module structure](#description-of-the-module-structure)
 - [Recommendations](#recommendations)
   - [Repository](#repository)
-- [Pitfalls](#pitfalls)
 - [FAQ](#faq)
   - [Is there a way to generate a new resource (controller, service, DTOs, etc) with Hexagonal Architecture?](#is-there-a-way-to-generate-a-new-resource-controller-service-dtos-etc-with-hexagonal-architecture)
-  - [I don't want to use Hexagonal Architecture. How can I use a traditional (three-tier) architecture for NestJS?](#i-dont-want-to-use-hexagonal-architecture-how-can-i-use-a-traditional-three-tier-architecture-for-nestjs)
 - [Links](#links)
 
 ---
@@ -107,10 +105,6 @@ export class UsersRelationalRepository implements UserRepository {
 }
 ```
 
-## Pitfalls
-
-Hexagonal Architecture can take more effort to implement, but it gives more flexibility and scalability. [You still can use Three-tier architecture](#i-dont-want-to-use-hexagonal-architecture-how-can-i-use-a-traditional-three-tier-architecture-for-nestjs), but we recommend using Hexagonal Architecture. Try to create resources via our [CLI](cli.md), you will be sure that makes the same time (maybe even less 🤔) as Three-tier architecture.
-
 ---
 
 ## FAQ
@@ -118,12 +112,6 @@ Hexagonal Architecture can take more effort to implement, but it gives more flex
 ### Is there a way to generate a new resource (controller, service, DTOs, etc) with Hexagonal Architecture?
 
 Yes, you can use the [CLI](cli.md) to generate a new resource with Hexagonal Architecture.
-
-### I don't want to use Hexagonal Architecture. How can I use a traditional (three-tier) architecture for NestJS?
-
-You still can use [Three-tier Architecture](https://en.wikipedia.org/wiki/Multitier_architecture#Three-tier_architecture) `[controllers] -> [services] -> [data access]` near [Hexagonal Architecture](#hexagonal-architecture).
-
-Database example: Just keep the existing approach of getting data from the database for auth, files, etc, as is (with Hexagonal Architecture), but for new modules use repositories from TypeORM or models from Mongoose directly in [services](https://docs.nestjs.com/providers#services). Entities and Schemas are ready for this.
 
 ---
 
