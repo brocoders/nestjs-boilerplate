@@ -56,7 +56,7 @@
     "@nestjs/config": "3.2.3",
     "@nestjs/core": "10.4.5",
     "@nestjs/jwt": "10.2.0",
-    "@nestjs/mongoose": "10.0.10",
+    "@nestjs/mongoose": "10.1.0",
     "@nestjs/passport": "10.0.3",
     "@nestjs/platform-express": "10.4.5",
     "@nestjs/swagger": "7.4.2",
