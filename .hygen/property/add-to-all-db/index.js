@@ -5,8 +5,21 @@ const collectPromisesResults = (callback) => async (prevValues) => {
 };
 
 module.exports = {
-  prompt: ({ prompter, args }) =>
-    prompter
+  prompt: ({ prompter, args }) => {
+    if (Object.keys(args).length) {
+      return Promise.resolve({
+        name: args.name,
+        property: args.property,
+        kind: args.kind,
+        type: args.type,
+        referenceType: args.referenceType,
+        isAddToDto: args.isAddToDto === 'true',
+        isOptional: args.isOptional === 'true',
+        isNullable: args.isNullable === 'true',
+      });
+    }
+
+    return prompter
       .prompt({
         type: 'input',
         name: 'name',
@@ -154,5 +167,6 @@ module.exports = {
             initial: true,
           });
         }),
-      ),
+      );
+  },
 };
