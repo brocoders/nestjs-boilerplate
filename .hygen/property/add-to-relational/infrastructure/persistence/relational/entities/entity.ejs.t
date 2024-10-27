@@ -29,9 +29,15 @@ after: export class <%= name %>Entity
   <% if (referenceType === 'oneToOne') { -%>
     @OneToOne(() => <%= type %>Entity, { eager: true, nullable: <%= isNullable %> })
   <% } else if (referenceType === 'oneToMany') { -%>
-    @OneToMany(() => <%= type %>Entity, (childEntity) => childEntity.<%= h.inflection.camelize(name, true) %>, { eager: true, nullable: <%= isNullable %> })
+    @OneToMany(() => <%= type %>Entity, (childEntity) => childEntity.<%= propertyInReference %>, { eager: true, nullable: <%= isNullable %> })
   <% } else if (referenceType === 'manyToOne') { -%>
-    @ManyToOne(() => <%= type %>Entity, { eager: true, nullable: <%= isNullable %> })
+    @ManyToOne(
+      () => <%= type %>Entity,
+      <% if (propertyInReference) { -%>
+        (parentEntity) => parentEntity.<%= propertyInReference %>,
+      <% } -%>
+      { eager: <% if (propertyInReference) { -%>false<% } else { -%>true<% } -%>, nullable: <%= isNullable %> }
+    )
   <% } else if (referenceType === 'manyToMany') { -%>
     @ManyToMany(() => <%= type %>Entity, { eager: true, nullable: <%= isNullable %> })
   <% } -%>

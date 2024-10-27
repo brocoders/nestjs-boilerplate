@@ -9,7 +9,7 @@ after: export class <%= name %>SchemaClass
     @Prop({
       type: mongoose.Schema.Types.ObjectId,
       ref: '<%= type %>SchemaClass',
-      autopopulate: true,
+      autopopulate: <% if (propertyInReference) { -%>false<% } else { -%>true<% } -%>,
     })
     <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass <% if (isNullable) { -%> | null<% } -%>;
   <% } else if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
