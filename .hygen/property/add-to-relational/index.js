@@ -199,6 +199,10 @@ module.exports = {
         }),
       );
 
+    if (!result.propertyInReference) {
+      result.propertyInReference = '';
+    }
+
     if (
       (result.kind === 'reference' || result.kind === 'duplication') &&
       result.referenceType === 'oneToMany'
