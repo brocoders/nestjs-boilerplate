@@ -208,7 +208,7 @@ module.exports = {
       result.referenceType === 'oneToMany'
     ) {
       execSync(
-        `npm run add:property:to-all-db -- --name=${result.type} --property=${result.propertyInReference} --propertyInReference=${result.property} --kind=${result.kind} --type=${result.name} --referenceType=manyToOne --isAddToDto=${result.isAddToDto} --isOptional=false --isNullable=false`,
+        `npm run add:property:to-all-db -- --name ${result.type} --property ${result.propertyInReference} --propertyInReference ${result.property} --kind ${result.kind} --type ${result.name} --referenceType manyToOne --isAddToDto ${result.isAddToDto} --isOptional false --isNullable false`,
         {
           stdio: 'inherit',
         },
