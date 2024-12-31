@@ -128,7 +128,7 @@ npm run schema:drop
 
 ### Creating seeds (TypeORM)
 
-1. Create seed file with `npm run seed:create:relational -- --name=Post`. Where `Post` is name of entity.
+1. Create seed file with `npm run seed:create:relational -- --name Post`. Where `Post` is name of entity.
 1. Go to `src/database/seeds/relational/post/post-seed.service.ts`.
 1. In `run` method extend your logic.
 1. Run [npm run seed:run:relational](#run-seed-typeorm)
@@ -253,7 +253,7 @@ npm run seed:run:relational
 
 ### Creating seeds (Mongoose)
 
-1. Create seed file with `npm run seed:create:document -- --name=Post`. Where `Post` is name of entity.
+1. Create seed file with `npm run seed:create:document -- --name Post`. Where `Post` is name of entity.
 1. Go to `src/database/seeds/document/post/post-seed.service.ts`.
 1. In `run` method extend your logic.
 1. Run [npm run seed:run:document](#run-seed-mongoose)
