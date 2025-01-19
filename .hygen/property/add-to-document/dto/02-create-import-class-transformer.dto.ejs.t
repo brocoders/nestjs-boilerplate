@@ -4,7 +4,7 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: export class Create<%= name %>Dto
 skip_if: "} from 'class-transformer'"
 ---
-<% if (isAddToDto && (kind === 'reference' || kind === 'duplication')) { -%>
+<% if (isAddToDto && (kind === 'reference' || kind === 'duplication' || (kind === 'primitive' && type === 'Date'))) { -%>
   import {
     // decorators here
   } from 'class-transformer';

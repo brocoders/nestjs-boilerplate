@@ -66,7 +66,7 @@ module.exports = {
               message: 'Select kind of type',
               choices: [
                 {
-                  message: 'Primitive (string, number, etc)',
+                  message: 'Primitive and Date (string, number, Date, etc)',
                   value: 'primitive',
                 },
                 { message: 'Reference to entity', value: 'reference' },
@@ -158,7 +158,7 @@ module.exports = {
                   type: 'select',
                   name: 'type',
                   message: 'Property type',
-                  choices: ['string', 'number', 'boolean'],
+                  choices: ['string', 'number', 'boolean', 'Date'],
                 });
               }),
             );

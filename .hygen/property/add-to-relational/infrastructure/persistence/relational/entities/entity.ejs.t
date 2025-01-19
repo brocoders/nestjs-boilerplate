@@ -14,6 +14,8 @@ after: export class <%= name %>Entity
         Number,
       <% } else if (type === 'boolean') { -%>
         Boolean,
+      <% } else if (type === 'Date') { -%>
+        Date,
       <% } -%>
   })
 <% } -%>
