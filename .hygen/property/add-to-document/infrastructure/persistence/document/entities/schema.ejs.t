@@ -43,6 +43,8 @@ after: export class <%= name %>SchemaClass
         Number,
       <% } else if (type === 'boolean') { -%>
         Boolean,
+      <% } else if (type === 'Date') { -%>
+        Date,
       <% } -%>
   })
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %> <% if (isNullable) { -%> | null<% } -%>;

@@ -15,6 +15,8 @@ after: export class Create<%= name %>Dto
           Number,
         <% } else if (type === 'boolean') { -%>
           Boolean,
+        <% } else if (type === 'Date') { -%>
+          Date,
         <% } -%>
       <% } else if (kind === 'reference' || kind === 'duplication') { -%>
         <% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
@@ -37,6 +39,9 @@ after: export class Create<%= name %>Dto
       @IsNumber()
     <% } else if (type === 'boolean') { -%>
       @IsBoolean()
+    <% } else if (type === 'Date') { -%>
+      @Transform(({ value }) => new Date(value))
+      @IsDate()
     <% } -%>
   <% } else if (kind === 'reference' || kind === 'duplication') { -%>
     @ValidateNested()
