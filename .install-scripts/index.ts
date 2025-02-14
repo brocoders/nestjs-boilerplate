@@ -2,7 +2,6 @@ import prompts from 'prompts';
 import removeFacebookAuth from './scripts/remove-auth-facebook';
 import removeGoogleAuth from './scripts/remove-auth-google';
 import removeAppleAuth from './scripts/remove-auth-apple';
-import removeTwitterAuth from './scripts/remove-auth-twitter';
 import removeInstallScripts from './scripts/remove-install-scripts';
 import removePostgreSql from './scripts/remove-postgresql';
 import removeMongoDb from './scripts/remove-mongodb';
@@ -36,12 +35,6 @@ import removeRelationalPropertyGeneration from './scripts/property-generation-sc
         type: 'confirm',
         name: 'isAuthGoogle',
         message: 'Include Google auth?',
-        initial: true,
-      },
-      {
-        type: 'confirm',
-        name: 'isAuthTwitter',
-        message: 'Include Twitter auth?',
         initial: true,
       },
       {
@@ -87,10 +80,6 @@ import removeRelationalPropertyGeneration from './scripts/property-generation-sc
 
   if (!response.isAuthGoogle) {
     removeGoogleAuth();
-  }
-
-  if (!response.isAuthTwitter) {
-    removeTwitterAuth();
   }
 
   if (!response.isAuthApple) {

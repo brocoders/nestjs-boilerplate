@@ -9,7 +9,6 @@
 - [Auth via Apple](#auth-via-apple)
 - [Auth via Facebook](#auth-via-facebook)
 - [Auth via Google](#auth-via-google)
-- [Auth via Twitter](#auth-via-twitter)
 - [About JWT strategy](#about-jwt-strategy)
 - [Refresh token flow](#refresh-token-flow)
   - [Video example](#video-example)
@@ -41,7 +40,7 @@ sequenceDiagram
 
 ### Auth via external services or social networks flow
 
-Also you can sign up via another external services or social networks like Apple, Facebook, Google, and Twitter.
+Also you can sign up via another external services or social networks like Apple, Facebook and Google.
 
 ```mermaid
 sequenceDiagram
@@ -65,8 +64,6 @@ For auth with external services or social networks you need:
    POST /api/v1/auth/facebook/login
 
    POST /api/v1/auth/google/login
-
-   POST /api/v1/auth/twitter/login
 
    POST /api/v1/auth/apple/login
    ```
@@ -122,16 +119,6 @@ For auth with external services or social networks you need:
    ```text
    GOOGLE_CLIENT_ID=abc
    GOOGLE_CLIENT_SECRET=abc
-   ```
-
-## Auth via Twitter
-
-1. Set up your service on Twitter
-1. Change `TWITTER_CONSUMER_KEY` and `TWITTER_CONSUMER_SECRET` in `.env`
-
-   ```text
-   TWITTER_CONSUMER_KEY=abc
-   TWITTER_CONSUMER_SECRET=abc
    ```
 
 ## About JWT strategy
