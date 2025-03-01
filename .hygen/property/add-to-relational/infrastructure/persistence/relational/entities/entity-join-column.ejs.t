@@ -4,6 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: from \'typeorm\'
 skip_if: \sJoinColumn,
 ---
-<% if (kind === 'reference' && (referenceType === 'oneToOne' || referenceType === 'manyToMany')) { -%>
+<% if (kind === 'reference' && referenceType === 'oneToOne') { -%>
   JoinColumn,
 <% } -%>
