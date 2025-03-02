@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17.0-alpine
+    container_name: gorush-postgres
+    ports:
+      - ${DATABASE_PORT}:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${DATABASE_USERNAME}
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: gorush-redis
+    ports:
+      - "63331:6379"
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  gorush:
+    image: appleboy/gorush:1.18.9
+    container_name: gorush
+    restart: always
+    ports:
+      - "9000:9000"
+      - "8088:8088"
+    logging:
+      options:
+        max-size: 100k
+        max-file: "3"
+    environment:
+      - GORUSH_CORE_QUEUE_NUM=512
+      - GORUSH_FCM_ENABLED=false
+      - GORUSH_FCM_API_KEY=""
+    #    labels:
+    #      - "traefik.enable=true"
+    #      - "traefik.http.services.gorush.loadbalancer.server.port=8443"
+    #      - "traefik.http.services.gorush.loadbalancer.server.scheme=http"
+    #      - "traefik.http.routers.gorush.tls=true"
+    #      - "traefik.http.routers.gorush.entrypoints=https"
+    #      - "traefik.http.routers.gorush.rule=Host(`gorush.next-hub.app`)"
+    #      - "traefik.http.routers.gorush.tls.certresolver=cloudflare"
+    #      - "traefik.docker.network=frontend"
+    networks:
+      - backend
+    volumes:
+      - ./gorush/config.yml:/app/config.yml:ro
+      - ./gorush/certs/apns-auth-key.p8:/app/apns-auth-key.p8
+      - ./gorush/certs/apns-auth-key.p12:/app/apns-auth-key.p12
+      - ./gorush/credential-fcn.json:/app/credential-fcn.json
+      - ./gorush/logs:/app/logs
+    command:
+      - -c
+      - /app/config.yml
+
+networks:
+  backend:
+    external: true

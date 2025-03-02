@@ -3,6 +3,21 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": [{ "include": "i18n/**/*", "watchAssets": true }]
+    "assets": [
+      {
+        "include": "i18n/**/*",
+        "watchAssets": true
+      },
+      {
+        "include": "config/secrets/**/*",
+        "outDir": "dist/config/secrets",
+        "watchAssets": true
+      },
+      {
+        "include": "providers/**/config/secrets/**/*",
+        "outDir": "dist",
+        "watchAssets": true
+      }
+    ]
   }
 }

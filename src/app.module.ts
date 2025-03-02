@@ -22,6 +22,11 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
+import veroConfig from './auth-vero/config/vero.config';
+import { SecretManagerModule } from './secret-manager/secret.module';
+import { AuthVeroModule } from './auth-vero/auth-vero.module';
+import { GorushModule } from './providers/gorush/gorush.module';
+import GorushConfig from './providers/gorush/config/gorush.config';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -42,6 +47,8 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
         fileConfig,
         googleConfig,
         appleConfig,
+        veroConfig,
+        GorushConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -78,6 +85,9 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     MailModule,
     MailerModule,
     HomeModule,
+    AuthVeroModule,
+    SecretManagerModule,
+    GorushModule,
   ],
 })
 export class AppModule {}
