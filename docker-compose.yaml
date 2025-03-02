@@ -4,25 +4,30 @@ services:
     ports:
       - ${DATABASE_PORT}:5432
     volumes:
-      - boilerplate-db:/var/lib/postgresql/data
+      - app-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
 
   maildev:
-    build:
-      context: .
-      dockerfile: maildev.Dockerfile
+    image: maildev/maildev:2.0.5
     ports:
       - ${MAIL_CLIENT_PORT}:1080
       - ${MAIL_PORT}:1025
 
   adminer:
-    image: adminer
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
     restart: always
     ports:
-      - 8080:8080
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+        - pgadmin-data:/var/lib/pgadmin
+
 
 
   redis:
@@ -30,7 +35,7 @@ services:
     ports:
       - 6379:6379
 
-  api:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,4 +43,5 @@ services:
       - ${APP_PORT}:${APP_PORT}
 
 volumes:
-  boilerplate-db:
+  app-db:
+  pgadmin-data:

@@ -59,8 +59,8 @@ WORKER_HOST=redis://redis:6379/1
 # Secret manager (default:src/config/secrets)
 GLOBAL_SECRET_PATH="files/secrets"
 
-# gorush notification
-GORUSH_REQUEST_TIMEOUT=5000;
-GORUSH_URL=http://example.com:8088;
-GORUSH_GRPC_PORT=9000;
-GORUSH_ENABLE=true;
+# Gorush notification
+GORUSH_REQUEST_TIMEOUT=5000
+GORUSH_URL=http://example.com:8088
+GORUSH_GRPC_PORT=9000
+GORUSH_ENABLE=true
