@@ -7,7 +7,7 @@ import { GoogleConfig } from '../auth-google/config/google-config.type';
 import { MailConfig } from '../mail/config/mail-config.type';
 import { VeroConfig } from 'src/auth-vero/config/vero-config.type';
 import { GorushConfig } from 'src/providers/gorush/config/gorush-config.type';
-import { CommunicationConfig } from 'src/communication/config/communication-config.type';
+import { RabbitMQConfig } from 'src/communication/rabbitMQ/config/rabbitmq-config.type';
 
 export type AllConfigType = {
   app: AppConfig;
@@ -19,5 +19,5 @@ export type AllConfigType = {
   mail: MailConfig;
   vero: VeroConfig;
   gorush: GorushConfig;
-  communication: CommunicationConfig;
+  rabbitMQ: RabbitMQConfig;
 };

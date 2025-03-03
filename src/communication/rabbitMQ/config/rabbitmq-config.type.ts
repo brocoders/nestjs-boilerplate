@@ -1,4 +1,4 @@
-export type CommunicationConfig = {
+export type RabbitMQConfig = {
   /**
    * Whether RabbitMQ is enabled.
    * Default: false
@@ -6,28 +6,10 @@ export type CommunicationConfig = {
   enableRabbitMQ: boolean;
 
   /**
-   * Whether Kafka is enabled.
-   * Default: false
-   */
-  enableKafka: boolean;
-
-  /**
-   * Whether Redis is enabled.
-   * Default: false
-   */
-  enableRedis: boolean;
-
-  /**
    * List of RabbitMQ connection URLs.
    * Example: ["amqp://user:password@rabbitmq-host:5672", "amqp://user:password@backup-host:5672"]
    */
   rabbitmqUrls: string[];
-
-  /**
-   * List of RabbitMQ queues.
-   * Example: ["order.queue", "payment.queue", "shipping.queue"]
-   */
-  rabbitmqQueues: string[];
 
   /**
    * RabbitMQ queue durability (if true, queue will survive server restarts)
@@ -43,7 +25,7 @@ export type CommunicationConfig = {
 
   /**
    * RabbitMQ acknowledgment mode (true = auto-ack)
-   * Default: true
+   * Default: false
    */
   rabbitmqNoAck: boolean;
 

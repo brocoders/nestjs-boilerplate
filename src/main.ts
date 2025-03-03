@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import {
   ClassSerializerInterceptor,
-  Logger,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
@@ -13,14 +12,13 @@ import validationOptions from './utils/validation-options';
 import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import { APIDocs } from './api-docs/api-docs.module';
-import { RabbitMQClientOptions } from './communication/config/communication.option';
-import { MicroserviceOptions } from '@nestjs/microservices';
+import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
-
+  const rabbitMQService = app.get(RabbitMQService);
   app.enableShutdownHooks();
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
@@ -37,33 +35,11 @@ async function bootstrap() {
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
 
-  const logger = new Logger('RabbitMQ');
-
-  // Fetch RabbitMQ options
-  const rabbitMQOptions = RabbitMQClientOptions(
-    configService,
-  ) as MicroserviceOptions;
-
-  const rabbitmqQueues =
-    configService.get<string[]>('communication.rabbitmqQueues', {
-      infer: true,
-    }) || [];
-  for (const queueName of rabbitmqQueues) {
-    const rabbitMQOptions = RabbitMQClientOptions(configService, {
-      consumer: true,
-      queueName,
-    });
-    app.connectMicroservice<MicroserviceOptions>(rabbitMQOptions);
-  }
-
-  await app.startAllMicroservices();
-  logger.debug(
-    'RabbitMQ Microservice started with options:',
-    rabbitMQOptions.options,
-  );
-
   await APIDocs.setup(app);
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
+  // Initialize and start RabbitMQ consumers
+  rabbitMQService.initialize(app);
+  await app.startAllMicroservices();
 }
 void bootstrap();

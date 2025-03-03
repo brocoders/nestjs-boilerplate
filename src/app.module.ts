@@ -26,7 +26,9 @@ import veroConfig from './auth-vero/config/vero.config';
 import { SecretManagerModule } from './secret-manager/secret.module';
 import { AuthVeroModule } from './auth-vero/auth-vero.module';
 import { GorushModule } from './providers/gorush/gorush.module';
-import GorushConfig from './providers/gorush/config/gorush.config';
+import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
+import gorushConfig from './providers/gorush/config/gorush.config';
+import rabbitmqConfig from './communication/rabbitMQ/config/rabbitmq.config';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -48,7 +50,8 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
         googleConfig,
         appleConfig,
         veroConfig,
-        GorushConfig,
+        gorushConfig,
+        rabbitmqConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -89,5 +92,6 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     SecretManagerModule,
     GorushModule,
   ],
+  providers: [RabbitMQService],
 })
 export class AppModule {}
