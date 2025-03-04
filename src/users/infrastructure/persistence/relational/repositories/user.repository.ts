@@ -59,7 +59,7 @@ export class UsersRelationalRepository implements UserRepository {
 
   async findById(id: User['id']): Promise<NullableType<User>> {
     const entity = await this.usersRepository.findOne({
-      where: { id: Number(id) },
+      where: { id: id },
     });
 
     return entity ? UserMapper.toDomain(entity) : null;
@@ -101,7 +101,7 @@ export class UsersRelationalRepository implements UserRepository {
 
   async update(id: User['id'], payload: Partial<User>): Promise<User> {
     const entity = await this.usersRepository.findOne({
-      where: { id: Number(id) },
+      where: { id: id },
     });
 
     if (!entity) {

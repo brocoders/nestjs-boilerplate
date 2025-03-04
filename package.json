@@ -14,22 +14,11 @@
     "migration:revert": "npm run typeorm -- --dataSource=src/database/data-source.ts migration:revert",
     "schema:drop": "npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
     "seed:create:relational": "hygen seeds create-relational",
-    "seed:create:document": "hygen seeds create-document",
     "generate:resource:relational": "hygen generate relational-resource",
     "postgenerate:resource:relational": "npm run lint -- --fix",
-    "generate:resource:document": "hygen generate document-resource",
-    "postgenerate:resource:document": "npm run lint -- --fix",
-    "generate:resource:all-db": "hygen generate all-db-resource",
-    "postgenerate:resource:all-db": "npm run lint -- --fix",
-    "add:property:to-all-db": "hygen property add-to-all-db",
-    "postadd:property:to-all-db": "npm run lint -- --fix",
-    "add:property:to-document": "hygen property add-to-document",
-    "postadd:property:to-document": "npm run lint -- --fix",
     "add:property:to-relational": "hygen property add-to-relational",
     "postadd:property:to-relational": "npm run lint -- --fix",
-    "app:config": "ts-node -r tsconfig-paths/register ./.install-scripts/index.ts && npm install && npm run lint -- --fix",
     "seed:run:relational": "ts-node -r tsconfig-paths/register ./src/database/seeds/relational/run-seed.ts",
-    "seed:run:document": "ts-node -r tsconfig-paths/register ./src/database/seeds/document/run-seed.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -44,7 +33,6 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
-    "test:e2e:document:docker": "docker compose -f docker-compose.document.test.yaml --env-file env-example-document -p tests up -d --build && docker compose -f docker-compose.document.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3000 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.document.test.yaml -p tests down && docker compose -p tests rm -svf",
     "test:e2e:relational:docker": "docker compose -f docker-compose.relational.test.yaml --env-file env-example-relational -p tests up -d --build && docker compose -f docker-compose.relational.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3000 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.relational.test.yaml -p tests down && docker compose -p tests rm -svf",
     "prepare": "is-ci || husky",
     "release": "release-it"
@@ -56,13 +44,11 @@
     "@nestjs/config": "4.0.0",
     "@nestjs/core": "11.0.9",
     "@nestjs/jwt": "11.0.0",
-    "@nestjs/mongoose": "11.0.1",
     "@nestjs/passport": "11.0.5",
     "@nestjs/platform-express": "11.0.9",
     "@nestjs/swagger": "11.0.3",
     "@nestjs/typeorm": "11.0.0",
     "@types/multer-s3": "3.0.3",
-    "@types/prompts": "2.4.9",
     "apple-signin-auth": "1.7.8",
     "bcryptjs": "3.0.0",
     "class-transformer": "0.5.1",
@@ -71,8 +57,6 @@
     "fb": "2.0.0",
     "google-auth-library": "9.15.1",
     "handlebars": "4.7.8",
-    "mongoose": "8.10.0",
-    "mongoose-autopopulate": "^1.1.0",
     "ms": "2.1.3",
     "multer": "1.4.5-lts.1",
     "multer-s3": "3.0.1",
@@ -213,5 +197,6 @@
         }
       }
     }
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

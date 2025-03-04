@@ -7,5 +7,5 @@ export class UserDto {
     example: 'userId',
   })
   @IsNotEmpty()
-  id: string | number;
+  id: string;
 }
