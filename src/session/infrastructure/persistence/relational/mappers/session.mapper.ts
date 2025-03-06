@@ -19,7 +19,7 @@ export class SessionMapper {
 
   static toPersistence(domainEntity: Session): SessionEntity {
     const user = new UserEntity();
-    user.id = Number(domainEntity.user.id);
+    user.id = domainEntity.user.id;
 
     const persistenceEntity = new SessionEntity();
     if (domainEntity.id && typeof domainEntity.id === 'number') {
