@@ -113,7 +113,7 @@
     "@typescript-eslint/eslint-plugin": "8.25.0",
     "@typescript-eslint/parser": "8.25.0",
     "env-cmd": "10.1.0",
-    "eslint": "9.21.0",
+    "eslint": "9.22.0",
     "eslint-config-prettier": "10.0.2",
     "eslint-plugin-prettier": "5.2.3",
     "globals": "^16.0.0",
