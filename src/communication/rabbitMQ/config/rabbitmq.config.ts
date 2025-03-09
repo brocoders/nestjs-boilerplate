@@ -8,7 +8,7 @@ import {
   RMQ_NO_ACK,
   RMQ_PERSISTENT,
   RMQ_DEFAULT_COMMUNICATION_URLS,
-} from '../types/rabbitmq.type';
+} from '../types/rabbitmq.const';
 
 // Validator class for environment variables
 class EnvironmentVariablesValidator {

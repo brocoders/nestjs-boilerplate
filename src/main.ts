@@ -13,12 +13,15 @@ import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import { APIDocs } from './api-docs/api-docs.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
+import { KafkaService } from './communication/kafka/kafak.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);
+  const kafkaService = app.get(KafkaService);
+
   app.enableShutdownHooks();
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
@@ -40,6 +43,7 @@ async function bootstrap() {
   await APIDocs.info(app);
   // Initialize and start RabbitMQ consumers
   rabbitMQService.initialize(app);
+  kafkaService.initialize(app);
   await app.startAllMicroservices();
 }
 void bootstrap();

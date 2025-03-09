@@ -56,7 +56,7 @@ export class GorushService {
       GORUSH_DEFAULT_ENABLE;
 
     if (!this.isEnabled) {
-      this.logger.warn('Gorush service is disabled in configuration.');
+      this.logger.warn('Gorush is disabled. Skipping initialization.');
       return;
     }
 

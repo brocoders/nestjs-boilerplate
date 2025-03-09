@@ -29,6 +29,8 @@ import { GorushModule } from './providers/gorush/gorush.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import gorushConfig from './providers/gorush/config/gorush.config';
 import rabbitmqConfig from './communication/rabbitMQ/config/rabbitmq.config';
+import kafkaConfig from './communication/kafka/config/kafka.config';
+import { KafkaService } from './communication/kafka/kafak.service';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -52,6 +54,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
         veroConfig,
         gorushConfig,
         rabbitmqConfig,
+        kafkaConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -92,6 +95,6 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     SecretManagerModule,
     GorushModule,
   ],
-  providers: [RabbitMQService],
+  providers: [RabbitMQService, KafkaService],
 })
 export class AppModule {}

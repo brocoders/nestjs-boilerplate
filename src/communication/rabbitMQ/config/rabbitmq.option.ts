@@ -5,7 +5,7 @@ import {
   RMQ_PERSISTENT,
   RMQ_PREFETCH_COUNT,
   RMQ_QUEUE_DURABLE,
-} from '../types/rabbitmq.type';
+} from '../types/rabbitmq.const';
 
 /**
  * Create a base RabbitMQ configuration that can be modified per service.
