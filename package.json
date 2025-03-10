@@ -95,7 +95,7 @@
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.20.0",
     "@nestjs/cli": "11.0.5",
-    "@nestjs/schematics": "11.0.1",
+    "@nestjs/schematics": "11.0.2",
     "@nestjs/testing": "11.0.11",
     "@release-it/conventional-changelog": "10.0.0",
     "@swc/cli": "0.6.0",
