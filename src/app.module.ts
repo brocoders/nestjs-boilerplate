@@ -39,8 +39,14 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   },
 });
 
+import { NotificationsModule } from './notifications/notifications.module';
+
+import { DevicesModule } from './devices/devices.module';
+
 @Module({
   imports: [
+    DevicesModule,
+    NotificationsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
