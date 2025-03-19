@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   SerializeOptions,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -24,6 +25,9 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from '../config/config.type';
+import { LanguageEnum } from '../i18n/language.enum';
 
 @ApiTags('Auth')
 @Controller({
@@ -31,7 +35,10 @@ import { RefreshResponseDto } from './dto/refresh-response.dto';
   version: '1',
 })
 export class AuthController {
-  constructor(private readonly service: AuthService) {}
+  constructor(
+    private readonly service: AuthService,
+    private readonly configService: ConfigService<AllConfigType>,
+  ) {}
 
   @SerializeOptions({
     groups: ['me'],
@@ -47,8 +54,20 @@ export class AuthController {
 
   @Post('email/register')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
-    return this.service.register(createUserDto);
+  async register(
+    @Body() createUserDto: AuthRegisterLoginDto,
+    @Headers() headers: Record<string, string>,
+  ): Promise<void> {
+    if (createUserDto.language) {
+      return this.service.register(createUserDto, createUserDto.language);
+    }
+
+    const headerLanguage =
+      this.configService.get('app.headerLanguage', { infer: true }) ||
+      'x-custom-lang';
+    const language = headers[headerLanguage.toLowerCase()] as LanguageEnum;
+
+    return this.service.register(createUserDto, language);
   }
 
   @Post('email/confirm')
@@ -71,8 +90,21 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
+    @Headers() headers: Record<string, string>,
   ): Promise<void> {
-    return this.service.forgotPassword(forgotPasswordDto.email);
+    if (forgotPasswordDto.language) {
+      return this.service.forgotPassword(
+        forgotPasswordDto.email,
+        forgotPasswordDto.language,
+      );
+    }
+
+    const headerLanguage =
+      this.configService.get('app.headerLanguage', { infer: true }) ||
+      'x-custom-lang';
+    const language = headers[headerLanguage.toLowerCase()] as LanguageEnum;
+
+    return this.service.forgotPassword(forgotPasswordDto.email, language);
   }
 
   @Post('reset/password')
@@ -138,8 +170,18 @@ export class AuthController {
   public update(
     @Request() request,
     @Body() userDto: AuthUpdateDto,
+    @Headers() headers: Record<string, string>,
   ): Promise<NullableType<User>> {
-    return this.service.update(request.user, userDto);
+    if (userDto.language) {
+      return this.service.update(request.user, userDto, userDto.language);
+    }
+
+    const headerLanguage =
+      this.configService.get('app.headerLanguage', { infer: true }) ||
+      'x-custom-lang';
+    const language = headers[headerLanguage.toLowerCase()] as LanguageEnum;
+
+    return this.service.update(request.user, userDto, language);
   }
 
   @ApiBearerAuth()
