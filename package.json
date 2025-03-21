@@ -50,8 +50,8 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.758.0",
-    "@aws-sdk/s3-request-presigner": "3.758.0",
+    "@aws-sdk/client-s3": "3.772.0",
+    "@aws-sdk/s3-request-presigner": "3.772.0",
     "@nestjs/common": "11.0.12",
     "@nestjs/config": "4.0.1",
     "@nestjs/core": "11.0.12",
