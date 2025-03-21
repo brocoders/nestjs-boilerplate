@@ -1,168 +1,146 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { I18nContext } from 'nestjs-i18n';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 import { MailData } from './interfaces/mail-data.interface';
 
-import { MaybeType } from '../utils/types/maybe.type';
 import { MailerService } from '../mailer/mailer.service';
 import path from 'path';
 import { AllConfigType } from '../config/config.type';
+import { LanguageEnum } from '../i18n/language.enum';
 
 @Injectable()
 export class MailService {
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService<AllConfigType>,
+    private readonly i18nService: I18nService,
   ) {}
 
-  async userSignUp(mailData: MailData<{ hash: string }>): Promise<void> {
+  // Helper to get language with proper typing
+  private getLanguage(language?: LanguageEnum): LanguageEnum {
     const i18n = I18nContext.current();
-    let emailConfirmTitle: MaybeType<string>;
-    let text1: MaybeType<string>;
-    let text2: MaybeType<string>;
-    let text3: MaybeType<string>;
+    const fallback = this.configService.get('app.fallbackLanguage', {
+      infer: true,
+    }) as LanguageEnum;
+    return (language || i18n?.lang || fallback) as LanguageEnum;
+  }
 
-    if (i18n) {
-      [emailConfirmTitle, text1, text2, text3] = await Promise.all([
-        i18n.t('common.confirmEmail'),
-        i18n.t('confirm-email.text1'),
-        i18n.t('confirm-email.text2'),
-        i18n.t('confirm-email.text3'),
-      ]);
+  // Helper to get email subject with i18n support
+  private async getSubject(
+    key: string,
+    language?: LanguageEnum,
+  ): Promise<string> {
+    const lang = this.getLanguage(language);
+    try {
+      const translation = await this.i18nService.translate(key, { lang });
+      return translation as string;
+    } catch {
+      // Fallback if translation fails
+      return key.split('.').pop() || 'Email Notification';
     }
+  }
 
+  // Helper to get template path
+  private getTemplatePath(templateName: string): string {
+    return path.join(
+      this.configService.getOrThrow('app.workingDirectory', { infer: true }),
+      'src',
+      'mail',
+      'mail-templates',
+      templateName,
+    );
+  }
+
+  async userSignUp(
+    mailData: MailData<{ hash: string }>,
+    language?: LanguageEnum,
+  ): Promise<void> {
+    // Get language
+    const lang = this.getLanguage(language);
+
+    // Generate URL
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', {
-        infer: true,
-      }) + '/confirm-email',
+      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
+        '/confirm-email',
     );
     url.searchParams.set('hash', mailData.data.hash);
 
+    // Get translated subject
+    const subject = await this.getSubject('common.confirmEmail', language);
+
+    // Send email
     await this.mailerService.sendMail({
       to: mailData.to,
-      subject: emailConfirmTitle,
-      text: `${url.toString()} ${emailConfirmTitle}`,
-      templatePath: path.join(
-        this.configService.getOrThrow('app.workingDirectory', {
-          infer: true,
-        }),
-        'src',
-        'mail',
-        'mail-templates',
-        'activation.hbs',
-      ),
+      subject,
+      text: url.toString(),
+      templatePath: this.getTemplatePath('activation.hbs'),
       context: {
-        title: emailConfirmTitle,
         url: url.toString(),
-        actionTitle: emailConfirmTitle,
         app_name: this.configService.get('app.name', { infer: true }),
-        text1,
-        text2,
-        text3,
+        lang,
       },
     });
   }
 
   async forgotPassword(
     mailData: MailData<{ hash: string; tokenExpires: number }>,
+    language?: LanguageEnum,
   ): Promise<void> {
-    const i18n = I18nContext.current();
-    let resetPasswordTitle: MaybeType<string>;
-    let text1: MaybeType<string>;
-    let text2: MaybeType<string>;
-    let text3: MaybeType<string>;
-    let text4: MaybeType<string>;
+    // Get language
+    const lang = this.getLanguage(language);
 
-    if (i18n) {
-      [resetPasswordTitle, text1, text2, text3, text4] = await Promise.all([
-        i18n.t('common.resetPassword'),
-        i18n.t('reset-password.text1'),
-        i18n.t('reset-password.text2'),
-        i18n.t('reset-password.text3'),
-        i18n.t('reset-password.text4'),
-      ]);
-    }
-
+    // Generate URL
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', {
-        infer: true,
-      }) + '/password-change',
+      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
+        '/password-change',
     );
     url.searchParams.set('hash', mailData.data.hash);
     url.searchParams.set('expires', mailData.data.tokenExpires.toString());
 
+    // Get translated subject
+    const subject = await this.getSubject('common.resetPassword', language);
+
+    // Send email
     await this.mailerService.sendMail({
       to: mailData.to,
-      subject: resetPasswordTitle,
-      text: `${url.toString()} ${resetPasswordTitle}`,
-      templatePath: path.join(
-        this.configService.getOrThrow('app.workingDirectory', {
-          infer: true,
-        }),
-        'src',
-        'mail',
-        'mail-templates',
-        'reset-password.hbs',
-      ),
+      subject,
+      text: url.toString(),
+      templatePath: this.getTemplatePath('reset-password.hbs'),
       context: {
-        title: resetPasswordTitle,
         url: url.toString(),
-        actionTitle: resetPasswordTitle,
-        app_name: this.configService.get('app.name', {
-          infer: true,
-        }),
-        text1,
-        text2,
-        text3,
-        text4,
+        app_name: this.configService.get('app.name', { infer: true }),
+        lang,
       },
     });
   }
 
-  async confirmNewEmail(mailData: MailData<{ hash: string }>): Promise<void> {
-    const i18n = I18nContext.current();
-    let emailConfirmTitle: MaybeType<string>;
-    let text1: MaybeType<string>;
-    let text2: MaybeType<string>;
-    let text3: MaybeType<string>;
+  async confirmNewEmail(
+    mailData: MailData<{ hash: string }>,
+    language?: LanguageEnum,
+  ): Promise<void> {
+    // Get language
+    const lang = this.getLanguage(language);
 
-    if (i18n) {
-      [emailConfirmTitle, text1, text2, text3] = await Promise.all([
-        i18n.t('common.confirmEmail'),
-        i18n.t('confirm-new-email.text1'),
-        i18n.t('confirm-new-email.text2'),
-        i18n.t('confirm-new-email.text3'),
-      ]);
-    }
-
+    // Generate URL
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', {
-        infer: true,
-      }) + '/confirm-new-email',
+      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
+        '/confirm-new-email',
     );
     url.searchParams.set('hash', mailData.data.hash);
 
+    // Get translated subject
+    const subject = await this.getSubject('common.confirmEmail', language);
+
+    // Send email
     await this.mailerService.sendMail({
       to: mailData.to,
-      subject: emailConfirmTitle,
-      text: `${url.toString()} ${emailConfirmTitle}`,
-      templatePath: path.join(
-        this.configService.getOrThrow('app.workingDirectory', {
-          infer: true,
-        }),
-        'src',
-        'mail',
-        'mail-templates',
-        'confirm-new-email.hbs',
-      ),
+      subject,
+      text: url.toString(),
+      templatePath: this.getTemplatePath('confirm-new-email.hbs'),
       context: {
-        title: emailConfirmTitle,
         url: url.toString(),
-        actionTitle: emailConfirmTitle,
         app_name: this.configService.get('app.name', { infer: true }),
-        text1,
-        text2,
-        text3,
+        lang,
       },
     });
   }

@@ -28,6 +28,7 @@ import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
+import { LanguageEnum } from '../i18n/language.enum';
 
 @Injectable()
 export class AuthService {
@@ -193,7 +194,10 @@ export class AuthService {
     };
   }
 
-  async register(dto: AuthRegisterLoginDto): Promise<void> {
+  async register(
+    dto: AuthRegisterLoginDto,
+    language?: LanguageEnum,
+  ): Promise<void> {
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
@@ -219,12 +223,15 @@ export class AuthService {
       },
     );
 
-    await this.mailService.userSignUp({
-      to: dto.email,
-      data: {
-        hash,
+    await this.mailService.userSignUp(
+      {
+        to: dto.email,
+        data: {
+          hash,
+        },
       },
-    });
+      language,
+    );
   }
 
   async confirmEmail(hash: string): Promise<void> {
@@ -310,7 +317,7 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(email: string, language?: LanguageEnum): Promise<void> {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
@@ -340,13 +347,16 @@ export class AuthService {
       },
     );
 
-    await this.mailService.forgotPassword({
-      to: email,
-      data: {
-        hash,
-        tokenExpires,
+    await this.mailService.forgotPassword(
+      {
+        to: email,
+        data: {
+          hash,
+          tokenExpires,
+        },
       },
-    });
+      language,
+    );
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
@@ -398,6 +408,7 @@ export class AuthService {
   async update(
     userJwtPayload: JwtPayloadType,
     userDto: AuthUpdateDto,
+    language?: LanguageEnum,
   ): Promise<NullableType<User>> {
     const currentUser = await this.usersService.findById(userJwtPayload.id);
 
@@ -476,12 +487,15 @@ export class AuthService {
         },
       );
 
-      await this.mailService.confirmNewEmail({
-        to: userDto.email,
-        data: {
-          hash,
+      await this.mailService.confirmNewEmail(
+        {
+          to: userDto.email,
+          data: {
+            hash,
+          },
         },
-      });
+        language,
+      );
     }
 
     delete userDto.email;

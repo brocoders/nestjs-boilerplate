@@ -1,7 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
+import { LanguageEnum } from '../../i18n/language.enum';
 
 export class AuthRegisterLoginDto {
   @ApiProperty({ example: 'test1@example.com', type: String })
@@ -20,4 +27,13 @@ export class AuthRegisterLoginDto {
   @ApiProperty({ example: 'Doe' })
   @IsNotEmpty()
   lastName: string;
+
+  @ApiPropertyOptional({
+    description: 'Preferred language for email',
+    enum: LanguageEnum,
+    example: LanguageEnum.English,
+  })
+  @IsOptional()
+  @IsEnum(LanguageEnum)
+  language?: LanguageEnum;
 }
