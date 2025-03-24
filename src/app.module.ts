@@ -31,6 +31,7 @@ import gorushConfig from './providers/gorush/config/gorush.config';
 import rabbitmqConfig from './communication/rabbitMQ/config/rabbitmq.config';
 import kafkaConfig from './communication/kafka/config/kafka.config';
 import { KafkaService } from './communication/kafka/kafak.service';
+import minioConfig from './file-manager/config/minio.config';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -42,6 +43,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
 import { NotificationsModule } from './notifications/notifications.module';
 
 import { DevicesModule } from './devices/devices.module';
+import { MinioModule } from './file-manager/minio.module';
 
 @Module({
   imports: [
@@ -61,6 +63,7 @@ import { DevicesModule } from './devices/devices.module';
         gorushConfig,
         rabbitmqConfig,
         kafkaConfig,
+        minioConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -100,6 +103,7 @@ import { DevicesModule } from './devices/devices.module';
     AuthVeroModule,
     SecretManagerModule,
     GorushModule,
+    MinioModule,
   ],
   providers: [RabbitMQService, KafkaService],
 })
