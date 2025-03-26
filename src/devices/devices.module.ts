@@ -1,3 +1,4 @@
+import { UsersModule } from '../users/users.module';
 import { Module } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { DevicesController } from './devices.controller';
@@ -5,6 +6,7 @@ import { RelationalDevicePersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    UsersModule,
     // import modules, etc.
     RelationalDevicePersistenceModule,
   ],
