@@ -1,3 +1,4 @@
+import { bootstrapOpenTelemetry } from './shared/tracing/otel-loader';
 import 'dotenv/config';
 import {
   ClassSerializerInterceptor,
@@ -22,6 +23,7 @@ async function bootstrap() {
   const rabbitMQService = app.get(RabbitMQService);
   const kafkaService = app.get(KafkaService);
 
+
   app.enableShutdownHooks();
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
@@ -37,7 +39,7 @@ async function bootstrap() {
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
-
+  await bootstrapOpenTelemetry();
   await APIDocs.setup(app);
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
