@@ -31,6 +31,7 @@ import gorushConfig from './providers/gorush/config/gorush.config';
 import rabbitmqConfig from './communication/rabbitMQ/config/rabbitmq.config';
 import kafkaConfig from './communication/kafka/config/kafka.config';
 import { KafkaService } from './communication/kafka/kafak.service';
+import { LoggerModule } from './shared/logger/logger.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -100,7 +101,8 @@ import { DevicesModule } from './devices/devices.module';
     AuthVeroModule,
     SecretManagerModule,
     GorushModule,
+    LoggerModule,
   ],
   providers: [RabbitMQService, KafkaService],
 })
-export class AppModule {}
+export class AppModule { }

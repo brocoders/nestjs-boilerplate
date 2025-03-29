@@ -8,21 +8,25 @@ import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 
 const traceExporter = new OTLPTraceExporter({
-    url: 'http://185.73.115.25:4318/v1/traces',
+  url: 'http://185.73.115.25:4318/v1/traces',
 });
 
 const metricExporter = new OTLPMetricExporter({
-    url: 'http://185.73.115.25:4318/v1/metrics',
+  url: 'http://185.73.115.25:4318/v1/metrics',
 });
 
 export const sdk = new NodeSDK({
-    traceExporter,
-    metricReader: new PeriodicExportingMetricReader({
-        exporter: metricExporter,
-        exportIntervalMillis: 1000,
-    }),
-    instrumentations: [getNodeAutoInstrumentations()],
-    resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'next-block-services',
-    }),
+  traceExporter,
+  metricReader: new PeriodicExportingMetricReader({
+    exporter: metricExporter,
+    exportIntervalMillis: 1000,
+  }),
+  instrumentations: [getNodeAutoInstrumentations()],
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: 'next-block-services',
+  }),
 });
+
+
+
+

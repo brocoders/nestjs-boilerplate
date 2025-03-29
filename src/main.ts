@@ -1,4 +1,5 @@
 import { bootstrapOpenTelemetry } from './shared/tracing/otel-loader';
+import { Logger } from 'nestjs-pino';
 import 'dotenv/config';
 import {
   ClassSerializerInterceptor,
@@ -17,12 +18,14 @@ import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import { KafkaService } from './communication/kafka/kafak.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    bufferLogs: true,
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);
   const kafkaService = app.get(KafkaService);
-
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(
@@ -39,6 +42,7 @@ async function bootstrap() {
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
+  app.useLogger(app.get(Logger));
   await bootstrapOpenTelemetry();
   await APIDocs.setup(app);
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
