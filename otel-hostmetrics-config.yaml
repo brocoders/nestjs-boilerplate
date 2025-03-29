@@ -1,0 +1,32 @@
+receivers:
+  hostmetrics:
+    collection_interval: 60s
+    scrapers:
+      cpu: {}
+      memory: {}
+      disk: {}
+      filesystem: {}
+      network: {}
+      load: {}
+
+processors:
+  resourcedetection:
+    detectors: [env, system]
+    system:
+      hostname_sources: [os]
+
+exporters:
+  otlphttp:
+    endpoint: "http://185.73.115.25:4318"
+    tls:
+      insecure: true
+
+service:
+  telemetry:
+    metrics:
+      address: 0.0.0.0:8888
+  pipelines:
+    metrics:
+      receivers: [hostmetrics]
+      processors: [resourcedetection]
+      exporters: [otlphttp]
