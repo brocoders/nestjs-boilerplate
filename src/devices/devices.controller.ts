@@ -8,13 +8,17 @@ import {
   Delete,
   UseGuards,
   Query,
+  HttpStatus,
+  Request,
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
@@ -26,7 +30,13 @@ import {
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllDevicesDto } from './dto/find-all-devices.dto';
+import {
+  FindAllDevicesDto,
+  FindAllDevicesUserDto,
+} from './dto/find-all-devices.dto';
+import { ErrorTypeMessage } from '../utils/types/message.type';
+import { DeviceUserResponseDto } from './dto/device-response.dto';
+import { QueryDeviceDto } from './dto/query-device.dto';
 
 @ApiTags('Devices')
 @ApiBearerAuth()
@@ -36,6 +46,7 @@ import { FindAllDevicesDto } from './dto/find-all-devices.dto';
   version: '1',
 })
 export class DevicesController {
+  passphrasesService: any;
   constructor(private readonly devicesService: DevicesService) {}
 
   @Post()
@@ -104,5 +115,118 @@ export class DevicesController {
   })
   remove(@Param('id') id: string) {
     return this.devicesService.remove(id);
+  }
+
+  @Get('me')
+  @ApiOkResponse({
+    type: DeviceUserResponseDto,
+    description: 'Successfully retrieved devices for the user',
+    isArray: true,
+  })
+  @ApiNotFoundResponse({
+    description: 'No Devices found for the user',
+    schema: {
+      example: {
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          devices: ErrorTypeMessage.getMessageByStatus(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          ),
+        },
+      },
+    },
+  })
+  @ApiOkResponse({ type: Device, isArray: true })
+  async findAllByMe(@Request() request): Promise<DeviceUserResponseDto[]> {
+    return this.devicesService.findByme(request.user);
+  }
+
+  @Get('user/:userId')
+  @ApiParam({
+    name: 'userId',
+    type: Number,
+    description: 'The numeric ID of the user',
+    required: true,
+    example: 1,
+  })
+  @ApiOkResponse({
+    type: DeviceUserResponseDto,
+    description: 'Successfully retrieved devices for the user',
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid user ID format',
+    schema: {
+      example: {
+        status: HttpStatus.BAD_REQUEST,
+        errors: {
+          userId: 'must be a positive number',
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'No devices found for the user',
+    schema: {
+      example: {
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          devices: ErrorTypeMessage.getMessageByStatus(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          ),
+        },
+      },
+    },
+  })
+  async findAllByUserId(
+    @Param() params: FindAllDevicesUserDto,
+  ): Promise<DeviceUserResponseDto[]> {
+    return this.devicesService.findByUserId(params.userId);
+  }
+
+  @Get('search')
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(DeviceUserResponseDto),
+    description: 'Successfully retrieved filtered device list',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid filter or sort options',
+    schema: {
+      example: {
+        status: HttpStatus.BAD_REQUEST,
+        errors: {
+          filters: 'Invalid filter format',
+          sort: 'Sort key is not allowed',
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'No devices matched the filter criteria',
+    schema: {
+      example: {
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          devices: ErrorTypeMessage.getMessageByStatus(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          ),
+        },
+      },
+    },
+  })
+  async findMany(
+    @Query() query: QueryDeviceDto,
+  ): Promise<InfinityPaginationResponseDto<DeviceUserResponseDto>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) limit = 50;
+
+    const result = await this.devicesService.findManyWithPagination({
+      filterOptions: query.filters,
+      sortOptions: query.sort,
+      paginationOptions: { page, limit },
+    });
+
+    return infinityPagination(result, { page, limit });
   }
 }

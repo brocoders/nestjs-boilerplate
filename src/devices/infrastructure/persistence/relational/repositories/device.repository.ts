@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, FindOptionsWhere } from 'typeorm';
 import { DeviceEntity } from '../entities/device.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Device } from '../../../../domain/device';
 import { DeviceRepository } from '../../device.repository';
 import { DeviceMapper } from '../mappers/device.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { User } from '../../../../../users/domain/user';
+import {
+  FilterDeviceDto,
+  SortDeviceDto,
+} from '../../../../dto/query-device.dto';
+import { OrderType } from '../../../../types/devices-enum.type';
 
 @Injectable()
 export class DeviceRelationalRepository implements DeviceRepository {
@@ -75,5 +81,54 @@ export class DeviceRelationalRepository implements DeviceRepository {
 
   async remove(id: Device['id']): Promise<void> {
     await this.deviceRepository.delete(id);
+  }
+  async findByUserId(userId: User['id']): Promise<Device[]> {
+    const id = typeof userId === 'string' ? parseInt(userId, 10) : userId;
+    const entities = await this.deviceRepository.find({
+      where: {
+        user: {
+          id: id,
+        },
+      },
+      relations: ['user'],
+    });
+    return entities.map((entity) => DeviceMapper.toDomain(entity));
+  }
+
+  async findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterDeviceDto | null;
+    sortOptions?: SortDeviceDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Device[]> {
+    const where: FindOptionsWhere<DeviceEntity> = {};
+
+    if (filterOptions?.isActive !== undefined) {
+      where.isActive = filterOptions.isActive;
+    }
+    if (filterOptions?.platform) {
+      where.platform = filterOptions.platform;
+    }
+    if (filterOptions?.appVersion) {
+      where.appVersion = filterOptions.appVersion;
+    }
+
+    const entities = await this.deviceRepository.find({
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
+      where,
+      order: sortOptions?.reduce(
+        (acc, item) => {
+          acc[item.orderBy] = item.order as OrderType;
+          return acc;
+        },
+        {} as Record<string, OrderType>,
+      ),
+    });
+
+    return entities.map(DeviceMapper.toDomain);
   }
 }

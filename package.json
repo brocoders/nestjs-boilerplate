@@ -68,7 +68,7 @@
     "axios": "^1.8.1",
     "bcryptjs": "3.0.2",
     "chalk": "^5.4.1",
-    "class-transformer": "0.5.1",
+    "class-transformer": "^0.5.1",
     "class-validator": "0.14.1",
     "dotenv": "16.4.7",
     "google-auth-library": "9.15.1",
