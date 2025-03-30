@@ -55,13 +55,20 @@ const loggerOptions: LoggerOptions = {
 
 function getSeverityNumber(level: string): number {
   switch (level) {
-    case 'trace': return 1;
-    case 'debug': return 5;
-    case 'info': return 9;
-    case 'warn': return 13;
-    case 'error': return 17;
-    case 'fatal': return 21;
-    default: return 9;
+    case 'trace':
+      return 1;
+    case 'debug':
+      return 5;
+    case 'info':
+      return 9;
+    case 'warn':
+      return 13;
+    case 'error':
+      return 17;
+    case 'fatal':
+      return 21;
+    default:
+      return 9;
   }
 }
 

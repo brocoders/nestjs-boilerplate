@@ -11,6 +11,5 @@ export class Device1741596649611 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE "device"`);
-    await queryRunner.query(`DROP TABLE "notification"`);
   }
 }
