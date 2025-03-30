@@ -35,7 +35,11 @@
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "test:e2e:relational:docker": "docker compose -f docker-compose.relational.test.yaml --env-file env-example-relational -p tests up -d --build && docker compose -f docker-compose.relational.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3000 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.relational.test.yaml -p tests down && docker compose -p tests rm -svf",
     "prepare": "is-ci || husky",
-    "release": "release-it"
+    "release": "release-it",
+    "docker:dev:up": "docker compose -f docker-compose.yaml up -d maildev postgres redis",
+    "docker:app:up": "docker compose -f docker-compose.yaml up -d app",
+    "docker:dev:down": "docker compose -f docker-compose.yaml down -v maildev postgres redis",
+    "docker:app:down": "docker compose -f docker-compose.yaml down -v app"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.758.0",
