@@ -105,4 +105,4 @@ import { DevicesModule } from './devices/devices.module';
   ],
   providers: [RabbitMQService, KafkaService],
 })
-export class AppModule { }
+export class AppModule {}

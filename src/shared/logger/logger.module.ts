@@ -13,4 +13,4 @@ import { logger } from './logger';
     }),
   ],
 })
-export class LoggerModule { }
+export class LoggerModule {}

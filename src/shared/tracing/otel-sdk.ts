@@ -26,7 +26,3 @@ export const sdk = new NodeSDK({
     [SemanticResourceAttributes.SERVICE_NAME]: 'next-block-services',
   }),
 });
-
-
-
-
