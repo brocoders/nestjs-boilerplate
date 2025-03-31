@@ -37,7 +37,13 @@
     "prepare": "is-ci || husky",
     "release": "release-it",
     "generate:secret-key": "ts-node -r tsconfig-paths/register ./src/utils/scripts/generator.script.ts secret",
-    "generate:password": "ts-node -r tsconfig-paths/register ./src/utils/scripts/generator.script.ts password"
+    "generate:password": "ts-node -r tsconfig-paths/register ./src/utils/scripts/generator.script.ts password",
+    "docker:dev:up": "docker compose -f docker-compose.yaml up -d maildev postgres redis",
+    "docker:app:up": "docker compose -f docker-compose.yaml up -d app",
+    "docker:dev:down": "docker compose -f docker-compose.yaml down -v maildev postgres redis",
+    "docker:app:down": "docker compose -f docker-compose.yaml down -v app",
+    "git:branch:list": "git branch -a",
+    "git:branch:update": "git remote update origin --prune"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.744.0",
