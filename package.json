@@ -100,7 +100,7 @@
     "@release-it/conventional-changelog": "10.0.0",
     "@swc/cli": "0.6.0",
     "@swc/core": "1.11.18",
-    "@types/bcryptjs": "2.4.6",
+    "@types/bcryptjs": "3.0.0",
     "@types/express": "5.0.1",
     "@types/facebook-js-sdk": "3.3.12",
     "@types/jest": "29.5.14",
