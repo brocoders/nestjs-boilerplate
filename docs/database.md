@@ -294,16 +294,14 @@ Designing schema for MongoDB is completely different from designing schema for r
 
 ## Switch PostgreSQL to MySQL
 
-If you want to use MySQL instead of `PostgreSQL`, you can make the changes after following the complete guide given [here](installing-and-running.md).
+If you want to use `MySQL` instead of `PostgreSQL`, you can make the changes after following the complete guide given [here](installing-and-running.md).
 
 Once you have completed all the steps, you should have a running app.
 ![image](https://github.com/user-attachments/assets/ec60b61a-65e6-43e2-9bcf-72dad4c8a9fa)
 
 If you've made it this far, it only requires a few changes to switch from `PostgreSQL` to `MySQL`.
 
-**Change the `docker-compose.yml` to the following:**
-
-`.env`
+**Change the `.env` file to the following:**
 
 ```env
 DATABASE_TYPE=mysql
@@ -316,7 +314,7 @@ DATABASE_PASSWORD=secret
 DATABASE_NAME=app
 ```
 
-`docker-compose.yml`
+**Change the `docker-compose.yml` to the following:**
 
 ```yml
 services:
