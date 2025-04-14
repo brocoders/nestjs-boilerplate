@@ -1,6 +1,4 @@
-# Work with database
-
----
+# Database
 
 ## Table of Contents <!-- omit in toc -->
 
