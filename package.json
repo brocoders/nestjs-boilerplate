@@ -97,7 +97,7 @@
     "@nestjs/cli": "11.0.6",
     "@nestjs/schematics": "11.0.5",
     "@nestjs/testing": "11.0.20",
-    "@release-it/conventional-changelog": "10.0.0",
+    "@release-it/conventional-changelog": "10.0.1",
     "@swc/cli": "0.6.0",
     "@swc/core": "1.11.21",
     "@types/bcryptjs": "3.0.0",
