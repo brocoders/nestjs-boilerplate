@@ -42,8 +42,11 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     });
 // </database-block>
 
+import { TenantsModule } from './tenants/tenants.module';
+
 @Module({
   imports: [
+    TenantsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
