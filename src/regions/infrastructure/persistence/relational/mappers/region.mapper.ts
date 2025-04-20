@@ -40,9 +40,9 @@ export class RegionMapper {
 
     persistenceEntity.serviceTypes = domainEntity.serviceTypes;
 
-    persistenceEntity.centroidLon = domainEntity.centroidLon;
+    persistenceEntity.centroidLon = domainEntity.centroidLon || 0.0;
 
-    persistenceEntity.centroidLat = domainEntity.centroidLat;
+    persistenceEntity.centroidLat = domainEntity.centroidLat || 0.0;
 
     persistenceEntity.boundary = domainEntity.boundary;
 

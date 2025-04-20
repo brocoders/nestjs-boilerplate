@@ -1,24 +1,35 @@
 import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { Polygon } from 'geojson';
 export class Region {
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    type: [String],
+    example: ['00100', '00101'],
+    description: 'ZIP codes covered by this region',
   })
-  zipCodes?: string | null;
+  zipCodes?: string[];
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    type: Object,
+    example: {
+      days: ['mon', 'wed', 'fri'],
+      startTime: '08:00',
+      endTime: '17:00',
+    },
+    description: 'Operating hours for waste collection',
   })
-  operatingHours?: string | null;
+  operatingHours?: {
+    days?: string[];
+    startTime?: string;
+    endTime?: string;
+  };
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    type: [String],
+    example: ['residential', 'commercial'],
+    description: 'Supported service types in this region',
   })
-  serviceTypes?: string | null;
+  serviceTypes?: string[];
 
   @ApiProperty({
     type: () => Number,
@@ -27,16 +38,28 @@ export class Region {
   centroidLon?: number | null;
 
   @ApiProperty({
-    type: () => String,
+    type: () => Number,
     nullable: true,
   })
-  centroidLat?: string | null;
+  centroidLat?: number | null;
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    type: Object,
+    example: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [36.8219, -1.2921],
+          [36.895, -1.2921],
+          [36.895, -1.2335],
+          [36.8219, -1.2335],
+          [36.8219, -1.2921],
+        ],
+      ],
+    },
+    description: 'GeoJSON polygon defining region boundaries',
   })
-  boundary?: string | null;
+  boundary?: Polygon;
 
   @ApiProperty({
     type: () => String,

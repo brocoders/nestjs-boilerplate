@@ -13,61 +13,98 @@ import {
   IsString,
   IsOptional,
   IsNumber,
+  IsArray,
+  IsObject,
+  IsLatitude,
+  IsLongitude,
 } from 'class-validator';
 
 import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
-
+import { Polygon } from 'geojson';
 export class CreateRegionDto {
   @ApiProperty({
+    type: [String],
+    example: ['00100', '00101'],
+    description: 'ZIP codes covered by this region',
     required: false,
-    type: () => String,
   })
   @IsOptional()
-  @IsString()
-  zipCodes?: string | null;
+  @IsArray()
+  @IsString({ each: true })
+  zipCodes?: string[];
 
   @ApiProperty({
+    type: Object,
+    example: {
+      days: ['mon', 'wed', 'fri'],
+      startTime: '08:00',
+      endTime: '17:00',
+    },
+    description: 'Operating hours configuration',
     required: false,
-    type: () => String,
   })
   @IsOptional()
-  @IsString()
-  operatingHours?: string | null;
+  @IsObject()
+  operatingHours?: {
+    days: string[];
+    startTime: string;
+    endTime: string;
+  };
 
   @ApiProperty({
+    type: [String],
+    example: ['residential', 'commercial'],
+    description: 'Service types available in this region',
     required: false,
-    type: () => String,
   })
   @IsOptional()
-  @IsString()
-  serviceTypes?: string | null;
+  @IsArray()
+  @IsString({ each: true })
+  serviceTypes?: string[];
 
   @ApiProperty({
+    type: Number,
+    example: 36.8219,
+    description: 'Longitude of region centroid',
     required: false,
-    type: () => Number,
   })
   @IsOptional()
   @IsNumber()
-  centroidLon?: number | null;
+  @IsLongitude()
+  centroidLon?: number;
 
   @ApiProperty({
+    type: Number,
+    example: -1.2921,
+    description: 'Latitude of region centroid',
     required: false,
-    type: () => String,
   })
   @IsOptional()
-  @IsString()
-  centroidLat?: string | null;
+  @IsNumber()
+  @IsLatitude()
+  centroidLat?: number;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    type: Object,
+    example: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [36.8219, -1.2921],
+          [36.895, -1.2921],
+          [36.895, -1.2335],
+          [36.8219, -1.2335],
+          [36.8219, -1.2921],
+        ],
+      ],
+    },
+    description: 'GeoJSON polygon boundary',
   })
-  @IsOptional()
-  @IsString()
-  boundary?: string | null;
+  @IsObject()
+  boundary: Polygon;
 
   @ApiProperty({
     required: false,

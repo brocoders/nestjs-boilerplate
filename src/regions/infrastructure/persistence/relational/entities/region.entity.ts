@@ -11,46 +11,37 @@ import {
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { UserEntity } from 'src/users/infrastructure/persistence/relational/entities/user.entity';
-
+import { Polygon } from 'geojson';
 @Entity({
   name: 'region',
 })
 export class RegionEntity extends EntityRelationalHelper {
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  zipCodes?: string | null;
+  @Column({ type: 'text', array: true, nullable: true })
+  zipCodes?: string[];
+
+  @Column({ type: 'jsonb', nullable: true })
+  operatingHours?: {
+    days?: string[];
+    startTime?: string;
+    endTime?: string;
+  };
+
+  @Column({ type: 'jsonb', nullable: true })
+  serviceTypes?: string[]; // ['residential', 'commercial', 'industrial']
+
+  @Column({ type: 'decimal', precision: 9, scale: 6, nullable: true })
+  centroidLat?: number;
+
+  @Column({ type: 'decimal', precision: 9, scale: 6, nullable: true })
+  centroidLon?: number;
 
   @Column({
+    type: 'geometry',
+    spatialFeatureType: 'Polygon',
+    srid: 4326,
     nullable: true,
-    type: String,
   })
-  operatingHours?: string | null;
-
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  serviceTypes?: string | null;
-
-  @Column({
-    nullable: true,
-    type: Number,
-  })
-  centroidLon?: number | null;
-
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  centroidLat?: string | null;
-
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  boundary?: string | null;
+  boundary?: Polygon;
 
   @Column({
     nullable: true,
