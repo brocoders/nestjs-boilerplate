@@ -56,6 +56,7 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+
     let regions: Region[] | null | undefined = undefined;
 
     if (createTenantDto.regions) {
@@ -175,6 +176,8 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      domain: createTenantDto.domain,
+
       regions,
 
       settings,
@@ -229,6 +232,7 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let regions: Region[] | null | undefined = undefined;
 
     if (updateTenantDto.regions) {
@@ -348,6 +352,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      domain: updateTenantDto.domain,
+
       regions,
 
       settings,

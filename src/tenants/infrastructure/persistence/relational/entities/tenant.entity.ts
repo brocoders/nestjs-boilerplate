@@ -22,11 +22,20 @@ import {
   OneToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { RoleEntity } from 'src/roles/infrastructure/persistence/relational/entities/role.entity';
 
 @Entity({
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @OneToMany(() => RoleEntity, (role) => role.tenant)
+  roles: RoleEntity[];
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  domain?: string | null;
+
   @OneToMany(() => RegionEntity, (childEntity) => childEntity.tenant, {
     eager: true,
     nullable: true,

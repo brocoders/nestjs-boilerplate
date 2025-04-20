@@ -1,4 +1,5 @@
 import { Tenant } from '../../../../domain/tenant';
+
 import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
 
 import { SettingsMapper } from '../../../../../settings/infrastructure/persistence/relational/mappers/settings.mapper';
@@ -16,6 +17,8 @@ import { TenantEntity } from '../entities/tenant.entity';
 export class TenantMapper {
   static toDomain(raw: TenantEntity): Tenant {
     const domainEntity = new Tenant();
+    domainEntity.domain = raw.domain;
+
     if (raw.regions) {
       domainEntity.regions = raw.regions.map((item) =>
         RegionMapper.toDomain(item),
@@ -79,6 +82,8 @@ export class TenantMapper {
 
   static toPersistence(domainEntity: Tenant): TenantEntity {
     const persistenceEntity = new TenantEntity();
+    persistenceEntity.domain = domainEntity.domain;
+
     if (domainEntity.regions) {
       persistenceEntity.regions = domainEntity.regions.map((item) =>
         RegionMapper.toPersistence(item),

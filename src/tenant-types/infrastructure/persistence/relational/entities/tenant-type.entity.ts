@@ -8,6 +8,7 @@ import {
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 export enum TenantTypeCode {
+  PLATFORM_OWNER = 'platform_owner',
   COMMUNITY_GROUP = 'community_group',
   RECYCLING_COMPANY = 'recycling_company',
   COLLECTION_AGENCY = 'collection_agency',

@@ -33,6 +33,14 @@ import {
 export class CreateTenantDto {
   @ApiProperty({
     required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  domain?: string | null;
+
+  @ApiProperty({
+    required: false,
     type: () => [RegionDto],
   })
   @IsOptional()
