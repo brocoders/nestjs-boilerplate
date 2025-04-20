@@ -1,3 +1,9 @@
+import { FilesService } from '../files/files.service';
+import { FileType } from '../files/domain/file';
+
+import { TenantTypesService } from '../tenant-types/tenant-types.service';
+import { TenantType } from '../tenant-types/domain/tenant-type';
+
 import { KycDetailsService } from '../kyc-details/kyc-details.service';
 import { KycDetails } from '../kyc-details/domain/kyc-details';
 
@@ -21,6 +27,10 @@ import { Tenant } from './domain/tenant';
 @Injectable()
 export class TenantsService {
   constructor(
+    private readonly fileService: FilesService,
+
+    private readonly tenantTypeService: TenantTypesService,
+
     @Inject(forwardRef(() => KycDetailsService))
     private readonly kycDetailsService: KycDetailsService,
 
@@ -34,6 +44,45 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+
+    let logo: FileType | null | undefined = undefined;
+
+    if (createTenantDto.logo) {
+      const logoObject = await this.fileService.findById(
+        createTenantDto.logo.id,
+      );
+      if (!logoObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            logo: 'notExists',
+          },
+        });
+      }
+      logo = logoObject;
+    } else if (createTenantDto.logo === null) {
+      logo = null;
+    }
+
+    let type: TenantType | null | undefined = undefined;
+
+    if (createTenantDto.type) {
+      const typeObject = await this.tenantTypeService.findById(
+        createTenantDto.type.id,
+      );
+      if (!typeObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            type: 'notExists',
+          },
+        });
+      }
+      type = typeObject;
+    } else if (createTenantDto.type === null) {
+      type = null;
+    }
+
     let kycSubmissions: KycDetails[] | null | undefined = undefined;
 
     if (createTenantDto.kycSubmissions) {
@@ -77,6 +126,20 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      schemaName: createTenantDto.schemaName,
+
+      logo,
+
+      address: createTenantDto.address,
+
+      primaryPhone: createTenantDto.primaryPhone,
+
+      primaryEmail: createTenantDto.primaryEmail,
+
+      name: createTenantDto.name,
+
+      type,
+
       kycSubmissions,
 
       users,
@@ -113,6 +176,45 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
+    let logo: FileType | null | undefined = undefined;
+
+    if (updateTenantDto.logo) {
+      const logoObject = await this.fileService.findById(
+        updateTenantDto.logo.id,
+      );
+      if (!logoObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            logo: 'notExists',
+          },
+        });
+      }
+      logo = logoObject;
+    } else if (updateTenantDto.logo === null) {
+      logo = null;
+    }
+
+    let type: TenantType | null | undefined = undefined;
+
+    if (updateTenantDto.type) {
+      const typeObject = await this.tenantTypeService.findById(
+        updateTenantDto.type.id,
+      );
+      if (!typeObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            type: 'notExists',
+          },
+        });
+      }
+      type = typeObject;
+    } else if (updateTenantDto.type === null) {
+      type = null;
+    }
+
     let kycSubmissions: KycDetails[] | null | undefined = undefined;
 
     if (updateTenantDto.kycSubmissions) {
@@ -156,6 +258,20 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      schemaName: updateTenantDto.schemaName,
+
+      logo,
+
+      address: updateTenantDto.address,
+
+      primaryPhone: updateTenantDto.primaryPhone,
+
+      primaryEmail: updateTenantDto.primaryEmail,
+
+      name: updateTenantDto.name,
+
+      type,
+
       kycSubmissions,
 
       users,

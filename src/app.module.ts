@@ -46,8 +46,11 @@ import { TenantsModule } from './tenants/tenants.module';
 
 import { KycDetailsModule } from './kyc-details/kyc-details.module';
 
+import { TenantTypesModule } from './tenant-types/tenant-types.module';
+
 @Module({
   imports: [
+    TenantTypesModule,
     KycDetailsModule,
     TenantsModule,
     ConfigModule.forRoot({

@@ -1,3 +1,5 @@
+import { FilesModule } from '../files/files.module';
+import { TenantTypesModule } from '../tenant-types/tenant-types.module';
 import { KycDetailsModule } from '../kyc-details/kyc-details.module';
 import { UsersModule } from '../users/users.module';
 import {
@@ -11,6 +13,10 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    FilesModule,
+
+    TenantTypesModule,
+
     forwardRef(() => KycDetailsModule),
 
     forwardRef(() => UsersModule),

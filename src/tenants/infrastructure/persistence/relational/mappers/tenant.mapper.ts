@@ -1,4 +1,9 @@
 import { Tenant } from '../../../../domain/tenant';
+
+import { FileMapper } from '../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
+
+import { TenantTypeMapper } from '../../../../../tenant-types/infrastructure/persistence/relational/mappers/tenant-type.mapper';
+
 import { KycDetailsMapper } from '../../../../../kyc-details/infrastructure/persistence/relational/mappers/kyc-details.mapper';
 
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
@@ -8,6 +13,28 @@ import { TenantEntity } from '../entities/tenant.entity';
 export class TenantMapper {
   static toDomain(raw: TenantEntity): Tenant {
     const domainEntity = new Tenant();
+    domainEntity.schemaName = raw.schemaName;
+
+    if (raw.logo) {
+      domainEntity.logo = FileMapper.toDomain(raw.logo);
+    } else if (raw.logo === null) {
+      domainEntity.logo = null;
+    }
+
+    domainEntity.address = raw.address;
+
+    domainEntity.primaryPhone = raw.primaryPhone;
+
+    domainEntity.primaryEmail = raw.primaryEmail;
+
+    domainEntity.name = raw.name;
+
+    if (raw.type) {
+      domainEntity.type = TenantTypeMapper.toDomain(raw.type);
+    } else if (raw.type === null) {
+      domainEntity.type = null;
+    }
+
     if (raw.kycSubmissions) {
       domainEntity.kycSubmissions = raw.kycSubmissions.map((item) =>
         KycDetailsMapper.toDomain(item),
@@ -33,6 +60,30 @@ export class TenantMapper {
 
   static toPersistence(domainEntity: Tenant): TenantEntity {
     const persistenceEntity = new TenantEntity();
+    persistenceEntity.schemaName = domainEntity.schemaName;
+
+    if (domainEntity.logo) {
+      persistenceEntity.logo = FileMapper.toPersistence(domainEntity.logo);
+    } else if (domainEntity.logo === null) {
+      persistenceEntity.logo = null;
+    }
+
+    persistenceEntity.address = domainEntity.address;
+
+    persistenceEntity.primaryPhone = domainEntity.primaryPhone;
+
+    persistenceEntity.primaryEmail = domainEntity.primaryEmail;
+
+    persistenceEntity.name = domainEntity.name;
+
+    if (domainEntity.type) {
+      persistenceEntity.type = TenantTypeMapper.toPersistence(
+        domainEntity.type,
+      );
+    } else if (domainEntity.type === null) {
+      persistenceEntity.type = null;
+    }
+
     if (domainEntity.kycSubmissions) {
       persistenceEntity.kycSubmissions = domainEntity.kycSubmissions.map(
         (item) => KycDetailsMapper.toPersistence(item),

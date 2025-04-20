@@ -1,8 +1,52 @@
+import { FileType } from '../../files/domain/file';
+import { TenantType } from '../../tenant-types/domain/tenant-type';
 import { KycDetails } from '../../kyc-details/domain/kyc-details';
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Tenant {
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  schemaName?: string | null;
+
+  @ApiProperty({
+    type: () => FileType,
+    nullable: true,
+  })
+  logo?: FileType | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  address?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  primaryPhone?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  primaryEmail?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  name?: string | null;
+
+  @ApiProperty({
+    type: () => TenantType,
+    nullable: true,
+  })
+  type?: TenantType | null;
+
   @ApiProperty({
     type: () => [KycDetails],
     nullable: true,
