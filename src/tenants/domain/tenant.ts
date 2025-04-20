@@ -1,3 +1,4 @@
+import { Region } from '../../regions/domain/region';
 import { Settings } from '../../settings/domain/settings';
 import { FileType } from '../../files/domain/file';
 import { TenantType } from '../../tenant-types/domain/tenant-type';
@@ -6,6 +7,12 @@ import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Tenant {
+  @ApiProperty({
+    type: () => [Region],
+    nullable: true,
+  })
+  regions?: Region[] | null;
+
   @ApiProperty({
     type: () => [Settings],
     nullable: true,

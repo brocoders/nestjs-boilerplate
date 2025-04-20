@@ -1,3 +1,4 @@
+import { RegionsModule } from '../regions/regions.module';
 import { SettingsModule } from '../settings/settings.module';
 import { FilesModule } from '../files/files.module';
 import { TenantTypesModule } from '../tenant-types/tenant-types.module';
@@ -14,6 +15,8 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    forwardRef(() => RegionsModule),
+
     forwardRef(() => SettingsModule),
 
     FilesModule,

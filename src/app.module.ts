@@ -50,8 +50,11 @@ import { TenantTypesModule } from './tenant-types/tenant-types.module';
 
 import { SettingsModule } from './settings/settings.module';
 
+import { RegionsModule } from './regions/regions.module';
+
 @Module({
   imports: [
+    RegionsModule,
     SettingsModule,
     TenantTypesModule,
     KycDetailsModule,

@@ -1,3 +1,6 @@
+import { RegionsService } from '../regions/regions.service';
+import { Region } from '../regions/domain/region';
+
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/domain/settings';
 
@@ -30,6 +33,9 @@ import { Tenant } from './domain/tenant';
 @Injectable()
 export class TenantsService {
   constructor(
+    @Inject(forwardRef(() => RegionsService))
+    private readonly regionService: RegionsService,
+
     @Inject(forwardRef(() => SettingsService))
     private readonly settingsService: SettingsService,
 
@@ -50,6 +56,25 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (createTenantDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        createTenantDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== createTenantDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (createTenantDto.regions === null) {
+      regions = null;
+    }
+
     let settings: Settings[] | null | undefined = undefined;
 
     if (createTenantDto.settings) {
@@ -150,6 +175,8 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      regions,
+
       settings,
 
       schemaName: createTenantDto.schemaName,
@@ -202,6 +229,25 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (updateTenantDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        updateTenantDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== updateTenantDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (updateTenantDto.regions === null) {
+      regions = null;
+    }
+
     let settings: Settings[] | null | undefined = undefined;
 
     if (updateTenantDto.settings) {
@@ -302,6 +348,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      regions,
+
       settings,
 
       schemaName: updateTenantDto.schemaName,

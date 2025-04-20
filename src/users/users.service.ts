@@ -1,3 +1,6 @@
+import { RegionsService } from '../regions/regions.service';
+import { Region } from '../regions/domain/region';
+
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/domain/settings';
 
@@ -33,6 +36,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly regionService: RegionsService,
+
     @Inject(forwardRef(() => SettingsService))
     private readonly settingsService: SettingsService,
 
@@ -49,6 +54,25 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (createUserDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        createUserDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== createUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (createUserDto.regions === null) {
+      regions = null;
+    }
+
     let settings: Settings[] | null | undefined = undefined;
 
     if (createUserDto.settings) {
@@ -188,6 +212,8 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      regions,
+
       settings,
 
       kycSubmissions,
@@ -253,6 +279,25 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (updateUserDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        updateUserDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== updateUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (updateUserDto.regions === null) {
+      regions = null;
+    }
+
     let settings: Settings[] | null | undefined = undefined;
 
     if (updateUserDto.settings) {
@@ -404,6 +449,8 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      regions,
+
       settings,
 
       kycSubmissions,

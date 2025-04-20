@@ -1,3 +1,5 @@
+import { RegionDto } from '../../regions/dto/region.dto';
+
 import { SettingsDto } from '../../settings/dto/settings.dto';
 
 import { KycDetailsDto } from '../../kyc-details/dto/kyc-details.dto';
@@ -26,6 +28,16 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: false,
+    type: () => [RegionDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RegionDto)
+  @IsArray()
+  regions?: RegionDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => [SettingsDto],

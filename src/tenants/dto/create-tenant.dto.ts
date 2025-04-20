@@ -1,3 +1,5 @@
+import { RegionDto } from '../../regions/dto/region.dto';
+
 import { SettingsDto } from '../../settings/dto/settings.dto';
 
 import { FileDto } from '../../files/dto/file.dto';
@@ -29,6 +31,16 @@ import {
 } from 'class-transformer';
 
 export class CreateTenantDto {
+  @ApiProperty({
+    required: false,
+    type: () => [RegionDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RegionDto)
+  @IsArray()
+  regions?: RegionDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => [SettingsDto],

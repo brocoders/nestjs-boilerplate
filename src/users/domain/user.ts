@@ -1,3 +1,4 @@
+import { Region } from '../../regions/domain/region';
 import { Settings } from '../../settings/domain/settings';
 import { KycDetails } from '../../kyc-details/domain/kyc-details';
 import { Tenant } from '../../tenants/domain/tenant';
@@ -16,6 +17,12 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 // </database-block>
 
 export class User {
+  @ApiProperty({
+    type: () => [Region],
+    nullable: true,
+  })
+  regions?: Region[] | null;
+
   @ApiProperty({
     type: () => [Settings],
     nullable: true,

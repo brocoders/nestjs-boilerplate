@@ -1,3 +1,4 @@
+import { RegionsModule } from '../regions/regions.module';
 import { SettingsModule } from '../settings/settings.module';
 import { KycDetailsModule } from '../kyc-details/kyc-details.module';
 import { TenantsModule } from '../tenants/tenants.module';
@@ -25,6 +26,8 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
 
 @Module({
   imports: [
+    RegionsModule,
+
     forwardRef(() => SettingsModule),
 
     forwardRef(() => KycDetailsModule),

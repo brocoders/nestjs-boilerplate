@@ -10,8 +10,23 @@ import { UserSeedModule } from './user/user-seed.module';
 import databaseConfig from '../../config/database.config';
 import appConfig from '../../../config/app.config';
 
+import { RegionSeedModule } from './region/region-seed.module';
+
+import { TenantSeedModule } from './tenant/tenant-seed.module';
+
+import { KycDetailSeedModule } from './kyc-detail/kyc-detail-seed.module';
+
+import { SettingsSeedModule } from './settings/settings-seed.module';
+
+import { TenantTypesSeedModule } from './tenant-types/tenant-types-seed.module';
+
 @Module({
   imports: [
+    TenantTypesSeedModule,
+    SettingsSeedModule,
+    KycDetailSeedModule,
+    TenantSeedModule,
+    RegionSeedModule,
     RoleSeedModule,
     StatusSeedModule,
     UserSeedModule,
