@@ -1,3 +1,5 @@
+import { KycDetailsEntity } from '../../../../../kyc-details/infrastructure/persistence/relational/entities/kyc-details.entity';
+
 import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 
 import {
@@ -11,6 +13,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -23,6 +26,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @OneToMany(() => KycDetailsEntity, (childEntity) => childEntity.user, {
+    eager: true,
+    nullable: true,
+  })
+  kycSubmissions?: KycDetailsEntity[] | null;
+
   @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.users, {
     eager: false,
     nullable: false,

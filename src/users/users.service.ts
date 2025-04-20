@@ -1,3 +1,6 @@
+import { KycDetailsService } from '../kyc-details/kyc-details.service';
+import { KycDetails } from '../kyc-details/domain/kyc-details';
+
 import { TenantsService } from '../tenants/tenants.service';
 import { Tenant } from '../tenants/domain/tenant';
 
@@ -27,6 +30,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(forwardRef(() => KycDetailsService))
+    private readonly kycDetailsService: KycDetailsService,
+
     @Inject(forwardRef(() => TenantsService))
     private readonly tenantService: TenantsService,
 
@@ -37,6 +43,27 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+    let kycSubmissions: KycDetails[] | null | undefined = undefined;
+
+    if (createUserDto.kycSubmissions) {
+      const kycSubmissionsObjects = await this.kycDetailsService.findByIds(
+        createUserDto.kycSubmissions.map((entity) => entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !== createUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: 'notExists',
+          },
+        });
+      }
+      kycSubmissions = kycSubmissionsObjects;
+    } else if (createUserDto.kycSubmissions === null) {
+      kycSubmissions = null;
+    }
+
     const tenantObject = await this.tenantService.findById(
       createUserDto.tenant.id,
     );
@@ -136,6 +163,8 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      kycSubmissions,
+
       tenant,
 
       firstName: createUserDto.firstName,
@@ -197,6 +226,27 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+    let kycSubmissions: KycDetails[] | null | undefined = undefined;
+
+    if (updateUserDto.kycSubmissions) {
+      const kycSubmissionsObjects = await this.kycDetailsService.findByIds(
+        updateUserDto.kycSubmissions.map((entity) => entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !== updateUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: 'notExists',
+          },
+        });
+      }
+      kycSubmissions = kycSubmissionsObjects;
+    } else if (updateUserDto.kycSubmissions === null) {
+      kycSubmissions = null;
+    }
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateUserDto.tenant) {
@@ -308,6 +358,8 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      kycSubmissions,
+
       tenant,
 
       firstName: updateUserDto.firstName,

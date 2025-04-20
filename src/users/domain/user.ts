@@ -1,3 +1,4 @@
+import { KycDetails } from '../../kyc-details/domain/kyc-details';
 import { Tenant } from '../../tenants/domain/tenant';
 import { Exclude, Expose } from 'class-transformer';
 import { FileType } from '../../files/domain/file';
@@ -14,6 +15,12 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 // </database-block>
 
 export class User {
+  @ApiProperty({
+    type: () => [KycDetails],
+    nullable: true,
+  })
+  kycSubmissions?: KycDetails[] | null;
+
   @ApiProperty({
     type: () => Tenant,
     nullable: false,

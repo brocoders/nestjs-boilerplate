@@ -1,3 +1,5 @@
+import { KycDetailsEntity } from '../../../../../kyc-details/infrastructure/persistence/relational/entities/kyc-details.entity';
+
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 
 import {
@@ -14,6 +16,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @OneToMany(() => KycDetailsEntity, (childEntity) => childEntity.tenant, {
+    eager: true,
+    nullable: true,
+  })
+  kycSubmissions?: KycDetailsEntity[] | null;
+
   @OneToMany(() => UserEntity, (childEntity) => childEntity.tenant, {
     eager: true,
     nullable: true,

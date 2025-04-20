@@ -1,3 +1,4 @@
+import { KycDetailsModule } from '../kyc-details/kyc-details.module';
 import { UsersModule } from '../users/users.module';
 import {
   // common
@@ -10,6 +11,8 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    forwardRef(() => KycDetailsModule),
+
     forwardRef(() => UsersModule),
 
     // import modules, etc.

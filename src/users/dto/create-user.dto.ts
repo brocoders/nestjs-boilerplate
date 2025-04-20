@@ -1,3 +1,5 @@
+import { KycDetailsDto } from '../../kyc-details/dto/kyc-details.dto';
+
 import { TenantDto } from '../../tenants/dto/tenant.dto';
 
 import {
@@ -14,6 +16,7 @@ import {
   MinLength,
   ValidateNested,
   IsNotEmptyObject,
+  IsArray,
 } from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
 import { RoleDto } from '../../roles/dto/role.dto';
@@ -21,6 +24,16 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: false,
+    type: () => [KycDetailsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => KycDetailsDto)
+  @IsArray()
+  kycSubmissions?: KycDetailsDto[] | null;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,

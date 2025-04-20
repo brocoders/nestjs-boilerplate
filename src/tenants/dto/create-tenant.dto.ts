@@ -1,3 +1,5 @@
+import { KycDetailsDto } from '../../kyc-details/dto/kyc-details.dto';
+
 import { UserDto } from '../../users/dto/user.dto';
 
 import {
@@ -19,6 +21,16 @@ import {
 } from 'class-transformer';
 
 export class CreateTenantDto {
+  @ApiProperty({
+    required: false,
+    type: () => [KycDetailsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => KycDetailsDto)
+  @IsArray()
+  kycSubmissions?: KycDetailsDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => [UserDto],

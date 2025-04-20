@@ -44,8 +44,11 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
 
 import { TenantsModule } from './tenants/tenants.module';
 
+import { KycDetailsModule } from './kyc-details/kyc-details.module';
+
 @Module({
   imports: [
+    KycDetailsModule,
     TenantsModule,
     ConfigModule.forRoot({
       isGlobal: true,
