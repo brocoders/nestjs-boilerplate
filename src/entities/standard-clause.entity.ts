@@ -1,41 +1,41 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Entity('standard_clauses')
+@Entity()
 export class StandardClause {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @ApiProperty()
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @ApiProperty()
   @Column()
   name: string;
 
+  @ApiProperty()
   @Column()
   type: string;
 
-  @Column({ type: 'text' })
+  @ApiProperty()
+  @Column('text')
   text: string;
 
+  @ApiProperty()
   @Column({ nullable: true })
-  jurisdiction: string;
+  jurisdiction?: string;
 
+  @ApiProperty()
   @Column({ nullable: true })
-  version: string;
+  version?: string;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
+  @ApiProperty()
+  @Column('text', { nullable: true })
+  allowedDeviations?: string;
 
-  @Column({ type: 'jsonb', nullable: true })
-  allowedDeviations: {
-    type: string;
-    description: string;
-    severity: 'LOW' | 'MEDIUM' | 'HIGH';
-  }[];
-
-  @Column({ default: true })
-  isActive: boolean;
-
-  @CreateDateColumn()
+  @ApiProperty()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @ApiProperty()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 } 
