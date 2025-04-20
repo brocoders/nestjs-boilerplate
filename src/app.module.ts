@@ -48,8 +48,11 @@ import { KycDetailsModule } from './kyc-details/kyc-details.module';
 
 import { TenantTypesModule } from './tenant-types/tenant-types.module';
 
+import { SettingsModule } from './settings/settings.module';
+
 @Module({
   imports: [
+    SettingsModule,
     TenantTypesModule,
     KycDetailsModule,
     TenantsModule,

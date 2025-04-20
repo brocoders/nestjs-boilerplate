@@ -1,3 +1,6 @@
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/domain/settings';
+
 import { KycDetailsService } from '../kyc-details/kyc-details.service';
 import { KycDetails } from '../kyc-details/domain/kyc-details';
 
@@ -30,6 +33,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(forwardRef(() => SettingsService))
+    private readonly settingsService: SettingsService,
+
     @Inject(forwardRef(() => KycDetailsService))
     private readonly kycDetailsService: KycDetailsService,
 
@@ -43,6 +49,25 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (createUserDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        createUserDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== createUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (createUserDto.settings === null) {
+      settings = null;
+    }
+
     let kycSubmissions: KycDetails[] | null | undefined = undefined;
 
     if (createUserDto.kycSubmissions) {
@@ -163,6 +188,8 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      settings,
+
       kycSubmissions,
 
       tenant,
@@ -226,6 +253,25 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (updateUserDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        updateUserDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== updateUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (updateUserDto.settings === null) {
+      settings = null;
+    }
+
     let kycSubmissions: KycDetails[] | null | undefined = undefined;
 
     if (updateUserDto.kycSubmissions) {
@@ -358,6 +404,8 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      settings,
+
       kycSubmissions,
 
       tenant,

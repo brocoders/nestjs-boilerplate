@@ -1,4 +1,5 @@
 import { Tenant } from '../../../../domain/tenant';
+import { SettingsMapper } from '../../../../../settings/infrastructure/persistence/relational/mappers/settings.mapper';
 
 import { FileMapper } from '../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
 
@@ -13,6 +14,14 @@ import { TenantEntity } from '../entities/tenant.entity';
 export class TenantMapper {
   static toDomain(raw: TenantEntity): Tenant {
     const domainEntity = new Tenant();
+    if (raw.settings) {
+      domainEntity.settings = raw.settings.map((item) =>
+        SettingsMapper.toDomain(item),
+      );
+    } else if (raw.settings === null) {
+      domainEntity.settings = null;
+    }
+
     domainEntity.schemaName = raw.schemaName;
 
     if (raw.logo) {
@@ -60,6 +69,14 @@ export class TenantMapper {
 
   static toPersistence(domainEntity: Tenant): TenantEntity {
     const persistenceEntity = new TenantEntity();
+    if (domainEntity.settings) {
+      persistenceEntity.settings = domainEntity.settings.map((item) =>
+        SettingsMapper.toPersistence(item),
+      );
+    } else if (domainEntity.settings === null) {
+      persistenceEntity.settings = null;
+    }
+
     persistenceEntity.schemaName = domainEntity.schemaName;
 
     if (domainEntity.logo) {

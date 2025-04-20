@@ -1,3 +1,5 @@
+import { SettingsDto } from '../../settings/dto/settings.dto';
+
 import { KycDetailsDto } from '../../kyc-details/dto/kyc-details.dto';
 
 import { TenantDto } from '../../tenants/dto/tenant.dto';
@@ -24,6 +26,16 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: false,
+    type: () => [SettingsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SettingsDto)
+  @IsArray()
+  settings?: SettingsDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => [KycDetailsDto],

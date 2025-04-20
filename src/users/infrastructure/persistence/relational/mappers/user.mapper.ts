@@ -1,4 +1,6 @@
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
+import { SettingsMapper } from '../../../../../settings/infrastructure/persistence/relational/mappers/settings.mapper';
+
 import { KycDetailsMapper } from '../../../../../kyc-details/infrastructure/persistence/relational/mappers/kyc-details.mapper';
 
 import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
@@ -12,6 +14,14 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    if (raw.settings) {
+      domainEntity.settings = raw.settings.map((item) =>
+        SettingsMapper.toDomain(item),
+      );
+    } else if (raw.settings === null) {
+      domainEntity.settings = null;
+    }
+
     if (raw.kycSubmissions) {
       domainEntity.kycSubmissions = raw.kycSubmissions.map((item) =>
         KycDetailsMapper.toDomain(item),
@@ -68,6 +78,14 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    if (domainEntity.settings) {
+      persistenceEntity.settings = domainEntity.settings.map((item) =>
+        SettingsMapper.toPersistence(item),
+      );
+    } else if (domainEntity.settings === null) {
+      persistenceEntity.settings = null;
+    }
+
     if (domainEntity.kycSubmissions) {
       persistenceEntity.kycSubmissions = domainEntity.kycSubmissions.map(
         (item) => KycDetailsMapper.toPersistence(item),

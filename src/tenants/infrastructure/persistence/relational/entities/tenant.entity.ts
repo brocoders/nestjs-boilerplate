@@ -1,3 +1,5 @@
+import { SettingsEntity } from '../../../../../settings/infrastructure/persistence/relational/entities/settings.entity';
+
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
 
 import { TenantTypeEntity } from '../../../../../tenant-types/infrastructure/persistence/relational/entities/tenant-type.entity';
@@ -23,6 +25,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @OneToMany(() => SettingsEntity, (childEntity) => childEntity.tenant, {
+    eager: true,
+    nullable: true,
+  })
+  settings?: SettingsEntity[] | null;
+
   @Column({
     nullable: true,
     type: String,

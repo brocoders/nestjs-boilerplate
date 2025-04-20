@@ -1,3 +1,6 @@
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/domain/settings';
+
 import { FilesService } from '../files/files.service';
 import { FileType } from '../files/domain/file';
 
@@ -27,6 +30,9 @@ import { Tenant } from './domain/tenant';
 @Injectable()
 export class TenantsService {
   constructor(
+    @Inject(forwardRef(() => SettingsService))
+    private readonly settingsService: SettingsService,
+
     private readonly fileService: FilesService,
 
     private readonly tenantTypeService: TenantTypesService,
@@ -44,6 +50,24 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (createTenantDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        createTenantDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== createTenantDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (createTenantDto.settings === null) {
+      settings = null;
+    }
 
     let logo: FileType | null | undefined = undefined;
 
@@ -126,6 +150,8 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      settings,
+
       schemaName: createTenantDto.schemaName,
 
       logo,
@@ -176,6 +202,24 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (updateTenantDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        updateTenantDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== updateTenantDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (updateTenantDto.settings === null) {
+      settings = null;
+    }
 
     let logo: FileType | null | undefined = undefined;
 
@@ -258,6 +302,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      settings,
+
       schemaName: updateTenantDto.schemaName,
 
       logo,

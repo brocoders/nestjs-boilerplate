@@ -1,3 +1,5 @@
+import { SettingsDto } from '../../settings/dto/settings.dto';
+
 import { FileDto } from '../../files/dto/file.dto';
 
 import { TenantTypeDto } from '../../tenant-types/dto/tenant-type.dto';
@@ -27,6 +29,16 @@ import {
 } from 'class-transformer';
 
 export class CreateTenantDto {
+  @ApiProperty({
+    required: false,
+    type: () => [SettingsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SettingsDto)
+  @IsArray()
+  settings?: SettingsDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => String,

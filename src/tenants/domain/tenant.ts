@@ -1,3 +1,4 @@
+import { Settings } from '../../settings/domain/settings';
 import { FileType } from '../../files/domain/file';
 import { TenantType } from '../../tenant-types/domain/tenant-type';
 import { KycDetails } from '../../kyc-details/domain/kyc-details';
@@ -5,6 +6,12 @@ import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Tenant {
+  @ApiProperty({
+    type: () => [Settings],
+    nullable: true,
+  })
+  settings?: Settings[] | null;
+
   @ApiProperty({
     type: () => String,
     nullable: true,
