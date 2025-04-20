@@ -1,6 +1,8 @@
+import { UsersModule } from '../users/users.module';
 import {
   // common
   Module,
+  forwardRef,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { TenantsController } from './tenants.controller';
@@ -8,6 +10,8 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    forwardRef(() => UsersModule),
+
     // import modules, etc.
     RelationalTenantPersistenceModule,
   ],

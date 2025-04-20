@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import {
   Column,
   CreateDateColumn,
@@ -21,6 +23,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.users, {
+    eager: false,
+    nullable: false,
+  })
+  tenant: TenantEntity;
+
   @PrimaryGeneratedColumn()
   id: number;
 

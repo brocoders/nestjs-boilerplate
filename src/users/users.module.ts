@@ -1,6 +1,8 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import {
   // common
   Module,
+  forwardRef,
 } from '@nestjs/common';
 
 import { UsersController } from './users.controller';
@@ -21,6 +23,8 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
 
 @Module({
   imports: [
+    forwardRef(() => TenantsModule),
+
     // import modules, etc.
     infrastructurePersistenceModule,
     FilesModule,

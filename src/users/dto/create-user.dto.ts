@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import {
   // decorators here
   Transform,
@@ -10,6 +12,8 @@ import {
   IsNotEmpty,
   IsOptional,
   MinLength,
+  ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
 import { RoleDto } from '../../roles/dto/role.dto';
@@ -17,6 +21,15 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({ example: 'test1@example.com', type: String })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()

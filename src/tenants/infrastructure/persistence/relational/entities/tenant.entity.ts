@@ -1,9 +1,12 @@
+import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+
 import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   Column,
+  OneToMany,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -11,6 +14,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @OneToMany(() => UserEntity, (childEntity) => childEntity.tenant, {
+    eager: true,
+    nullable: true,
+  })
+  users?: UserEntity[] | null;
+
   @Column({
     nullable: false,
     type: Boolean,

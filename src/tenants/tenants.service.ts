@@ -1,6 +1,13 @@
+import { UsersService } from '../users/users.service';
+import { User } from '../users/domain/user';
+
 import {
   // common
   Injectable,
+  HttpStatus,
+  UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
@@ -11,6 +18,9 @@ import { Tenant } from './domain/tenant';
 @Injectable()
 export class TenantsService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
+    private readonly userService: UsersService,
+
     // Dependencies here
     private readonly tenantRepository: TenantRepository,
   ) {}
@@ -18,10 +28,30 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+    let users: User[] | null | undefined = undefined;
+
+    if (createTenantDto.users) {
+      const usersObjects = await this.userService.findByIds(
+        createTenantDto.users.map((entity) => entity.id),
+      );
+      if (usersObjects.length !== createTenantDto.users.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            users: 'notExists',
+          },
+        });
+      }
+      users = usersObjects;
+    } else if (createTenantDto.users === null) {
+      users = null;
+    }
 
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      users,
+
       isActive: createTenantDto.isActive,
     });
   }
@@ -54,10 +84,30 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let users: User[] | null | undefined = undefined;
+
+    if (updateTenantDto.users) {
+      const usersObjects = await this.userService.findByIds(
+        updateTenantDto.users.map((entity) => entity.id),
+      );
+      if (usersObjects.length !== updateTenantDto.users.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            users: 'notExists',
+          },
+        });
+      }
+      users = usersObjects;
+    } else if (updateTenantDto.users === null) {
+      users = null;
+    }
 
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      users,
+
       isActive: updateTenantDto.isActive,
     });
   }
