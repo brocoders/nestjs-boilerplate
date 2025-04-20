@@ -17,6 +17,7 @@ import { UpdateKycDetailsDto } from './dto/update-kyc-details.dto';
 import { KycDetailsRepository } from './infrastructure/persistence/kyc-details.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { KycDetails } from './domain/kyc-details';
+import { KycStatus } from './infrastructure/persistence/relational/entities/kyc-details.entity';
 
 @Injectable()
 export class KycDetailsService {
@@ -34,6 +35,7 @@ export class KycDetailsService {
   async create(createKycDetailsDto: CreateKycDetailsDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createKycDetailsDto.tenant.id,
     );
@@ -63,6 +65,22 @@ export class KycDetailsService {
     return this.kycDetailsRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      verifiedBy: createKycDetailsDto.verifiedBy,
+
+      verifiedAt: createKycDetailsDto.verifiedAt,
+
+      submittedAt: createKycDetailsDto.submittedAt,
+
+      status: createKycDetailsDto.status ?? KycStatus.PENDING,
+
+      documentData: createKycDetailsDto.documentData,
+
+      documentNumber: createKycDetailsDto.documentNumber,
+
+      documentType: createKycDetailsDto.documentType,
+
+      subjectType: createKycDetailsDto.subjectType,
+
       tenant,
 
       user,
@@ -97,6 +115,7 @@ export class KycDetailsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateKycDetailsDto.tenant) {
@@ -134,6 +153,22 @@ export class KycDetailsService {
     return this.kycDetailsRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      verifiedBy: updateKycDetailsDto.verifiedBy,
+
+      verifiedAt: updateKycDetailsDto.verifiedAt,
+
+      submittedAt: updateKycDetailsDto.submittedAt,
+
+      status: updateKycDetailsDto.status,
+
+      documentData: updateKycDetailsDto.documentData,
+
+      documentNumber: updateKycDetailsDto.documentNumber,
+
+      documentType: updateKycDetailsDto.documentType,
+
+      subjectType: updateKycDetailsDto.subjectType,
+
       tenant,
 
       user,
