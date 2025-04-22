@@ -23,12 +23,14 @@ import { TenantTypesSeedModule } from './tenant-types/tenant-types-seed.module';
 @Module({
   imports: [
     TenantTypesSeedModule,
-    SettingsSeedModule,
-    KycDetailSeedModule,
     TenantSeedModule,
-    RegionSeedModule,
     RoleSeedModule,
     StatusSeedModule,
+    RegionSeedModule,
+    KycDetailSeedModule,
+    // SettingsSeedModule,
+    //
+
     UserSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,

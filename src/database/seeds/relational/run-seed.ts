@@ -14,11 +14,11 @@ const runSeed = async () => {
 
   // run
   await app.get(TenantTypesSeedService).run();
-  // await app.get(TenantSeedService).run();
-  // await app.get(RoleSeedService).run();
-  // await app.get(StatusSeedService).run();
-  // await app.get(RegionSeedService).run();
-  // await app.get(UserSeedService).run();
+  await app.get(TenantSeedService).run();
+  await app.get(RoleSeedService).run();
+  await app.get(StatusSeedService).run();
+  await app.get(RegionSeedService).run();
+  await app.get(UserSeedService).run();
   // await app.get(KycDetailSeedService).run();
 
   // await app.get(SettingsSeedService).run();

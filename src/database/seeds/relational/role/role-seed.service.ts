@@ -40,7 +40,8 @@ export class RoleSeedService {
         if (!existingRole) {
           await this.roleRepository.save(
             this.roleRepository.create({
-              ...roleDef,
+              id: roleDef.code,
+              name: roleDef.name,
               tenant,
             }),
           );

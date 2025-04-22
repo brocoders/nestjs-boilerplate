@@ -6,7 +6,7 @@ export class LatestChanges1745163536016 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // First enable PostGIS extension
     //TODO
-    //await queryRunner.query('CREATE EXTENSION IF NOT EXISTS postgis');
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS postgis');
 
     // Then proceed with other changes
     await queryRunner.query(
@@ -56,12 +56,9 @@ export class LatestChanges1745163536016 implements MigrationInterface {
     );
     await queryRunner.query(`ALTER TABLE "region" DROP COLUMN "boundary"`);
     //TODO
-    // await queryRunner.query(
-    //   `ALTER TABLE "region" ADD "boundary" geometry(Polygon,4326)`,
-    // );
-    await queryRunner.query(`
-      ALTER TABLE "region" ADD "boundary" jsonb
-    `);
+    await queryRunner.query(
+      `ALTER TABLE "region" ADD "boundary" geometry(Polygon,4326)`,
+    );
     await queryRunner.query(
       `ALTER TABLE "kyc_details" ADD CONSTRAINT "FK_78f4992112d203106339e1b20e6" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );

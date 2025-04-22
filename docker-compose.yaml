@@ -1,6 +1,7 @@
 services:
   postgres:
-    image: postgres:17.4-alpine
+    # image: postgres:17.4-alpine
+    image: postgis/postgis:latest # Official PostGIS + PostgreSQL image
     ports:
       - ${DATABASE_PORT}:5432
     volumes:

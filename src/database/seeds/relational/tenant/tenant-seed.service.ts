@@ -20,12 +20,10 @@ export class TenantSeedService {
     for (const tenantType of tenantTypes) {
       // Check if tenant already exists for this type
       const existingTenant = await this.tenantRepository.findOne({
-        where: { type: { id: tenantType.id } },
+        where: { type: { name: tenantType.id } },
       });
-
       if (!existingTenant) {
         const tenantName = `${tenantType.name} Tenant`;
-
         await this.tenantRepository.save(
           this.tenantRepository.create({
             name: tenantName,

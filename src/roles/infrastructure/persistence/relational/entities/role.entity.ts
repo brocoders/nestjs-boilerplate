@@ -7,14 +7,13 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'role',
 })
 export class RoleEntity extends EntityRelationalHelper {
+  @PrimaryColumn()
+  id: number;
   @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.roles, {
     eager: false,
     nullable: false,
   })
   tenant: TenantEntity;
-
-  @PrimaryColumn()
-  id: number;
 
   @Column()
   name?: string;

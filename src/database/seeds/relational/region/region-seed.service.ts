@@ -22,7 +22,6 @@ export class RegionSeedService {
       this.logger.warn('No tenants found - skipping region seeding');
       return;
     }
-
     const regionsToCreate = tenants.map((tenant) =>
       this.createRegionForTenant(tenant),
     );

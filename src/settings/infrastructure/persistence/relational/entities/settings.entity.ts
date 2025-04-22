@@ -75,6 +75,7 @@ export enum SettingsType {
   DASHBOARD = 'dashboard',
 
   // System Operations
+  SYSTEM = 'system',
   MAINTENANCE = 'maintenance',
   BACKUP = 'backup',
   SCALING = 'scaling',
