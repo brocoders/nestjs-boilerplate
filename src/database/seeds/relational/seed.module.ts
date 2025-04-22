@@ -28,7 +28,7 @@ import { TenantTypesSeedModule } from './tenant-types/tenant-types-seed.module';
     StatusSeedModule,
     RegionSeedModule,
     KycDetailSeedModule,
-    // SettingsSeedModule,
+    SettingsSeedModule,
     //
 
     UserSeedModule,
