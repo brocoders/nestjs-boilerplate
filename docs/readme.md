@@ -8,7 +8,7 @@
 - [Installing and Running](installing-and-running.md)
 - [Architecture](architecture.md)
 - [Command Line Interface](cli.md)
-- [Working with database](database.md)
+- [Database](database.md)
 - [Auth](auth.md)
 - [Serialization](serialization.md)
 - [File uploading](file-uploading.md)
