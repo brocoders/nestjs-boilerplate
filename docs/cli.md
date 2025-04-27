@@ -89,4 +89,4 @@ npm run add:property:to-all-db
 
 Previous: [Architecture](architecture.md)
 
-Next: [Working with database](database.md)
+Next: [Database](database.md)

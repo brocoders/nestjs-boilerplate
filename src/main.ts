@@ -45,6 +45,25 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   await bootstrapOpenTelemetry();
   await APIDocs.setup(app);
+
+  const options = new DocumentBuilder()
+    .setTitle('API')
+    .setDescription('API docs')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .addGlobalParameters({
+      in: 'header',
+      required: false,
+      name: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
+      schema: {
+        example: 'en',
+      },
+    })
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('docs', app, document);
+
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
   // Initialize and start RabbitMQ consumers
