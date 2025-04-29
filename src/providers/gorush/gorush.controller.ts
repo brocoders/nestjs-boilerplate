@@ -12,6 +12,8 @@ import { GorushService } from './gorush.service';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ServiceEnabledGuard } from 'src/common/guards/service-enabled.guard';
+import { SetMetadata } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -42,7 +44,8 @@ import { GORUSH_SDK_VERSION } from './types/gorush-const.type';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard, ServiceEnabledGuard)
+@SetMetadata('configPath', 'gorush.enable')
 @ApiTags('GoRush')
 @Controller({
   path: 'gorush',
@@ -67,6 +70,10 @@ export class GorushController {
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
   })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('/stats/core')
   async getGlobalStats(): Promise<GoRushCoreStatusResponseDto> {
@@ -89,6 +96,10 @@ export class GorushController {
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
   })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('/stats/service')
   async getAppStats(): Promise<GoRushAppStatusResponseDto> {
@@ -110,6 +121,10 @@ export class GorushController {
   @ApiResponse({
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
+  })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
   })
   @HttpCode(HttpStatus.OK)
   @Get('/stats/system')
@@ -141,6 +156,10 @@ export class GorushController {
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
   })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
+  })
   @HttpCode(HttpStatus.CREATED)
   @Post('/push')
   async sendPushNotification(
@@ -164,6 +183,10 @@ export class GorushController {
   @ApiResponse({
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
+  })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
   })
   @ApiQuery({
     name: 'json',
@@ -192,6 +215,10 @@ export class GorushController {
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
   })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('healthz')
   async checkHealth(): Promise<any> {
@@ -213,6 +240,10 @@ export class GorushController {
   @ApiResponse({
     status: HttpStatus.GATEWAY_TIMEOUT,
     description: 'Gorush service is unreachable',
+  })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Gorush service is unavailable',
   })
   @HttpCode(HttpStatus.OK)
   @Get('version')

@@ -14,7 +14,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { PlatformType } from '../types/devices-enum.type';
 import { getEnumErrorMessage } from '../../utils/helpers/enum.helper';
 
-export class CreateDeviceDto {
+export class BaseCreateDeviceDto {
   @ApiProperty({ default: false })
   @IsBoolean()
   @IsOptional()
@@ -52,7 +52,6 @@ export class CreateDeviceDto {
   @IsEnum(PlatformType, {
     message: getEnumErrorMessage(PlatformType, 'Platform'),
   })
-  @IsString()
   platform: string;
 
   @ApiProperty({
@@ -61,7 +60,9 @@ export class CreateDeviceDto {
   })
   @IsString()
   deviceToken: string;
+}
 
+export class CreateDeviceDto extends BaseCreateDeviceDto {
   @ApiProperty({
     required: true,
     type: () => UserDto,
@@ -71,3 +72,5 @@ export class CreateDeviceDto {
   @IsNotEmptyObject()
   user: UserDto;
 }
+
+export class CreateDeviceUserDto extends BaseCreateDeviceDto {}

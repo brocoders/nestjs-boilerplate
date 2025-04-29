@@ -4,7 +4,7 @@ import { User } from '../users/domain/user';
 import { HttpStatus, UnprocessableEntityException } from '@nestjs/common';
 
 import { Injectable } from '@nestjs/common';
-import { CreateDeviceDto } from './dto/create-device.dto';
+import { CreateDeviceDto, CreateDeviceUserDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { DeviceRepository } from './infrastructure/persistence/device.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
@@ -54,6 +54,37 @@ export class DevicesService {
 
       deviceToken: createDeviceDto.deviceToken,
 
+      user,
+    });
+  }
+
+  async createByUser(
+    createDeviceUserDto: CreateDeviceUserDto,
+    userJwtPayload: JwtPayloadType,
+  ) {
+    // Do not remove comment below.
+    // <creating-property-by-user />
+
+    const userObject = await this.userService.findById(userJwtPayload.id);
+    if (!userObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: 'UserNotExists',
+        },
+      });
+    }
+    const user = userObject;
+
+    return this.deviceRepository.create({
+      // Do not remove comment below.
+      // <creating-property-payload-by-user />
+      isActive: createDeviceUserDto.isActive,
+      model: createDeviceUserDto.model,
+      appVersion: createDeviceUserDto.appVersion,
+      osVersion: createDeviceUserDto.osVersion,
+      platform: createDeviceUserDto.platform,
+      deviceToken: createDeviceUserDto.deviceToken,
       user,
     });
   }

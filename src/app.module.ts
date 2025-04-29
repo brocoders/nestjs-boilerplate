@@ -23,16 +23,12 @@ import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
 import veroConfig from './auth-vero/config/vero.config';
-import { SecretManagerModule } from './secret-manager/secret.module';
+import { SecretManagerModule } from './common/secret/secret.module';
 import { AuthVeroModule } from './auth-vero/auth-vero.module';
 import { GorushModule } from './providers/gorush/gorush.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import gorushConfig from './providers/gorush/config/gorush.config';
 import rabbitmqConfig from './communication/rabbitMQ/config/rabbitmq.config';
-import kafkaConfig from './communication/kafka/config/kafka.config';
-import { KafkaService } from './communication/kafka/kafak.service';
-import { LoggerModule } from './shared/logger/logger.module';
-import minioConfig from './file-manager/config/minio.config';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -42,9 +38,9 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
 });
 
 import { NotificationsModule } from './notifications/notifications.module';
-
 import { DevicesModule } from './devices/devices.module';
-import { MinioModule } from './file-manager/minio.module';
+import { MinioModule } from './providers/minio/minio.module';
+import minioConfig from './providers/minio/config/minio.config';
 
 @Module({
   imports: [
@@ -63,7 +59,6 @@ import { MinioModule } from './file-manager/minio.module';
         veroConfig,
         gorushConfig,
         rabbitmqConfig,
-        kafkaConfig,
         minioConfig,
       ],
       envFilePath: ['.env'],
@@ -104,9 +99,8 @@ import { MinioModule } from './file-manager/minio.module';
     AuthVeroModule,
     SecretManagerModule,
     GorushModule,
-    LoggerModule,
     MinioModule,
   ],
-  providers: [RabbitMQService, KafkaService],
+  providers: [RabbitMQService],
 })
 export class AppModule {}

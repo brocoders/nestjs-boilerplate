@@ -1,9 +1,9 @@
 import {
   Injectable,
   Inject,
-  Logger,
   HttpStatus,
   SerializeOptions,
+  OnModuleInit,
 } from '@nestjs/common';
 import {
   GoRushCoreStatusResponseDto,
@@ -23,44 +23,48 @@ import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '../../config/config.type';
 import { ApiFunction } from 'src/api-gateway/types/api-gateway.type';
 import { ApiGatewayService } from '../../api-gateway/api-gateway.service';
-import { GORUSH_DEFAULT_ENABLE } from './types/gorush-const.type';
 import { parseMetrics } from './gorush.helper';
-import { stringifyJson } from '../../logger/logger.helper';
+import { stringifyJson } from '../../common/logger/logger.helper';
 import {
   mapPushNotificationRequest,
   mapPushNotificationResponse,
 } from './infrastructure/persistence/relational/mappers/gorush.mapper';
+import { BaseToggleableService } from 'src/common/base/base-toggleable.service';
 
 @SerializeOptions({
   groups: ['admin'],
 })
 @Injectable()
-export class GorushService {
-  private readonly logger = new Logger(GorushService.name);
+export class GorushService
+  extends BaseToggleableService
+  implements OnModuleInit
+{
   private apiClient: Record<string, ApiFunction> = {};
-  private isEnabled: boolean = false; // Flag to enable/disable service
 
   constructor(
     private readonly apiSdkService: ApiGatewayService,
     private readonly configService: ConfigService<AllConfigType>,
     @Inject('API_GATEWAY_GORUSH') apiClient?: Record<string, ApiFunction>,
   ) {
+    super(
+      GorushService.name,
+      configService.get('gorush.enable', { infer: true }) ?? false,
+    );
+
     if (apiClient) {
       this.apiClient = apiClient;
     }
   }
 
   async onModuleInit() {
-    this.isEnabled =
-      this.configService.get<boolean>('gorush.enabled', { infer: true }) ??
-      GORUSH_DEFAULT_ENABLE;
-
     if (!this.isEnabled) {
-      this.logger.warn('Gorush is disabled. Skipping initialization.');
+      this.logger.warn('Gorush service is DISABLED. Skipping initialization.');
       return;
     }
 
-    this.logger.log('Gorush service is enabled.');
+    this.logger.log(
+      'Gorush service is ENABLED. Proceeding with initialization.',
+    );
 
     if (this.apiClient) {
       this.logger.log('Using injected API client for Gorush.');

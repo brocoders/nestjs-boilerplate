@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
+import { CreateDeviceUserDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import {
   ApiBadRequestResponse,
@@ -115,6 +116,17 @@ export class DevicesController {
   })
   remove(@Param('id') id: string) {
     return this.devicesService.remove(id);
+  }
+
+  @Post('me')
+  @ApiCreatedResponse({
+    type: Device,
+  })
+  async createByUser(
+    @Request() request,
+    @Body() createDeviceUserDto: CreateDeviceUserDto,
+  ) {
+    return this.devicesService.createByUser(createDeviceUserDto, request.user);
   }
 
   @Get('me')

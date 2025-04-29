@@ -8,7 +8,7 @@ import { MailConfig } from '../mail/config/mail-config.type';
 import { VeroConfig } from 'src/auth-vero/config/vero-config.type';
 import { GorushConfig } from 'src/providers/gorush/config/gorush-config.type';
 import { RabbitMQConfig } from 'src/communication/rabbitMQ/config/rabbitmq-config.type';
-import { KafkaConfig } from 'src/communication/kafka/config/kafka-config.type';
+import { MinIOConfig } from '../providers/minio/config/minio-config.type';
 
 export type AllConfigType = {
   app: AppConfig;
@@ -21,5 +21,5 @@ export type AllConfigType = {
   vero: VeroConfig;
   gorush: GorushConfig;
   rabbitMQ: RabbitMQConfig;
-  kafka: KafkaConfig;
+  minIO: MinIOConfig;
 };

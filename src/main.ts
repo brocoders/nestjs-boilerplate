@@ -1,5 +1,3 @@
-import { bootstrapOpenTelemetry } from './shared/tracing/otel-loader';
-import { Logger } from 'nestjs-pino';
 import 'dotenv/config';
 import {
   ClassSerializerInterceptor,
@@ -13,9 +11,9 @@ import { AppModule } from './app.module';
 import validationOptions from './utils/validation-options';
 import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
-import { APIDocs } from './api-docs/api-docs.module';
+import { APIDocs } from './common/api-docs/api-docs.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
-import { KafkaService } from './communication/kafka/kafak.service';
+import { DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -25,7 +23,6 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);
-  const kafkaService = app.get(KafkaService);
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(
@@ -42,9 +39,6 @@ async function bootstrap() {
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
-  app.useLogger(app.get(Logger));
-  await bootstrapOpenTelemetry();
-  await APIDocs.setup(app);
 
   const options = new DocumentBuilder()
     .setTitle('API')
@@ -61,14 +55,11 @@ async function bootstrap() {
     })
     .build();
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
-
+  await APIDocs.setup(app, options); // doesent need use swagger SwaggerModule.setup
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
   // Initialize and start RabbitMQ consumers
   rabbitMQService.initialize(app);
-  kafkaService.initialize(app);
   await app.startAllMicroservices();
 }
 void bootstrap();

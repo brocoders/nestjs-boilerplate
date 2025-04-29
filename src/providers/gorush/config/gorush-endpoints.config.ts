@@ -1,9 +1,9 @@
 import { ApiGatewayConfig } from 'src/api-gateway/api-gateway-config';
-import { GORUSH_DEFAULT_URL } from '../types/gorush-const.type';
+import { GORUSH_URL } from '../types/gorush-const.type';
 import { HttpMethod } from '../../../api-gateway/types/api-gateway.enum';
 
 export class GorushApiConfig extends ApiGatewayConfig {
-  constructor(baseUrl: string = GORUSH_DEFAULT_URL) {
+  constructor(baseUrl: string = GORUSH_URL) {
     // Default Base URL
     super(baseUrl, {});
 

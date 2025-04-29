@@ -8,15 +8,10 @@ import { ScalarThemeEnum } from './api-docs.enum';
 export class APIDocs {
   private static readonly logger = new Logger('APIDoc');
 
-  static async setup(app: INestApplication) {
-    // Swagger configuration
-    const options = new DocumentBuilder()
-      .setTitle('Vault')
-      .setDescription('Vault API Documentation')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-
+  static async setup(
+    app: INestApplication,
+    options: ReturnType<DocumentBuilder['build']>,
+  ) {
     const document = SwaggerModule.createDocument(app, options);
 
     // Apply Swagger Theme
@@ -24,6 +19,23 @@ export class APIDocs {
     const swaggerThemeCSS = theme.getBuffer(SwaggerThemeNameEnum.CLASSIC); // Use a dark theme base
     const customCss = `
     ${swaggerThemeCSS}
+
+    /* API Button Colors */
+    .swagger-ui .opblock.opblock-get .opblock-summary-method {
+      background-color: #007BFF !important; /* Blue for GET */
+    }
+
+    .swagger-ui .opblock.opblock-post .opblock-summary-method {
+      background-color:rgb(42, 169, 42) !important; /* Dark Green for POST */
+    }
+
+    .swagger-ui .opblock.opblock-patch .opblock-summary-method {
+      background-color: #FFA500 !important; /* Orange for PATCH */
+    }
+
+    .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+      background-color: #FF0000 !important; /* Red for DELETE */
+}
 
     /* API Method Colors */
     .swagger-ui .opblock.opblock-get {
@@ -67,17 +79,17 @@ export class APIDocs {
     app.use(
       '/docs/reference',
       apiReference({
-        theme: ScalarThemeEnum.Kepler,
+        theme: ScalarThemeEnum.DeepSpace,
         spec: {
           content: document,
         },
         config: {
           cssOverrides: `
             body {
-              font-size: 22px !important;  /* Increase base font size */
+              font-size: 24px !important;  /* Increase base font size */
             }
             .api-reference {
-              font-size: 20px !important;
+              font-size: 22px !important;
             }
             h1, h2, h3, h4 {
               font-size: 26px !important;  /* Increase headings */
