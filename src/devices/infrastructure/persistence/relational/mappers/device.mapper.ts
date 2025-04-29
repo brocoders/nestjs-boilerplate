@@ -1,4 +1,5 @@
 import { Device } from '../../../../domain/device';
+import { NotificationMapper } from '../../../../../notifications/infrastructure/persistence/relational/mappers/notification.mapper';
 
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 
@@ -7,6 +8,14 @@ import { DeviceEntity } from '../entities/device.entity';
 export class DeviceMapper {
   static toDomain(raw: DeviceEntity): Device {
     const domainEntity = new Device();
+    if (raw.notifications) {
+      domainEntity.notifications = raw.notifications.map((item) =>
+        NotificationMapper.toDomain(item),
+      );
+    } else if (raw.notifications === null) {
+      domainEntity.notifications = null;
+    }
+
     domainEntity.isActive = raw.isActive;
 
     domainEntity.model = raw.model;
@@ -32,6 +41,14 @@ export class DeviceMapper {
 
   static toPersistence(domainEntity: Device): DeviceEntity {
     const persistenceEntity = new DeviceEntity();
+    if (domainEntity.notifications) {
+      persistenceEntity.notifications = domainEntity.notifications.map((item) =>
+        NotificationMapper.toPersistence(item),
+      );
+    } else if (domainEntity.notifications === null) {
+      persistenceEntity.notifications = null;
+    }
+
     persistenceEntity.isActive = domainEntity.isActive;
 
     persistenceEntity.model = domainEntity.model;

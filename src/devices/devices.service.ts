@@ -1,9 +1,8 @@
+import { NotificationsService } from '../notifications/notifications.service';
+import { Notification } from '../notifications/domain/notification';
+
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
-
-import { HttpStatus, UnprocessableEntityException } from '@nestjs/common';
-
-import { Injectable } from '@nestjs/common';
 import { CreateDeviceDto, CreateDeviceUserDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { DeviceRepository } from './infrastructure/persistence/device.repository';
@@ -13,11 +12,21 @@ import { plainToInstance } from 'class-transformer';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { DeviceUserResponseDto } from './dto/device-response.dto';
 import { FilterDeviceDto, SortDeviceDto } from './dto/query-device.dto';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+  HttpStatus,
+} from '@nestjs/common';
 
 @Injectable()
 export class DevicesService {
   [x: string]: any;
   constructor(
+    @Inject(forwardRef(() => NotificationsService))
+    private readonly notificationService: NotificationsService,
+
     private readonly userService: UsersService,
 
     // Dependencies here
@@ -27,6 +36,26 @@ export class DevicesService {
   async create(createDeviceDto: CreateDeviceDto) {
     // Do not remove comment below.
     // <creating-property />
+    let notifications: Notification[] | null | undefined = undefined;
+
+    if (createDeviceDto.notifications) {
+      const notificationsObjects = await this.notificationService.findByIds(
+        createDeviceDto.notifications.map((entity) => entity.id),
+      );
+      if (
+        notificationsObjects.length !== createDeviceDto.notifications.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            notifications: 'notExists',
+          },
+        });
+      }
+      notifications = notificationsObjects;
+    } else if (createDeviceDto.notifications === null) {
+      notifications = null;
+    }
 
     const userObject = await this.userService.findById(createDeviceDto.user.id);
     if (!userObject) {
@@ -42,6 +71,8 @@ export class DevicesService {
     return this.deviceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      notifications,
+
       isActive: createDeviceDto.isActive,
 
       model: createDeviceDto.model,
@@ -117,6 +148,26 @@ export class DevicesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let notifications: Notification[] | null | undefined = undefined;
+
+    if (updateDeviceDto.notifications) {
+      const notificationsObjects = await this.notificationService.findByIds(
+        updateDeviceDto.notifications.map((entity) => entity.id),
+      );
+      if (
+        notificationsObjects.length !== updateDeviceDto.notifications.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            notifications: 'notExists',
+          },
+        });
+      }
+      notifications = notificationsObjects;
+    } else if (updateDeviceDto.notifications === null) {
+      notifications = null;
+    }
 
     let user: User | undefined = undefined;
 
@@ -138,6 +189,8 @@ export class DevicesService {
     return this.deviceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      notifications,
+
       isActive: updateDeviceDto.isActive,
 
       model: updateDeviceDto.model,
