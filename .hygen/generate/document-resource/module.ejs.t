@@ -2,7 +2,7 @@
 to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.module.ts
 ---
 import {
-  // common
+  // do not remove this comment
   Module,
 } from '@nestjs/common';
 import { <%= h.inflection.transform(name, ['pluralize']) %>Service } from './<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.service';
@@ -11,7 +11,7 @@ import { Document<%= name %>PersistenceModule } from './infrastructure/persisten
 
 @Module({
   imports: [
-    // import modules, etc.
+    // do not remove this comment
     Document<%= name %>PersistenceModule,
   ],
   controllers: [<%= h.inflection.transform(name, ['pluralize']) %>Controller],
