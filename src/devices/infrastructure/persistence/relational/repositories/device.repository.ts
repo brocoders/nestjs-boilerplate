@@ -14,7 +14,6 @@ import {
   SortDeviceDto,
 } from '../../../../dto/query-device.dto';
 
-
 @Injectable()
 export class DeviceRelationalRepository implements DeviceRepository {
   constructor(
