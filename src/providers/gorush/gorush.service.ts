@@ -21,8 +21,8 @@ import {
 } from './dto/gorush-notify.dto';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '../../config/config.type';
-import { ApiFunction } from 'src/api-gateway/types/api-gateway.type';
-import { ApiGatewayService } from '../../api-gateway/api-gateway.service';
+import { ApiFunction } from 'src/common/api-gateway/types/api-gateway.type';
+import { ApiGatewayService } from '../../common/api-gateway/api-gateway.service';
 import { parseMetrics } from './gorush.helper';
 import { stringifyJson } from '../../common/logger/logger.helper';
 import {

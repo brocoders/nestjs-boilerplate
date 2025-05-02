@@ -14,12 +14,16 @@ import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import { APIDocs } from './common/api-docs/api-docs.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import { DocumentBuilder } from '@nestjs/swagger';
+import { LoggerService } from './common/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
     bufferLogs: true,
   });
+  const logger = app.get(LoggerService);
+  app.useLogger(logger);
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);

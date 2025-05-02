@@ -41,6 +41,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { DevicesModule } from './devices/devices.module';
 import { MinioModule } from './providers/minio/minio.module';
 import minioConfig from './providers/minio/config/minio.config';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -100,6 +101,7 @@ import minioConfig from './providers/minio/config/minio.config';
     SecretManagerModule,
     GorushModule,
     MinioModule,
+    LoggerModule,
   ],
   providers: [RabbitMQService],
 })

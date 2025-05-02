@@ -8,11 +8,12 @@ import { DeviceRepository } from '../../device.repository';
 import { DeviceMapper } from '../mappers/device.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { User } from '../../../../../users/domain/user';
+import { OrderType } from '../../../../../utils/types/order-type';
 import {
   FilterDeviceDto,
   SortDeviceDto,
 } from '../../../../dto/query-device.dto';
-import { OrderType } from '../../../../types/devices-enum.type';
+
 
 @Injectable()
 export class DeviceRelationalRepository implements DeviceRepository {

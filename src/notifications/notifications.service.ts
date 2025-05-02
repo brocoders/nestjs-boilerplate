@@ -1,3 +1,7 @@
+import {
+  FilterNotificationDto,
+  SortNotificationDto,
+} from './dto/query-notification.dto';
 import { DevicesService } from '../devices/devices.service';
 import { Device } from '../devices/domain/device';
 
@@ -132,5 +136,59 @@ export class NotificationsService {
 
   remove(id: Notification['id']) {
     return this.notificationRepository.remove(id);
+  }
+
+  findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterNotificationDto | null;
+    sortOptions?: SortNotificationDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Notification[]> {
+    return this.notificationRepository.findManyWithPagination({
+      filterOptions,
+      sortOptions,
+      paginationOptions,
+    });
+  }
+
+  findByDeviceIdWithPagination({
+    deviceId,
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    deviceId: string;
+    filterOptions?: FilterNotificationDto | null;
+    sortOptions?: SortNotificationDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Notification[]> {
+    return this.notificationRepository.findByDeviceIdWithPagination({
+      deviceId,
+      filterOptions,
+      sortOptions,
+      paginationOptions,
+    });
+  }
+  findAllByDeviceId(
+    deviceId: string,
+    paginationOptions: IPaginationOptions,
+  ): Promise<Notification[]> {
+    return this.notificationRepository.findAllByDeviceId(
+      deviceId,
+      paginationOptions,
+    );
+  }
+
+  findUnreadByDeviceId(
+    deviceId: string,
+    paginationOptions: IPaginationOptions,
+  ): Promise<Notification[]> {
+    return this.notificationRepository.findUnreadByDeviceId(
+      deviceId,
+      paginationOptions,
+    );
   }
 }

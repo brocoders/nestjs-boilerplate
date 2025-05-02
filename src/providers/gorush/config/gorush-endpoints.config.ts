@@ -1,6 +1,6 @@
-import { ApiGatewayConfig } from 'src/api-gateway/api-gateway-config';
+import { ApiGatewayConfig } from 'src/common/api-gateway/api-gateway-config';
 import { GORUSH_URL } from '../types/gorush-const.type';
-import { HttpMethod } from '../../../api-gateway/types/api-gateway.enum';
+import { HttpMethod } from '../../../common/api-gateway/types/api-gateway.enum';
 
 export class GorushApiConfig extends ApiGatewayConfig {
   constructor(baseUrl: string = GORUSH_URL) {
