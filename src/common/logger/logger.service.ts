@@ -1,32 +1,64 @@
 import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
 import { format } from 'date-fns';
-import { LoggerType } from './types/logger-enum.type';
+import { LoggerType, LogLevel } from './types/logger-enum.type';
 import { stringifyJson, formatNestHeader } from './logger.helper';
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
-  log(message: any, context?: string) {
-    const formatted = this.format(LoggerType.SYSTEM, message, context);
+  private lastLogTime = Date.now();
+
+  log(message: any, context?: string, loadTime?: number) {
+    const formatted = this.format(
+      LoggerType.SYSTEM,
+      message,
+      context,
+      undefined,
+      loadTime,
+    );
     console.log(formatted);
   }
 
-  error(message: any, trace?: string, context?: string) {
-    const formatted = this.format(LoggerType.SYSTEM, message, context, trace);
+  error(message: any, trace?: string, context?: string, loadTime?: number) {
+    const formatted = this.format(
+      LoggerType.SYSTEM,
+      message,
+      context,
+      trace,
+      loadTime,
+    );
     console.error(formatted);
   }
 
-  warn(message: any, context?: string) {
-    const formatted = this.format(LoggerType.SYSTEM, message, context);
+  warn(message: any, context?: string, loadTime?: number) {
+    const formatted = this.format(
+      LoggerType.SYSTEM,
+      message,
+      context,
+      undefined,
+      loadTime,
+    );
     console.warn(formatted);
   }
 
-  debug(message: any, context?: string) {
-    const formatted = this.format(LoggerType.DEV, message, context);
+  debug(message: any, context?: string, loadTime?: number) {
+    const formatted = this.format(
+      LoggerType.DEV,
+      message,
+      context,
+      undefined,
+      loadTime,
+    );
     console.debug(formatted);
   }
 
-  verbose(message: any, context?: string) {
-    const formatted = this.format(LoggerType.DEV, message, context);
+  verbose(message: any, context?: string, loadTime?: number) {
+    const formatted = this.format(
+      LoggerType.DEV,
+      message,
+      context,
+      undefined,
+      loadTime,
+    );
     console.trace(formatted);
   }
 
@@ -35,6 +67,8 @@ export class LoggerService implements NestLoggerService {
     message: any,
     context?: string,
     trace?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loadTime?: number,
   ): string {
     const timestamp = format(new Date(), 'MM/dd/yyyy, h:mm:ss a');
     const ctx = context ?? '';
@@ -43,10 +77,13 @@ export class LoggerService implements NestLoggerService {
         ? stringifyJson(message && Object.keys(message).length ? message : {})
         : String(message);
     const traceStr = trace ? `\n${trace}` : '';
-
-    const logLevel = type === LoggerType.SYSTEM ? 'LOG' : 'DEBUG';
+    const now = Date.now();
+    const deltaTime = now - this.lastLogTime;
+    this.lastLogTime = now;
+    const durationStr = ` +${deltaTime}ms`;
+    const logLevel = type === LoggerType.SYSTEM ? LogLevel.LOG : LogLevel.DEBUG;
     const header = formatNestHeader(timestamp, logLevel, ctx, type);
 
-    return `${header} ${msg}${traceStr}`;
+    return `${header} ${msg}${traceStr}${durationStr}`;
   }
 }

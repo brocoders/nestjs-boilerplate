@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { pid } from 'process';
-import { LoggerType } from './types/logger-enum.type';
+import { LoggerType, LogLevel } from './types/logger-enum.type';
+
 
 function colorizeJsonString(jsonData: string): string {
   return jsonData
@@ -48,16 +49,16 @@ export function formatNestHeader(
     chalk.gray('[Nest]') +
     ' ' +
     chalk.cyan(pid.toString().padEnd(7)) +
-    chalk.gray(' - ') +
+    chalk.gray('- ') +
     chalk.white(timestamp) +
     '   ' +
-    (level === 'LOG'
+    (level === LogLevel.LOG
       ? chalk.green(level.padEnd(5))
-      : level === 'DEBUG'
+      : level === LogLevel.DEBUG
         ? chalk.blue(level.padEnd(5))
-        : level === 'ERROR'
+        : level === LogLevel.ERROR
           ? chalk.red(level.padEnd(5))
-          : level === 'WARN'
+          : level === LogLevel.WARN
             ? chalk.yellow(level.padEnd(5))
             : chalk.white(level.padEnd(5))) +
     ' ' +

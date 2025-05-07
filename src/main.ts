@@ -15,6 +15,7 @@ import { APIDocs } from './common/api-docs/api-docs.module';
 import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { LoggerService } from './common/logger/logger.service';
+import { LoggerExceptionFilter } from './common/logger/logger-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,6 +24,7 @@ async function bootstrap() {
   });
   const logger = app.get(LoggerService);
   app.useLogger(logger);
+  app.useGlobalFilters(new LoggerExceptionFilter(app.get(LoggerService)));
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);

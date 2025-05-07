@@ -1,12 +1,10 @@
 export enum LoggerType {
-  SYSTEM = 'system',
-  DEV = 'dev',
-  QUERY = 'query',
-  ERROR = 'error',
-  HTTP = 'http',
-  STARTUP = 'startup',
-  LIFECYCLE = 'lifecycle',
-  MICROSERVICE = 'microservice',
+  SYSTEM = 'SYSTEM',
+  DEV = 'DEV',
+  QUERY = 'QUARY',
+  HTTP = 'HTTP',
+  STARTUP = 'PROVIDER',
+  MICROSERVICE = 'MICROSERVICE',
 }
 
 export enum LoggerScope {
@@ -15,10 +13,10 @@ export enum LoggerScope {
 }
 
 export enum LogLevel {
-  FATAL = 'fatal',
-  ERROR = 'error',
-  WARN = 'warn',
-  INFO = 'info',
-  DEBUG = 'debug',
-  TRACE = 'trace',
+  FATAL = 'FATAL',
+  ERROR = 'ERROR',
+  WARN = 'WARN',
+  LOG = 'LOG',
+  DEBUG = 'DEBUG',
+  TRACE = 'TRACE',
 }
