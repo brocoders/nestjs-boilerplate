@@ -1,9 +1,9 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface /** QueryRunner **/ } from 'typeorm';
 
 export class AddKycDetailsFields1745138722127 implements MigrationInterface {
   name = 'AddKycDetailsFields1745138722127';
 
-  public async up(queryRunner: QueryRunner): Promise<void> {
+  public async up(/**queryRunner: QueryRunner**/): Promise<void> {
     // await queryRunner.query(
     //   `ALTER TABLE "kyc_details" ADD "verifiedBy" integer`,
     // );
@@ -36,7 +36,7 @@ export class AddKycDetailsFields1745138722127 implements MigrationInterface {
     // );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
+  public async down(/**queryRunner: QueryRunner**/): Promise<void> {
     // await queryRunner.query(
     //   `ALTER TABLE "kyc_details" DROP COLUMN "subjectType"`,
     // );
