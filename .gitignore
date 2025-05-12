@@ -36,6 +36,6 @@ lerna-debug.log*
 
 .data
 /files
-.env
 /ormconfig.json
 .codegpt
+config.bat
