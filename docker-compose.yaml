@@ -23,7 +23,8 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8060:8080
+      - 8980:8080
+
 
   # Uncomment to use redis
   redis:
@@ -37,6 +38,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${APP_PORT}:${APP_PORT}
-
-volumes:
-  boilerplate-db:
