@@ -97,3 +97,25 @@ export default registerAs<DatabaseConfig>('database', () => {
     cert: process.env.DATABASE_CERT,
   };
 });
+// export default registerAs<DatabaseConfig>('database', () => ({
+//   isMultiTenant: process.env.DATABASE_MULTI_TENANT === 'true',
+//   core: {
+//     type: 'postgres',
+//     host: process.env.CORE_DB_HOST,
+//     port: parseInt(process.env.CORE_DB_PORT || '5432', 10),
+//     username: process.env.CORE_DB_USER,
+//     password: process.env.CORE_DB_PASSWORD,
+//     database: process.env.CORE_DB_NAME,
+//     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+//     migrations: [__dirname + '/migrations/core/*{.ts,.js}'],
+//     synchronize: false,
+//   },
+//   tenantPrefix: process.env.TENANT_DB_PREFIX || 'tenant_',
+//   tenantConfig: {
+//     type: 'database',
+//     defaultHost: process.env.TENANT_DB_HOST || 'localhost',
+//     defaultPort: parseInt(process.env.TENANT_DB_PORT || '5432', 10),
+//     defaultUsername: process.env.TENANT_DB_USER || 'saka',
+//     defaultPassword: process.env.TENANT_DB_PASSWORD || '',
+//   },
+// }));

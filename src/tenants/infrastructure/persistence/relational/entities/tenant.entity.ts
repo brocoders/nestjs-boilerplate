@@ -28,6 +28,18 @@ import { RoleEntity } from 'src/roles/infrastructure/persistence/relational/enti
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: 'jsonb',
+  })
+  databaseConfig?: {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+  } | null;
+
   @OneToMany(() => RoleEntity, (role) => role.tenant)
   roles: RoleEntity[];
   @Column({

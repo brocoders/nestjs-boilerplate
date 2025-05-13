@@ -11,6 +11,12 @@ export class Tenant {
     type: () => String,
     nullable: true,
   })
+  databaseConfig?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
   domain?: string | null;
 
   @ApiProperty({

@@ -176,6 +176,8 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      databaseConfig: createTenantDto.databaseConfig,
+
       domain: createTenantDto.domain,
 
       regions,
@@ -352,6 +354,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      databaseConfig: updateTenantDto.databaseConfig,
+
       domain: updateTenantDto.domain,
 
       regions,

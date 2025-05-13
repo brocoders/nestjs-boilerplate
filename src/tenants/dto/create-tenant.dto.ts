@@ -37,6 +37,14 @@ export class CreateTenantDto {
   })
   @IsOptional()
   @IsString()
+  databaseConfig?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
   domain?: string | null;
 
   @ApiProperty({
