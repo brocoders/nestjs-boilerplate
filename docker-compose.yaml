@@ -1,15 +1,15 @@
 services:
-  postgres:
-    # image: postgres:17.4-alpine
-    image: postgis/postgis:latest # Official PostGIS + PostgreSQL image
-    ports:
-      - ${DATABASE_PORT}:5432
-    volumes:
-      - boilerplate-db:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+  # postgres:
+  #   # image: postgres:17.4-alpine
+  #   image: postgis/postgis:latest # Official PostGIS + PostgreSQL image
+  #   ports:
+  #     - ${DATABASE_PORT}:5432
+  #   volumes:
+  #     - boilerplate-db:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_USER: ${DATABASE_USERNAME}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+  #     POSTGRES_DB: ${DATABASE_NAME}
 
   maildev:
     build:
