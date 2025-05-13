@@ -3,7 +3,8 @@ set -e
 
 echo "Waiting for PostgreSQL to be ready..."
 for i in {1..30}; do
-  if pg_isready -h 157.230.103.101 -p 5432 -U postgres; then
+  #157.230.103.101#
+  if pg_isready -h  postgres -p 5432 -U postgres; then
     echo "PostgreSQL is ready!"
     break
   fi
