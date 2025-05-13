@@ -1,3 +1,11 @@
+import { RegionEntity } from '../../../../../regions/infrastructure/persistence/relational/entities/region.entity';
+
+import { SettingsEntity } from '../../../../../settings/infrastructure/persistence/relational/entities/settings.entity';
+
+import { KycDetailsEntity } from '../../../../../kyc-details/infrastructure/persistence/relational/entities/kyc-details.entity';
+
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +17,9 @@ import {
   UpdateDateColumn,
   JoinColumn,
   OneToOne,
+  OneToMany,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -21,6 +32,28 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @ManyToMany(() => RegionEntity, { eager: true, nullable: true })
+  @JoinTable()
+  regions?: RegionEntity[] | null;
+
+  @OneToMany(() => SettingsEntity, (childEntity) => childEntity.user, {
+    eager: true,
+    nullable: true,
+  })
+  settings?: SettingsEntity[] | null;
+
+  @OneToMany(() => KycDetailsEntity, (childEntity) => childEntity.user, {
+    eager: true,
+    nullable: true,
+  })
+  kycSubmissions?: KycDetailsEntity[] | null;
+
+  @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.users, {
+    eager: false,
+    nullable: false,
+  })
+  tenant: TenantEntity;
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -44,8 +44,12 @@ after: export class <%= name %>Entity
     @ManyToMany(() => <%= type %>Entity, { eager: true, nullable: <%= isNullable %> })
   <% } -%>
 
-  <% if (referenceType === 'oneToOne' || referenceType === 'manyToMany') { -%>
+  <% if (referenceType === 'oneToOne') { -%>
     @JoinColumn()
+  <% } -%>
+
+  <% if (referenceType === 'manyToMany') { -%>
+    @JoinTable()
   <% } -%>
 
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>Entity<% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;

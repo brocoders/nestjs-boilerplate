@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
@@ -7,6 +9,11 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 export class RoleEntity extends EntityRelationalHelper {
   @PrimaryColumn()
   id: number;
+  @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.roles, {
+    eager: false,
+    nullable: false,
+  })
+  tenant: TenantEntity;
 
   @Column()
   name?: string;

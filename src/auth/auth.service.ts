@@ -28,6 +28,7 @@ import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
+import { TenantDto } from 'src/tenants/dto/tenant.dto';
 
 @Injectable()
 export class AuthService {
@@ -150,6 +151,7 @@ export class AuthService {
         provider: authProvider,
         role,
         status,
+        tenant: new TenantDto(),
       });
 
       user = await this.usersService.findById(user.id);
@@ -203,6 +205,7 @@ export class AuthService {
       status: {
         id: StatusEnum.inactive,
       },
+      tenant: new TenantDto(),
     });
 
     const hash = await this.jwtService.signAsync(

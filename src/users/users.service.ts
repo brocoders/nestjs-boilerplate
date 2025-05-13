@@ -1,7 +1,21 @@
+import { RegionsService } from '../regions/regions.service';
+import { Region } from '../regions/domain/region';
+
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/domain/settings';
+
+import { KycDetailsService } from '../kyc-details/kyc-details.service';
+import { KycDetails } from '../kyc-details/domain/kyc-details';
+
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import {
   HttpStatus,
   Injectable,
   UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { NullableType } from '../utils/types/nullable.type';
@@ -22,6 +36,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly regionService: RegionsService,
+
+    @Inject(forwardRef(() => SettingsService))
+    private readonly settingsService: SettingsService,
+
+    @Inject(forwardRef(() => KycDetailsService))
+    private readonly kycDetailsService: KycDetailsService,
+
+    @Inject(forwardRef(() => TenantsService))
+    private readonly tenantService: TenantsService,
+
     private readonly usersRepository: UserRepository,
     private readonly filesService: FilesService,
   ) {}
@@ -29,6 +54,77 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (createUserDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        createUserDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== createUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (createUserDto.regions === null) {
+      regions = null;
+    }
+
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (createUserDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        createUserDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== createUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (createUserDto.settings === null) {
+      settings = null;
+    }
+
+    let kycSubmissions: KycDetails[] | null | undefined = undefined;
+
+    if (createUserDto.kycSubmissions) {
+      const kycSubmissionsObjects = await this.kycDetailsService.findByIds(
+        createUserDto.kycSubmissions.map((entity) => entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !== createUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: 'notExists',
+          },
+        });
+      }
+      kycSubmissions = kycSubmissionsObjects;
+    } else if (createUserDto.kycSubmissions === null) {
+      kycSubmissions = null;
+    }
+
+    const tenantObject = await this.tenantService.findById(
+      createUserDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
 
     let password: string | undefined = undefined;
 
@@ -116,6 +212,14 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      regions,
+
+      settings,
+
+      kycSubmissions,
+
+      tenant,
+
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
       email: email,
@@ -175,6 +279,81 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+    let regions: Region[] | null | undefined = undefined;
+
+    if (updateUserDto.regions) {
+      const regionsObjects = await this.regionService.findByIds(
+        updateUserDto.regions.map((entity) => entity.id),
+      );
+      if (regionsObjects.length !== updateUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: 'notExists',
+          },
+        });
+      }
+      regions = regionsObjects;
+    } else if (updateUserDto.regions === null) {
+      regions = null;
+    }
+
+    let settings: Settings[] | null | undefined = undefined;
+
+    if (updateUserDto.settings) {
+      const settingsObjects = await this.settingsService.findByIds(
+        updateUserDto.settings.map((entity) => entity.id),
+      );
+      if (settingsObjects.length !== updateUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: 'notExists',
+          },
+        });
+      }
+      settings = settingsObjects;
+    } else if (updateUserDto.settings === null) {
+      settings = null;
+    }
+
+    let kycSubmissions: KycDetails[] | null | undefined = undefined;
+
+    if (updateUserDto.kycSubmissions) {
+      const kycSubmissionsObjects = await this.kycDetailsService.findByIds(
+        updateUserDto.kycSubmissions.map((entity) => entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !== updateUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: 'notExists',
+          },
+        });
+      }
+      kycSubmissions = kycSubmissionsObjects;
+    } else if (updateUserDto.kycSubmissions === null) {
+      kycSubmissions = null;
+    }
+
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateUserDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateUserDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
 
     let password: string | undefined = undefined;
 
@@ -270,6 +449,14 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      regions,
+
+      settings,
+
+      kycSubmissions,
+
+      tenant,
+
       firstName: updateUserDto.firstName,
       lastName: updateUserDto.lastName,
       email,

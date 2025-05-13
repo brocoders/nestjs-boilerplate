@@ -1,3 +1,7 @@
+import { Region } from '../../regions/domain/region';
+import { Settings } from '../../settings/domain/settings';
+import { KycDetails } from '../../kyc-details/domain/kyc-details';
+import { Tenant } from '../../tenants/domain/tenant';
 import { Exclude, Expose } from 'class-transformer';
 import { FileType } from '../../files/domain/file';
 import { Role } from '../../roles/domain/role';
@@ -13,6 +17,30 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 // </database-block>
 
 export class User {
+  @ApiProperty({
+    type: () => [Region],
+    nullable: true,
+  })
+  regions?: Region[] | null;
+
+  @ApiProperty({
+    type: () => [Settings],
+    nullable: true,
+  })
+  settings?: Settings[] | null;
+
+  @ApiProperty({
+    type: () => [KycDetails],
+    nullable: true,
+  })
+  kycSubmissions?: KycDetails[] | null;
+
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: idType,
   })

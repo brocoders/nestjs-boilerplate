@@ -1,3 +1,4 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import databaseConfig from '../../database/config/database.config';
@@ -10,6 +11,12 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 // </database-block>
 
 export class Role {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: true,
+  })
+  tenant?: Tenant;
+
   @Allow()
   @ApiProperty({
     type: idType,

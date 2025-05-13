@@ -1,4 +1,12 @@
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
+import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
+
+import { SettingsMapper } from '../../../../../settings/infrastructure/persistence/relational/mappers/settings.mapper';
+
+import { KycDetailsMapper } from '../../../../../kyc-details/infrastructure/persistence/relational/mappers/kyc-details.mapper';
+
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
 import { FileMapper } from '../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -8,6 +16,34 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    if (raw.regions) {
+      domainEntity.regions = raw.regions.map((item) =>
+        RegionMapper.toDomain(item),
+      );
+    } else if (raw.regions === null) {
+      domainEntity.regions = null;
+    }
+
+    if (raw.settings) {
+      domainEntity.settings = raw.settings.map((item) =>
+        SettingsMapper.toDomain(item),
+      );
+    } else if (raw.settings === null) {
+      domainEntity.settings = null;
+    }
+
+    if (raw.kycSubmissions) {
+      domainEntity.kycSubmissions = raw.kycSubmissions.map((item) =>
+        KycDetailsMapper.toDomain(item),
+      );
+    } else if (raw.kycSubmissions === null) {
+      domainEntity.kycSubmissions = null;
+    }
+
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.id = raw.id;
     domainEntity.email = raw.email;
     domainEntity.password = raw.password;
@@ -52,6 +88,36 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    if (domainEntity.regions) {
+      persistenceEntity.regions = domainEntity.regions.map((item) =>
+        RegionMapper.toPersistence(item),
+      );
+    } else if (domainEntity.regions === null) {
+      persistenceEntity.regions = null;
+    }
+
+    if (domainEntity.settings) {
+      persistenceEntity.settings = domainEntity.settings.map((item) =>
+        SettingsMapper.toPersistence(item),
+      );
+    } else if (domainEntity.settings === null) {
+      persistenceEntity.settings = null;
+    }
+
+    if (domainEntity.kycSubmissions) {
+      persistenceEntity.kycSubmissions = domainEntity.kycSubmissions.map(
+        (item) => KycDetailsMapper.toPersistence(item),
+      );
+    } else if (domainEntity.kycSubmissions === null) {
+      persistenceEntity.kycSubmissions = null;
+    }
+
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.id && typeof domainEntity.id === 'number') {
       persistenceEntity.id = domainEntity.id;
     }

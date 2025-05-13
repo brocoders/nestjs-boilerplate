@@ -1,3 +1,11 @@
+import { RegionDto } from '../../regions/dto/region.dto';
+
+import { SettingsDto } from '../../settings/dto/settings.dto';
+
+import { KycDetailsDto } from '../../kyc-details/dto/kyc-details.dto';
+
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import {
   // decorators here
   Transform,
@@ -10,6 +18,9 @@ import {
   IsNotEmpty,
   IsOptional,
   MinLength,
+  ValidateNested,
+  IsNotEmptyObject,
+  IsArray,
 } from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
 import { RoleDto } from '../../roles/dto/role.dto';
@@ -17,6 +28,45 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: false,
+    type: () => [RegionDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => RegionDto)
+  @IsArray()
+  regions?: RegionDto[] | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [SettingsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SettingsDto)
+  @IsArray()
+  settings?: SettingsDto[] | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [KycDetailsDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => KycDetailsDto)
+  @IsArray()
+  kycSubmissions?: KycDetailsDto[] | null;
+
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({ example: 'test1@example.com', type: String })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
