@@ -52,8 +52,12 @@ import { SettingsModule } from './settings/settings.module';
 
 import { RegionsModule } from './regions/regions.module';
 
+import { ResidencesModule } from './residences/residences.module';
+
 @Module({
   imports: [
+    ResidencesModule,
+    ResidencesModule,
     RegionsModule,
     SettingsModule,
     TenantTypesModule,
