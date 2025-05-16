@@ -30,7 +30,7 @@ import { FindAllAccountsDto } from './dto/find-all-accounts.dto';
 
 @ApiTags('Accounts')
 @ApiBearerAuth()
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'accounts',
   version: '1',
