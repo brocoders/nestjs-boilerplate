@@ -15,7 +15,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { ResidenceType } from '../../../../../utils/enum/residence-type.enum';
+import { ResidenceTypeEnum } from '../../../../../utils/enum/residence-type.enum';
 
 @Entity({
   name: 'residence',
@@ -23,10 +23,10 @@ import { ResidenceType } from '../../../../../utils/enum/residence-type.enum';
 export class ResidenceEntity extends EntityRelationalHelper {
   @Column({
     type: 'enum',
-    enum: ResidenceType,
-    default: ResidenceType.OTHER,
+    enum: ResidenceTypeEnum,
+    default: ResidenceTypeEnum.OTHER,
   })
-  type: ResidenceType;
+  type: ResidenceTypeEnum;
 
   @ManyToMany(() => UserEntity, { eager: true, nullable: true })
   @JoinTable()

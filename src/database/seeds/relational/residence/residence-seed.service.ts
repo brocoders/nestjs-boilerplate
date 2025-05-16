@@ -7,7 +7,7 @@ import { TenantEntity } from '../../../../tenants/infrastructure/persistence/rel
 import { RegionEntity } from '../../../../regions/infrastructure/persistence/relational/entities/region.entity';
 import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { RoleEntity } from '../../../../roles/infrastructure/persistence/relational/entities/role.entity';
-import { ResidenceType } from '../../../../utils/enum/residence-type.enum';
+import { ResidenceTypeEnum } from '../../../../utils/enum/residence-type.enum';
 
 @Injectable()
 export class ResidenceSeedService {
@@ -78,7 +78,7 @@ export class ResidenceSeedService {
         if (existingResidences.length === 0) {
           const residence = this.residenceRepository.create({
             name: `${region.name} Main Residence`,
-            type: ResidenceType.OTHER,
+            type: ResidenceTypeEnum.OTHER,
             charge: 1000,
             isActive: true,
             region,

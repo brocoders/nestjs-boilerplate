@@ -54,8 +54,11 @@ import { RegionsModule } from './regions/regions.module';
 
 import { ResidencesModule } from './residences/residences.module';
 
+import { AccountsModule } from './accounts/accounts.module';
+
 @Module({
   imports: [
+    AccountsModule,
     ResidencesModule,
     ResidencesModule,
     RegionsModule,

@@ -22,8 +22,11 @@ import { TenantTypesSeedModule } from './tenant-types/tenant-types-seed.module';
 
 import { ResidenceSeedModule } from './residence/residence-seed.module';
 
+import { AccountSeedModule } from './account/account-seed.module';
+
 @Module({
   imports: [
+    AccountSeedModule,
     ResidenceSeedModule,
     TenantTypesSeedModule,
     TenantSeedModule,

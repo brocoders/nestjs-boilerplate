@@ -2,15 +2,15 @@ import { User } from '../../users/domain/user';
 import { Region } from '../../regions/domain/region';
 import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
-import { ResidenceType } from '../../utils/enum/residence-type.enum';
+import { ResidenceTypeEnum } from '../../utils/enum/residence-type.enum';
 
 export class Residence {
   @ApiProperty({
-    enum: ResidenceType,
+    enum: ResidenceTypeEnum,
     enumName: 'ResidenceType',
     nullable: false,
   })
-  type: ResidenceType;
+  type: ResidenceTypeEnum;
 
   @ApiProperty({
     type: () => [User],
