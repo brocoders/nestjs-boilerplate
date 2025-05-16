@@ -14,3 +14,4 @@ Revert migration
 npm run migration:revert
 Drop all tables in database
 npm run schema:drop
+npm run seed:run:relational

@@ -20,8 +20,11 @@ import { SettingsSeedModule } from './settings/settings-seed.module';
 
 import { TenantTypesSeedModule } from './tenant-types/tenant-types-seed.module';
 
+import { ResidenceSeedModule } from './residence/residence-seed.module';
+
 @Module({
   imports: [
+    ResidenceSeedModule,
     TenantTypesSeedModule,
     TenantSeedModule,
     RoleSeedModule,
