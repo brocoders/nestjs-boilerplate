@@ -25,15 +25,15 @@ import {
   // decorators here
   Type,
 } from 'class-transformer';
-import { ResidenceType } from '../../utils/enum/residence-type.enum';
+import { ResidenceTypeEnum } from '../../utils/enum/residence-type.enum';
 
 export class CreateResidenceDto {
   @ApiProperty({
-    enum: ResidenceType,
+    enum: ResidenceTypeEnum,
     enumName: 'ResidenceType',
     nullable: false,
   })
-  type: ResidenceType;
+  type: ResidenceTypeEnum;
   @ApiProperty({
     required: false,
     type: () => [UserDto],

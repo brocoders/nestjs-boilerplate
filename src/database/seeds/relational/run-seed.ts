@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { AccountSeedService } from './account/account-seed.service';
 import { ResidenceSeedService } from './residence/residence-seed.service';
 import { TenantTypesSeedService } from './tenant-types/tenant-types-seed.service';
 // import { SettingsSeedService } from './settings/settings-seed.service';
@@ -25,6 +26,8 @@ const runSeed = async () => {
   // await app.get(SettingsSeedService).run();
 
   await app.get(ResidenceSeedService).run();
+
+  await app.get(AccountSeedService).run();
 
   await app.close();
 };
