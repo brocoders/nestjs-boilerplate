@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StandardClause } from '../../entities/standard-clause.entity';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
+import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 
 @Injectable()
 export class StandardClausesService {
@@ -32,7 +33,11 @@ export class StandardClausesService {
     return this.standardClauseRepository.find({ where: { type } });
   }
 
-  async update(id: number, updateStandardClauseDto: Partial<CreateStandardClauseDto>): Promise<StandardClause> {
+  async findByContractType(contractType: string): Promise<StandardClause[]> {
+    return this.standardClauseRepository.find({ where: { contractType } });
+  }
+
+  async update(id: number, updateStandardClauseDto: UpdateStandardClauseDto): Promise<StandardClause> {
     const standardClause = await this.findOne(id);
     Object.assign(standardClause, updateStandardClauseDto);
     return this.standardClauseRepository.save(standardClause);

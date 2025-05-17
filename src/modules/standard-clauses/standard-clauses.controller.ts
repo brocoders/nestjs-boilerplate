@@ -4,6 +4,7 @@ import { StandardClausesService } from './standard-clauses.service';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { StandardClause } from '../../entities/standard-clause.entity';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 
 @ApiTags('standard-clauses')
 @Controller('standard-clauses')
@@ -41,13 +42,20 @@ export class StandardClausesController {
     return this.standardClausesService.findByType(type);
   }
 
+  @Get('contract-type/:contractType')
+  @ApiOperation({ summary: 'Get standard clauses by contract type' })
+  @ApiResponse({ status: 200, description: 'Return clauses for the contract type.', type: [StandardClause] })
+  findByContractType(@Param('contractType') contractType: string): Promise<StandardClause[]> {
+    return this.standardClausesService.findByContractType(contractType);
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a standard clause' })
   @ApiResponse({ status: 200, description: 'The standard clause has been successfully updated.', type: StandardClause })
   @ApiResponse({ status: 404, description: 'Standard clause not found.' })
   update(
     @Param('id') id: string,
-    @Body() updateStandardClauseDto: Partial<CreateStandardClauseDto>,
+    @Body() updateStandardClauseDto: UpdateStandardClauseDto,
   ): Promise<StandardClause> {
     return this.standardClausesService.update(+id, updateStandardClauseDto);
   }

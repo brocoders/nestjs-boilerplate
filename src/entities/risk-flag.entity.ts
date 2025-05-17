@@ -26,6 +26,12 @@ export class RiskFlag {
   @Column({ type: 'text', nullable: true })
   suggestedText: string;
 
+  @Column({ type: 'text', nullable: true })
+  notes: string;
+
+  @Column({ enum: ['open', 'resolved', 'ignored'], default: 'open', type: 'enum' })
+  status: 'open' | 'resolved' | 'ignored';
+
   @Column({ default: false })
   isResolved: boolean;
 

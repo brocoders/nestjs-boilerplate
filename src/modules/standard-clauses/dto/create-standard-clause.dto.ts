@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsNumber,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateStandardClauseDto {
   @ApiProperty()
@@ -11,6 +18,11 @@ export class CreateStandardClauseDto {
   @IsNotEmpty()
   @IsString()
   type: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  contractType: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -27,8 +39,10 @@ export class CreateStandardClauseDto {
   @IsString()
   version?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: Number })
   @IsOptional()
-  @IsString()
-  allowedDeviations?: string;
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  allowedDeviations?: number;
 } 

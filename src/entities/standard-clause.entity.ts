@@ -16,6 +16,10 @@ export class StandardClause {
   type: string;
 
   @ApiProperty()
+  @Column()
+  contractType: string;
+
+  @ApiProperty()
   @Column('text')
   text: string;
 
@@ -27,9 +31,9 @@ export class StandardClause {
   @Column({ nullable: true })
   version?: string;
 
-  @ApiProperty()
-  @Column('text', { nullable: true })
-  allowedDeviations?: string;
+  @ApiProperty({ required: false, type: Number })
+  @Column({ type: 'int', nullable: true })
+  allowedDeviations?: number;
 
   @ApiProperty()
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

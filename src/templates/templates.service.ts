@@ -13,7 +13,10 @@ export class TemplatesService {
   ) {}
 
   async create(createStandardClauseDto: CreateStandardClauseDto): Promise<StandardClause> {
-    const clause = this.standardClauseRepository.create(createStandardClauseDto);
+    const clause = this.standardClauseRepository.create({
+      isActive: true,
+      ...createStandardClauseDto,
+    });
     return this.standardClauseRepository.save(clause);
   }
 

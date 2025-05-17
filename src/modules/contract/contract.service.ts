@@ -140,9 +140,42 @@ export class ContractService {
     return contract.riskFlags;
   }
 
+  async getAnalysis(id: string): Promise<{ summaries: Summary[]; riskFlags: RiskFlag[] }> {
+    const contract = await this.findOne(id);
+    return {
+      summaries: contract.summaries,
+      riskFlags: contract.riskFlags,
+    };
+  }
+
   async getContractQnA(id: string): Promise<QnA[]> {
     const contract = await this.findOne(id);
     return contract.qnas;
+  }
+
+  async updateRiskFlag(
+    contractId: string,
+    riskId: string,
+    status: 'open' | 'resolved' | 'ignored',
+    notes?: string,
+  ): Promise<RiskFlag> {
+    await this.findOne(contractId);
+    const riskFlag = await this.riskFlagRepository.findOne({ where: { id: riskId } });
+    if (!riskFlag) {
+      throw new NotFoundException(`Risk flag with ID ${riskId} not found`);
+    }
+    Object.assign(riskFlag, { status, notes });
+    return this.riskFlagRepository.save(riskFlag);
+  }
+
+  async exportAnalysis(id: string): Promise<any> {
+    const contract = await this.findOne(id);
+    return {
+      contract,
+      summaries: contract.summaries,
+      riskFlags: contract.riskFlags,
+      qna: contract.qnas,
+    };
   }
 
   async getContractReviews(id: string): Promise<HumanReview[]> {
