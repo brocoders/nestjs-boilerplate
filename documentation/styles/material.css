@@ -1,0 +1,131 @@
+.menu {
+    background: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/** LINK **/
+
+.menu ul.list li a {
+    text-decoration: none;
+}
+
+.menu ul.list li a:hover,
+.menu ul.list li.chapter .simple:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+}
+
+#book-search-input {
+    margin-bottom: 0;
+}
+
+.menu ul.list li.divider {
+    margin-top: 0;
+    background: #e9ecef;
+}
+
+.menu .title:hover {
+    background-color: #f8f9fa;
+}
+
+/** CARD **/
+
+.card {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 0.125rem;
+    border: 0;
+    margin-top: 1px;
+}
+
+.card-header {
+    background: none;
+}
+
+/** BUTTON **/
+
+.btn {
+    border-radius: 0.125rem;
+}
+
+/** NAV BAR **/
+
+.nav {
+    border: 0;
+}
+.nav-tabs > li > a {
+    border: 0;
+    border-bottom: 0.214rem solid transparent;
+    color: rgba(0, 0, 0, 0.54);
+    margin-right: 0;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+    color: rgba(0, 0, 0, 0.87);
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0.214rem solid transparent;
+    border-color: #008cff;
+    font-weight: bold;
+}
+.nav > li > a:focus,
+.nav > li > a:hover {
+    background: none;
+}
+
+/** LIST **/
+
+.list-group-item:first-child {
+    border-top-left-radius: 0.125rem;
+    border-top-right-radius: 0.125rem;
+}
+.list-group-item:last-child {
+    border-bottom-left-radius: 0.125rem;
+    border-bottom-right-radius: 0.125rem;
+}
+
+/** MISC **/
+
+.modifier {
+    border-radius: 0.125rem;
+}
+
+pre[class*='language-'] {
+    border-radius: 0.125rem;
+}
+
+/** TABLE **/
+
+.table-hover > tbody > tr:hover {
+    background: rgba(0, 0, 0, 0.075);
+}
+
+table.params thead {
+    background: none;
+}
+table.params thead td {
+    color: rgba(0, 0, 0, 0.54);
+    font-weight: bold;
+}
+
+.dark .menu .title:hover {
+    background-color: #2d2d2d;
+}
+.dark .menu ul.list li a:hover,
+.dark .menu ul.list li.chapter .simple:hover {
+    background-color: #2d2d2d;
+}
+.dark .nav-tabs > li:not(.active) > a {
+    color: #fafafa;
+}
+.dark table.params thead {
+    background: #484848;
+}
+.dark table.params thead td {
+    color: #fafafa;
+}
