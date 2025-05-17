@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import * as _ from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rule } from '../../entities/rule.entity';
@@ -19,7 +20,7 @@ export class RulesService {
     if (dto.pattern) {
       try {
         // eslint-disable-next-line no-new
-        new RegExp(dto.pattern);
+        new RegExp(_.escapeRegExp(dto.pattern));
       } catch (e) {
         throw new BadRequestException('pattern is not a valid regex');
       }
