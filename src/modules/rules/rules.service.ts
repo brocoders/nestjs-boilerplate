@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Rule } from '../../entities/rule.entity';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
+import * as safeRegex from 'safe-regex';
 
 @Injectable()
 export class RulesService {
@@ -19,10 +20,14 @@ export class RulesService {
     }
     if (dto.pattern) {
       try {
+        // Validate regex safety before constructing
+        if (!safeRegex(dto.pattern)) {
+          throw new Error('pattern is potentially unsafe and may be vulnerable to ReDoS');
+        }
         // eslint-disable-next-line no-new
-        new RegExp(_.escapeRegExp(dto.pattern));
+        new RegExp(dto.pattern);
       } catch (e) {
-        throw new BadRequestException('pattern is not a valid regex');
+        throw new BadRequestException(`pattern is not a valid or safe regex: ${e.message}`);
       }
     }
   }

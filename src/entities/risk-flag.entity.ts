@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Contract } from './contract.entity';
 import { Clause } from './clause.entity';
 
+export enum RiskFlagStatus {
+  OPEN = 'open',
+  RESOLVED = 'resolved',
+  IGNORED = 'ignored',
+}
+
 @Entity('risk_flags')
 export class RiskFlag {
   @PrimaryGeneratedColumn('uuid')
@@ -29,9 +35,23 @@ export class RiskFlag {
   @Column({ type: 'text', nullable: true })
   notes: string;
 
-  @Column({ enum: ['open', 'resolved', 'ignored'], default: 'open', type: 'enum' })
-  status: 'open' | 'resolved' | 'ignored';
+  /**
+   * Tracks the current state of the risk flag. Use this field for all logic regarding resolution status.
+   * Possible values: 'open', 'resolved', 'ignored'.
+   * The isResolved boolean was removed to avoid redundant state tracking.
+   */
+  @Column({
+    type: 'enum',
+    enum: Object.values(RiskFlagStatus),
+    default: RiskFlagStatus.OPEN,
+  })
+  status: RiskFlagStatus;
 
+  /**
+   * @deprecated Use the status field instead. This field is kept for backward compatibility.
+   * Its value should be synchronized with status in the service layer.
+   * Do not use isResolved directly in new logic.
+   */
   @Column({ default: false })
   isResolved: boolean;
 

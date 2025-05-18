@@ -86,6 +86,9 @@ importers:
       langchain:
         specifier: ^0.3.19
         version: 0.3.19(@langchain/core@0.3.43(openai@4.89.1(zod@3.24.2)))(handlebars@4.7.8)(openai@4.89.1(zod@3.24.2))(typeorm@0.3.21(pg@8.14.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.8)(@types/node@22.13.10)(typescript@5.8.2)))
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       mongoose:
         specifier: 8.12.1
         version: 8.12.1(socks@2.8.4)
@@ -128,6 +131,9 @@ importers:
       rxjs:
         specifier: 7.8.2
         version: 7.8.2
+      safe-regex:
+        specifier: ^2.1.1
+        version: 2.1.1
       source-map-support:
         specifier: 0.5.21
         version: 0.5.21
@@ -4941,6 +4947,10 @@ packages:
   regenerator-runtime@0.11.1:
     resolution: {integrity: sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==}
 
+  regexp-tree@0.1.27:
+    resolution: {integrity: sha512-iETxpjK6YoRWJG5o6hXLwvjYAoW+FEZn9os0PD/b6AP6xQwsa/Y7lCVgIixBbUPMfhu+i2LtdeAqVTgGlQarfA==}
+    hasBin: true
+
   registry-auth-token@5.1.0:
     resolution: {integrity: sha512-GdekYuwLXLxMuFTwAPg5UKGLW/UXzQrZvH/Zj791BQif5T05T0RsaLfHc9q3ZOKi7n+BoprPD9mJ0O0k4xzUlw==}
     engines: {node: '>=14'}
@@ -5046,6 +5056,9 @@ packages:
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
+
+  safe-regex@2.1.1:
+    resolution: {integrity: sha512-rx+x8AMzKb5Q5lQ95Zoi6ZbJqwCLkqi3XuJXp5P3rT8OEc6sZCJG5AE5dU3lsgRr/F4Bs31jSlVN+j5KrsGu9A==}
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
@@ -11525,6 +11538,8 @@ snapshots:
 
   regenerator-runtime@0.11.1: {}
 
+  regexp-tree@0.1.27: {}
+
   registry-auth-token@5.1.0:
     dependencies:
       '@pnpm/npm-conf': 2.3.1
@@ -11664,6 +11679,10 @@ snapshots:
   safe-buffer@5.1.2: {}
 
   safe-buffer@5.2.1: {}
+
+  safe-regex@2.1.1:
+    dependencies:
+      regexp-tree: 0.1.27
 
   safer-buffer@2.1.2: {}
 
