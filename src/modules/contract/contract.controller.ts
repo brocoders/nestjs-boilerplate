@@ -21,31 +21,12 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
+import type { ExportAnalysisResult } from './contract.service';
 
 @ApiTags('contracts')
 @Controller('contracts')
 export class ContractController {
   constructor(private readonly contractService: ContractService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Upload a contract file' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: { type: 'string', format: 'binary' },
-        contractType: { type: 'string' },
-      },
-    },
-  })
-  @UseInterceptors(FileInterceptor('file'))
-  create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('contractType') contractType: string,
-  ) {
-    return this.contractService.uploadContract(file, contractType);
-  }
 
   @Post('upload')
   @ApiOperation({ summary: 'Upload a contract file' })
@@ -149,14 +130,14 @@ export class ContractController {
   @ApiOperation({ summary: 'Submit a chat question' })
   @ApiResponse({ status: 200, description: 'Chat answered' })
   submitChat(@Param('id') id: string, @Body('question') question: string) {
-    return this.contractService.askQuestion(id, question);
+    return this.contractService.submitChat(id, question);
   }
 
   @Get(':id/chat')
   @ApiOperation({ summary: 'Get chat history' })
   @ApiResponse({ status: 200, description: 'Return chat messages' })
   getChat(@Param('id') id: string) {
-    return this.contractService.getContractQnA(id);
+    return this.contractService.getContractChat(id);
   }
 
   @Patch(':id/risk-flags/:riskId')
@@ -178,7 +159,7 @@ export class ContractController {
   @Get(':id/export')
   @ApiOperation({ summary: 'Export contract analysis' })
   @ApiResponse({ status: 200, description: 'Return analysis export' })
-  exportAnalysis(@Param('id') id: string) {
+  exportAnalysis(@Param('id') id: string): Promise<ExportAnalysisResult> {
     return this.contractService.exportAnalysis(id);
   }
 

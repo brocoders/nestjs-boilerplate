@@ -15,6 +15,13 @@ import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { AiService } from '../ai/ai.service';
 
+export interface ExportAnalysisResult {
+  contract: Contract;
+  summaries: Summary[];
+  riskFlags: RiskFlag[];
+  qna: QnA[];
+}
+
 @Injectable()
 export class ContractService {
   constructor(
@@ -184,7 +191,7 @@ export class ContractService {
     return this.riskFlagRepository.save(riskFlag);
   }
 
-  async exportAnalysis(id: string): Promise<any> {
+  async exportAnalysis(id: string): Promise<ExportAnalysisResult> {
     const contract = await this.findOne(id);
     return {
       contract,
@@ -218,5 +225,16 @@ export class ContractService {
     });
 
     return qna;
+  }
+
+  // Dedicated chat methods for future differentiation
+  getContractChat(): any[] {
+    // TODO: Implement chat-specific storage and retrieval
+    return [];
+  }
+
+  submitChat(_id: string, question: string): any {
+    // TODO: Implement chat-specific storage and processing
+    return { question, answer: 'Chat answer (stub)' };
   }
 }
