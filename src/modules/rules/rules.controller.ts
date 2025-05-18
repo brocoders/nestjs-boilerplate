@@ -59,6 +59,22 @@ export class RulesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update rule' })
   @ApiResponse({ status: 200, type: Rule })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Validation failed. Possible reasons: similarityThreshold and deviationAllowedPct both set, or pattern is not a valid regex.',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: [
+          'similarityThreshold and deviationAllowedPct cannot both be set',
+          'pattern must be a valid and safe regular expression',
+          'similarityThreshold must not be greater than 100',
+        ],
+        error: 'Bad Request',
+      },
+    },
+  })
   update(@Param('id') id: string, @Body() dto: UpdateRuleDto) {
     return this.rulesService.update(id, dto);
   }
