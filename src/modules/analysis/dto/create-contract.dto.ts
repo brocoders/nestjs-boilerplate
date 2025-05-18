@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEnum, IsOptional, IsArray, ValidateNested, IsDate } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsDate,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ContractType } from '../entities/contract.entity';
 
@@ -12,7 +19,10 @@ export class PartyDto {
   @IsString()
   role: string;
 
-  @ApiProperty({ description: 'Type of the party', enum: ['individual', 'organization'] })
+  @ApiProperty({
+    description: 'Type of the party',
+    enum: ['individual', 'organization'],
+  })
   @IsString()
   type: 'individual' | 'organization';
 }
@@ -26,24 +36,36 @@ export class CreateContractDto {
   @IsEnum(ContractType)
   type: ContractType;
 
-  @ApiProperty({ description: 'Original text content of the contract', required: false })
+  @ApiProperty({
+    description: 'Original text content of the contract',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   originalText?: string;
 
-  @ApiProperty({ description: 'Governing law of the contract', required: false })
+  @ApiProperty({
+    description: 'Governing law of the contract',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   governingLaw?: string;
 
-  @ApiProperty({ description: 'Parties involved in the contract', required: false })
+  @ApiProperty({
+    description: 'Parties involved in the contract',
+    required: false,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PartyDto)
   @IsOptional()
   parties?: PartyDto[];
 
-  @ApiProperty({ description: 'Date when the contract was uploaded', required: false })
+  @ApiProperty({
+    description: 'Date when the contract was uploaded',
+    required: false,
+  })
   @IsDate()
   @IsOptional()
   uploadDate?: Date;
@@ -52,4 +74,4 @@ export class CreateContractDto {
   @IsString()
   @IsOptional()
   language?: string;
-} 
+}

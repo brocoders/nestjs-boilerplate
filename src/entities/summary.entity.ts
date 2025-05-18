@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Contract } from './contract.entity';
 
 @Entity('summaries')
@@ -8,14 +15,14 @@ export class Summary {
 
   @Column({
     type: 'enum',
-    enum: ['FULL', 'RISKS', 'KEY_POINTS', 'OBLIGATIONS']
+    enum: ['FULL', 'RISKS', 'KEY_POINTS', 'OBLIGATIONS'],
   })
   summaryType: string;
 
   @Column({ type: 'text' })
   content: string;
 
-  @ManyToOne(() => Contract, contract => contract.summaries)
+  @ManyToOne(() => Contract, (contract) => contract.summaries)
   contract: Contract;
 
   @CreateDateColumn()
@@ -23,4 +30,4 @@ export class Summary {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

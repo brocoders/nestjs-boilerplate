@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { HumanReview } from './human-review.entity';
 
 @Entity('users')
@@ -18,7 +25,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: ['LEGAL_COUNSEL', 'MANAGER', 'APPROVER', 'ADMIN'],
-    default: 'LEGAL_COUNSEL'
+    default: 'LEGAL_COUNSEL',
   })
   role: string;
 
@@ -28,7 +35,7 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @OneToMany(() => HumanReview, review => review.reviewer)
+  @OneToMany(() => HumanReview, (review) => review.reviewer)
   reviews: HumanReview[];
 
   @CreateDateColumn()
@@ -36,4 +43,4 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

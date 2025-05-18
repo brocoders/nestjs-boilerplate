@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Contract } from '../../entities/contract.entity';
@@ -36,14 +40,14 @@ export class ContractService {
 
   async findAll(): Promise<Contract[]> {
     return await this.contractRepository.find({
-      relations: ['clauses', 'riskFlags', 'summaries', 'qnas', 'reviews']
+      relations: ['clauses', 'riskFlags', 'summaries', 'qnas', 'reviews'],
     });
   }
 
   async findOne(id: string): Promise<Contract> {
     const contract = await this.contractRepository.findOne({
       where: { id },
-      relations: ['clauses', 'riskFlags', 'summaries', 'qnas', 'reviews']
+      relations: ['clauses', 'riskFlags', 'summaries', 'qnas', 'reviews'],
     });
 
     if (!contract) {
@@ -53,7 +57,10 @@ export class ContractService {
     return contract;
   }
 
-  async update(id: string, updateContractDto: UpdateContractDto): Promise<Contract> {
+  async update(
+    id: string,
+    updateContractDto: UpdateContractDto,
+  ): Promise<Contract> {
     const contract = await this.findOne(id);
     Object.assign(contract, updateContractDto);
     return await this.contractRepository.save(contract);
@@ -64,7 +71,10 @@ export class ContractService {
     await this.contractRepository.remove(contract);
   }
 
-  async uploadContract(file: Express.Multer.File, contractType: string): Promise<Contract> {
+  async uploadContract(
+    file: Express.Multer.File,
+    contractType: string,
+  ): Promise<Contract> {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
@@ -75,7 +85,7 @@ export class ContractService {
       title: file.originalname,
       filename: file.filename,
       contractType,
-      status: 'DRAFT'
+      status: 'DRAFT',
     });
 
     return await this.contractRepository.save(contract);
@@ -83,7 +93,7 @@ export class ContractService {
 
   async analyzeContract(id: string): Promise<Contract> {
     const contract = await this.findOne(id);
-    
+
     if (!contract.fullText) {
       throw new BadRequestException('Contract text is required for analysis');
     }
@@ -91,27 +101,27 @@ export class ContractService {
     // Analyze contract using AI
     const analysis = await this.aiService.analyzeContract(
       contract.fullText,
-      contract.contractType
+      contract.contractType,
     );
 
     // Save clauses
     const clauses = await Promise.all(
-      analysis.clauses.map(clauseData =>
+      analysis.clauses.map((clauseData) =>
         this.clauseRepository.save({
           ...clauseData,
           contract,
-        })
-      )
+        }),
+      ),
     );
 
     // Save risk flags
     const riskFlags = await Promise.all(
-      analysis.risks.map(riskData =>
+      analysis.risks.map((riskData) =>
         this.riskFlagRepository.save({
           ...riskData,
           contract,
-        })
-      )
+        }),
+      ),
     );
 
     // Save summary
@@ -140,7 +150,9 @@ export class ContractService {
     return contract.riskFlags;
   }
 
-  async getAnalysis(id: string): Promise<{ summaries: Summary[]; riskFlags: RiskFlag[] }> {
+  async getAnalysis(
+    id: string,
+  ): Promise<{ summaries: Summary[]; riskFlags: RiskFlag[] }> {
     const contract = await this.findOne(id);
     return {
       summaries: contract.summaries,
@@ -160,7 +172,9 @@ export class ContractService {
     notes?: string,
   ): Promise<RiskFlag> {
     await this.findOne(contractId);
-    const riskFlag = await this.riskFlagRepository.findOne({ where: { id: riskId } });
+    const riskFlag = await this.riskFlagRepository.findOne({
+      where: { id: riskId },
+    });
     if (!riskFlag) {
       throw new NotFoundException(`Risk flag with ID ${riskId} not found`);
     }
@@ -185,14 +199,14 @@ export class ContractService {
 
   async askQuestion(id: string, question: string): Promise<QnA> {
     const contract = await this.findOne(id);
-    
+
     if (!contract.fullText) {
       throw new BadRequestException('Contract text is required for Q&A');
     }
 
     const answer = await this.aiService.answerQuestion(
       question,
-      contract.fullText
+      contract.fullText,
     );
 
     const qna = await this.qnaRepository.save({
@@ -203,4 +217,4 @@ export class ContractService {
 
     return qna;
   }
-} 
+}

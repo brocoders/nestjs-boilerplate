@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Contract } from './contract.entity';
 import { RiskFlag } from './risk-flag.entity';
 
@@ -22,14 +30,14 @@ export class Clause {
   @Column({
     type: 'enum',
     enum: ['LOW', 'MEDIUM', 'HIGH'],
-    nullable: true
+    nullable: true,
   })
   riskLevel: string;
 
-  @ManyToOne(() => Contract, contract => contract.clauses)
+  @ManyToOne(() => Contract, (contract) => contract.clauses)
   contract: Contract;
 
-  @OneToMany(() => RiskFlag, riskFlag => riskFlag.clause)
+  @OneToMany(() => RiskFlag, (riskFlag) => riskFlag.clause)
   riskFlags: RiskFlag[];
 
   @CreateDateColumn()
@@ -37,4 +45,4 @@ export class Clause {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

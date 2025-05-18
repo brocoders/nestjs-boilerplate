@@ -29,4 +29,4 @@ export class CreateContractDto {
   @IsString()
   @IsOptional()
   language?: string;
-} 
+}

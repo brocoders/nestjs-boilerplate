@@ -18,12 +18,12 @@ import { AiModule } from '../ai/ai.module';
       RiskFlag,
       Summary,
       QnA,
-      HumanReview
+      HumanReview,
     ]),
-    AiModule
+    AiModule,
   ],
   providers: [ContractService],
   controllers: [ContractController],
-  exports: [ContractService]
+  exports: [ContractService],
 })
-export class ContractModule {} 
+export class ContractModule {}

@@ -10,4 +10,4 @@ import { StandardClausesController } from './standard-clauses.controller';
   providers: [StandardClausesService],
   exports: [StandardClausesService],
 })
-export class StandardClausesModule {} 
+export class StandardClausesModule {}

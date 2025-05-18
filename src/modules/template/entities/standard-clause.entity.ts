@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { SeverityLevel } from '../dto/create-standard-clause.dto';
 
@@ -29,11 +37,17 @@ export class StandardClause {
   version: string;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Description of the standard clause', required: false })
+  @ApiProperty({
+    description: 'Description of the standard clause',
+    required: false,
+  })
   description?: string;
 
   @Column('jsonb', { nullable: true })
-  @ApiProperty({ description: 'Allowed deviations from the standard clause', required: false })
+  @ApiProperty({
+    description: 'Allowed deviations from the standard clause',
+    required: false,
+  })
   allowedDeviations?: {
     type: string;
     description: string;
@@ -49,10 +63,13 @@ export class StandardClause {
   isLatest: boolean;
 
   @ManyToOne(() => StandardClause, { nullable: true })
-  @ApiProperty({ description: 'Previous version of this clause', required: false })
+  @ApiProperty({
+    description: 'Previous version of this clause',
+    required: false,
+  })
   previousVersion?: StandardClause;
 
-  @OneToMany(() => StandardClause, clause => clause.previousVersion)
+  @OneToMany(() => StandardClause, (clause) => clause.previousVersion)
   @ApiProperty({ description: 'Next versions of this clause' })
   nextVersions: StandardClause[];
 
@@ -63,4 +80,4 @@ export class StandardClause {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

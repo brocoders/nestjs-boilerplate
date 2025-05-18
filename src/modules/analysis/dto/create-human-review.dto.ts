@@ -12,18 +12,27 @@ export class CreateHumanReviewDto {
   @IsOptional()
   comments?: string;
 
-  @ApiProperty({ description: 'Date when the review was started', required: false })
+  @ApiProperty({
+    description: 'Date when the review was started',
+    required: false,
+  })
   @IsDate()
   @IsOptional()
   startDate?: Date;
 
-  @ApiProperty({ description: 'Date when the review was completed', required: false })
+  @ApiProperty({
+    description: 'Date when the review was completed',
+    required: false,
+  })
   @IsDate()
   @IsOptional()
   completionDate?: Date;
 
-  @ApiProperty({ description: 'ID of the user who performed the review', required: false })
+  @ApiProperty({
+    description: 'ID of the user who performed the review',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   reviewerId?: string;
-} 
+}

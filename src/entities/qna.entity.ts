@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Contract } from './contract.entity';
 
 @Entity('qnas')
@@ -18,7 +25,7 @@ export class QnA {
   @Column({ nullable: true })
   feedback: string;
 
-  @ManyToOne(() => Contract, contract => contract.qnas)
+  @ManyToOne(() => Contract, (contract) => contract.qnas)
   contract: Contract;
 
   @CreateDateColumn()
@@ -26,4 +33,4 @@ export class QnA {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

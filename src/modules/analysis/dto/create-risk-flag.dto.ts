@@ -7,7 +7,10 @@ export class CreateRiskFlagDto {
   @IsEnum(RiskType)
   type: RiskType;
 
-  @ApiProperty({ description: 'Severity level of the risk', enum: RiskSeverity })
+  @ApiProperty({
+    description: 'Severity level of the risk',
+    enum: RiskSeverity,
+  })
   @IsEnum(RiskSeverity)
   severity: RiskSeverity;
 
@@ -15,13 +18,19 @@ export class CreateRiskFlagDto {
   @IsString()
   description: string;
 
-  @ApiProperty({ description: 'Suggested resolution for the risk', required: false })
+  @ApiProperty({
+    description: 'Suggested resolution for the risk',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   suggestedResolution?: string;
 
-  @ApiProperty({ description: 'Reviewer comments on the risk', required: false })
+  @ApiProperty({
+    description: 'Reviewer comments on the risk',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   reviewerComments?: string;
-} 
+}

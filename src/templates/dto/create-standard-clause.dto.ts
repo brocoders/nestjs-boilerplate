@@ -29,4 +29,4 @@ export class CreateStandardClauseDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
-} 
+}

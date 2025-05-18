@@ -27,4 +27,4 @@ import { HumanReview } from './entities/human-review.entity';
   providers: [AnalysisService, AiService],
   exports: [AnalysisService],
 })
-export class AnalysisModule {} 
+export class AnalysisModule {}

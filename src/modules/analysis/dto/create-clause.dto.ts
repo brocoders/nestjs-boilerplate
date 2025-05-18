@@ -11,13 +11,20 @@ export class CreateClauseDto {
   @IsString()
   text: string;
 
-  @ApiProperty({ description: 'Type of the clause', enum: ClauseType, required: false })
+  @ApiProperty({
+    description: 'Type of the clause',
+    enum: ClauseType,
+    required: false,
+  })
   @IsEnum(ClauseType)
   @IsOptional()
   type?: ClauseType;
 
-  @ApiProperty({ description: 'Suggested text for the clause', required: false })
+  @ApiProperty({
+    description: 'Suggested text for the clause',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   suggestedText?: string;
-} 
+}

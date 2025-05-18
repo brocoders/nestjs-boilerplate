@@ -16,15 +16,20 @@ export class AiService {
 
   constructor(private configService: ConfigService) {
     // Initialize OpenAI
+    const apiKey = this.configService.get('ai.openai.apiKey', { infer: true });
+    const model = this.configService.get('ai.openai.model', { infer: true });
+    const temperature = this.configService.get('ai.openai.temperature', {
+      infer: true,
+    });
     this.openai = new ChatOpenAI({
-      openAIApiKey: this.configService.get<string>('ai.openai.apiKey') || '',
-      modelName: this.configService.get<string>('ai.openai.model') || 'gpt-4',
-      temperature: 0.1,
+      openAIApiKey: apiKey || '',
+      modelName: model || 'gpt-4',
+      temperature: temperature || 0.1,
     });
 
     // Initialize Gemini
     this.gemini = new GoogleGenerativeAI(
-      this.configService.get<string>('ai.gemini.apiKey') || '',
+      this.configService.get<string>('ai.gemini.apiKey', { infer: true }) || '',
     );
 
     // Initialize text splitter
@@ -35,7 +40,10 @@ export class AiService {
     });
   }
 
-  async analyzeContract(text: string, contractType: string): Promise<{
+  async analyzeContract(
+    text: string,
+    contractType: string,
+  ): Promise<{
     clauses: { text: string; type: string }[];
     risks: { type: string; description: string; severity: string }[];
     summary: string;
@@ -45,7 +53,7 @@ export class AiService {
 
     // Analyze each chunk for clauses and risks
     const analysisResults = await Promise.all(
-      docs.map((doc) => this.analyzeChunk(doc, contractType))
+      docs.map((doc) => this.analyzeChunk(doc, contractType)),
     );
 
     // Combine results
@@ -206,4 +214,4 @@ export class AiService {
 
     return JSON.parse(result);
   }
-} 
+}

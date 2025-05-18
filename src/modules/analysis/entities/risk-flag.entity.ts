@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.entity';
 import { Clause } from './clause.entity';
@@ -39,7 +46,10 @@ export class RiskFlag {
     type: 'enum',
     enum: RiskSeverity,
   })
-  @ApiProperty({ description: 'Severity level of the risk', enum: RiskSeverity })
+  @ApiProperty({
+    description: 'Severity level of the risk',
+    enum: RiskSeverity,
+  })
   severity: RiskSeverity;
 
   @Column('text')
@@ -47,7 +57,10 @@ export class RiskFlag {
   description: string;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Suggested resolution for the risk', required: false })
+  @ApiProperty({
+    description: 'Suggested resolution for the risk',
+    required: false,
+  })
   suggestedResolution: string;
 
   @Column({ default: false })
@@ -59,15 +72,21 @@ export class RiskFlag {
   isResolved: boolean;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Reviewer comments on the risk', required: false })
+  @ApiProperty({
+    description: 'Reviewer comments on the risk',
+    required: false,
+  })
   reviewerComments: string;
 
-  @ManyToOne(() => Contract, contract => contract.riskFlags)
+  @ManyToOne(() => Contract, (contract) => contract.riskFlags)
   @ApiProperty({ description: 'Contract this risk flag belongs to' })
   contract: Contract;
 
-  @ManyToOne(() => Clause, clause => clause.riskFlags, { nullable: true })
-  @ApiProperty({ description: 'Clause this risk flag is associated with', required: false })
+  @ManyToOne(() => Clause, (clause) => clause.riskFlags, { nullable: true })
+  @ApiProperty({
+    description: 'Clause this risk flag is associated with',
+    required: false,
+  })
   clause: Clause;
 
   @CreateDateColumn()
@@ -77,4 +96,4 @@ export class RiskFlag {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

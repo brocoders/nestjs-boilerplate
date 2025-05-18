@@ -42,7 +42,9 @@ export class AnalysisService {
   ) {}
 
   // Contract operations
-  async createContract(createContractDto: CreateContractDto): Promise<Contract> {
+  async createContract(
+    createContractDto: CreateContractDto,
+  ): Promise<Contract> {
     const contract = this.contractRepository.create({
       ...createContractDto,
       status: ContractStatus.PENDING_REVIEW,
@@ -67,7 +69,10 @@ export class AnalysisService {
     return contract;
   }
 
-  async updateContract(id: string, updateContractDto: UpdateContractDto): Promise<Contract> {
+  async updateContract(
+    id: string,
+    updateContractDto: UpdateContractDto,
+  ): Promise<Contract> {
     const contract = await this.findContract(id);
     Object.assign(contract, updateContractDto);
     return this.contractRepository.save(contract);
@@ -79,8 +84,10 @@ export class AnalysisService {
   }
 
   // Clause operations
-  async createClause(contractId: string, createClauseDto: CreateClauseDto): Promise<Clause> {
-    const contract = await this.findContract(contractId);
+  async createClause(
+    contractId: string,
+    createClauseDto: CreateClauseDto,
+  ): Promise<Clause> {
     const clause = this.clauseRepository.create({
       ...createClauseDto,
       contract: { id: contractId },
@@ -106,7 +113,10 @@ export class AnalysisService {
     return clause;
   }
 
-  async updateClause(id: string, updateClauseDto: UpdateClauseDto): Promise<Clause> {
+  async updateClause(
+    id: string,
+    updateClauseDto: UpdateClauseDto,
+  ): Promise<Clause> {
     const clause = await this.findClause(id);
     Object.assign(clause, updateClauseDto);
     return this.clauseRepository.save(clause);
@@ -118,8 +128,11 @@ export class AnalysisService {
   }
 
   // Risk flag operations
-  async createRiskFlag(contractId: string, clauseId: string | null, createRiskFlagDto: CreateRiskFlagDto): Promise<RiskFlag> {
-    const contract = await this.findContract(contractId);
+  async createRiskFlag(
+    contractId: string,
+    clauseId: string | null,
+    createRiskFlagDto: CreateRiskFlagDto,
+  ): Promise<RiskFlag> {
     const riskFlag = this.riskFlagRepository.create({
       ...createRiskFlagDto,
       contract: { id: contractId },
@@ -146,7 +159,10 @@ export class AnalysisService {
     return riskFlag;
   }
 
-  async updateRiskFlag(id: string, updateRiskFlagDto: UpdateRiskFlagDto): Promise<RiskFlag> {
+  async updateRiskFlag(
+    id: string,
+    updateRiskFlagDto: UpdateRiskFlagDto,
+  ): Promise<RiskFlag> {
     const riskFlag = await this.findRiskFlag(id);
     Object.assign(riskFlag, updateRiskFlagDto);
     return this.riskFlagRepository.save(riskFlag);
@@ -158,8 +174,11 @@ export class AnalysisService {
   }
 
   // Summary operations
-  async createSummary(contractId: string, clauseId: string | null, createSummaryDto: CreateSummaryDto): Promise<Summary> {
-    const contract = await this.findContract(contractId);
+  async createSummary(
+    contractId: string,
+    clauseId: string | null,
+    createSummaryDto: CreateSummaryDto,
+  ): Promise<Summary> {
     const summary = this.summaryRepository.create({
       ...createSummaryDto,
       contract: { id: contractId },
@@ -186,7 +205,10 @@ export class AnalysisService {
     return summary;
   }
 
-  async updateSummary(id: string, updateSummaryDto: UpdateSummaryDto): Promise<Summary> {
+  async updateSummary(
+    id: string,
+    updateSummaryDto: UpdateSummaryDto,
+  ): Promise<Summary> {
     const summary = await this.findSummary(id);
     Object.assign(summary, updateSummaryDto);
     return this.summaryRepository.save(summary);
@@ -198,8 +220,11 @@ export class AnalysisService {
   }
 
   // Q&A operations
-  async createQnA(contractId: string, clauseId: string | null, createQnADto: CreateQnADto): Promise<QnA> {
-    const contract = await this.findContract(contractId);
+  async createQnA(
+    contractId: string,
+    clauseId: string | null,
+    createQnADto: CreateQnADto,
+  ): Promise<QnA> {
     const qna = this.qnaRepository.create({
       ...createQnADto,
       contract: { id: contractId },
@@ -238,8 +263,10 @@ export class AnalysisService {
   }
 
   // Human review operations
-  async createHumanReview(contractId: string, createHumanReviewDto: CreateHumanReviewDto): Promise<HumanReview> {
-    const contract = await this.findContract(contractId);
+  async createHumanReview(
+    contractId: string,
+    createHumanReviewDto: CreateHumanReviewDto,
+  ): Promise<HumanReview> {
     const review = this.humanReviewRepository.create({
       ...createHumanReviewDto,
       contract: { id: contractId },
@@ -264,7 +291,10 @@ export class AnalysisService {
     return review;
   }
 
-  async updateReview(id: string, updateHumanReviewDto: UpdateHumanReviewDto): Promise<HumanReview> {
+  async updateReview(
+    id: string,
+    updateHumanReviewDto: UpdateHumanReviewDto,
+  ): Promise<HumanReview> {
     const review = await this.findReview(id);
     Object.assign(review, updateHumanReviewDto);
     return this.humanReviewRepository.save(review);
@@ -278,7 +308,7 @@ export class AnalysisService {
   // Analysis operations
   async analyzeContract(contractId: string): Promise<void> {
     const contract = await this.findContract(contractId);
-    
+
     // Update contract status
     contract.status = ContractStatus.IN_REVIEW;
     await this.contractRepository.save(contract);
@@ -293,8 +323,10 @@ export class AnalysisService {
     if (!contract.originalText) {
       throw new Error('Contract text is not available');
     }
-    const clauses = await this.aiService.splitIntoClauses(contract.originalText);
-    
+    const clauses = await this.aiService.splitIntoClauses(
+      contract.originalText,
+    );
+
     // Analyze each clause
     for (const [index, clauseText] of clauses.entries()) {
       // Create clause
@@ -305,7 +337,7 @@ export class AnalysisService {
 
       // Analyze clause
       const analysis = await this.aiService.analyzeClause(clauseText);
-      
+
       // Update clause type
       await this.updateClause(clause.id, {
         type: analysis.type as ClauseType,
@@ -334,7 +366,10 @@ export class AnalysisService {
     }
     await this.createSummary(contractId, null, {
       type: SummaryType.FULL,
-      text: await this.aiService.generateSummary(contract.originalText, 'full contract'),
+      text: await this.aiService.generateSummary(
+        contract.originalText,
+        'full contract',
+      ),
     });
 
     // Update contract status
@@ -347,31 +382,38 @@ export class AnalysisService {
     if (!contract.originalText) {
       throw new Error('Contract text is not available');
     }
-    const summaryText = await this.aiService.generateSummary(contract.originalText, type);
-    
+    const summaryText = await this.aiService.generateSummary(
+      contract.originalText,
+      type,
+    );
+
     return this.createSummary(contractId, null, {
       type: type as SummaryType,
       text: summaryText,
     });
   }
 
-  async answerQuestion(contractId: string, clauseId: string | null, question: string): Promise<QnA> {
+  async answerQuestion(
+    contractId: string,
+    clauseId: string | null,
+    question: string,
+  ): Promise<QnA> {
     const contract = await this.findContract(contractId);
     if (!contract.originalText) {
       throw new Error('Contract text is not available');
     }
     let context = contract.originalText;
-    
+
     if (clauseId) {
       const clause = await this.findClause(clauseId);
       context = clause.text;
     }
-    
+
     const answer = await this.aiService.answerQuestion(question, context);
-    
+
     return this.createQnA(contractId, clauseId, {
       question,
       answer,
     });
   }
-} 
+}

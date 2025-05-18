@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AnalysisService } from './analysis.service';
 import { CreateContractDto } from './dto/create-contract.dto';
@@ -44,7 +53,10 @@ export class AnalysisController {
   @Patch('contracts/:id')
   @ApiOperation({ summary: 'Update a contract' })
   @ApiResponse({ status: 200, description: 'Contract updated successfully' })
-  updateContract(@Param('id') id: string, @Body() updateContractDto: UpdateContractDto) {
+  updateContract(
+    @Param('id') id: string,
+    @Body() updateContractDto: UpdateContractDto,
+  ) {
     return this.analysisService.updateContract(id, updateContractDto);
   }
 
@@ -59,7 +71,10 @@ export class AnalysisController {
   @Post('contracts/:contractId/clauses')
   @ApiOperation({ summary: 'Create a new clause' })
   @ApiResponse({ status: 201, description: 'Clause created successfully' })
-  createClause(@Param('contractId') contractId: string, @Body() createClauseDto: CreateClauseDto) {
+  createClause(
+    @Param('contractId') contractId: string,
+    @Body() createClauseDto: CreateClauseDto,
+  ) {
     return this.analysisService.createClause(contractId, createClauseDto);
   }
 
@@ -80,7 +95,10 @@ export class AnalysisController {
   @Patch('clauses/:id')
   @ApiOperation({ summary: 'Update a clause' })
   @ApiResponse({ status: 200, description: 'Clause updated successfully' })
-  updateClause(@Param('id') id: string, @Body() updateClauseDto: UpdateClauseDto) {
+  updateClause(
+    @Param('id') id: string,
+    @Body() updateClauseDto: UpdateClauseDto,
+  ) {
     return this.analysisService.updateClause(id, updateClauseDto);
   }
 
@@ -100,7 +118,11 @@ export class AnalysisController {
     @Query('clauseId') clauseId: string | null,
     @Body() createRiskFlagDto: CreateRiskFlagDto,
   ) {
-    return this.analysisService.createRiskFlag(contractId, clauseId, createRiskFlagDto);
+    return this.analysisService.createRiskFlag(
+      contractId,
+      clauseId,
+      createRiskFlagDto,
+    );
   }
 
   @Get('contracts/:contractId/risk-flags')
@@ -120,7 +142,10 @@ export class AnalysisController {
   @Patch('risk-flags/:id')
   @ApiOperation({ summary: 'Update a risk flag' })
   @ApiResponse({ status: 200, description: 'Risk flag updated successfully' })
-  updateRiskFlag(@Param('id') id: string, @Body() updateRiskFlagDto: UpdateRiskFlagDto) {
+  updateRiskFlag(
+    @Param('id') id: string,
+    @Body() updateRiskFlagDto: UpdateRiskFlagDto,
+  ) {
     return this.analysisService.updateRiskFlag(id, updateRiskFlagDto);
   }
 
@@ -140,7 +165,11 @@ export class AnalysisController {
     @Query('clauseId') clauseId: string | null,
     @Body() createSummaryDto: CreateSummaryDto,
   ) {
-    return this.analysisService.createSummary(contractId, clauseId, createSummaryDto);
+    return this.analysisService.createSummary(
+      contractId,
+      clauseId,
+      createSummaryDto,
+    );
   }
 
   @Get('contracts/:contractId/summaries')
@@ -160,7 +189,10 @@ export class AnalysisController {
   @Patch('summaries/:id')
   @ApiOperation({ summary: 'Update a summary' })
   @ApiResponse({ status: 200, description: 'Summary updated successfully' })
-  updateSummary(@Param('id') id: string, @Body() updateSummaryDto: UpdateSummaryDto) {
+  updateSummary(
+    @Param('id') id: string,
+    @Body() updateSummaryDto: UpdateSummaryDto,
+  ) {
     return this.analysisService.updateSummary(id, updateSummaryDto);
   }
 
@@ -215,8 +247,14 @@ export class AnalysisController {
   @Post('contracts/:contractId/reviews')
   @ApiOperation({ summary: 'Create a new human review' })
   @ApiResponse({ status: 201, description: 'Review created successfully' })
-  createHumanReview(@Param('contractId') contractId: string, @Body() createHumanReviewDto: CreateHumanReviewDto) {
-    return this.analysisService.createHumanReview(contractId, createHumanReviewDto);
+  createHumanReview(
+    @Param('contractId') contractId: string,
+    @Body() createHumanReviewDto: CreateHumanReviewDto,
+  ) {
+    return this.analysisService.createHumanReview(
+      contractId,
+      createHumanReviewDto,
+    );
   }
 
   @Get('contracts/:contractId/reviews')
@@ -236,7 +274,10 @@ export class AnalysisController {
   @Patch('reviews/:id')
   @ApiOperation({ summary: 'Update a human review' })
   @ApiResponse({ status: 200, description: 'Review updated successfully' })
-  updateReview(@Param('id') id: string, @Body() updateHumanReviewDto: UpdateHumanReviewDto) {
+  updateReview(
+    @Param('id') id: string,
+    @Body() updateHumanReviewDto: UpdateHumanReviewDto,
+  ) {
     return this.analysisService.updateReview(id, updateHumanReviewDto);
   }
 
@@ -272,4 +313,4 @@ export class AnalysisController {
   ) {
     return this.analysisService.answerQuestion(id, clauseId, question);
   }
-} 
+}

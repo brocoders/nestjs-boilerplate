@@ -12,8 +12,12 @@ export class StandardClausesService {
     private standardClauseRepository: Repository<StandardClause>,
   ) {}
 
-  async create(createStandardClauseDto: CreateStandardClauseDto): Promise<StandardClause> {
-    const standardClause = this.standardClauseRepository.create(createStandardClauseDto);
+  async create(
+    createStandardClauseDto: CreateStandardClauseDto,
+  ): Promise<StandardClause> {
+    const standardClause = this.standardClauseRepository.create(
+      createStandardClauseDto,
+    );
     return this.standardClauseRepository.save(standardClause);
   }
 
@@ -22,7 +26,9 @@ export class StandardClausesService {
   }
 
   async findOne(id: number): Promise<StandardClause> {
-    const standardClause = await this.standardClauseRepository.findOne({ where: { id } });
+    const standardClause = await this.standardClauseRepository.findOne({
+      where: { id },
+    });
     if (!standardClause) {
       throw new NotFoundException(`Standard clause with ID ${id} not found`);
     }
@@ -37,7 +43,10 @@ export class StandardClausesService {
     return this.standardClauseRepository.find({ where: { contractType } });
   }
 
-  async update(id: number, updateStandardClauseDto: UpdateStandardClauseDto): Promise<StandardClause> {
+  async update(
+    id: number,
+    updateStandardClauseDto: UpdateStandardClauseDto,
+  ): Promise<StandardClause> {
     const standardClause = await this.findOne(id);
     Object.assign(standardClause, updateStandardClauseDto);
     return this.standardClauseRepository.save(standardClause);
@@ -49,4 +58,4 @@ export class StandardClausesService {
       throw new NotFoundException(`Standard clause with ID ${id} not found`);
     }
   }
-} 
+}

@@ -12,7 +12,9 @@ export class TemplatesService {
     private standardClauseRepository: Repository<StandardClause>,
   ) {}
 
-  async create(createStandardClauseDto: CreateStandardClauseDto): Promise<StandardClause> {
+  async create(
+    createStandardClauseDto: CreateStandardClauseDto,
+  ): Promise<StandardClause> {
     const clause = this.standardClauseRepository.create({
       isActive: true,
       ...createStandardClauseDto,
@@ -31,15 +33,18 @@ export class TemplatesService {
     const clause = await this.standardClauseRepository.findOne({
       where: { id, isActive: true },
     });
-    
+
     if (!clause) {
       throw new NotFoundException(`Standard clause with ID "${id}" not found`);
     }
-    
+
     return clause;
   }
 
-  async update(id: string, updateStandardClauseDto: UpdateStandardClauseDto): Promise<StandardClause> {
+  async update(
+    id: string,
+    updateStandardClauseDto: UpdateStandardClauseDto,
+  ): Promise<StandardClause> {
     const clause = await this.findOne(id);
     Object.assign(clause, updateStandardClauseDto);
     return this.standardClauseRepository.save(clause);
@@ -64,4 +69,4 @@ export class TemplatesService {
       order: { createdAt: 'DESC' },
     });
   }
-} 
+}

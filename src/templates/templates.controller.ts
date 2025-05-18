@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { TemplatesService } from './templates.service';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
@@ -9,7 +17,9 @@ export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
 
   @Post()
-  create(@Body() createStandardClauseDto: CreateStandardClauseDto): Promise<StandardClause> {
+  create(
+    @Body() createStandardClauseDto: CreateStandardClauseDto,
+  ): Promise<StandardClause> {
     return this.templatesService.create(createStandardClauseDto);
   }
 
@@ -24,7 +34,9 @@ export class TemplatesController {
   }
 
   @Get('jurisdiction/:jurisdiction')
-  findByJurisdiction(@Param('jurisdiction') jurisdiction: string): Promise<StandardClause[]> {
+  findByJurisdiction(
+    @Param('jurisdiction') jurisdiction: string,
+  ): Promise<StandardClause[]> {
     return this.templatesService.findByJurisdiction(jurisdiction);
   }
 
@@ -45,4 +57,4 @@ export class TemplatesController {
   remove(@Param('id') id: string): Promise<void> {
     return this.templatesService.remove(id);
   }
-} 
+}

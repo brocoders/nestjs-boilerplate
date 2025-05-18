@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.entity';
 import { Clause } from './clause.entity';
@@ -32,15 +39,21 @@ export class Summary {
   isReviewed: boolean;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Reviewer comments on the summary', required: false })
+  @ApiProperty({
+    description: 'Reviewer comments on the summary',
+    required: false,
+  })
   reviewerComments?: string;
 
-  @ManyToOne(() => Contract, contract => contract.summaries)
+  @ManyToOne(() => Contract, (contract) => contract.summaries)
   @ApiProperty({ description: 'Contract this summary belongs to' })
   contract: Contract;
 
-  @ManyToOne(() => Clause, clause => clause.summaries, { nullable: true })
-  @ApiProperty({ description: 'Clause this summary is associated with', required: false })
+  @ManyToOne(() => Clause, (clause) => clause.summaries, { nullable: true })
+  @ApiProperty({
+    description: 'Clause this summary is associated with',
+    required: false,
+  })
   clause?: Clause;
 
   @CreateDateColumn()
@@ -50,4 +63,4 @@ export class Summary {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

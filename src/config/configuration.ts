@@ -19,6 +19,8 @@ export default () => ({
   },
   fileUpload: {
     maxSize: parseInt(process.env.MAX_FILE_SIZE || '10485760', 10), // 10MB
-    allowedTypes: (process.env.ALLOWED_FILE_TYPES || 'pdf,doc,docx,txt').split(','),
+    allowedTypes: (process.env.ALLOWED_FILE_TYPES || 'pdf,doc,docx,txt').split(
+      ',',
+    ),
   },
-}); 
+});

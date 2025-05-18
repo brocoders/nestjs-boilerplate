@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Contract } from './contract.entity';
 import { Clause } from './clause.entity';
 
@@ -15,7 +22,13 @@ export class RiskFlag {
 
   @Column({
     type: 'enum',
-    enum: ['MISSING_CLAUSE', 'DEVIATION', 'COMPLIANCE_ISSUE', 'AMBIGUOUS_LANGUAGE', 'OTHER']
+    enum: [
+      'MISSING_CLAUSE',
+      'DEVIATION',
+      'COMPLIANCE_ISSUE',
+      'AMBIGUOUS_LANGUAGE',
+      'OTHER',
+    ],
   })
   flagType: string;
 
@@ -25,7 +38,7 @@ export class RiskFlag {
   @Column({
     type: 'enum',
     enum: ['LOW', 'MEDIUM', 'HIGH'],
-    default: 'MEDIUM'
+    default: 'MEDIUM',
   })
   severity: string;
 
@@ -55,10 +68,10 @@ export class RiskFlag {
   @Column({ default: false })
   isResolved: boolean;
 
-  @ManyToOne(() => Contract, contract => contract.riskFlags)
+  @ManyToOne(() => Contract, (contract) => contract.riskFlags)
   contract: Contract;
 
-  @ManyToOne(() => Clause, clause => clause.riskFlags, { nullable: true })
+  @ManyToOne(() => Clause, (clause) => clause.riskFlags, { nullable: true })
   clause: Clause;
 
   @CreateDateColumn()
@@ -66,4 +79,4 @@ export class RiskFlag {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

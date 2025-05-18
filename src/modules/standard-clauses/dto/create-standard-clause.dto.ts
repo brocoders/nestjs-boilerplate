@@ -45,4 +45,4 @@ export class CreateStandardClauseDto {
   @Min(0)
   @Max(100)
   allowedDeviations?: number;
-} 
+}

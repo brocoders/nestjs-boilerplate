@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsNumber, Max, Min } from 'class-validator';
+import { IsValidRegex } from '../validator.is-valid-regex';
 
 export class CreateRuleDto {
   @ApiProperty()
@@ -14,6 +15,9 @@ export class CreateRuleDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @IsValidRegex({
+    message: 'pattern must be a valid and safe regular expression',
+  })
   pattern?: string;
 
   @ApiProperty({ required: false, type: Number })

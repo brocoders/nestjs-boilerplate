@@ -10,12 +10,18 @@ export class CreateQnADto {
   @IsString()
   answer: string;
 
-  @ApiProperty({ description: 'Whether the answer was accepted by the user', required: false })
+  @ApiProperty({
+    description: 'Whether the answer was accepted by the user',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isAccepted?: boolean;
 
-  @ApiProperty({ description: 'Whether the answer was flagged as incorrect', required: false })
+  @ApiProperty({
+    description: 'Whether the answer was flagged as incorrect',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   isFlagged?: boolean;
@@ -24,4 +30,4 @@ export class CreateQnADto {
   @IsString()
   @IsOptional()
   feedback?: string;
-} 
+}

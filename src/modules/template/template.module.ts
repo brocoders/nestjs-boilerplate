@@ -10,4 +10,4 @@ import { StandardClause } from './entities/standard-clause.entity';
   providers: [TemplateService],
   exports: [TemplateService],
 })
-export class TemplateModule {} 
+export class TemplateModule {}

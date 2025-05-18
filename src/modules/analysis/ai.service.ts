@@ -5,7 +5,6 @@ import { ChatOpenAI } from '@langchain/openai';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { RunnableSequence } from '@langchain/core/runnables';
-import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 @Injectable()
@@ -24,8 +23,12 @@ export class AiService implements OnModuleInit {
   }
 
   onModuleInit() {
-    const geminiApiKey = this.configService.get<string>('GEMINI_API_KEY');
-    const openaiApiKey = this.configService.get<string>('OPENAI_API_KEY');
+    const geminiApiKey = this.configService.get<string>('GEMINI_API_KEY', {
+      infer: true,
+    });
+    const openaiApiKey = this.configService.get<string>('OPENAI_API_KEY', {
+      infer: true,
+    });
 
     if (!geminiApiKey) {
       throw new Error('GEMINI_API_KEY is not defined');
@@ -68,7 +71,7 @@ export class AiService implements OnModuleInit {
 
     try {
       return JSON.parse(result);
-    } catch (error) {
+    } catch {
       // Fallback to basic splitting if AI fails
       return this.textSplitter.splitText(text);
     }
@@ -121,7 +124,7 @@ export class AiService implements OnModuleInit {
 
     try {
       return JSON.parse(result);
-    } catch (error) {
+    } catch {
       return {
         type: 'Unknown',
         risks: [],
@@ -172,7 +175,10 @@ export class AiService implements OnModuleInit {
     });
   }
 
-  async compareWithTemplate(clause: string, template: string): Promise<{
+  async compareWithTemplate(
+    clause: string,
+    template: string,
+  ): Promise<{
     isCompliant: boolean;
     deviations: Array<{
       type: string;
@@ -213,11 +219,11 @@ export class AiService implements OnModuleInit {
 
     try {
       return JSON.parse(result);
-    } catch (error) {
+    } catch {
       return {
         isCompliant: false,
         deviations: [],
       };
     }
   }
-} 
+}

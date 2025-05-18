@@ -1,11 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import * as _ from 'lodash';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rule } from '../../entities/rule.entity';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
-import * as safeRegex from 'safe-regex';
 
 @Injectable()
 export class RulesService {
@@ -15,21 +17,15 @@ export class RulesService {
   ) {}
 
   private validateThresholds(dto: CreateRuleDto | UpdateRuleDto) {
-    if (dto.similarityThreshold !== undefined && dto.deviationAllowedPct !== undefined) {
-      throw new BadRequestException('similarityThreshold and deviationAllowedPct cannot both be set');
+    if (
+      dto.similarityThreshold !== undefined &&
+      dto.deviationAllowedPct !== undefined
+    ) {
+      throw new BadRequestException(
+        'similarityThreshold and deviationAllowedPct cannot both be set',
+      );
     }
-    if (dto.pattern) {
-      try {
-        // Validate regex safety before constructing
-        if (!safeRegex(dto.pattern)) {
-          throw new Error('pattern is potentially unsafe and may be vulnerable to ReDoS');
-        }
-        // eslint-disable-next-line no-new
-        new RegExp(dto.pattern);
-      } catch (e) {
-        throw new BadRequestException(`pattern is not a valid or safe regex: ${e.message}`);
-      }
-    }
+    // pattern validation is now handled by the IsValidRegex decorator at the DTO level
   }
 
   async create(dto: CreateRuleDto): Promise<Rule> {

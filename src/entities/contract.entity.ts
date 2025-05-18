@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { Clause } from './clause.entity';
 import { RiskFlag } from './risk-flag.entity';
 import { Summary } from './summary.entity';
@@ -31,26 +38,26 @@ export class Contract {
   @Column({
     type: 'enum',
     enum: ['DRAFT', 'IN_REVIEW', 'REVIEWED', 'APPROVED', 'REJECTED'],
-    default: 'DRAFT'
+    default: 'DRAFT',
   })
   status: string;
 
   @Column({ nullable: true })
   language: string;
 
-  @OneToMany(() => Clause, clause => clause.contract)
+  @OneToMany(() => Clause, (clause) => clause.contract)
   clauses: Clause[];
 
-  @OneToMany(() => RiskFlag, riskFlag => riskFlag.contract)
+  @OneToMany(() => RiskFlag, (riskFlag) => riskFlag.contract)
   riskFlags: RiskFlag[];
 
-  @OneToMany(() => Summary, summary => summary.contract)
+  @OneToMany(() => Summary, (summary) => summary.contract)
   summaries: Summary[];
 
-  @OneToMany(() => QnA, qna => qna.contract)
+  @OneToMany(() => QnA, (qna) => qna.contract)
   qnas: QnA[];
 
-  @OneToMany(() => HumanReview, review => review.contract)
+  @OneToMany(() => HumanReview, (review) => review.contract)
   reviews: HumanReview[];
 
   @CreateDateColumn()
@@ -58,4 +65,4 @@ export class Contract {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

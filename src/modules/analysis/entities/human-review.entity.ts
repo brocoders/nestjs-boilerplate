@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.entity';
 
@@ -29,18 +36,27 @@ export class HumanReview {
   comments?: string;
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'Date when the review was started', required: false })
+  @ApiProperty({
+    description: 'Date when the review was started',
+    required: false,
+  })
   startDate?: Date;
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'Date when the review was completed', required: false })
+  @ApiProperty({
+    description: 'Date when the review was completed',
+    required: false,
+  })
   completionDate?: Date;
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'ID of the user who performed the review', required: false })
+  @ApiProperty({
+    description: 'ID of the user who performed the review',
+    required: false,
+  })
   reviewerId?: string;
 
-  @ManyToOne(() => Contract, contract => contract.reviews)
+  @ManyToOne(() => Contract, (contract) => contract.reviews)
   @ApiProperty({ description: 'Contract being reviewed' })
   contract: Contract;
 
@@ -51,4 +67,4 @@ export class HumanReview {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

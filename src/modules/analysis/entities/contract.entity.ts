@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Clause } from './clause.entity';
 import { RiskFlag } from './risk-flag.entity';
@@ -46,19 +53,31 @@ export class Contract {
     enum: ContractStatus,
     default: ContractStatus.PENDING_REVIEW,
   })
-  @ApiProperty({ description: 'Current status of the contract', enum: ContractStatus })
+  @ApiProperty({
+    description: 'Current status of the contract',
+    enum: ContractStatus,
+  })
   status: ContractStatus;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Original text content of the contract', required: false })
+  @ApiProperty({
+    description: 'Original text content of the contract',
+    required: false,
+  })
   originalText?: string;
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'Governing law of the contract', required: false })
+  @ApiProperty({
+    description: 'Governing law of the contract',
+    required: false,
+  })
   governingLaw?: string;
 
   @Column('jsonb', { nullable: true })
-  @ApiProperty({ description: 'Parties involved in the contract', required: false })
+  @ApiProperty({
+    description: 'Parties involved in the contract',
+    required: false,
+  })
   parties?: {
     name: string;
     role: string;
@@ -66,34 +85,40 @@ export class Contract {
   }[];
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'Date when the contract was uploaded', required: false })
+  @ApiProperty({
+    description: 'Date when the contract was uploaded',
+    required: false,
+  })
   uploadDate?: Date;
 
   @Column({ nullable: true })
-  @ApiProperty({ description: 'Date when the contract review was completed', required: false })
+  @ApiProperty({
+    description: 'Date when the contract review was completed',
+    required: false,
+  })
   reviewCompletionDate?: Date;
 
   @Column({ nullable: true })
   @ApiProperty({ description: 'Language of the contract', required: false })
   language?: string;
 
-  @OneToMany(() => Clause, clause => clause.contract)
+  @OneToMany(() => Clause, (clause) => clause.contract)
   @ApiProperty({ description: 'Clauses in the contract' })
   clauses: Clause[];
 
-  @OneToMany(() => RiskFlag, riskFlag => riskFlag.contract)
+  @OneToMany(() => RiskFlag, (riskFlag) => riskFlag.contract)
   @ApiProperty({ description: 'Risk flags identified in the contract' })
   riskFlags: RiskFlag[];
 
-  @OneToMany(() => Summary, summary => summary.contract)
+  @OneToMany(() => Summary, (summary) => summary.contract)
   @ApiProperty({ description: 'Summaries generated for the contract' })
   summaries: Summary[];
 
-  @OneToMany(() => QnA, qna => qna.contract)
+  @OneToMany(() => QnA, (qna) => qna.contract)
   @ApiProperty({ description: 'Q&A interactions related to the contract' })
   qnaInteractions: QnA[];
 
-  @OneToMany(() => HumanReview, review => review.contract)
+  @OneToMany(() => HumanReview, (review) => review.contract)
   @ApiProperty({ description: 'Human reviews of the contract' })
   reviews: HumanReview[];
 
@@ -104,4 +129,4 @@ export class Contract {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

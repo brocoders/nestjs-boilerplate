@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { TemplateService } from './template.service';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
@@ -33,7 +41,10 @@ export class TemplateController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update a template' })
   @ApiResponse({ status: 200, description: 'Template updated successfully' })
-  update(@Param('id') id: string, @Body() updateStandardClauseDto: UpdateStandardClauseDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateStandardClauseDto: UpdateStandardClauseDto,
+  ) {
     return this.templateService.update(id, updateStandardClauseDto);
   }
 
@@ -46,21 +57,30 @@ export class TemplateController {
 
   @Get('type/:type')
   @ApiOperation({ summary: 'Get templates by type' })
-  @ApiResponse({ status: 200, description: 'Return templates of specified type' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return templates of specified type',
+  })
   findByType(@Param('type') type: string) {
     return this.templateService.findByType(type);
   }
 
   @Get('jurisdiction/:jurisdiction')
   @ApiOperation({ summary: 'Get templates by jurisdiction' })
-  @ApiResponse({ status: 200, description: 'Return templates for specified jurisdiction' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return templates for specified jurisdiction',
+  })
   findByJurisdiction(@Param('jurisdiction') jurisdiction: string) {
     return this.templateService.findByJurisdiction(jurisdiction);
   }
 
   @Post(':id/compare')
   @ApiOperation({ summary: 'Compare a clause with a template' })
-  @ApiResponse({ status: 200, description: 'Comparison completed successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Comparison completed successfully',
+  })
   compareClause(
     @Param('id') id: string,
     @Body('clauseText') clauseText: string,
@@ -74,4 +94,4 @@ export class TemplateController {
   getTemplateVersions(@Param('id') id: string) {
     return this.templateService.getTemplateVersions(id);
   }
-} 
+}

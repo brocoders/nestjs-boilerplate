@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.entity';
 import { RiskFlag } from './risk-flag.entity';
@@ -57,22 +65,25 @@ export class Clause {
   isApproved: boolean;
 
   @Column('text', { nullable: true })
-  @ApiProperty({ description: 'Suggested text for the clause', required: false })
+  @ApiProperty({
+    description: 'Suggested text for the clause',
+    required: false,
+  })
   suggestedText?: string;
 
-  @ManyToOne(() => Contract, contract => contract.clauses)
+  @ManyToOne(() => Contract, (contract) => contract.clauses)
   @ApiProperty({ description: 'Contract this clause belongs to' })
   contract: Contract;
 
-  @OneToMany(() => RiskFlag, riskFlag => riskFlag.clause)
+  @OneToMany(() => RiskFlag, (riskFlag) => riskFlag.clause)
   @ApiProperty({ description: 'Risk flags identified in this clause' })
   riskFlags: RiskFlag[];
 
-  @OneToMany(() => Summary, summary => summary.clause)
+  @OneToMany(() => Summary, (summary) => summary.clause)
   @ApiProperty({ description: 'Summaries generated for this clause' })
   summaries: Summary[];
 
-  @OneToMany(() => QnA, qna => qna.clause)
+  @OneToMany(() => QnA, (qna) => qna.clause)
   @ApiProperty({ description: 'Q&A interactions related to this clause' })
   qnaInteractions: QnA[];
 
@@ -83,4 +94,4 @@ export class Clause {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

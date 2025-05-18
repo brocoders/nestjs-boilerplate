@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Contract } from './contract.entity';
 import { Clause } from './clause.entity';
@@ -29,12 +36,17 @@ export class QnA {
   @ApiProperty({ description: 'User feedback on the answer', required: false })
   feedback: string;
 
-  @ManyToOne(() => Contract, contract => contract.qnaInteractions)
+  @ManyToOne(() => Contract, (contract) => contract.qnaInteractions)
   @ApiProperty({ description: 'Contract this Q&A is related to' })
   contract: Contract;
 
-  @ManyToOne(() => Clause, clause => clause.qnaInteractions, { nullable: true })
-  @ApiProperty({ description: 'Clause this Q&A is related to', required: false })
+  @ManyToOne(() => Clause, (clause) => clause.qnaInteractions, {
+    nullable: true,
+  })
+  @ApiProperty({
+    description: 'Clause this Q&A is related to',
+    required: false,
+  })
   clause: Clause;
 
   @CreateDateColumn()
@@ -44,4 +56,4 @@ export class QnA {
   @UpdateDateColumn()
   @ApiProperty({ description: 'Last update timestamp' })
   updatedAt: Date;
-} 
+}

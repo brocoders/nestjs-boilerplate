@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray, ValidateNested, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsEnum,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum SeverityLevel {
@@ -17,7 +23,10 @@ export class AllowedDeviationDto {
   @IsString()
   description: string;
 
-  @ApiProperty({ description: 'Severity level of the deviation', enum: SeverityLevel })
+  @ApiProperty({
+    description: 'Severity level of the deviation',
+    enum: SeverityLevel,
+  })
   @IsEnum(SeverityLevel)
   severity: SeverityLevel;
 }
@@ -39,15 +48,21 @@ export class CreateStandardClauseDto {
   @IsString()
   jurisdiction: string;
 
-  @ApiProperty({ description: 'Description of the standard clause', required: false })
+  @ApiProperty({
+    description: 'Description of the standard clause',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: 'Allowed deviations from the standard clause', required: false })
+  @ApiProperty({
+    description: 'Allowed deviations from the standard clause',
+    required: false,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AllowedDeviationDto)
   @IsOptional()
   allowedDeviations?: AllowedDeviationDto[];
-} 
+}

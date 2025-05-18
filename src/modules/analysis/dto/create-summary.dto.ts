@@ -11,8 +11,11 @@ export class CreateSummaryDto {
   @IsString()
   text: string;
 
-  @ApiProperty({ description: 'Reviewer comments on the summary', required: false })
+  @ApiProperty({
+    description: 'Reviewer comments on the summary',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   reviewerComments?: string;
-} 
+}

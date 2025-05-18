@@ -12,7 +12,9 @@ export class TemplateService {
     private readonly standardClauseRepository: Repository<StandardClause>,
   ) {}
 
-  async create(createStandardClauseDto: CreateStandardClauseDto): Promise<StandardClause> {
+  async create(
+    createStandardClauseDto: CreateStandardClauseDto,
+  ): Promise<StandardClause> {
     const standardClause = this.standardClauseRepository.create({
       ...createStandardClauseDto,
       isActive: true,
@@ -39,9 +41,12 @@ export class TemplateService {
     return standardClause;
   }
 
-  async update(id: string, updateStandardClauseDto: UpdateStandardClauseDto): Promise<StandardClause> {
+  async update(
+    id: string,
+    updateStandardClauseDto: UpdateStandardClauseDto,
+  ): Promise<StandardClause> {
     const standardClause = await this.findOne(id);
-    
+
     // If there are significant changes, create a new version
     if (this.hasSignificantChanges(standardClause, updateStandardClauseDto)) {
       // Mark current version as not latest
@@ -83,15 +88,18 @@ export class TemplateService {
     });
   }
 
-  async compareClause(clauseText: string, templateId: string): Promise<{
+  async compareClause(
+    clauseText: string,
+    templateId: string,
+  ): Promise<{
     similarity: number;
     isCompliant: boolean;
     deviations: any[];
   }> {
     const template = await this.findOne(templateId);
     const similarity = this.calculateSimilarity(clauseText, template.text);
-    const deviations = this.checkDeviations(clauseText, template);
-    const isCompliant = this.isCompliantWithDeviations(deviations, template.allowedDeviations || []);
+    const deviations = this.checkDeviations();
+    const isCompliant = this.isCompliantWithDeviations();
 
     return {
       similarity,
@@ -113,10 +121,14 @@ export class TemplateService {
     return versions.reverse();
   }
 
-  private hasSignificantChanges(current: StandardClause, update: UpdateStandardClauseDto): boolean {
+  private hasSignificantChanges(
+    current: StandardClause,
+    update: UpdateStandardClauseDto,
+  ): boolean {
     return (
       update.text !== current.text ||
-      JSON.stringify(update.allowedDeviations) !== JSON.stringify(current.allowedDeviations) ||
+      JSON.stringify(update.allowedDeviations) !==
+        JSON.stringify(current.allowedDeviations) ||
       update.type !== current.type ||
       update.jurisdiction !== current.jurisdiction
     );
@@ -131,19 +143,19 @@ export class TemplateService {
     // Simple implementation - can be enhanced with more sophisticated algorithms
     const words1 = text1.toLowerCase().split(/\s+/);
     const words2 = text2.toLowerCase().split(/\s+/);
-    const commonWords = words1.filter(word => words2.includes(word));
+    const commonWords = words1.filter((word) => words2.includes(word));
     return commonWords.length / Math.max(words1.length, words2.length);
   }
 
-  private checkDeviations(clauseText: string, template: StandardClause): any[] {
+  private checkDeviations(): any[] {
     // Implementation for checking deviations
     // This is a placeholder - actual implementation would depend on specific requirements
     return [];
   }
 
-  private isCompliantWithDeviations(deviations: any[], allowedDeviations: any[]): boolean {
+  private isCompliantWithDeviations(): boolean {
     // Implementation for checking compliance with allowed deviations
     // This is a placeholder - actual implementation would depend on specific requirements
     return true;
   }
-} 
+}
