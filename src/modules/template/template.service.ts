@@ -98,8 +98,8 @@ export class TemplateService {
   }> {
     const template = await this.findOne(templateId);
     const similarity = this.calculateSimilarity(clauseText, template.text);
-    const deviations = this.checkDeviations();
-    const isCompliant = this.isCompliantWithDeviations();
+    const deviations = this.checkDeviations(clauseText, template);
+    const isCompliant = this.isCompliantWithDeviations(deviations);
 
     return {
       similarity,
@@ -147,15 +147,29 @@ export class TemplateService {
     return commonWords.length / Math.max(words1.length, words2.length);
   }
 
-  private checkDeviations(): any[] {
-    // Implementation for checking deviations
-    // This is a placeholder - actual implementation would depend on specific requirements
-    return [];
+  private checkDeviations(clauseText: string, template: StandardClause): any[] {
+    // Example logic: if clauseText differs from template.text, mark as deviation
+    const deviations: any[] = [];
+    if (clauseText !== template.text) {
+      // For demo, treat any difference as a deviation of type 'text', severity 'medium'
+      deviations.push({
+        type: 'text',
+        description: 'Clause text does not match template',
+        severity: 'medium',
+      });
+    }
+    // You can add more sophisticated checks here, e.g., check for missing/extra words, etc.
+    // Optionally, compare against template.allowedDeviations for more nuanced logic
+    return deviations;
   }
 
-  private isCompliantWithDeviations(): boolean {
-    // Implementation for checking compliance with allowed deviations
-    // This is a placeholder - actual implementation would depend on specific requirements
-    return true;
+  private isCompliantWithDeviations(deviations: any[]): boolean {
+    // Return true only if all deviations are LOW or MEDIUM severity
+    return deviations.every(
+      (deviation) =>
+        !deviation.severity ||
+        deviation.severity === 'low' ||
+        deviation.severity === 'medium',
+    );
   }
 }
