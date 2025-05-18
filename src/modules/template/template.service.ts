@@ -5,6 +5,13 @@ import { StandardClause } from './entities/standard-clause.entity';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 
+// Define Deviation type
+interface Deviation {
+  type: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high';
+}
+
 @Injectable()
 export class TemplateService {
   constructor(
@@ -147,19 +154,42 @@ export class TemplateService {
     return commonWords.length / Math.max(words1.length, words2.length);
   }
 
-  private checkDeviations(clauseText: string, template: StandardClause): any[] {
-    // Example logic: if clauseText differs from template.text, mark as deviation
-    const deviations: any[] = [];
+  private checkDeviations(
+    clauseText: string,
+    template: StandardClause,
+  ): Deviation[] {
+    const deviations: Deviation[] = [];
+    // Example: check if clauseText matches template.text
     if (clauseText !== template.text) {
-      // For demo, treat any difference as a deviation of type 'text', severity 'medium'
       deviations.push({
         type: 'text',
         description: 'Clause text does not match template',
         severity: 'medium',
       });
     }
-    // You can add more sophisticated checks here, e.g., check for missing/extra words, etc.
-    // Optionally, compare against template.allowedDeviations for more nuanced logic
+    // Example: check numeric fields against allowedDeviations thresholds
+    if (
+      template.allowedDeviations &&
+      Array.isArray(template.allowedDeviations)
+    ) {
+      for (const allowed of template.allowedDeviations) {
+        // If allowed deviation has a numeric threshold, compare (example: similarityThreshold)
+        if (
+          typeof (allowed as any).threshold === 'number' &&
+          typeof (template as any)[allowed.type] === 'number'
+        ) {
+          const value = (template as any)[allowed.type];
+          const threshold = (allowed as any).threshold;
+          if (value > threshold) {
+            deviations.push({
+              type: allowed.type,
+              description: `${allowed.type} value (${value}) exceeds allowed threshold (${threshold})`,
+              severity: allowed.severity || 'medium',
+            });
+          }
+        }
+      }
+    }
     return deviations;
   }
 
