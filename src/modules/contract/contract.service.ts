@@ -173,10 +173,12 @@ export class ContractService {
   ): Promise<RiskFlag> {
     await this.findOne(contractId);
     const riskFlag = await this.riskFlagRepository.findOne({
-      where: { id: riskId },
+      where: { id: riskId, contract: { id: contractId } },
     });
     if (!riskFlag) {
-      throw new NotFoundException(`Risk flag with ID ${riskId} not found`);
+      throw new NotFoundException(
+        `Risk flag with ID ${riskId} not found for contract ${contractId}`,
+      );
     }
     Object.assign(riskFlag, { status, notes });
     return this.riskFlagRepository.save(riskFlag);
