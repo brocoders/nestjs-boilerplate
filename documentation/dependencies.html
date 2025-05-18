@@ -1,0 +1,261 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>nestjs-boilerplate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">nestjs-boilerplate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content package-dependencies">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Dependencies</li>
+    </ol>
+    <ul class="dependencies-list">
+        <li>
+            <b>@aws-sdk/client-s3</b> : 3.758.0</li>
+        <li>
+            <b>@aws-sdk/s3-request-presigner</b> : 3.758.0</li>
+        <li>
+            <b>@nestjs/common</b> : 11.0.20</li>
+        <li>
+            <b>@nestjs/config</b> : 4.0.2</li>
+        <li>
+            <b>@nestjs/core</b> : 11.0.20</li>
+        <li>
+            <b>@nestjs/jwt</b> : 11.0.0</li>
+        <li>
+            <b>@nestjs/mongoose</b> : 11.0.3</li>
+        <li>
+            <b>@nestjs/passport</b> : 11.0.5</li>
+        <li>
+            <b>@nestjs/platform-express</b> : 11.0.20</li>
+        <li>
+            <b>@nestjs/swagger</b> : 11.1.3</li>
+        <li>
+            <b>@nestjs/typeorm</b> : 11.0.0</li>
+        <li>
+            <b>@types/multer-s3</b> : 3.0.3</li>
+        <li>
+            <b>@types/prompts</b> : 2.4.9</li>
+        <li>
+            <b>apple-signin-auth</b> : 1.7.9</li>
+        <li>
+            <b>bcryptjs</b> : 3.0.2</li>
+        <li>
+            <b>class-transformer</b> : 0.5.1</li>
+        <li>
+            <b>class-validator</b> : 0.14.1</li>
+        <li>
+            <b>dotenv</b> : 16.5.0</li>
+        <li>
+            <b>fb</b> : 2.0.0</li>
+        <li>
+            <b>geojson</b> : ^0.5.0</li>
+        <li>
+            <b>google-auth-library</b> : 9.15.1</li>
+        <li>
+            <b>handlebars</b> : 4.7.8</li>
+        <li>
+            <b>mongoose</b> : 8.13.2</li>
+        <li>
+            <b>mongoose-autopopulate</b> : ^1.1.0</li>
+        <li>
+            <b>ms</b> : 2.1.3</li>
+        <li>
+            <b>multer</b> : 1.4.5-lts.2</li>
+        <li>
+            <b>multer-s3</b> : 3.0.1</li>
+        <li>
+            <b>nestjs-boilerplate</b> : file:</li>
+        <li>
+            <b>nestjs-i18n</b> : 10.5.1</li>
+        <li>
+            <b>nodemailer</b> : 6.10.1</li>
+        <li>
+            <b>passport</b> : 0.7.0</li>
+        <li>
+            <b>passport-anonymous</b> : 1.0.1</li>
+        <li>
+            <b>passport-jwt</b> : 4.0.1</li>
+        <li>
+            <b>pg</b> : 8.14.1</li>
+        <li>
+            <b>reflect-metadata</b> : 0.2.2</li>
+        <li>
+            <b>rimraf</b> : 6.0.1</li>
+        <li>
+            <b>rxjs</b> : 7.8.2</li>
+        <li>
+            <b>source-map-support</b> : 0.5.21</li>
+        <li>
+            <b>swagger-ui-express</b> : 5.0.1</li>
+        <li>
+            <b>typeorm</b> : 0.3.22</li>
+    </ul>
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'package-dependencies';
+            var COMPODOC_CURRENT_PAGE_URL = 'dependencies.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+       <script nomodule src="./js/menu-wc_es5.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

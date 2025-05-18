@@ -1,0 +1,1110 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>nestjs-boilerplate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">nestjs-boilerplate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content miscellaneous-variables">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Miscellaneous</li>
+  <li class="breadcrumb-item">Variables</li>
+</ol>
+
+<section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                        <li>
+                            <a href="#ADMIN_EMAIL" title="test/utils/constants.ts" ><b>ADMIN_EMAIL</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#ADMIN_PASSWORD" title="test/utils/constants.ts" ><b>ADMIN_PASSWORD</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#APP_URL" title="test/utils/constants.ts" ><b>APP_URL</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#AppDataSource" title="src/database/data-source.ts" ><b>AppDataSource</b>&nbsp;&nbsp;&nbsp;(src/.../data-source.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FileSchema" title="src/files/infrastructure/persistence/document/entities/file.schema.ts" ><b>FileSchema</b>&nbsp;&nbsp;&nbsp;(src/.../file.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#idType" title="src/roles/domain/role.ts" ><b>idType</b>&nbsp;&nbsp;&nbsp;(src/.../role.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#idType" title="src/statuses/domain/status.ts" ><b>idType</b>&nbsp;&nbsp;&nbsp;(src/.../status.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#idType" title="src/users/domain/user.ts" ><b>idType</b>&nbsp;&nbsp;&nbsp;(src/.../user.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infinityPagination" title="src/utils/infinity-pagination.ts" ><b>infinityPagination</b>&nbsp;&nbsp;&nbsp;(src/.../infinity-pagination.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructureDatabaseModule" title="src/app.module.ts" ><b>infrastructureDatabaseModule</b>&nbsp;&nbsp;&nbsp;(src/.../app.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/files/files.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../files.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/kyc-details/kyc-details.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../kyc-details.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/session/session.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../session.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/users/users.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../users.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/files/infrastructure/uploader/local/files.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../files.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/files/infrastructure/uploader/s3/files.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../files.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructurePersistenceModule" title="src/files/infrastructure/uploader/s3-presigned/files.module.ts" ><b>infrastructurePersistenceModule</b>&nbsp;&nbsp;&nbsp;(src/.../files.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#infrastructureUploaderModule" title="src/files/files.module.ts" ><b>infrastructureUploaderModule</b>&nbsp;&nbsp;&nbsp;(src/.../files.module.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#KycDetailsSchema" title="src/kyc-details/infrastructure/persistence/document/entities/kyc-details.schema.ts" ><b>KycDetailsSchema</b>&nbsp;&nbsp;&nbsp;(src/.../kyc-details.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#lowerCaseTransformer" title="src/utils/transformers/lower-case.transformer.ts" ><b>lowerCaseTransformer</b>&nbsp;&nbsp;&nbsp;(src/.../lower-case.transformer.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#MAIL_HOST" title="test/utils/constants.ts" ><b>MAIL_HOST</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#MAIL_PORT" title="test/utils/constants.ts" ><b>MAIL_PORT</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Roles" title="src/roles/roles.decorator.ts" ><b>Roles</b>&nbsp;&nbsp;&nbsp;(src/.../roles.decorator.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#runSeed" title="src/database/seeds/document/run-seed.ts" ><b>runSeed</b>&nbsp;&nbsp;&nbsp;(src/.../run-seed.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#runSeed" title="src/database/seeds/relational/run-seed.ts" ><b>runSeed</b>&nbsp;&nbsp;&nbsp;(src/.../run-seed.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SessionSchema" title="src/session/infrastructure/persistence/document/entities/session.schema.ts" ><b>SessionSchema</b>&nbsp;&nbsp;&nbsp;(src/.../session.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#TESTER_EMAIL" title="test/utils/constants.ts" ><b>TESTER_EMAIL</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#TESTER_PASSWORD" title="test/utils/constants.ts" ><b>TESTER_PASSWORD</b>&nbsp;&nbsp;&nbsp;(test/.../constants.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#UserSchema" title="src/users/infrastructure/persistence/document/entities/user.schema.ts" ><b>UserSchema</b>&nbsp;&nbsp;&nbsp;(src/.../user.schema.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#validationOptions" title="src/utils/validation-options.ts" ><b>validationOptions</b>&nbsp;&nbsp;&nbsp;(src/.../validation-options.ts)</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <h3>test/utils/constants.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ADMIN_EMAIL"></a>
+                    <span class="name">
+                        <span ><b>ADMIN_EMAIL</b></span>
+                        <a href="#ADMIN_EMAIL"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;admin@example.com&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ADMIN_PASSWORD"></a>
+                    <span class="name">
+                        <span ><b>ADMIN_PASSWORD</b></span>
+                        <a href="#ADMIN_PASSWORD"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;secret&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="APP_URL"></a>
+                    <span class="name">
+                        <span ><b>APP_URL</b></span>
+                        <a href="#APP_URL"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x60;http://localhost:${process.env.APP_PORT}&#x60;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="MAIL_HOST"></a>
+                    <span class="name">
+                        <span ><b>MAIL_HOST</b></span>
+                        <a href="#MAIL_HOST"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.env.MAIL_HOST</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="MAIL_PORT"></a>
+                    <span class="name">
+                        <span ><b>MAIL_PORT</b></span>
+                        <a href="#MAIL_PORT"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>process.env.MAIL_CLIENT_PORT</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="TESTER_EMAIL"></a>
+                    <span class="name">
+                        <span ><b>TESTER_EMAIL</b></span>
+                        <a href="#TESTER_EMAIL"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;john.doe@example.com&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="TESTER_PASSWORD"></a>
+                    <span class="name">
+                        <span ><b>TESTER_PASSWORD</b></span>
+                        <a href="#TESTER_PASSWORD"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;secret&#x27;</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/database/data-source.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="AppDataSource"></a>
+                    <span class="name">
+                        <span ><b>AppDataSource</b></span>
+                        <a href="#AppDataSource"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new DataSource({
+  type: process.env.DATABASE_TYPE,
+  url: process.env.DATABASE_URL,
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT
+    ? parseInt(process.env.DATABASE_PORT, 10)
+    : 5432,
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  synchronize: process.env.DATABASE_SYNCHRONIZE &#x3D;&#x3D;&#x3D; &#x27;true&#x27;,
+  dropSchema: false,
+  keepConnectionAlive: true,
+  logging: process.env.NODE_ENV !&#x3D;&#x3D; &#x27;production&#x27;,
+  entities: [__dirname + &#x27;/../**/*.entity{.ts,.js}&#x27;],
+  migrations: [__dirname + &#x27;/migrations/**/*{.ts,.js}&#x27;],
+  cli: {
+    entitiesDir: &#x27;src&#x27;,
+
+    subscribersDir: &#x27;subscriber&#x27;,
+  },
+  extra: {
+    // based on https://node-postgres.com/api/pool
+    // max connection pool size
+    max: process.env.DATABASE_MAX_CONNECTIONS
+      ? parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10)
+      : 100,
+    ssl:
+      process.env.DATABASE_SSL_ENABLED &#x3D;&#x3D;&#x3D; &#x27;true&#x27;
+        ? {
+            rejectUnauthorized:
+              process.env.DATABASE_REJECT_UNAUTHORIZED &#x3D;&#x3D;&#x3D; &#x27;true&#x27;,
+            ca: process.env.DATABASE_CA ?? undefined,
+            key: process.env.DATABASE_KEY ?? undefined,
+            cert: process.env.DATABASE_CERT ?? undefined,
+          }
+        : undefined,
+  },
+} as DataSourceOptions)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/files/infrastructure/persistence/document/entities/file.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FileSchema"></a>
+                    <span class="name">
+                        <span ><b>FileSchema</b></span>
+                        <a href="#FileSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(FileSchemaClass)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/roles/domain/role.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="idType"></a>
+                    <span class="name">
+                        <span ><b>idType</b></span>
+                        <a href="#idType"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig).isDocumentDatabase
+  ? String
+  : Number</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/statuses/domain/status.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="idType"></a>
+                    <span class="name">
+                        <span ><b>idType</b></span>
+                        <a href="#idType"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig).isDocumentDatabase
+  ? String
+  : Number</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/users/domain/user.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="idType"></a>
+                    <span class="name">
+                        <span ><b>idType</b></span>
+                        <a href="#idType"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig).isDocumentDatabase
+  ? String
+  : Number</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/utils/infinity-pagination.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infinityPagination"></a>
+                    <span class="name">
+                        <span ><b>infinityPagination</b></span>
+                        <a href="#infinityPagination"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&lt;T&gt;(
+  data: T[],
+  options: IPaginationOptions,
+): InfinityPaginationResponseDto&lt;T&gt; &#x3D;&gt; {
+  return {
+    data,
+    hasNextPage: data.length &#x3D;&#x3D;&#x3D; options.limit,
+  };
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/app.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructureDatabaseModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructureDatabaseModule</b></span>
+                        <a href="#infrastructureDatabaseModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? MongooseModule.forRootAsync({
+      useClass: MongooseConfigService,
+    })
+  : TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options: DataSourceOptions) &#x3D;&gt; {
+        return new DataSource(options).initialize();
+      },
+    })</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/files/files.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentFilePersistenceModule
+  : RelationalFilePersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructureUploaderModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructureUploaderModule</b></span>
+                        <a href="#infrastructureUploaderModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(fileConfig() as FileConfig).driver &#x3D;&#x3D;&#x3D; FileDriver.LOCAL
+    ? FilesLocalModule
+    : (fileConfig() as FileConfig).driver &#x3D;&#x3D;&#x3D; FileDriver.S3
+      ? FilesS3Module
+      : FilesS3PresignedModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/kyc-details/kyc-details.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentKycDetailsPersistenceModule
+  : RelationalKycDetailsPersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/session/session.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentSessionPersistenceModule
+  : RelationalSessionPersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/users/users.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentUserPersistenceModule
+  : RelationalUserPersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/files/infrastructure/uploader/local/files.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentFilePersistenceModule
+  : RelationalFilePersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/files/infrastructure/uploader/s3/files.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentFilePersistenceModule
+  : RelationalFilePersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/files/infrastructure/uploader/s3-presigned/files.module.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="infrastructurePersistenceModule"></a>
+                    <span class="name">
+                        <span ><b>infrastructurePersistenceModule</b></span>
+                        <a href="#infrastructurePersistenceModule"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(databaseConfig() as DatabaseConfig)
+  .isDocumentDatabase
+  ? DocumentFilePersistenceModule
+  : RelationalFilePersistenceModule</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/kyc-details/infrastructure/persistence/document/entities/kyc-details.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="KycDetailsSchema"></a>
+                    <span class="name">
+                        <span ><b>KycDetailsSchema</b></span>
+                        <a href="#KycDetailsSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(
+  KycDetailsSchemaClass,
+)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/utils/transformers/lower-case.transformer.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="lowerCaseTransformer"></a>
+                    <span class="name">
+                        <span ><b>lowerCaseTransformer</b></span>
+                        <a href="#lowerCaseTransformer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(
+  params: TransformFnParams,
+): MaybeType&lt;string&gt; &#x3D;&gt; params.value?.toLowerCase().trim()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/roles/roles.decorator.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Roles"></a>
+                    <span class="name">
+                        <span ><b>Roles</b></span>
+                        <a href="#Roles"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(...roles: number[]) &#x3D;&gt; SetMetadata(&#x27;roles&#x27;, roles)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/database/seeds/document/run-seed.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="runSeed"></a>
+                    <span class="name">
+                        <span ><b>runSeed</b></span>
+                        <a href="#runSeed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>async () &#x3D;&gt; {
+  const app &#x3D; await NestFactory.create(SeedModule);
+
+  // run
+  await app.get(UserSeedService).run();
+
+  await app.close();
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/database/seeds/relational/run-seed.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="runSeed"></a>
+                    <span class="name">
+                        <span ><b>runSeed</b></span>
+                        <a href="#runSeed"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>async () &#x3D;&gt; {
+  const app &#x3D; await NestFactory.create(SeedModule);
+
+  // run
+  await app.get(TenantTypesSeedService).run();
+  await app.get(TenantSeedService).run();
+  await app.get(RoleSeedService).run();
+  await app.get(StatusSeedService).run();
+  await app.get(RegionSeedService).run();
+  await app.get(UserSeedService).run();
+  // await app.get(KycDetailSeedService).run();
+
+  // await app.get(SettingsSeedService).run();
+
+  await app.get(ResidenceSeedService).run();
+
+  await app.get(AccountSeedService).run();
+
+  await app.close();
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/session/infrastructure/persistence/document/entities/session.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SessionSchema"></a>
+                    <span class="name">
+                        <span ><b>SessionSchema</b></span>
+                        <a href="#SessionSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(SessionSchemaClass)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/users/infrastructure/persistence/document/entities/user.schema.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="UserSchema"></a>
+                    <span class="name">
+                        <span ><b>UserSchema</b></span>
+                        <a href="#UserSchema"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>SchemaFactory.createForClass(UserSchemaClass)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>src/utils/validation-options.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validationOptions"></a>
+                    <span class="name">
+                        <span ><b>validationOptions</b></span>
+                        <a href="#validationOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>ValidationPipeOptions</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  transform: true,
+  whitelist: true,
+  errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  exceptionFactory: (errors: ValidationError[]) &#x3D;&gt; {
+    return new UnprocessableEntityException({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errors: generateErrors(errors),
+    });
+  },
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-variables';
+            var COMPODOC_CURRENT_PAGE_URL = 'variables.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -55,9 +55,11 @@ import { RegionsModule } from './regions/regions.module';
 import { ResidencesModule } from './residences/residences.module';
 
 import { AccountsModule } from './accounts/accounts.module';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     AccountsModule,
     ResidencesModule,
     ResidencesModule,

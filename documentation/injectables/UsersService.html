@@ -1,0 +1,1411 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>nestjs-boilerplate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">nestjs-boilerplate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >UsersService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/users/users.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#create" >create</a>
+                            </li>
+                            <li>
+                                <a href="#findByEmail" >findByEmail</a>
+                            </li>
+                            <li>
+                                <a href="#findById" >findById</a>
+                            </li>
+                            <li>
+                                <a href="#findByIds" >findByIds</a>
+                            </li>
+                            <li>
+                                <a href="#findBySocialIdAndProvider" >findBySocialIdAndProvider</a>
+                            </li>
+                            <li>
+                                <a href="#findManyWithPagination" >findManyWithPagination</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#remove" >remove</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#update" >update</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(regionService: <a href="../injectables/RegionsService.html" target="_self">RegionsService</a>, settingsService: <a href="../injectables/SettingsService.html" target="_self">SettingsService</a>, kycDetailsService: <a href="../injectables/KycDetailsService.html" target="_self">KycDetailsService</a>, tenantService: <a href="../injectables/TenantsService.html" target="_self">TenantsService</a>, usersRepository: <a href="../classes/UserRepository.html" target="_self">UserRepository</a>, filesService: <a href="../injectables/FilesService.html" target="_self">FilesService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/users/users.service.ts:37</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>regionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/RegionsService.html" target="_self" >RegionsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>settingsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SettingsService.html" target="_self" >SettingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>kycDetailsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/KycDetailsService.html" target="_self" >KycDetailsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tenantService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TenantsService.html" target="_self" >TenantsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>usersRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/UserRepository.html" target="_self" >UserRepository</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>filesService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FilesService.html" target="_self" >FilesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="create"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>create</b></span>
+                        <a href="#create"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>create(createUserDto: <a href="../classes/CreateUserDto.html" target="_self">CreateUserDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="54"
+                                    class="link-to-prism">src/users/users.service.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>createUserDto</td>
+                                            <td>
+                                                            <code><a href="../classes/CreateUserDto.html" target="_self" >CreateUserDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findByEmail"></a>
+                    <span class="name">
+                        <span ><b>findByEmail</b></span>
+                        <a href="#findByEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findByEmail(email: <a href="../classes/User.html" target="_self">User</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="259"
+                                    class="link-to-prism">src/users/users.service.ts:259</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>email</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;NullableType&lt;User&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findById"></a>
+                    <span class="name">
+                        <span ><b>findById</b></span>
+                        <a href="#findById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findById(id: <a href="../classes/User.html" target="_self">User</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="251"
+                                    class="link-to-prism">src/users/users.service.ts:251</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;NullableType&lt;User&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findByIds"></a>
+                    <span class="name">
+                        <span ><b>findByIds</b></span>
+                        <a href="#findByIds"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findByIds(ids: [])</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="255"
+                                    class="link-to-prism">src/users/users.service.ts:255</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>ids</td>
+                                            <td>
+                                                        <code>[]</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findBySocialIdAndProvider"></a>
+                    <span class="name">
+                        <span ><b>findBySocialIdAndProvider</b></span>
+                        <a href="#findBySocialIdAndProvider"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findBySocialIdAndProvider(undefined: literal type)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="263"
+                                    class="link-to-prism">src/users/users.service.ts:263</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                        <code>literal type</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;NullableType&lt;User&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findManyWithPagination"></a>
+                    <span class="name">
+                        <span ><b>findManyWithPagination</b></span>
+                        <a href="#findManyWithPagination"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>findManyWithPagination(undefined: literal type)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="235"
+                                    class="link-to-prism">src/users/users.service.ts:235</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                        <code>literal type</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="remove"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>remove</b></span>
+                        <a href="#remove"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>remove(id: <a href="../classes/User.html" target="_self">User</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="472"
+                                    class="link-to-prism">src/users/users.service.ts:472</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="update"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>update</b></span>
+                        <a href="#update"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>update(id: <a href="../classes/User.html" target="_self">User</a>, updateUserDto: <a href="../classes/UpdateUserDto.html" target="_self">UpdateUserDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="276"
+                                    class="link-to-prism">src/users/users.service.ts:276</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>updateUserDto</td>
+                                            <td>
+                                                            <code><a href="../classes/UpdateUserDto.html" target="_self" >UpdateUserDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User | null&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { RegionsService } from &#x27;../regions/regions.service&#x27;;
+import { Region } from &#x27;../regions/domain/region&#x27;;
+
+import { SettingsService } from &#x27;../settings/settings.service&#x27;;
+import { Settings } from &#x27;../settings/domain/settings&#x27;;
+
+import { KycDetailsService } from &#x27;../kyc-details/kyc-details.service&#x27;;
+import { KycDetails } from &#x27;../kyc-details/domain/kyc-details&#x27;;
+
+import { TenantsService } from &#x27;../tenants/tenants.service&#x27;;
+import { Tenant } from &#x27;../tenants/domain/tenant&#x27;;
+
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+  Inject,
+  forwardRef,
+} from &#x27;@nestjs/common&#x27;;
+import { CreateUserDto } from &#x27;./dto/create-user.dto&#x27;;
+import { NullableType } from &#x27;../utils/types/nullable.type&#x27;;
+import { FilterUserDto, SortUserDto } from &#x27;./dto/query-user.dto&#x27;;
+import { UserRepository } from &#x27;./infrastructure/persistence/user.repository&#x27;;
+import { User } from &#x27;./domain/user&#x27;;
+import bcrypt from &#x27;bcryptjs&#x27;;
+import { AuthProvidersEnum } from &#x27;../auth/auth-providers.enum&#x27;;
+import { FilesService } from &#x27;../files/files.service&#x27;;
+import { RoleEnum } from &#x27;../roles/roles.enum&#x27;;
+import { StatusEnum } from &#x27;../statuses/statuses.enum&#x27;;
+import { IPaginationOptions } from &#x27;../utils/types/pagination-options&#x27;;
+import { FileType } from &#x27;../files/domain/file&#x27;;
+import { Role } from &#x27;../roles/domain/role&#x27;;
+import { Status } from &#x27;../statuses/domain/status&#x27;;
+import { UpdateUserDto } from &#x27;./dto/update-user.dto&#x27;;
+
+@Injectable()
+export class UsersService {
+  constructor(
+    private readonly regionService: RegionsService,
+
+    @Inject(forwardRef(() &#x3D;&gt; SettingsService))
+    private readonly settingsService: SettingsService,
+
+    @Inject(forwardRef(() &#x3D;&gt; KycDetailsService))
+    private readonly kycDetailsService: KycDetailsService,
+
+    @Inject(forwardRef(() &#x3D;&gt; TenantsService))
+    private readonly tenantService: TenantsService,
+
+    private readonly usersRepository: UserRepository,
+    private readonly filesService: FilesService,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise&lt;User&gt; {
+    // Do not remove comment below.
+    // &lt;creating-property /&gt;
+    let regions: Region[] | null | undefined &#x3D; undefined;
+
+    if (createUserDto.regions) {
+      const regionsObjects &#x3D; await this.regionService.findByIds(
+        createUserDto.regions.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (regionsObjects.length !&#x3D;&#x3D; createUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      regions &#x3D; regionsObjects;
+    } else if (createUserDto.regions &#x3D;&#x3D;&#x3D; null) {
+      regions &#x3D; null;
+    }
+
+    let settings: Settings[] | null | undefined &#x3D; undefined;
+
+    if (createUserDto.settings) {
+      const settingsObjects &#x3D; await this.settingsService.findByIds(
+        createUserDto.settings.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (settingsObjects.length !&#x3D;&#x3D; createUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      settings &#x3D; settingsObjects;
+    } else if (createUserDto.settings &#x3D;&#x3D;&#x3D; null) {
+      settings &#x3D; null;
+    }
+
+    let kycSubmissions: KycDetails[] | null | undefined &#x3D; undefined;
+
+    if (createUserDto.kycSubmissions) {
+      const kycSubmissionsObjects &#x3D; await this.kycDetailsService.findByIds(
+        createUserDto.kycSubmissions.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !&#x3D;&#x3D; createUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      kycSubmissions &#x3D; kycSubmissionsObjects;
+    } else if (createUserDto.kycSubmissions &#x3D;&#x3D;&#x3D; null) {
+      kycSubmissions &#x3D; null;
+    }
+
+    const tenantObject &#x3D; await this.tenantService.findById(
+      createUserDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: &#x27;notExists&#x27;,
+        },
+      });
+    }
+    const tenant &#x3D; tenantObject;
+
+    let password: string | undefined &#x3D; undefined;
+
+    if (createUserDto.password) {
+      const salt &#x3D; await bcrypt.genSalt();
+      password &#x3D; await bcrypt.hash(createUserDto.password, salt);
+    }
+
+    let email: string | null &#x3D; null;
+
+    if (createUserDto.email) {
+      const userObject &#x3D; await this.usersRepository.findByEmail(
+        createUserDto.email,
+      );
+      if (userObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: &#x27;emailAlreadyExists&#x27;,
+          },
+        });
+      }
+      email &#x3D; createUserDto.email;
+    }
+
+    let photo: FileType | null | undefined &#x3D; undefined;
+
+    if (createUserDto.photo?.id) {
+      const fileObject &#x3D; await this.filesService.findById(
+        createUserDto.photo.id,
+      );
+      if (!fileObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            photo: &#x27;imageNotExists&#x27;,
+          },
+        });
+      }
+      photo &#x3D; fileObject;
+    } else if (createUserDto.photo &#x3D;&#x3D;&#x3D; null) {
+      photo &#x3D; null;
+    }
+
+    let role: Role | undefined &#x3D; undefined;
+
+    if (createUserDto.role?.id) {
+      const roleObject &#x3D; Object.values(RoleEnum)
+        .map(String)
+        .includes(String(createUserDto.role.id));
+      if (!roleObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            role: &#x27;roleNotExists&#x27;,
+          },
+        });
+      }
+
+      role &#x3D; {
+        id: createUserDto.role.id,
+      };
+    }
+
+    let status: Status | undefined &#x3D; undefined;
+
+    if (createUserDto.status?.id) {
+      const statusObject &#x3D; Object.values(StatusEnum)
+        .map(String)
+        .includes(String(createUserDto.status.id));
+      if (!statusObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            status: &#x27;statusNotExists&#x27;,
+          },
+        });
+      }
+
+      status &#x3D; {
+        id: createUserDto.status.id,
+      };
+    }
+
+    return this.usersRepository.create({
+      // Do not remove comment below.
+      // &lt;creating-property-payload /&gt;
+      regions,
+
+      settings,
+
+      kycSubmissions,
+
+      tenant,
+
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+      email: email,
+      password: password,
+      photo: photo,
+      role: role,
+      status: status,
+      provider: createUserDto.provider ?? AuthProvidersEnum.email,
+      socialId: createUserDto.socialId,
+    });
+  }
+
+  findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterUserDto | null;
+    sortOptions?: SortUserDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise&lt;User[]&gt; {
+    return this.usersRepository.findManyWithPagination({
+      filterOptions,
+      sortOptions,
+      paginationOptions,
+    });
+  }
+
+  findById(id: User[&#x27;id&#x27;]): Promise&lt;NullableType&lt;User&gt;&gt; {
+    return this.usersRepository.findById(id);
+  }
+
+  findByIds(ids: User[&#x27;id&#x27;][]): Promise&lt;User[]&gt; {
+    return this.usersRepository.findByIds(ids);
+  }
+
+  findByEmail(email: User[&#x27;email&#x27;]): Promise&lt;NullableType&lt;User&gt;&gt; {
+    return this.usersRepository.findByEmail(email);
+  }
+
+  findBySocialIdAndProvider({
+    socialId,
+    provider,
+  }: {
+    socialId: User[&#x27;socialId&#x27;];
+    provider: User[&#x27;provider&#x27;];
+  }): Promise&lt;NullableType&lt;User&gt;&gt; {
+    return this.usersRepository.findBySocialIdAndProvider({
+      socialId,
+      provider,
+    });
+  }
+
+  async update(
+    id: User[&#x27;id&#x27;],
+    updateUserDto: UpdateUserDto,
+  ): Promise&lt;User | null&gt; {
+    // Do not remove comment below.
+    // &lt;updating-property /&gt;
+    let regions: Region[] | null | undefined &#x3D; undefined;
+
+    if (updateUserDto.regions) {
+      const regionsObjects &#x3D; await this.regionService.findByIds(
+        updateUserDto.regions.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (regionsObjects.length !&#x3D;&#x3D; updateUserDto.regions.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            regions: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      regions &#x3D; regionsObjects;
+    } else if (updateUserDto.regions &#x3D;&#x3D;&#x3D; null) {
+      regions &#x3D; null;
+    }
+
+    let settings: Settings[] | null | undefined &#x3D; undefined;
+
+    if (updateUserDto.settings) {
+      const settingsObjects &#x3D; await this.settingsService.findByIds(
+        updateUserDto.settings.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (settingsObjects.length !&#x3D;&#x3D; updateUserDto.settings.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            settings: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      settings &#x3D; settingsObjects;
+    } else if (updateUserDto.settings &#x3D;&#x3D;&#x3D; null) {
+      settings &#x3D; null;
+    }
+
+    let kycSubmissions: KycDetails[] | null | undefined &#x3D; undefined;
+
+    if (updateUserDto.kycSubmissions) {
+      const kycSubmissionsObjects &#x3D; await this.kycDetailsService.findByIds(
+        updateUserDto.kycSubmissions.map((entity) &#x3D;&gt; entity.id),
+      );
+      if (
+        kycSubmissionsObjects.length !&#x3D;&#x3D; updateUserDto.kycSubmissions.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            kycSubmissions: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      kycSubmissions &#x3D; kycSubmissionsObjects;
+    } else if (updateUserDto.kycSubmissions &#x3D;&#x3D;&#x3D; null) {
+      kycSubmissions &#x3D; null;
+    }
+
+    let tenant: Tenant | undefined &#x3D; undefined;
+
+    if (updateUserDto.tenant) {
+      const tenantObject &#x3D; await this.tenantService.findById(
+        updateUserDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: &#x27;notExists&#x27;,
+          },
+        });
+      }
+      tenant &#x3D; tenantObject;
+    }
+
+    let password: string | undefined &#x3D; undefined;
+
+    if (updateUserDto.password) {
+      const userObject &#x3D; await this.usersRepository.findById(id);
+
+      if (userObject &amp;&amp; userObject?.password !&#x3D;&#x3D; updateUserDto.password) {
+        const salt &#x3D; await bcrypt.genSalt();
+        password &#x3D; await bcrypt.hash(updateUserDto.password, salt);
+      }
+    }
+
+    let email: string | null | undefined &#x3D; undefined;
+
+    if (updateUserDto.email) {
+      const userObject &#x3D; await this.usersRepository.findByEmail(
+        updateUserDto.email,
+      );
+
+      if (userObject &amp;&amp; userObject.id !&#x3D;&#x3D; id) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: &#x27;emailAlreadyExists&#x27;,
+          },
+        });
+      }
+
+      email &#x3D; updateUserDto.email;
+    } else if (updateUserDto.email &#x3D;&#x3D;&#x3D; null) {
+      email &#x3D; null;
+    }
+
+    let photo: FileType | null | undefined &#x3D; undefined;
+
+    if (updateUserDto.photo?.id) {
+      const fileObject &#x3D; await this.filesService.findById(
+        updateUserDto.photo.id,
+      );
+      if (!fileObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            photo: &#x27;imageNotExists&#x27;,
+          },
+        });
+      }
+      photo &#x3D; fileObject;
+    } else if (updateUserDto.photo &#x3D;&#x3D;&#x3D; null) {
+      photo &#x3D; null;
+    }
+
+    let role: Role | undefined &#x3D; undefined;
+
+    if (updateUserDto.role?.id) {
+      const roleObject &#x3D; Object.values(RoleEnum)
+        .map(String)
+        .includes(String(updateUserDto.role.id));
+      if (!roleObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            role: &#x27;roleNotExists&#x27;,
+          },
+        });
+      }
+
+      role &#x3D; {
+        id: updateUserDto.role.id,
+      };
+    }
+
+    let status: Status | undefined &#x3D; undefined;
+
+    if (updateUserDto.status?.id) {
+      const statusObject &#x3D; Object.values(StatusEnum)
+        .map(String)
+        .includes(String(updateUserDto.status.id));
+      if (!statusObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            status: &#x27;statusNotExists&#x27;,
+          },
+        });
+      }
+
+      status &#x3D; {
+        id: updateUserDto.status.id,
+      };
+    }
+
+    return this.usersRepository.update(id, {
+      // Do not remove comment below.
+      // &lt;updating-property-payload /&gt;
+      regions,
+
+      settings,
+
+      kycSubmissions,
+
+      tenant,
+
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      email,
+      password,
+      photo,
+      role,
+      status,
+      provider: updateUserDto.provider,
+      socialId: updateUserDto.socialId,
+    });
+  }
+
+  async remove(id: User[&#x27;id&#x27;]): Promise&lt;void&gt; {
+    await this.usersRepository.remove(id);
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'UsersService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
