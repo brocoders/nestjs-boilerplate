@@ -28,6 +28,7 @@ export class RulesController {
   @Get(':id')
   @ApiOperation({ summary: 'Get rule by id' })
   @ApiResponse({ status: 200, type: Rule })
+  @ApiResponse({ status: 404, description: 'Rule not found' })
   findOne(@Param('id') id: string) {
     return this.rulesService.findOne(id);
   }
