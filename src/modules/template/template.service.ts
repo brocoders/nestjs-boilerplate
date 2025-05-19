@@ -112,7 +112,7 @@ export class TemplateService {
   ): Promise<{
     similarity: number;
     isCompliant: boolean;
-    deviations: any[];
+    deviations: Deviation[];
   }> {
     const template = await this.findOne(templateId);
     const similarity = this.calculateSimilarity(clauseText, template.text);
