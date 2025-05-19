@@ -7,13 +7,7 @@ import {
   SeverityLevel,
 } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
-
-// Define Deviation type
-interface Deviation {
-  type: string;
-  description: string;
-  severity: 'low' | 'medium' | 'high';
-}
+import { Deviation } from './interfaces/deviation.interface';
 
 // Define AllowedDeviation type
 interface AllowedDeviation {
@@ -206,7 +200,7 @@ export class TemplateService {
     return deviations;
   }
 
-  private isCompliantWithDeviations(deviations: any[]): boolean {
+  private isCompliantWithDeviations(deviations: Deviation[]): boolean {
     // Return true only if all deviations are LOW or MEDIUM severity
     return deviations.every(
       (deviation) =>

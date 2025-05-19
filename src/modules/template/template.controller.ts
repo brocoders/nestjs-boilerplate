@@ -11,6 +11,7 @@ import { TemplateService } from './template.service';
 import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Deviation } from './interfaces/deviation.interface';
 
 @ApiTags('templates')
 @Controller('templates')
@@ -84,7 +85,11 @@ export class TemplateController {
   compareClause(
     @Param('id') id: string,
     @Body('clauseText') clauseText: string,
-  ) {
+  ): Promise<{
+    similarity: number;
+    isCompliant: boolean;
+    deviations: Deviation[];
+  }> {
     return this.templateService.compareClause(clauseText, id);
   }
 
