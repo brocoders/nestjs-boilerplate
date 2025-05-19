@@ -2,7 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StandardClause } from './entities/standard-clause.entity';
-import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
+import {
+  CreateStandardClauseDto,
+  SeverityLevel,
+} from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 
 // Define Deviation type
@@ -10,6 +13,14 @@ interface Deviation {
   type: string;
   description: string;
   severity: 'low' | 'medium' | 'high';
+}
+
+// Define AllowedDeviation type
+interface AllowedDeviation {
+  type: keyof StandardClause;
+  threshold?: number;
+  severity?: SeverityLevel;
+  description?: string;
 }
 
 @Injectable()
@@ -172,14 +183,16 @@ export class TemplateService {
       template.allowedDeviations &&
       Array.isArray(template.allowedDeviations)
     ) {
-      for (const allowed of template.allowedDeviations) {
-        // If allowed deviation has a numeric threshold, compare (example: similarityThreshold)
+      for (const allowed of template.allowedDeviations as AllowedDeviation[]) {
+        // Validate allowed.type is a key of StandardClause and the value is a number
         if (
-          typeof (allowed as any).threshold === 'number' &&
-          typeof (template as any)[allowed.type] === 'number'
+          typeof allowed.type === 'string' &&
+          allowed.type in template &&
+          typeof (template as any)[allowed.type] === 'number' &&
+          typeof allowed.threshold === 'number'
         ) {
           const value = (template as any)[allowed.type];
-          const threshold = (allowed as any).threshold;
+          const threshold = allowed.threshold;
           if (value > threshold) {
             deviations.push({
               type: allowed.type,

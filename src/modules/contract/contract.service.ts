@@ -228,9 +228,10 @@ export class ContractService {
   }
 
   // Dedicated chat methods for future differentiation
-  getContractChat(): any[] {
+  async getContractChat(id: string): Promise<any[]> {
     // TODO: Implement chat-specific storage and retrieval
-    return [];
+    const contract = await this.findOne(id);
+    return [contract];
   }
 
   submitChat(_id: string, question: string): any {

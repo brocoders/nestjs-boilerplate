@@ -4,7 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import * as safeRegex from 'safe-regex';
+import { safeRegex } from 'safe-regex2';
 
 @ValidatorConstraint({ async: false })
 export class IsValidRegexConstraint implements ValidatorConstraintInterface {
