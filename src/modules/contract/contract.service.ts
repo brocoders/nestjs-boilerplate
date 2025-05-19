@@ -86,8 +86,18 @@ export class ContractService {
       throw new BadRequestException('No file uploaded');
     }
 
-    // TODO: Implement file parsing logic based on file type
-    // For now, we'll just create a basic contract record
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Unsupported file type');
+    }
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      throw new BadRequestException('File too large');
+    }
+
     const contract = this.contractRepository.create({
       title: file.originalname,
       filename: file.filename,

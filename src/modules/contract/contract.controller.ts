@@ -8,7 +8,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContractService } from './contract.service';
@@ -35,22 +34,21 @@ export class ContractController {
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        contractType: {
-          type: 'string',
-        },
+        file: { type: 'string', format: 'binary' },
+        contractType: { type: 'string' },
       },
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  uploadContract(
+  async create(
     @UploadedFile() file: Express.Multer.File,
-    @Query('contractType') contractType: string,
+    @Body('contractType') contractType: string,
   ) {
-    return this.contractService.uploadContract(file, contractType);
+    const contract = await this.contractService.uploadContract(
+      file,
+      contractType,
+    );
+    return { id: contract.id };
   }
 
   @Get()

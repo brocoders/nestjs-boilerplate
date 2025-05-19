@@ -40,6 +40,7 @@ export class CreateStandardClauseDto {
   version?: string;
 
   @ApiProperty({ required: false, type: Number })
+  @ApiProperty({ required: false, type: Number })
   @IsOptional()
   @IsNumber()
   @Min(0)

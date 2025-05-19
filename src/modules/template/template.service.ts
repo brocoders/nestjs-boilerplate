@@ -2,20 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StandardClause } from './entities/standard-clause.entity';
-import {
-  CreateStandardClauseDto,
-  SeverityLevel,
-} from './dto/create-standard-clause.dto';
+import { CreateStandardClauseDto } from './dto/create-standard-clause.dto';
 import { UpdateStandardClauseDto } from './dto/update-standard-clause.dto';
 import { Deviation } from './interfaces/deviation.interface';
-
-// Define AllowedDeviation type
-interface AllowedDeviation {
-  type: keyof StandardClause;
-  threshold?: number;
-  severity?: SeverityLevel;
-  description?: string;
-}
+import { AllowedDeviationDto as AllowedDeviation } from './dto/allowed-deviation.dto';
 
 @Injectable()
 export class TemplateService {
@@ -110,7 +100,7 @@ export class TemplateService {
   }> {
     const template = await this.findOne(templateId);
     const similarity = this.calculateSimilarity(clauseText, template.text);
-    const deviations = this.checkDeviations(clauseText, template);
+    const deviations = this.checkDeviations({ text: clauseText }, template);
     const isCompliant = this.isCompliantWithDeviations(deviations);
 
     return {
@@ -160,12 +150,12 @@ export class TemplateService {
   }
 
   private checkDeviations(
-    clauseText: string,
+    clause: Partial<StandardClause>,
     template: StandardClause,
   ): Deviation[] {
     const deviations: Deviation[] = [];
     // Example: check if clauseText matches template.text
-    if (clauseText !== template.text) {
+    if (clause.text !== template.text) {
       deviations.push({
         type: 'text',
         description: 'Clause text does not match template',
@@ -185,13 +175,17 @@ export class TemplateService {
           typeof (template as any)[allowed.type] === 'number' &&
           typeof allowed.threshold === 'number'
         ) {
-          const value = (template as any)[allowed.type];
+          const value = (clause as any)[allowed.type];
           const threshold = allowed.threshold;
           if (value > threshold) {
             deviations.push({
               type: allowed.type,
               description: `${allowed.type} value (${value}) exceeds allowed threshold (${threshold})`,
-              severity: allowed.severity || 'medium',
+              severity: (['low', 'medium', 'high'].includes(
+                allowed.severity ?? '',
+              )
+                ? allowed.severity
+                : 'medium') as 'low' | 'medium' | 'high',
             });
           }
         }

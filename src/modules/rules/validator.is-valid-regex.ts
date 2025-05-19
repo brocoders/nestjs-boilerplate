@@ -9,7 +9,7 @@ import { safeRegex } from 'safe-regex2';
 @ValidatorConstraint({ async: false })
 export class IsValidRegexConstraint implements ValidatorConstraintInterface {
   validate(value: any) {
-    if (typeof value !== 'string') return false;
+    if (typeof value !== 'string' || value.trim() === '') return false;
     try {
       if (!safeRegex(value)) return false;
 

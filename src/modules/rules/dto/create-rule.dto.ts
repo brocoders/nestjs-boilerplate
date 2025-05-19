@@ -33,4 +33,19 @@ export class CreateRuleDto {
   @Min(0)
   @Max(100)
   deviationAllowedPct?: number;
+
+  constructor(partial: Partial<CreateRuleDto>) {
+    Object.assign(this, partial);
+  }
+
+  @IsValidRegex({
+    message: 'similarityThreshold and deviationAllowedPct cannot both be set',
+    each: false,
+  })
+  areMutuallyExclusive() {
+    return !(
+      this.similarityThreshold !== undefined &&
+      this.deviationAllowedPct !== undefined
+    );
+  }
 }
