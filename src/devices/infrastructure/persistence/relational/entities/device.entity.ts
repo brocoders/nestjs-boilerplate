@@ -1,3 +1,5 @@
+import { NotificationEntity } from '../../../../../notifications/infrastructure/persistence/relational/entities/notification.entity';
+
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 
 import {
@@ -7,6 +9,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   Column,
+  OneToMany,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -14,6 +17,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'device',
 })
 export class DeviceEntity extends EntityRelationalHelper {
+  @OneToMany(() => NotificationEntity, (childEntity) => childEntity.device, {
+    eager: true,
+    nullable: true,
+  })
+  notifications?: NotificationEntity[] | null;
+
   @Column({
     nullable: false,
     type: Boolean,

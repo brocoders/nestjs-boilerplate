@@ -180,6 +180,6 @@ It's because we use `JWT`. `JWTs` are stateless, so we can't revoke them, but do
 
 ---
 
-Previous: [Working with database](database.md)
+Previous: [Database](database.md)
 
 Next: [Serialization](serialization.md)

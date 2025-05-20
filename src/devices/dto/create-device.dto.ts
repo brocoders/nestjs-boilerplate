@@ -1,4 +1,7 @@
+import { NotificationDto } from '../../notifications/dto/notification.dto';
+
 import { UserDto } from '../../users/dto/user.dto';
+
 import { Type } from 'class-transformer';
 
 import {
@@ -8,13 +11,14 @@ import {
   IsOptional,
   IsEnum,
   IsBoolean,
+  IsArray,
 } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { PlatformType } from '../types/devices-enum.type';
 import { getEnumErrorMessage } from '../../utils/helpers/enum.helper';
 
-export class CreateDeviceDto {
+export class BaseCreateDeviceDto {
   @ApiProperty({ default: false })
   @IsBoolean()
   @IsOptional()
@@ -52,7 +56,6 @@ export class CreateDeviceDto {
   @IsEnum(PlatformType, {
     message: getEnumErrorMessage(PlatformType, 'Platform'),
   })
-  @IsString()
   platform: string;
 
   @ApiProperty({
@@ -61,6 +64,18 @@ export class CreateDeviceDto {
   })
   @IsString()
   deviceToken: string;
+}
+
+export class CreateDeviceDto extends BaseCreateDeviceDto {
+  @ApiProperty({
+    required: false,
+    type: () => [NotificationDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => NotificationDto)
+  @IsArray()
+  notifications?: NotificationDto[] | null;
 
   @ApiProperty({
     required: true,
@@ -71,3 +86,5 @@ export class CreateDeviceDto {
   @IsNotEmptyObject()
   user: UserDto;
 }
+
+export class CreateDeviceUserDto extends BaseCreateDeviceDto {}

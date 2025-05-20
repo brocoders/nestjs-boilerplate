@@ -2,6 +2,10 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Notification } from '../../domain/notification';
+import {
+  FilterNotificationDto,
+  SortNotificationDto,
+} from '../../dto/query-notification.dto';
 
 export abstract class NotificationRepository {
   abstract create(
@@ -26,4 +30,27 @@ export abstract class NotificationRepository {
   ): Promise<Notification | null>;
 
   abstract remove(id: Notification['id']): Promise<void>;
+
+  abstract findManyWithPagination(options: {
+    filterOptions?: FilterNotificationDto | null;
+    sortOptions?: SortNotificationDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Notification[]>;
+
+  abstract findByDeviceIdWithPagination(options: {
+    deviceId: string;
+    filterOptions?: FilterNotificationDto | null;
+    sortOptions?: SortNotificationDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Notification[]>;
+
+  abstract findAllByDeviceId(
+    deviceId: string,
+    paginationOptions: IPaginationOptions,
+  ): Promise<Notification[]>;
+
+  abstract findUnreadByDeviceId(
+    deviceId: string,
+    paginationOptions: IPaginationOptions,
+  ): Promise<Notification[]>;
 }

@@ -1,6 +1,5 @@
 export type GorushConfig = {
   baseUrl: string;
-  grpcPort?: number;
-  enabled?: boolean;
+  enable: boolean;
   requestTimeOut?: number;
 };
