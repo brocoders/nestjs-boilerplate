@@ -1,38 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ChatOpenAI } from '@langchain/openai';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
+import { LlmFactory } from '../analysis/llm/llm.factory';
+import { Llm } from '../analysis/llm/llm.interface';
 
 @Injectable()
 export class AiService {
-  private openai: ChatOpenAI;
-  private gemini: GoogleGenerativeAI;
-  private textSplitter: RecursiveCharacterTextSplitter;
+  private readonly llm: Llm;
+  private readonly textSplitter: RecursiveCharacterTextSplitter;
 
-  constructor(private configService: ConfigService) {
-    // Initialize OpenAI
-    const apiKey = this.configService.get('ai.openai.apiKey', { infer: true });
-    const model = this.configService.get('ai.openai.model', { infer: true });
-    const temperature = this.configService.get('ai.openai.temperature', {
-      infer: true,
-    });
-    this.openai = new ChatOpenAI({
-      openAIApiKey: apiKey || '',
-      modelName: model || 'gpt-4',
-      temperature: temperature || 0.1,
-    });
-
-    // Initialize Gemini
-    this.gemini = new GoogleGenerativeAI(
-      this.configService.get<string>('ai.gemini.apiKey', { infer: true }) || '',
-    );
-
-    // Initialize text splitter
+  constructor(private readonly llmFactory: LlmFactory) {
+    this.llm = this.llmFactory.getLlm();
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
@@ -98,7 +79,7 @@ export class AiService {
 
     const chain = RunnableSequence.from([
       prompt,
-      this.openai,
+      (input: any) => this.llm.invoke(input),
       new StringOutputParser(),
     ]);
 
@@ -134,7 +115,7 @@ export class AiService {
 
     const chain = RunnableSequence.from([
       prompt,
-      this.openai,
+      (input: any) => this.llm.invoke(input),
       new StringOutputParser(),
     ]);
 
@@ -164,7 +145,7 @@ export class AiService {
 
     const chain = RunnableSequence.from([
       prompt,
-      this.openai,
+      (input: any) => this.llm.invoke(input),
       new StringOutputParser(),
     ]);
 
@@ -203,7 +184,7 @@ export class AiService {
 
     const chain = RunnableSequence.from([
       prompt,
-      this.openai,
+      (input: any) => this.llm.invoke(input),
       new StringOutputParser(),
     ]);
 

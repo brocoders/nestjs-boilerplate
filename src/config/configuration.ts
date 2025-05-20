@@ -8,6 +8,7 @@ export default () => ({
     database: process.env.DB_DATABASE || 'contract_ai',
   },
   ai: {
+    provider: process.env.AI_PROVIDER || 'gemini',
     openai: {
       apiKey: process.env.OPENAI_API_KEY || '',
       model: process.env.OPENAI_MODEL || 'gpt-4',

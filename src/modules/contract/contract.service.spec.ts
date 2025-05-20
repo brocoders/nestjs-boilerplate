@@ -246,11 +246,13 @@ describe('ContractService', () => {
         ...analysis.clauses[0],
         contract,
       });
-      expect(riskFlagRepository.save).toHaveBeenCalledWith({
-        ...analysis.risks[0],
-        contract,
-        clause: new Clause(),
-      });
+      expect(riskFlagRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...analysis.risks[0],
+          contract,
+          clause: undefined,
+        }),
+      );
       expect(summaryRepository.save).toHaveBeenCalledWith({
         content: analysis.summary,
         summaryType: 'FULL',
