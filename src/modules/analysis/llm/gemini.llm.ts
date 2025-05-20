@@ -8,13 +8,18 @@ export class GeminiLlm implements Llm {
   private readonly model: ChatGoogleGenerativeAI;
 
   constructor(private readonly configService: ConfigService) {
+
+    const apiKey =
+      this.configService.get<string>('ai.gemini.apiKey', { infer: true });
+
+    if (!apiKey) {
+      throw new Error('Gemini API key (ai.gemini.apiKey) is not set');
+    }
     this.model = new ChatGoogleGenerativeAI({
-      apiKey:
-        this.configService.get<string>('ai.gemini.apiKey', { infer: true }) ||
-        '',
+      apiKey,
       model:
         this.configService.get<string>('ai.gemini.model', { infer: true }) ||
-        'gemini-pro',
+        'gemini-2.0-flash',
     });
   }
 
