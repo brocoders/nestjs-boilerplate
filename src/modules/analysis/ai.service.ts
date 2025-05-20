@@ -2,15 +2,19 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { ChatOpenAI } from '@langchain/openai';
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { ConversationalRetrievalQAChain } from 'langchain/chains/conversational_retrieval_chain';
 
 @Injectable()
 export class AiService implements OnModuleInit {
   private geminiModel: any;
   private openaiModel: ChatOpenAI;
+  private openaiApiKey: string;
   private readonly textSplitter: RecursiveCharacterTextSplitter;
 
   constructor(private readonly configService: ConfigService) {
@@ -37,6 +41,8 @@ export class AiService implements OnModuleInit {
     if (!openaiApiKey) {
       throw new Error('OPENAI_API_KEY is not defined');
     }
+
+    this.openaiApiKey = openaiApiKey;
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -154,25 +160,25 @@ export class AiService implements OnModuleInit {
   }
 
   async answerQuestion(question: string, context: string): Promise<string> {
-    const prompt = PromptTemplate.fromTemplate(`
-      Answer the following question about the contract text.
-      Use only the information provided in the context.
-      If the answer cannot be determined from the context, say so.
-      
-      Context: {context}
-      Question: {question}
-    `);
+    const documents = await this.textSplitter.createDocuments([context]);
 
-    const chain = RunnableSequence.from([
-      prompt,
-      this.geminiModel,
-      new StringOutputParser(),
-    ]);
-
-    return chain.invoke({
-      context,
-      question,
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: this.openaiApiKey,
     });
+
+    const vectorStore = await MemoryVectorStore.fromDocuments(
+      documents,
+      embeddings,
+    );
+
+    const chain = ConversationalRetrievalQAChain.fromLLM(
+      this.openaiModel,
+      vectorStore.asRetriever(),
+    );
+
+    const result = await chain.invoke({ question, chat_history: [] });
+
+    return typeof result === 'string' ? result : (result.text as string);
   }
 
   async compareWithTemplate(
