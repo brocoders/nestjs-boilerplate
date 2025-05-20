@@ -71,6 +71,7 @@
     "@nestjs/typeorm": "11.0.0",
     "@types/multer-s3": "3.0.3",
     "@types/prompts": "2.4.9",
+    "@zilliz/milvus2-sdk-node": "^2.5.9",
     "apple-signin-auth": "1.7.8",
     "bcryptjs": "3.0.2",
     "class-transformer": "0.5.1",
@@ -225,5 +226,5 @@
       }
     }
   },
-  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

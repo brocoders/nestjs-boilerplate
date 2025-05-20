@@ -3,3 +3,4 @@ onlyBuiltDependencies:
   - '@scarf/scarf'
   - '@swc/core'
   - core-js
+  - protobufjs
