@@ -57,9 +57,7 @@ describe('Templates', () => {
   });
 
   it('should delete template via DELETE /templates/:id', async () => {
-    return request(app)
-      .delete(`/api/v1/templates/${createdId}`)
-      .expect(200);
+    return request(app).delete(`/api/v1/templates/${createdId}`).expect(200);
   });
 
   it('should return 404 for deleted template via GET /templates/:id', async () => {
