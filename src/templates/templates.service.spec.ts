@@ -51,7 +51,10 @@ describe('TemplatesService', () => {
 
       const result = await service.create(dto);
 
-      expect(repository.create).toHaveBeenCalledWith({ isActive: true, ...dto });
+      expect(repository.create).toHaveBeenCalledWith({
+        isActive: true,
+        ...dto,
+      });
       expect(repository.save).toHaveBeenCalledWith(created);
       expect(result).toBe(created);
     });
@@ -73,22 +76,36 @@ describe('TemplatesService', () => {
     it('should throw NotFoundException if clause does not exist', async () => {
       repository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('2')).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.findOne('2')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
   describe('update', () => {
     it('should update a clause', async () => {
       const clause = { id: '1', name: 'A' } as StandardClause;
-      const dto: UpdateStandardClauseDto = { name: 'B' } as UpdateStandardClauseDto;
+      const dto: UpdateStandardClauseDto = {
+        name: 'B',
+      } as UpdateStandardClauseDto;
 
       repository.findOne.mockResolvedValue(clause);
-      repository.save.mockImplementation(async (value) => value as StandardClause);
+      repository.save.mockImplementation(
+        async (value) => (await value) as StandardClause,
+      );
 
       const result = await service.update('1', dto);
 
       expect(repository.save).toHaveBeenCalledWith({ ...clause, ...dto });
       expect(result).toEqual({ ...clause, ...dto });
+    });
+
+    it('should throw NotFoundException if clause does not exist', async () => {
+      repository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.update('nonexistent', { name: 'New Name' }),
+      ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
 
@@ -101,7 +118,18 @@ describe('TemplatesService', () => {
 
       await service.remove('1');
 
-      expect(repository.save).toHaveBeenCalledWith({ ...clause, isActive: false });
+      expect(repository.save).toHaveBeenCalledWith({
+        ...clause,
+        isActive: false,
+      });
+    });
+
+    it('should throw NotFoundException if clause does not exist', async () => {
+      repository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove('nonexistent')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
