@@ -99,7 +99,8 @@
     "safe-regex2": "^5.0.0",
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.1",
-    "typeorm": "0.3.21"
+    "typeorm": "0.3.21",
+    "zod": "^3.25.7"
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.0",
