@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Contract } from '../../entities/contract.entity';
 import { Clause } from '../../entities/clause.entity';
-import { RiskFlag, RiskFlagStatus } from '../../entities/risk-flag.entity';
+import { RiskFlag } from '../../entities/risk-flag.entity';
 import { Summary } from '../../entities/summary.entity';
 import { QnA } from '../../entities/qna.entity';
 import { HumanReview } from '../../entities/human-review.entity';
@@ -137,13 +137,7 @@ export class ContractService {
         this.riskFlagRepository.save({
           ...riskData,
           contract,
-          clause: undefined,
-          suggestedText: '',
-          notes: '',
-          isResolved: false,
-          status: RiskFlagStatus.OPEN,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          clause: new Clause(),
         }),
       ),
     );
