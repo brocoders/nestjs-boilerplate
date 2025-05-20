@@ -1,6 +1,7 @@
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
+  - '@scribe.js/tesseract.js'
   - '@swc/core'
   - core-js
   - protobufjs
