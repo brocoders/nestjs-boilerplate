@@ -3,6 +3,7 @@
   "markdown.extension.orderedList.autoRenumber": false,
   "typescript.preferences.importModuleSpecifier": "relative",
   "cSpell.words": [
+    "analysed",
     "autopopulate",
     "conventionalcommits",
     "Dtype",

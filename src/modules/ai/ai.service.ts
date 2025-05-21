@@ -11,12 +11,14 @@ import { z } from 'zod';
 import { zodSchemaToPromptDescription } from '../../utils/zod-schema-to-prompt';
 import { CallbackHandler } from 'langfuse-langchain';
 import { ContractSummarySchema } from './schema/summary.schema';
+import { Langfuse } from 'langfuse';
 
 @Injectable()
 export class AiService {
   private readonly llm: Llm;
   private readonly textSplitter: RecursiveCharacterTextSplitter;
   private readonly langfuseHandler!: CallbackHandler;
+  private readonly langfuse: Langfuse;
 
   constructor(
     private readonly llmFactory: LlmFactory,
@@ -30,6 +32,17 @@ export class AiService {
     });
     // Initialize Langfuse callback handler
     this.langfuseHandler = new CallbackHandler({
+      publicKey: this.configService.get<string>('langfuse.publicKey', {
+        infer: true,
+      }),
+      secretKey: this.configService.get<string>('langfuse.secretKey', {
+        infer: true,
+      }),
+      baseUrl: this.configService.get<string>('langfuse.baseUrl', {
+        infer: true,
+      }),
+    });
+    this.langfuse = new Langfuse({
       publicKey: this.configService.get<string>('langfuse.publicKey', {
         infer: true,
       }),
@@ -162,7 +175,7 @@ export class AiService {
       description: z
         .string()
         .describe('Human-readable explanation of the risk'),
-      severity: SeverityEnum.describe('Impact × likelihood'),
+      severity: SeverityEnum.describe('Impact x likelihood'),
       mitigation: z
         .string()
         .describe(
@@ -191,98 +204,7 @@ export class AiService {
     // 2.  PROMPT THAT LOCKS THE MODEL INTO THE STRUCTURE
     // ---------------------------------------------------------------------------
 
-    const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);
-
-    /**
-     *  Mini-playbook distilled from contract-drafting treatises + Big-Law
-     *  review checklists.  The bullets are intentionally terse so they fit
-     *  comfortably inside the model's context window without drowning the
-     *  operative instructions.
-     */
-    const LEGAL_PLAYBOOK = `
-      LEGAL LENS – HOW TO READ A CONTRACT SECTION
-      • Identify the parties + role: seller/buyer, licensor/licensee, etc.
-      • Parse defined terms (uppercase terms → check their definitions).
-      • Ask "Who owes what, when, and to whom?" (OBLIGATION vs RIGHT).
-      • Look for MUST/SHALL (mandatory), MAY (permissive), WILL (future fact), 
-        and NEGATIVES (e.g. "not", "except").
-      • Spot money movement (fees, royalties, set-offs) → PAYMENT or FINANCIAL risk.
-      • Map default/termination triggers and cure periods → TERMINATION.
-      • Search for liability caps, baskets, exclusions → LIMITATION_OF_LIABILITY.
-      • Scan for broad indemnities ("indemnify, defend, hold harmless").
-      • Check governing-law + jurisdiction for venue shopping risk.
-      • Compare carve-outs and "material" modifiers → scope narrowing.
-      • If wording is vague ("reasonable"), flag as OPERATIONAL risk.
-      • Severity heuristic:  
-          CRITICAL = existential threat or unenforceable term,  
-          HIGH     = significant financial/legal exposure (>10 % contract value),  
-          MEDIUM   = manageable with monitoring or insurance,  
-          LOW      = paper-only / remote likelihood.
-      • Mitigation tip style: imperative, ≤ 120 characters ("Negotiate 30-day cure period"). 
-      `;
-
-    /**
-     * Few-shot example: <80 lines and 100 % compliant with the AnalysisSchema.
-     * Keep one small but realistic snippet so the model "sees" the target JSON
-     * structure in action without bloating context.
-     */
-    const FEW_SHOT_EXAMPLE = `
-        EXAMPLE
-      ========
-      <<SECTION>>
-      The Licensee shall pay the Licensor a non-refundable upfront fee of
-      INR 5,00,000 within seven (7) days of the Effective Date.  The Licensor
-      shall indemnify, defend and hold harmless the Licensee against any claim
-      that the Software infringes third-party IP rights, provided that the
-      Licensee promptly notifies the Licensor of such claim.
-      <<END SECTION>>
-
-      <<DESIRED_JSON>>
-      {
-        "sectionTitle": "",
-        "clauses": [
-          {
-            "id": 1,
-            "text": "The Licensee shall pay ... seven (7) days of the Effective Date.",
-            "type": "PAYMENT",
-            "obligation": "OBLIGATION",
-            "startIndex": 0,
-            "endIndex": 119,
-            "confidence": 0.96
-          },
-          {
-            "id": 2,
-            "text": "The Licensor shall indemnify, defend and hold harmless ... such claim.",
-            "type": "INDEMNITY",
-            "obligation": "OBLIGATION",
-            "startIndex": 122,
-            "endIndex": 262,
-            "confidence": 0.93
-          }
-        ],
-        "risks": [
-          {
-            "id": 1,
-            "clauseId": 1,
-            "type": "FINANCIAL",
-            "description": "Up-front fee due in 7 days may stress Licensee cash-flow.",
-            "severity": "MEDIUM",
-            "mitigation": "Negotiate 30-day payment window",
-            "confidence": 0.88
-          },
-          {
-            "id": 2,
-            "clauseId": 2,
-            "type": "LEGAL",
-            "description": "Indemnity lacks liability cap exposing Licensor to unlimited damages.",
-            "severity": "HIGH",
-            "mitigation": "Insert INR 1 cr liability cap",
-            "confidence": 0.91
-          }
-        ]
-      }
-      <<END>>
-      `;
+    const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);    
 
     /**
      * ✔  Uses explicit instructions ("do NOT …") to prevent markdown, prose, or
@@ -291,39 +213,10 @@ export class AiService {
      * ✔  Mentions empty-array rule — no nulls/omissions.
      * ✔  Reminds the model to think silently first (chain-of-thought is hidden).
      */
-    const prompt = PromptTemplate.fromTemplate(`
-      You are **Contract-Analysis-GPT**, a senior commercial lawyer and risk
-      analyst.  Your output MUST be a single JSON object that exactly matches
-      the Zod schema shown below – no markdown, no extra keys.
-
-      ${LEGAL_PLAYBOOK}      
-
-      ${FEW_SHOT_EXAMPLE}
-
-      TASK
-      ----
-      Analyse the **Section** text of a {contractType} contract and return a JSON object
-      that matches the exact Zod schema shown below — no extra keys, no markdown.
-
-      RULES
-      1. Think through the text internally, but only output the final JSON.
-      2. Use the enumerations exactly as written (case-sensitive).
-      3. If something is unknown or not present, use "" for strings or [] for arrays.
-      4. The array order must follow the order of appearance in the section.
-      5. <startIndex, endIndex> must map to the original Section string.
-      6. confidence is a decimal between 0 and 1 with 2-decimal precision.
-      7. If no clauses or risks are found, still return the property with an empty array.
-
-      SCHEMA
-      \`\`\`json
-      ${schemaDescription}
-      \`\`\`
-
-      SECTION START
-      --------------
-      {text}
-      SECTION END
-      `);
+    const contractAnalysisPrompt = await this.langfuse.getPrompt(
+      'contract-analysis-prompt',
+    );
+    const prompt = PromptTemplate.fromTemplate(contractAnalysisPrompt.prompt);
 
     // Use .withStructuredOutput if available
     let result: any;
@@ -333,6 +226,7 @@ export class AiService {
       );
       result = await modelWithSchema.invoke(
         {
+          schemaDescription,
           contractType,
           text: doc.pageContent,
         },
@@ -368,33 +262,9 @@ export class AiService {
     const schemaDescription = zodSchemaToPromptDescription(
       ContractSummarySchema,
     );
-    const prompt = PromptTemplate.fromTemplate(`
-      You are **Contract-Digest-GPT**, a senior commercial lawyer.  
-      Your task is to produce a concise, lawyer-ready executive summary of the contract
-      text provided below.  Follow the structure and rules exactly.
-
-      ──────────────────────── SCHEMA ────────────────────────
-      ${schemaDescription}
-      ─────────────────────────────────────────────────────────
-
-      ──────────────────────────────────────────────────────────────────────────────
-      GUIDELINES
-      1. Think silently; reveal *only* the final JSON.
-      2. Populate every required key. Use "" for strings or [] for arrays when data
-        is absent.  Never omit keys.
-      3. Date format → "dd MMM yyyy" (e.g., "05 Feb 2025").
-      4. Currency → ISO-4217 code + number (e.g., 123456.78 "INR").
-      5. Clause references: literal number/heading as it appears, else "-".
-      6. \`risks\` array ≤ 3 items ordered by severity (HIGH→LOW).
-      7. \`abstract\` ≤ 42 words, plain English, no legalese.
-      8. No markdown, comments, or explanatory prose—JSON only.
-
-      ──────────────────────────────────────────────────────────────────────────────
-      CONTRACT TEXT BEGINS
-      {text}
-      ──────────────────────────────────────────────────────────────────────────────
-      CONTRACT TEXT ENDS
-      `);
+    const prompt = PromptTemplate.fromTemplate(
+      (await this.langfuse.getPrompt('contract-summary')).prompt,
+    );
 
     let result: any;
     if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
@@ -403,7 +273,7 @@ export class AiService {
       );
       result = await modelWithSchema.invoke(
         {
-          contractType,
+          schemaDescription,
           text,
         },
         { callbacks: [this.langfuseHandler] },

@@ -81,6 +81,7 @@
     "google-auth-library": "9.15.1",
     "handlebars": "4.7.8",
     "langchain": "^0.3.19",
+    "langfuse": "^3.37.2",
     "langfuse-langchain": "^3.37.2",
     "lodash": "^4.17.21",
     "mongoose": "8.12.1",
