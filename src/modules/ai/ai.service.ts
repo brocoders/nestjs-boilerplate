@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { LlmFactory } from '../analysis/llm/llm.factory';
 import { Llm } from '../analysis/llm/llm.interface';
@@ -12,6 +11,7 @@ import { zodSchemaToPromptDescription } from '../../utils/zod-schema-to-prompt';
 import { CallbackHandler } from 'langfuse-langchain';
 import { ContractSummarySchema } from './schema/summary.schema';
 import { Langfuse } from 'langfuse';
+import { AnalysisSchema } from './schema/analysis.schema';
 
 @Injectable()
 export class AiService {
@@ -55,6 +55,45 @@ export class AiService {
     });
   }
 
+  private async invokeWithSchema<T>(
+    schema: z.ZodType<T>,
+    prompt: PromptTemplate | string,
+    inputVars: Record<string, any>,
+    options?: { skipSchemaDescription?: boolean },
+  ): Promise<T> {
+    let result: any;
+    const schemaDescription = options?.skipSchemaDescription
+      ? undefined
+      : zodSchemaToPromptDescription(schema);
+    const promptTemplate =
+      typeof prompt === 'string' ? PromptTemplate.fromTemplate(prompt) : prompt;
+    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
+      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
+        schema,
+      );
+      result = await modelWithSchema.invoke(
+        promptTemplate,
+        { ...inputVars, ...(schemaDescription ? { schemaDescription } : {}) },
+        { callbacks: [this.langfuseHandler] },
+      );
+    } else {
+      const chain = promptTemplate
+        .pipe((this.llm as any).model)
+        .pipe(new StringOutputParser());
+
+      const raw = await chain.invoke(
+        { ...inputVars, ...(schemaDescription ? { schemaDescription } : {}) },
+        { callbacks: [this.langfuseHandler] },
+      );
+      try {
+        result = schema.parse(JSON.parse(raw));
+      } catch (e) {
+        throw new Error('Failed to parse result: ' + e);
+      }
+    }
+    return result;
+  }
+
   async analyzeContract(
     text: string,
     contractType: string,
@@ -92,167 +131,18 @@ export class AiService {
     clauses: { text: string; type: string }[];
     risks: { type: string; description: string; severity: string }[];
   }> {
-    // ---------------------------------------------------------------------------
-    // 1.  STRONGER, SELF-DESCRIBING SCHEMA
-    // ---------------------------------------------------------------------------
-
-    /**
-     * Enumerations are deliberately short and upper-case to avoid model drift.
-     * Add new literals only through controlled code changes — never ad-hoc
-     * inside the prompt.
-     */
-    const ClauseTypeEnum = z.enum([
-      'TERM', // governing term / duration
-      'TERMINATION', // rights to exit
-      'PAYMENT', // commercial payment terms
-      'IP', // intellectual-property
-      'CONFIDENTIALITY',
-      'INDEMNITY',
-      'LIMITATION_OF_LIABILITY',
-      'GOVERNING_LAW',
-      'OTHER', // fall-back
-    ]);
-
-    const ObligationEnum = z.enum([
-      'RIGHT',
-      'OBLIGATION',
-      'CONDITION',
-      'REPRESENTATION',
-    ]);
-
-    const RiskTypeEnum = z.enum([
-      'COMPLIANCE',
-      'FINANCIAL',
-      'LEGAL',
-      'OPERATIONAL',
-      'REPUTATIONAL',
-      'OTHER',
-    ]);
-
-    const SeverityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
-
-    const ClauseSchema = z.object({
-      id: z
-        .number()
-        .int()
-        .describe('Running index starting at 1, unique within the section'),
-      text: z.string().describe('Verbatim clause text (trimmed)'),
-      type: ClauseTypeEnum.describe('Normalized clause category'),
-      obligation: ObligationEnum.describe(
-        "Nature of the clause from the party's perspective",
-      ),
-      startIndex: z
-        .number()
-        .int()
-        .describe('0-based character index of clause start within the section'),
-      endIndex: z
-        .number()
-        .int()
-        .describe(
-          '0-based character index of clause end within the section, inclusive',
-        ),
-      confidence: z
-        .number()
-        .min(0)
-        .max(1)
-        .describe(
-          'Model confidence that the text is correctly classified (0-1)',
-        ),
-    });
-
-    const RiskSchema = z.object({
-      id: z
-        .number()
-        .int()
-        .describe('Running index starting at 1, unique within the section'),
-      clauseId: z
-        .number()
-        .int()
-        .describe(
-          'ID of the clause this risk relates to (or 0 if section-level)',
-        ),
-      type: RiskTypeEnum.describe('Normalized risk bucket'),
-      description: z
-        .string()
-        .describe('Human-readable explanation of the risk'),
-      severity: SeverityEnum.describe('Impact x likelihood'),
-      mitigation: z
-        .string()
-        .describe(
-          'Concise, actionable mitigation recommendation (<=120 chars)',
-        ),
-      confidence: z
-        .number()
-        .min(0)
-        .max(1)
-        .describe(
-          'Model confidence that the risk is correctly identified (0-1)',
-        ),
-    });
-
-    const AnalysisSchema = z.object({
-      sectionTitle: z
-        .string()
-        .describe(
-          'Heading of the section being analysed, if identifiable, else ""',
-        ),
-      clauses: z.array(ClauseSchema).describe('All clauses in reading order'),
-      risks: z.array(RiskSchema).describe('All risks (may reference clauses)'),
-    });
-
-    // ---------------------------------------------------------------------------
-    // 2.  PROMPT THAT LOCKS THE MODEL INTO THE STRUCTURE
-    // ---------------------------------------------------------------------------
-
-    const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);
-
-    /**
-     * ✔  Uses explicit instructions ("do NOT …") to prevent markdown, prose, or
-     *    hallucinated keys.
-     * ✔  Explains enumerations once so the model does not invent new variants.
-     * ✔  Mentions empty-array rule — no nulls/omissions.
-     * ✔  Reminds the model to think silently first (chain-of-thought is hidden).
-     */
     const contractAnalysisPrompt = await this.langfuse.getPrompt(
       'contract-analysis-prompt',
     );
     const prompt = PromptTemplate.fromTemplate(contractAnalysisPrompt.prompt);
-
-    // Use .withStructuredOutput if available
-    let result: any;
-    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
-      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
-        AnalysisSchema,
-      );
-      result = await modelWithSchema.invoke(
-        prompt,
-        {
-          schemaDescription,
-          contractType,
-          text: doc.pageContent,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-    } else {
-      // Fallback to old approach
-      const chain = RunnableSequence.from([
-        prompt,
-        (input: any) => this.llm.invoke(input),
-        new StringOutputParser(),
-      ]);
-      const raw = await chain.invoke(
-        {
-          contractType,
-          text: doc.pageContent,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-      try {
-        result = AnalysisSchema.parse(JSON.parse(raw));
-      } catch (e) {
-        throw new Error('Failed to parse analysis result: ' + e);
-      }
-    }
+    const result = await this.invokeWithSchema<z.infer<typeof AnalysisSchema>>(
+      AnalysisSchema,
+      prompt,
+      {
+        contractType,
+        text: doc.pageContent,
+      },
+    );
     return result;
   }
 
@@ -260,52 +150,21 @@ export class AiService {
     text: string,
     contractType: string,
   ): Promise<z.infer<typeof ContractSummarySchema>> {
-    const schemaDescription = zodSchemaToPromptDescription(
+    const prompt = (await this.langfuse.getPrompt('contract-summary')).prompt;
+    return this.invokeWithSchema<z.infer<typeof ContractSummarySchema>>(
       ContractSummarySchema,
+      prompt,
+      {
+        text,
+        contractType,
+      },
     );
-    const prompt = PromptTemplate.fromTemplate(
-      (await this.langfuse.getPrompt('contract-summary')).prompt,
-    );
-
-    let result: any;
-    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
-      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
-        ContractSummarySchema,
-      );
-      result = await modelWithSchema.invoke(
-        {
-          schemaDescription,
-          text,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-    } else {
-      const chain = RunnableSequence.from([
-        prompt,
-        (input: any) => this.llm.invoke(input),
-        new StringOutputParser(),
-      ]);
-      const raw = await chain.invoke(
-        {
-          contractType,
-          text,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-      try {
-        result = ContractSummarySchema.parse(JSON.parse(raw));
-      } catch (e) {
-        throw new Error('Failed to parse summary result: ' + e);
-      }
-    }
-    return result;
   }
 
   async answerQuestion(
     question: string,
     context: string,
   ): Promise<{ answer: string; confidence: number }> {
-    // Define Zod schema for structured output with descriptions
     const AnswerSchema = z.object({
       answer: z.string().describe("The answer to the user's question"),
       confidence: z
@@ -314,9 +173,6 @@ export class AiService {
         .max(1)
         .describe('Confidence score between 0 and 1'),
     });
-
-    const schemaDescription = zodSchemaToPromptDescription(AnswerSchema);
-
     const prompt = PromptTemplate.fromTemplate(`
       Answer the following question based on the provided contract context.
       If you cannot find a definitive answer in the context, say so.
@@ -325,39 +181,13 @@ export class AiService {
       Question: {question}
 
       Provide your answer in JSON format with the following schema:
-      ${schemaDescription}
+      ${zodSchemaToPromptDescription(AnswerSchema)}
     `);
-
-    let result: any;
-    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
-      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
-        AnswerSchema,
-      );
-      result = await modelWithSchema.invoke(
-        {
-          context,
-          question,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-    } else {
-      const chain = prompt
-        .pipe((this.llm as any).model)
-        .pipe(new StringOutputParser());
-      const raw = await chain.invoke(
-        {
-          context,
-          question,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-      try {
-        result = AnswerSchema.parse(JSON.parse(raw));
-      } catch (e) {
-        throw new Error('Failed to parse answer result: ' + e);
-      }
-    }
-    return result;
+    return this.invokeWithSchema<z.infer<typeof AnswerSchema>>(
+      AnswerSchema,
+      prompt,
+      { context, question },
+    );
   }
 
   async compareWithTemplate(
@@ -368,7 +198,6 @@ export class AiService {
     suggestedChanges: string[];
     riskLevel: string;
   }> {
-    // Define Zod schema for structured output with descriptions
     const CompareSchema = z.object({
       differences: z
         .array(
@@ -386,9 +215,6 @@ export class AiService {
         .enum(['LOW', 'MEDIUM', 'HIGH'])
         .describe('Overall risk level'),
     });
-
-    const schemaDescription = zodSchemaToPromptDescription(CompareSchema);
-
     const prompt = PromptTemplate.fromTemplate(`
       Compare the following clause with the template clause and identify:
       1. Key differences
@@ -399,42 +225,16 @@ export class AiService {
       Template Text: {templateText}
 
       Provide the analysis in JSON format with the following schema:
-      ${schemaDescription}
+      ${zodSchemaToPromptDescription(CompareSchema)}
     `);
-
-    let result: any;
-    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
-      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
-        CompareSchema,
-      );
-      result = await modelWithSchema.invoke(
-        {
-          clauseText,
-          templateText,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-    } else {
-      const chain = prompt
-        .pipe((this.llm as any).model)
-        .pipe(new StringOutputParser());
-      const raw = await chain.invoke(
-        {
-          clauseText,
-          templateText,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-      try {
-        result = CompareSchema.parse(JSON.parse(raw));
-      } catch (e) {
-        throw new Error('Failed to parse compare result: ' + e);
-      }
-    }
-    return result;
+    return this.invokeWithSchema<z.infer<typeof CompareSchema>>(
+      CompareSchema,
+      prompt,
+      { clauseText, templateText },
+    );
   }
 
-  async extractClauses(text: string) {
+  async extractClauses(text: string, contractType: string) {
     const ClauseSchema = z.object({
       title: z.string(),
       clauseType: z.string(),
@@ -446,42 +246,11 @@ export class AiService {
       dates: z.array(z.string()).optional(),
       legalReferences: z.array(z.string()).optional(),
     });
-
-    const schemaDescription = z.array(ClauseSchema);
-    const prompt = PromptTemplate.fromTemplate(
-      (await this.langfuse.getPrompt('extract-clause')).prompt,
+    const prompt = (await this.langfuse.getPrompt('extract-clause')).prompt;
+    return this.invokeWithSchema<z.infer<typeof ClauseSchema>[]>(
+      z.array(ClauseSchema),
+      prompt,
+      { text, contractType },
     );
-
-    let result: any;
-    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
-      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
-        ClauseSchema,
-      );
-      result = await modelWithSchema.invoke(
-        prompt,
-        {
-          schemaDescription,
-          text,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-    } else {
-      const chain = prompt
-        .pipe((this.llm as any).model)
-        .pipe(new StringOutputParser());
-      const raw = await chain.invoke(
-        {
-          schemaDescription,
-          text,
-        },
-        { callbacks: [this.langfuseHandler] },
-      );
-      try {
-        result = ClauseSchema.parse(JSON.parse(raw));
-      } catch (e) {
-        throw new Error('Failed to parse answer result: ' + e);
-      }
-    }
-    return result;
   }
 }

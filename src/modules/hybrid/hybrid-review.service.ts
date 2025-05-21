@@ -8,14 +8,17 @@ import scribe from 'scribe.js-ocr';
 import { Document } from 'langchain/document';
 import { CustomVoyageEmbeddings } from '../../utils/voyage-embeddings';
 import { AiService } from '../ai/ai.service';
+
 @Injectable()
 export class HybridReviewService implements OnModuleInit {
   private driver!: Driver;
   private milvusClient!: MilvusClient;
   private vectorStore!: Milvus;
-  private aiService!: AiService;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly aiService: AiService,
+  ) {}
 
   onModuleInit() {
     this.driver = neo4j.driver(
@@ -68,13 +71,9 @@ export class HybridReviewService implements OnModuleInit {
       dates: z.array(z.string()).optional(),
       legalReferences: z.array(z.string()).optional(),
     });
-
     const ResponseSchema = z.array(ClauseSchema);
-
-    const prompt = await this.langfuse.getPrompt('extract-clause');
-
-    const result = await this.aiService.analyzeContract(prompt, contractType);
-    return ResponseSchema.parse(result);
+    const clauses = await this.aiService.extractClauses(text, contractType);
+    return ResponseSchema.parse(clauses);
   }
 
   async saveContract(contractId: string, title: string, clauses: any[]) {
