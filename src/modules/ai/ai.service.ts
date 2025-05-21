@@ -89,18 +89,23 @@ export class AiService {
      * inside the prompt.
      */
     const ClauseTypeEnum = z.enum([
-      'TERM',           // governing term / duration
-      'TERMINATION',    // rights to exit
-      'PAYMENT',        // commercial payment terms
-      'IP',             // intellectual-property
+      'TERM', // governing term / duration
+      'TERMINATION', // rights to exit
+      'PAYMENT', // commercial payment terms
+      'IP', // intellectual-property
       'CONFIDENTIALITY',
       'INDEMNITY',
       'LIMITATION_OF_LIABILITY',
       'GOVERNING_LAW',
-      'OTHER',          // fall-back
+      'OTHER', // fall-back
     ]);
 
-    const ObligationEnum = z.enum(['RIGHT', 'OBLIGATION', 'CONDITION', 'REPRESENTATION']);
+    const ObligationEnum = z.enum([
+      'RIGHT',
+      'OBLIGATION',
+      'CONDITION',
+      'REPRESENTATION',
+    ]);
 
     const RiskTypeEnum = z.enum([
       'COMPLIANCE',
@@ -114,10 +119,15 @@ export class AiService {
     const SeverityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
 
     const ClauseSchema = z.object({
-      id: z.number().int().describe('Running index starting at 1, unique within the section'),
+      id: z
+        .number()
+        .int()
+        .describe('Running index starting at 1, unique within the section'),
       text: z.string().describe('Verbatim clause text (trimmed)'),
       type: ClauseTypeEnum.describe('Normalized clause category'),
-      obligation: ObligationEnum.describe('Nature of the clause from the party\'s perspective'),
+      obligation: ObligationEnum.describe(
+        "Nature of the clause from the party's perspective",
+      ),
       startIndex: z
         .number()
         .int()
@@ -125,37 +135,54 @@ export class AiService {
       endIndex: z
         .number()
         .int()
-        .describe('0-based character index of clause end within the section, inclusive'),
+        .describe(
+          '0-based character index of clause end within the section, inclusive',
+        ),
       confidence: z
         .number()
         .min(0)
         .max(1)
-        .describe('Model confidence that the text is correctly classified (0-1)'),
+        .describe(
+          'Model confidence that the text is correctly classified (0-1)',
+        ),
     });
 
     const RiskSchema = z.object({
-      id: z.number().int().describe('Running index starting at 1, unique within the section'),
+      id: z
+        .number()
+        .int()
+        .describe('Running index starting at 1, unique within the section'),
       clauseId: z
         .number()
         .int()
-        .describe('ID of the clause this risk relates to (or 0 if section-level)'),
+        .describe(
+          'ID of the clause this risk relates to (or 0 if section-level)',
+        ),
       type: RiskTypeEnum.describe('Normalized risk bucket'),
-      description: z.string().describe('Human-readable explanation of the risk'),
+      description: z
+        .string()
+        .describe('Human-readable explanation of the risk'),
       severity: SeverityEnum.describe('Impact × likelihood'),
       mitigation: z
         .string()
-        .describe('Concise, actionable mitigation recommendation (<=120 chars)'),
+        .describe(
+          'Concise, actionable mitigation recommendation (<=120 chars)',
+        ),
       confidence: z
         .number()
         .min(0)
         .max(1)
-        .describe('Model confidence that the risk is correctly identified (0-1)'),
+        .describe(
+          'Model confidence that the risk is correctly identified (0-1)',
+        ),
     });
 
     const AnalysisSchema = z.object({
       sectionTitle: z
         .string()
-        .describe('Heading of the section being analysed, if identifiable, else ""'),
+        .describe(
+          'Heading of the section being analysed, if identifiable, else ""',
+        ),
       clauses: z.array(ClauseSchema).describe('All clauses in reading order'),
       risks: z.array(RiskSchema).describe('All risks (may reference clauses)'),
     });
@@ -167,11 +194,11 @@ export class AiService {
     const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);
 
     /**
- *  Mini-playbook distilled from contract-drafting treatises + Big-Law
- *  review checklists.  The bullets are intentionally terse so they fit
- *  comfortably inside the model's context window without drowning the
- *  operative instructions.
- */
+     *  Mini-playbook distilled from contract-drafting treatises + Big-Law
+     *  review checklists.  The bullets are intentionally terse so they fit
+     *  comfortably inside the model's context window without drowning the
+     *  operative instructions.
+     */
     const LEGAL_PLAYBOOK = `
       LEGAL LENS – HOW TO READ A CONTRACT SECTION
       • Identify the parties + role: seller/buyer, licensor/licensee, etc.
@@ -298,8 +325,6 @@ export class AiService {
       SECTION END
       `);
 
-
-
     // Use .withStructuredOutput if available
     let result: any;
     if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
@@ -340,7 +365,9 @@ export class AiService {
     text: string,
     contractType: string,
   ): Promise<z.infer<typeof ContractSummarySchema>> {
-    const schemaDescription = zodSchemaToPromptDescription(ContractSummarySchema);
+    const schemaDescription = zodSchemaToPromptDescription(
+      ContractSummarySchema,
+    );
     const prompt = PromptTemplate.fromTemplate(`
       You are **Contract-Digest-GPT**, a senior commercial lawyer.  
       Your task is to produce a concise, lawyer-ready executive summary of the contract

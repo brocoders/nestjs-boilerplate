@@ -354,7 +354,10 @@ export class AnalysisService {
       }
 
       // Generate clause summary
-      const summaryObj = await this.aiService.generateSummary(clauseText, 'clause');
+      const summaryObj = await this.aiService.generateSummary(
+        clauseText,
+        'clause',
+      );
       await this.createSummary(contractId, clause.id, {
         type: SummaryType.CLAUSE,
         text: JSON.stringify(summaryObj),
