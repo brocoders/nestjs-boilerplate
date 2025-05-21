@@ -53,7 +53,10 @@ export class AiGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const { contractId, message } = data;
     try {
       // Stream agent responses as they are generated
-      for await (const update of this.aiService.streamChatWithContract(contractId, message)) {
+      for await (const update of this.aiService.streamChatWithContract(
+        contractId,
+        message,
+      )) {
         // Each update may contain partial or full agent response
         client.emit('agentResponse', update);
       }
@@ -62,4 +65,4 @@ export class AiGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('error', { message: 'Failed to process message' });
     }
   }
-} 
+}
