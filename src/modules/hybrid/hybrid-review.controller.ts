@@ -12,10 +12,14 @@ export class HybridReviewController {
       contractId: string;
       title: string;
       sources: Array<string>;
+      contractType: string;
     },
   ) {
     const text = await this.hybridService.extractText(body.sources);
-    const clauses = await this.hybridService.extractClauses(text);
+    const clauses = await this.hybridService.extractClauses(
+      text,
+      body.contractType,
+    );
     await this.hybridService.saveContract(body.contractId, body.title, clauses);
     return { clauseCount: clauses.length };
   }

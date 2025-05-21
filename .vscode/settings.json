@@ -5,15 +5,20 @@
   "cSpell.words": [
     "autopopulate",
     "conventionalcommits",
+    "Dtype",
     "genai",
     "hygen",
     "infile",
+    "langfuse",
     "langgraph",
     "milvus",
     "officedocument",
     "openxmlformats",
     "presigner",
     "qnas",
+    "ubinary",
+    "vectorstores",
+    "voyageai",
     "wordprocessingml",
     "zilliz"
   ]

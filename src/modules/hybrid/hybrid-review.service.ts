@@ -2,20 +2,18 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import neo4j, { Driver } from 'neo4j-driver';
 import { MilvusClient, DataType } from '@zilliz/milvus2-sdk-node';
-import { Milvus } from 'langchain/vectorstores/milvus';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { ChatOpenAI } from '@langchain/openai';
+import { Milvus } from '@langchain/community/vectorstores/milvus';
 import { z } from 'zod';
 import scribe from 'scribe.js-ocr';
 import { Document } from 'langchain/document';
-
+import { CustomVoyageEmbeddings } from '../../utils/voyage-embeddings';
+import { AiService } from '../ai/ai.service';
 @Injectable()
 export class HybridReviewService implements OnModuleInit {
   private driver!: Driver;
   private milvusClient!: MilvusClient;
   private vectorStore!: Milvus;
-  private embeddings!: OpenAIEmbeddings;
-  private model!: ChatOpenAI;
+  private aiService!: AiService;
 
   constructor(private readonly configService: ConfigService) {}
 
@@ -37,31 +35,19 @@ export class HybridReviewService implements OnModuleInit {
         'localhost:19530',
     });
 
-    this.embeddings = new OpenAIEmbeddings({
-      openAIApiKey:
-        this.configService.get<string>('OPENAI_API_KEY', { infer: true }) || '',
-    });
-
-    this.vectorStore = new Milvus(this.embeddings, {
-      collectionName:
-        this.configService.get<string>('MILVUS_COLLECTION', { infer: true }) ||
-        'clauses',
-      connectionArgs: {
-        uri: `http://${
-          this.configService.get<string>('MILVUS_ADDRESS', { infer: true }) ||
-          'localhost:19530'
-        }`,
+    this.vectorStore = new Milvus(
+      new CustomVoyageEmbeddings({
+        apiKey:
+          this.configService.get<string>('VOYAGE_API_KEY', { infer: true }) ||
+          '',
+      }),
+      {
+        collectionName:
+          this.configService.get<string>('MILVUS_COLLECTION', {
+            infer: true,
+          }) || 'clauses',
       },
-    });
-
-    this.model = new ChatOpenAI({
-      modelName:
-        this.configService.get<string>('OPENAI_MODEL', { infer: true }) ||
-        'gpt-4o',
-      openAIApiKey:
-        this.configService.get<string>('OPENAI_API_KEY', { infer: true }) || '',
-      temperature: 0,
-    });
+    );
   }
 
   async extractText(sources: Array<string | Buffer>): Promise<string> {
@@ -69,7 +55,7 @@ export class HybridReviewService implements OnModuleInit {
     return results.join('\n');
   }
 
-  async extractClauses(text: string) {
+  async extractClauses(text: string, contractType: string) {
     const ClauseSchema = z.object({
       title: z.string(),
       clauseType: z.string(),
@@ -86,8 +72,7 @@ export class HybridReviewService implements OnModuleInit {
 
     const prompt = `You are a contract analysis assistant. Given the full text of a legal contract, extract the following information:\n${text}`;
 
-    const runnable = this.model.withStructuredOutput(ResponseSchema);
-    const result = await runnable.invoke(prompt);
+    const result = await this.aiService.analyzeContract(prompt, contractType);
     return ResponseSchema.parse(result);
   }
 
@@ -146,10 +131,16 @@ export class HybridReviewService implements OnModuleInit {
         'clauses',
     });
 
-    const docs = [
-      new Document({ pageContent: text, metadata: { id: clauseId } }),
+    const data = [
+      new Document({
+        pageContent: text,
+        metadata: {
+          id: clauseId,
+        },
+      }),
     ];
-    await this.vectorStore.addDocuments(docs);
+
+    await this.vectorStore.addDocuments(data);
   }
 
   async searchClauses(query: string, topK = 5) {

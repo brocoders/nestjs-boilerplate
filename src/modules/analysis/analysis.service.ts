@@ -354,9 +354,10 @@ export class AnalysisService {
       }
 
       // Generate clause summary
+      const summaryObj = await this.aiService.generateSummary(clauseText, 'clause');
       await this.createSummary(contractId, clause.id, {
         type: SummaryType.CLAUSE,
-        text: await this.aiService.generateSummary(clauseText, 'clause'),
+        text: JSON.stringify(summaryObj),
       });
     }
 
@@ -364,12 +365,13 @@ export class AnalysisService {
     if (!contract.originalText) {
       throw new Error('Contract text is not available');
     }
+    const contractSummaryObj = await this.aiService.generateSummary(
+      contract.originalText,
+      'full contract',
+    );
     await this.createSummary(contractId, null, {
       type: SummaryType.FULL,
-      text: await this.aiService.generateSummary(
-        contract.originalText,
-        'full contract',
-      ),
+      text: JSON.stringify(contractSummaryObj),
     });
 
     // Update contract status
@@ -382,14 +384,13 @@ export class AnalysisService {
     if (!contract.originalText) {
       throw new Error('Contract text is not available');
     }
-    const summaryText = await this.aiService.generateSummary(
+    const summaryObj = await this.aiService.generateSummary(
       contract.originalText,
       type,
     );
-
     return this.createSummary(contractId, null, {
       type: type as SummaryType,
-      text: summaryText,
+      text: JSON.stringify(summaryObj),
     });
   }
 

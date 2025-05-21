@@ -81,6 +81,7 @@
     "google-auth-library": "9.15.1",
     "handlebars": "4.7.8",
     "langchain": "^0.3.19",
+    "langfuse-langchain": "^3.37.2",
     "lodash": "^4.17.21",
     "mongoose": "8.12.1",
     "mongoose-autopopulate": "^1.1.0",
@@ -102,6 +103,7 @@
     "source-map-support": "0.5.21",
     "swagger-ui-express": "5.0.1",
     "typeorm": "0.3.21",
+    "voyageai": "^0.0.4",
     "zod": "^3.25.7"
   },
   "devDependencies": {
