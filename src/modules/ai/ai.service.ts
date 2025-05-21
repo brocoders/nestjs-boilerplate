@@ -341,7 +341,9 @@ export class AiService {
         { callbacks: [this.langfuseHandler] },
       );
     } else {
-        const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
+      const chain = prompt
+        .pipe((this.llm as any).model)
+        .pipe(new StringOutputParser());
       const raw = await chain.invoke(
         {
           context,
@@ -413,7 +415,9 @@ export class AiService {
         { callbacks: [this.langfuseHandler] },
       );
     } else {
-      const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
+      const chain = prompt
+        .pipe((this.llm as any).model)
+        .pipe(new StringOutputParser());
       const raw = await chain.invoke(
         {
           clauseText,
@@ -445,7 +449,7 @@ export class AiService {
 
     const schemaDescription = z.array(ClauseSchema);
     const prompt = PromptTemplate.fromTemplate(
-      (await this.langfuse.getPrompt("extract-clause")).prompt,
+      (await this.langfuse.getPrompt('extract-clause')).prompt,
     );
 
     let result: any;
@@ -462,7 +466,9 @@ export class AiService {
         { callbacks: [this.langfuseHandler] },
       );
     } else {
-      const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
+      const chain = prompt
+        .pipe((this.llm as any).model)
+        .pipe(new StringOutputParser());
       const raw = await chain.invoke(
         {
           schemaDescription,
@@ -477,6 +483,5 @@ export class AiService {
       }
     }
     return result;
-    
   }
 }

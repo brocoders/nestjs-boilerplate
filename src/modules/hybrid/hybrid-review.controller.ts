@@ -21,7 +21,7 @@ class IngestDto {
 
 @Controller('hybrid')
 export class HybridReviewController {
-  constructor(private readonly hybridService: HybridReviewService) { }
+  constructor(private readonly hybridService: HybridReviewService) {}
 
   @Post('ingest')
   async ingestContract(
