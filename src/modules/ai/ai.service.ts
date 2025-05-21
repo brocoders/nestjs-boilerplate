@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -12,13 +12,30 @@ import { CallbackHandler } from 'langfuse-langchain';
 import { ContractSummarySchema } from './schema/summary.schema';
 import { Langfuse } from 'langfuse';
 import { AnalysisSchema } from './schema/analysis.schema';
+import {
+  StateGraph,
+  Annotation,
+  START,
+  END,
+  MemorySaver,
+} from '@langchain/langgraph';
+import { MilvusClient } from '@zilliz/milvus2-sdk-node';
+import { Milvus } from '@langchain/community/vectorstores/milvus';
+import neo4j, { Driver } from 'neo4j-driver';
+import { ChatOpenAI } from '@langchain/openai';
+import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
 
 @Injectable()
-export class AiService {
+export class AiService implements OnModuleInit {
   private readonly llm: Llm;
   private readonly textSplitter: RecursiveCharacterTextSplitter;
   private readonly langfuseHandler!: CallbackHandler;
   private readonly langfuse: Langfuse;
+  private milvusClient!: MilvusClient;
+  private vectorStore!: Milvus;
+  private neo4jDriver!: Driver;
+  private chatGraphs: Map<string, any> = new Map(); // contractId -> compiled LangGraph
+  private checkpointers: Map<string, any> = new Map(); // contractId -> MemorySaver
 
   constructor(
     private readonly llmFactory: LlmFactory,
@@ -53,6 +70,43 @@ export class AiService {
         infer: true,
       }),
     });
+  }
+
+  async onModuleInit() {
+    // Initialize Milvus
+    this.milvusClient = new MilvusClient({
+      address:
+        this.configService.get<string>('MILVUS_ADDRESS', { infer: true }) ||
+        'localhost:19530',
+    });
+    const voyageEmbeddingsModule = await import(
+      '../../utils/voyage-embeddings'
+    );
+    this.vectorStore = new Milvus(
+      new voyageEmbeddingsModule.CustomVoyageEmbeddings({
+        apiKey:
+          this.configService.get<string>('VOYAGE_API_KEY', { infer: true }) ||
+          '',
+      }),
+      {
+        collectionName:
+          this.configService.get<string>('MILVUS_COLLECTION', {
+            infer: true,
+          }) || 'clauses',
+        clientConfig: this.milvusClient.config,
+      },
+    );
+    // Initialize Neo4j
+    this.neo4jDriver = neo4j.driver(
+      this.configService.get<string>('NEO4J_URI', { infer: true }) ||
+        'bolt://localhost:7687',
+      neo4j.auth.basic(
+        this.configService.get<string>('NEO4J_USER', { infer: true }) ||
+          'neo4j',
+        this.configService.get<string>('NEO4J_PASSWORD', { infer: true }) ||
+          'neo4j',
+      ),
+    );
   }
 
   private async invokeWithSchema<T>(
@@ -252,5 +306,136 @@ export class AiService {
       prompt,
       { text, contractType },
     );
+  }
+
+  // State definition for LangGraph
+  private static AgentState = Annotation.Root({
+    messages: Annotation<BaseMessage[]>({
+      reducer: (x, y) => x.concat(y),
+      default: () => [],
+    }),
+    contractId: Annotation<string>(),
+    context: Annotation<string>(),
+  });
+
+  // Node: Retrieve context from Milvus and Neo4j
+  private retrieveContextNode = async (state: any) => {
+    const lastUserMsg = state.messages[state.messages.length - 1];
+    const contractId = state.contractId;
+    // 1. Semantic search in Milvus
+    // NOTE: If filter is not supported in this version, remove and filter manually or add a TODO.
+    let milvusResults;
+    try {
+      milvusResults = await this.vectorStore.similaritySearch(
+        lastUserMsg.content,
+        5,
+        // { filter: { contractId } }, // Uncomment if supported
+      );
+      // If filter is not supported, filter results manually:
+      milvusResults = milvusResults.filter(
+        (r: any) => r.metadata?.contractId === contractId,
+      );
+    } catch {
+      milvusResults = [];
+    }
+    // 2. Fetch metadata from Neo4j for the top results
+    const clauseIds = milvusResults.map((r: any) => r.metadata.id);
+    let context = '';
+    if (clauseIds.length > 0) {
+      const session = this.neo4jDriver.session();
+      try {
+        const res = await session.run(
+          'MATCH (c:Clause) WHERE c.id IN $ids RETURN c',
+          { ids: clauseIds },
+        );
+        context = res.records
+          .map((rec) => rec.get('c').properties.text)
+          .join('\n---\n');
+      } finally {
+        await session.close();
+      }
+    }
+    return { context };
+  };
+
+  // Node: Generate answer using LLM
+  private generateAnswerNode = async (state: any) => {
+    const model = new ChatOpenAI({
+      openAIApiKey:
+        this.configService.get<string>('ai.openai.apiKey', { infer: true }) ||
+        '',
+      modelName:
+        this.configService.get<string>('ai.openai.model', { infer: true }) ||
+        'gpt-4',
+    });
+    const lastUserMsg = state.messages[state.messages.length - 1];
+    const context = state.context;
+    const prompt = `You are a contract Q&A assistant. Use the following context from the contract to answer the user's question.\n\nContext:\n${context}\n\nQuestion: ${lastUserMsg.content}\n\nIf the answer is not in the context, say so.`;
+    const response = await model.invoke([new HumanMessage(prompt)]);
+    // Ensure response.content is a string
+    const answer =
+      typeof response.content === 'string'
+        ? response.content
+        : String(response.content);
+    return { messages: [new AIMessage(answer)] };
+  };
+
+  // Build and cache a LangGraph chat agent per contract
+  private getOrCreateChatGraph(contractId: string) {
+    if (this.chatGraphs.has(contractId)) {
+      return this.chatGraphs.get(contractId);
+    }
+    const checkpointer = new MemorySaver();
+    const graph = new StateGraph(AiService.AgentState)
+      .addNode('retrieve_context', this.retrieveContextNode)
+      .addNode('generate_answer', this.generateAnswerNode)
+      .addEdge(START, 'retrieve_context')
+      .addEdge('retrieve_context', 'generate_answer')
+      .addEdge('generate_answer', END)
+      .compile({ checkpointer });
+    this.chatGraphs.set(contractId, graph);
+    this.checkpointers.set(contractId, checkpointer);
+    return graph;
+  }
+
+  // Start a new chat session for a contract (returns session/thread id)
+  async startChatSession(contractId: string): Promise<string> {
+    // For now, contractId is the session id (can be extended for multi-session per contract)
+    await this.getOrCreateChatGraph(contractId);
+    return contractId;
+  }
+
+  // Send a user message and get the agent's answer (returns full message history)
+  async chatWithContract(
+    contractId: string,
+    userMessage: string,
+  ): Promise<BaseMessage[]> {
+    const graph = this.getOrCreateChatGraph(contractId);
+    const state = {
+      messages: [new HumanMessage(userMessage)],
+      contractId,
+      context: '',
+    };
+    const result = await graph.invoke(state, {
+      configurable: { thread_id: contractId },
+    });
+    return result.messages;
+  }
+
+  // Stream agent responses (for WebSocket integration)
+  async *streamChatWithContract(contractId: string, userMessage: string) {
+    const graph = this.getOrCreateChatGraph(contractId);
+    const state = {
+      messages: [new HumanMessage(userMessage)],
+      contractId,
+      context: '',
+    };
+    const stream = await graph.stream(state, {
+      configurable: { thread_id: contractId },
+      streamMode: 'updates',
+    });
+    for await (const update of stream) {
+      yield update;
+    }
   }
 }

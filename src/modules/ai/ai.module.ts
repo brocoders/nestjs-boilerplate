@@ -5,6 +5,7 @@ import configuration from '../../config/configuration';
 import { LlmFactory } from '../analysis/llm/llm.factory';
 import { GeminiLlm } from '../analysis/llm/gemini.llm';
 import { OpenAiLlm } from '../analysis/llm/openai.llm';
+import { AiGateway } from './ai.gateway';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { OpenAiLlm } from '../analysis/llm/openai.llm';
       isGlobal: true,
     }),
   ],
-  providers: [AiService, LlmFactory, GeminiLlm, OpenAiLlm],
-  exports: [AiService],
+  providers: [AiService, LlmFactory, GeminiLlm, OpenAiLlm, AiGateway],
+  exports: [AiService, AiGateway],
 })
 export class AiModule {}
