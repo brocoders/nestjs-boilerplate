@@ -1,4 +1,4 @@
-import { AsyncCallerParams } from '@langchain/core/dist/utils/async_caller';
+import { AsyncCallerParams } from '@langchain/core/utils/async_caller';
 import { Embeddings } from '@langchain/core/embeddings';
 import { VoyageAIClient } from 'voyageai';
 
@@ -23,6 +23,9 @@ export class CustomVoyageEmbeddings extends Embeddings {
 
   constructor(fields: VoyageEmbeddingsParams) {
     super(fields as AsyncCallerParams);
+    if (!fields.apiKey) {
+      throw new Error('Voyage API key is required');
+    }
     this.client = new VoyageAIClient({ apiKey: fields.apiKey });
     this.model = fields.model || 'voyage-law-2';
     this.inputType = fields.inputType;

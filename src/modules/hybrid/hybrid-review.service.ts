@@ -15,17 +15,17 @@ export class HybridReviewService implements OnModuleInit {
   private vectorStore!: Milvus;
   private aiService!: AiService;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) { }
 
   onModuleInit() {
     this.driver = neo4j.driver(
       this.configService.get<string>('NEO4J_URI', { infer: true }) ||
-        'bolt://localhost:7687',
+      'bolt://localhost:7687',
       neo4j.auth.basic(
         this.configService.get<string>('NEO4J_USER', { infer: true }) ||
-          'neo4j',
+        'neo4j',
         this.configService.get<string>('NEO4J_PASSWORD', { infer: true }) ||
-          'neo4j',
+        'neo4j',
       ),
     );
 
@@ -34,7 +34,7 @@ export class HybridReviewService implements OnModuleInit {
         this.configService.get<string>('MILVUS_ADDRESS', { infer: true }) ||
         'localhost:19530',
     });
-
+    
     this.vectorStore = new Milvus(
       new CustomVoyageEmbeddings({
         apiKey:
@@ -46,6 +46,7 @@ export class HybridReviewService implements OnModuleInit {
           this.configService.get<string>('MILVUS_COLLECTION', {
             infer: true,
           }) || 'clauses',
+        clientConfig: this.milvusClient.config,
       },
     );
   }
@@ -70,7 +71,7 @@ export class HybridReviewService implements OnModuleInit {
 
     const ResponseSchema = z.array(ClauseSchema);
 
-    const prompt = `You are a contract analysis assistant. Given the full text of a legal contract, extract the following information:\n${text}`;
+    const prompt = await this.langfuse.getPrompt("extract-clause");
 
     const result = await this.aiService.analyzeContract(prompt, contractType);
     return ResponseSchema.parse(result);
@@ -104,32 +105,39 @@ export class HybridReviewService implements OnModuleInit {
   }
 
   private async storeEmbedding(clauseId: string, text: string) {
-    await this.milvusClient
-      .createCollection({
-        collection_name:
-          this.configService.get<string>('MILVUS_COLLECTION', {
-            infer: true,
-          }) || 'clauses',
-        fields: [
-          {
-            name: 'id',
-            data_type: DataType.Int64,
-            is_primary_key: true,
-            autoID: false,
-          },
-          {
-            name: 'embedding',
-            data_type: DataType.FloatVector,
-            type_params: { dim: '1536' },
-          },
-        ],
-      })
-      .catch(() => {});
-    await this.milvusClient.loadCollectionSync({
+    if (!(await this.milvusClient.hasCollection({
       collection_name:
-        this.configService.get<string>('MILVUS_COLLECTION', { infer: true }) ||
-        'clauses',
-    });
+        this.configService.get<string>('MILVUS_COLLECTION', {
+          infer: true,
+        }) || 'clauses',
+    }))) {
+      await this.milvusClient
+        .createCollection({
+          collection_name:
+            this.configService.get<string>('MILVUS_COLLECTION', {
+              infer: true,
+            }) || 'clauses',
+          fields: [
+            {
+              name: 'id',
+              data_type: DataType.Int64,
+              is_primary_key: true,
+              autoID: false,
+            },
+            {
+              name: 'embedding',
+              data_type: DataType.FloatVector,
+              type_params: { dim: '1536' },
+            },
+          ],
+        })
+        .catch(() => { });
+      await this.milvusClient.loadCollectionSync({
+        collection_name:
+          this.configService.get<string>('MILVUS_COLLECTION', { infer: true }) ||
+          'clauses',
+      });
+    }
 
     const data = [
       new Document({
@@ -155,6 +163,15 @@ export class HybridReviewService implements OnModuleInit {
       return res.records.map((rec) => rec.get('c').properties);
     } finally {
       await session.close();
+    }
+  }
+
+  async onModuleDestroy() {
+    if (this.driver) {
+      await this.driver.close();
+    }
+    if (this.milvusClient) {
+      await this.milvusClient.closeConnection();
     }
   }
 }

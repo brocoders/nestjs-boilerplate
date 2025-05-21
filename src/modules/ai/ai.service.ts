@@ -225,6 +225,7 @@ export class AiService {
         AnalysisSchema,
       );
       result = await modelWithSchema.invoke(
+        prompt,
         {
           schemaDescription,
           contractType,
@@ -340,11 +341,7 @@ export class AiService {
         { callbacks: [this.langfuseHandler] },
       );
     } else {
-      const chain = RunnableSequence.from([
-        prompt,
-        (input: any) => this.llm.invoke(input),
-        new StringOutputParser(),
-      ]);
+        const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
       const raw = await chain.invoke(
         {
           context,
@@ -416,11 +413,7 @@ export class AiService {
         { callbacks: [this.langfuseHandler] },
       );
     } else {
-      const chain = RunnableSequence.from([
-        prompt,
-        (input: any) => this.llm.invoke(input),
-        new StringOutputParser(),
-      ]);
+      const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
       const raw = await chain.invoke(
         {
           clauseText,
@@ -435,5 +428,55 @@ export class AiService {
       }
     }
     return result;
+  }
+
+  async extractClauses(text: string) {
+    const ClauseSchema = z.object({
+      title: z.string(),
+      clauseType: z.string(),
+      text: z.string(),
+      riskScore: z.enum(['Low', 'Medium', 'High']),
+      riskJustification: z.string(),
+      entities: z.array(z.string()).optional(),
+      amounts: z.array(z.string()).optional(),
+      dates: z.array(z.string()).optional(),
+      legalReferences: z.array(z.string()).optional(),
+    });
+
+    const schemaDescription = z.array(ClauseSchema);
+    const prompt = PromptTemplate.fromTemplate(
+      (await this.langfuse.getPrompt("extract-clause")).prompt,
+    );
+
+    let result: any;
+    if (typeof (this.llm as any).model?.withStructuredOutput === 'function') {
+      const modelWithSchema = (this.llm as any).model.withStructuredOutput(
+        ClauseSchema,
+      );
+      result = await modelWithSchema.invoke(
+        prompt,
+        {
+          schemaDescription,
+          text,
+        },
+        { callbacks: [this.langfuseHandler] },
+      );
+    } else {
+      const chain = prompt.pipe((this.llm as any).model).pipe(new StringOutputParser());
+      const raw = await chain.invoke(
+        {
+          schemaDescription,
+          text,
+        },
+        { callbacks: [this.langfuseHandler] },
+      );
+      try {
+        result = ClauseSchema.parse(JSON.parse(raw));
+      } catch (e) {
+        throw new Error('Failed to parse answer result: ' + e);
+      }
+    }
+    return result;
+    
   }
 }
