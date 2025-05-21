@@ -9,6 +9,13 @@ import { Summary } from '../../entities/summary.entity';
 import { QnA } from '../../entities/qna.entity';
 import { HumanReview } from '../../entities/human-review.entity';
 import { AiService } from '../ai/ai.service';
+
+jest.mock('../ai/ai.service', () => ({
+  AiService: jest.fn().mockImplementation(() => ({
+    analyzeContract: jest.fn(),
+    answerQuestion: jest.fn(),
+  })),
+}));
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('ContractService', () => {
@@ -250,7 +257,7 @@ describe('ContractService', () => {
         expect.objectContaining({
           ...analysis.risks[0],
           contract,
-          clause: undefined,
+          clause: expect.any(Clause),
         }),
       );
       expect(summaryRepository.save).toHaveBeenCalledWith({

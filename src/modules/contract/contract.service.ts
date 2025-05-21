@@ -144,7 +144,10 @@ export class ContractService {
 
     // Save summary
     const summary = await this.summaryRepository.save({
-      content: analysis.summary,
+      content:
+        typeof analysis.summary === 'string'
+          ? analysis.summary
+          : JSON.stringify(analysis.summary),
       summaryType: 'FULL',
       contract,
     });
