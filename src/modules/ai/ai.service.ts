@@ -204,7 +204,7 @@ export class AiService {
     // 2.  PROMPT THAT LOCKS THE MODEL INTO THE STRUCTURE
     // ---------------------------------------------------------------------------
 
-    const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);    
+    const schemaDescription = zodSchemaToPromptDescription(AnalysisSchema);
 
     /**
      * ✔  Uses explicit instructions ("do NOT …") to prevent markdown, prose, or
