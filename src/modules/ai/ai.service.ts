@@ -24,6 +24,7 @@ import { Milvus } from '@langchain/community/vectorstores/milvus';
 import neo4j, { Driver } from 'neo4j-driver';
 import { ChatOpenAI } from '@langchain/openai';
 import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
+import { CustomVoyageEmbeddings } from '../../utils/voyage-embeddings';
 
 @Injectable()
 export class AiService implements OnModuleInit {
@@ -72,18 +73,16 @@ export class AiService implements OnModuleInit {
     });
   }
 
-  async onModuleInit() {
+  onModuleInit() {
     // Initialize Milvus
     this.milvusClient = new MilvusClient({
       address:
         this.configService.get<string>('MILVUS_ADDRESS', { infer: true }) ||
         'localhost:19530',
     });
-    const voyageEmbeddingsModule = await import(
-      '../../utils/voyage-embeddings'
-    );
+
     this.vectorStore = new Milvus(
-      new voyageEmbeddingsModule.CustomVoyageEmbeddings({
+      new CustomVoyageEmbeddings({
         apiKey:
           this.configService.get<string>('VOYAGE_API_KEY', { infer: true }) ||
           '',

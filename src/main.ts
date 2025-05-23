@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import fs from 'fs';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
@@ -45,6 +46,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
+  fs.writeFileSync('./docs/swagger.json', JSON.stringify(document, null, 2));
 
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
 }

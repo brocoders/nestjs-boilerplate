@@ -39,3 +39,4 @@ lerna-debug.log*
 .env
 /ormconfig.json
 .codegpt
+/volumes/*

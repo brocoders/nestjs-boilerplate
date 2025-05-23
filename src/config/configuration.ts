@@ -25,3 +25,5 @@ export default () => ({
     ),
   },
 });
+
+// Gemini and OpenAI configs are now available via @nestjs/config injection using their respective keys ('gemini', 'openai').
