@@ -52,4 +52,27 @@ describe('Hybrid Review', () => {
         expect(Array.isArray(clause.legalReferences)).toBe(true);
     }
   });
+
+  it('should return 422 for invalid contract data during ingestion', async () => {
+    // Missing required fields: contractId, sources, contractType
+    const invalidData = { title: 'Incomplete Contract' };
+    const res = await request(app)
+      .post('/api/v1/hybrid/ingest')
+      .send(invalidData)
+      .expect(422);
+    expect(res.body).toHaveProperty('status', 422);
+    expect(res.body).toHaveProperty('errors');
+    expect(res.body.errors).toHaveProperty('contractId');
+    expect(res.body.errors).toHaveProperty('sources');
+    expect(res.body.errors).toHaveProperty('contractType');
+  });
+
+  it('should return 422 for empty search query', async () => {
+    const res = await request(app)
+      .get('/api/v1/hybrid/search')
+      .query({ q: '' })
+      .expect(422);
+    expect(res.body).toHaveProperty('status', 422);
+    expect(res.body).toHaveProperty('errors');
+  });
 });

@@ -51,7 +51,51 @@ describe('TemplateService', () => {
     });
   });
 
+  describe('findAll', () => {
+    it('should return all active and latest templates', async () => {
+      const templates = [
+        {
+          id: '1',
+          name: 'Clause 1',
+          isActive: true,
+          isLatest: true,
+        } as StandardClause,
+        {
+          id: '2',
+          name: 'Clause 2',
+          isActive: true,
+          isLatest: true,
+        } as StandardClause,
+      ];
+      repository.find.mockResolvedValue(templates);
+
+      const result = await service.findAll();
+
+      expect(repository.find).toHaveBeenCalledWith({
+        where: { isActive: true, isLatest: true },
+      });
+      expect(result).toBe(templates);
+    });
+  });
+
   describe('findOne', () => {
+    it('should return the template when found', async () => {
+      const template = {
+        id: '1',
+        name: 'Clause',
+        isActive: true,
+        isLatest: true,
+      } as StandardClause;
+      repository.findOne.mockResolvedValue(template);
+
+      const result = await service.findOne('1');
+
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { id: '1', isActive: true },
+      });
+      expect(result).toBe(template);
+    });
+
     it('should throw NotFoundException when not found', async () => {
       repository.findOne.mockResolvedValue(null);
       await expect(service.findOne('1')).rejects.toBeInstanceOf(

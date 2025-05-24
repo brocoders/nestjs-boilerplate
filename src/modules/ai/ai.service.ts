@@ -39,7 +39,7 @@ export class AiService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly llmFactory: LlmFactory,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<any>,
   ) {
     this.llm = this.llmFactory.getLlm();
     this.textSplitter = new RecursiveCharacterTextSplitter({
@@ -81,39 +81,68 @@ export class AiService implements OnModuleInit, OnModuleDestroy {
   }
 
   onModuleInit() {
-    // Initialize Milvus
-    this.milvusClient = new MilvusClient({
-      address:
-        this.configService.get<string>('MILVUS_ADDRESS', {
-          infer: true,
-        }) || 'localhost:19530',
+    // Validate required environment variables
+    const milvusAddress = this.configService.get('MILVUS_ADDRESS', {
+      infer: true,
+    });
+    const voyageApiKey = this.configService.get('VOYAGE_API_KEY', {
+      infer: true,
+    });
+    const milvusCollection = this.configService.get('MILVUS_COLLECTION', {
+      infer: true,
+    });
+    const neo4jUri = this.configService.get('NEO4J_URI', {
+      infer: true,
+    });
+    const neo4jUser = this.configService.get('NEO4J_USER', {
+      infer: true,
+    });
+    const neo4jPassword = this.configService.get('NEO4J_PASSWORD', {
+      infer: true,
     });
 
-    this.vectorStore = new Milvus(
-      new CustomVoyageEmbeddings({
-        apiKey:
-          this.configService.get<string>('VOYAGE_API_KEY', { infer: true }) ||
-          '',
-      }),
-      {
-        collectionName:
-          this.configService.get<string>('MILVUS_COLLECTION', {
-            infer: true,
-          }) || 'clauses',
-        clientConfig: this.milvusClient.config,
-      },
-    );
-    // Initialize Neo4j
-    this.neo4jDriver = neo4j.driver(
-      this.configService.get<string>('NEO4J_URI', { infer: true }) ||
-        'bolt://localhost:7687',
-      neo4j.auth.basic(
-        this.configService.get<string>('NEO4J_USER', { infer: true }) ||
-          'neo4j',
-        this.configService.get<string>('NEO4J_PASSWORD', { infer: true }) ||
-          'neo4j',
-      ),
-    );
+    const missingVars = [];
+    if (!milvusAddress) missingVars.push('MILVUS_ADDRESS');
+    if (!voyageApiKey) missingVars.push('VOYAGE_API_KEY');
+    if (!milvusCollection) missingVars.push('MILVUS_COLLECTION');
+    if (!neo4jUri) missingVars.push('NEO4J_URI');
+    if (!neo4jUser) missingVars.push('NEO4J_USER');
+    if (!neo4jPassword) missingVars.push('NEO4J_PASSWORD');
+    if (missingVars.length > 0) {
+      throw new Error(
+        `Missing required environment variables: ${missingVars.join(', ')}`,
+      );
+    }
+
+    try {
+      // Initialize Milvus
+      this.milvusClient = new MilvusClient({
+        address: milvusAddress as string,
+      });
+
+      this.vectorStore = new Milvus(
+        new CustomVoyageEmbeddings({
+          apiKey: voyageApiKey as string,
+        }),
+        {
+          collectionName: milvusCollection as string,
+          clientConfig: this.milvusClient.config,
+        },
+      );
+
+      // Initialize Neo4j
+      this.neo4jDriver = neo4j.driver(
+        neo4jUri as string,
+        neo4j.auth.basic(neo4jUser as string, neo4jPassword as string),
+      );
+    } catch (error) {
+      // Log the error and fail fast
+      console.error('Error during AiService initialization:', error);
+      throw new Error(
+        'Failed to initialize AiService: ' +
+          (error instanceof Error ? error.message : error),
+      );
+    }
   }
 
   private async invokeWithSchema<T>(
