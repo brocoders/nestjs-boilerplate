@@ -44,10 +44,12 @@ describe('Hybrid Review', () => {
       // Optional fields
       expect(clause).toHaveProperty('riskJustification');
       // entities, amounts, dates, legalReferences are optional arrays
-      if ('entities' in clause) expect(Array.isArray(clause.entities)).toBe(true);
+      if ('entities' in clause)
+        expect(Array.isArray(clause.entities)).toBe(true);
       if ('amounts' in clause) expect(Array.isArray(clause.amounts)).toBe(true);
       if ('dates' in clause) expect(Array.isArray(clause.dates)).toBe(true);
-      if ('legalReferences' in clause) expect(Array.isArray(clause.legalReferences)).toBe(true);
+      if ('legalReferences' in clause)
+        expect(Array.isArray(clause.legalReferences)).toBe(true);
     }
   });
 });

@@ -75,7 +75,9 @@ describe('Analysis Contracts', () => {
   });
 
   it('should fail to create contract with invalid type', async () => {
-    const res = await request(app).post(baseUrl).send({ title: 'Invalid Type', type: 'not-a-type' });
+    const res = await request(app)
+      .post(baseUrl)
+      .send({ title: 'Invalid Type', type: 'not-a-type' });
     expect(res.status).toBe(400);
   });
 
