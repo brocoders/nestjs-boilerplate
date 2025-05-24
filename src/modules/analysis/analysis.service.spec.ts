@@ -33,10 +33,15 @@ describe('AnalysisService', () => {
             remove: jest.fn(),
           },
         },
+        // The Clause repository is required for DI but not used in the tested methods, so an empty mock is sufficient.
         { provide: getRepositoryToken(Clause), useValue: {} },
+        // The RiskFlag repository is required for DI but not used in the tested methods, so an empty mock is sufficient.
         { provide: getRepositoryToken(RiskFlag), useValue: {} },
+        // The Summary repository is required for DI but not used in the tested methods, so an empty mock is sufficient.
         { provide: getRepositoryToken(Summary), useValue: {} },
+        // The QnA repository is required for DI but not used in the tested methods, so an empty mock is sufficient.
         { provide: getRepositoryToken(QnA), useValue: {} },
+        // The HumanReview repository is required for DI but not used in the tested methods, so an empty mock is sufficient.
         { provide: getRepositoryToken(HumanReview), useValue: {} },
       ],
     }).compile();

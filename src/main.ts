@@ -48,6 +48,22 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
   fs.writeFileSync('./docs/swagger.json', JSON.stringify(document, null, 2));
 
+  // Use async file operations to avoid blocking
+  fs.promises
+    .mkdir('./docs', { recursive: true })
+    .then(() =>
+      fs.promises.writeFile(
+        './docs/swagger.json',
+        JSON.stringify(document, null, 2),
+      ),
+    )
+    .then(() =>
+      console.log('Swagger documentation saved to ./docs/swagger.json'),
+    )
+    .catch((error) =>
+      console.error('Failed to write Swagger documentation to file:', error),
+    );
+
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
 }
 void bootstrap();

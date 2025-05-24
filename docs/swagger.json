@@ -2272,8 +2272,37 @@
       },
       "IngestDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Unique identifier for the contract to be ingested."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title or name of the contract."
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of source file paths or URLs to extract contract text from."
+          },
+          "contractType": {
+            "type": "string",
+            "description": "Type or category of the contract (e.g., NDA, MSA, etc.)."
+          }
+        },
+        "required": [
+          "contractId",
+          "title",
+          "sources",
+          "contractType"
+        ]
       }
     }
-  }
+  },
+  "security": [
+    { "bearer": [] }
+  ]
 }

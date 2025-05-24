@@ -68,6 +68,13 @@ describe('HybridReviewService', () => {
       expect(scribe.extractText).toHaveBeenCalledWith(['src']);
       expect(result).toBe('a\nb');
     });
+
+    it('should throw if scribe.extractText fails', async () => {
+      (scribe.extractText as jest.Mock).mockRejectedValue(
+        new Error('OCR error'),
+      );
+      await expect(service.extractText(['src'])).rejects.toThrow('OCR error');
+    });
   });
 
   describe('extractClauses', () => {
@@ -85,6 +92,19 @@ describe('HybridReviewService', () => {
       const result = await service.extractClauses('t', 'NDA');
       expect(aiService.extractClauses).toHaveBeenCalledWith('t', 'NDA');
       expect(result).toEqual(clauses);
+    });
+
+    it('should throw if aiService.extractClauses fails', async () => {
+      aiService.extractClauses.mockRejectedValue(new Error('AI error'));
+      await expect(service.extractClauses('t', 'NDA')).rejects.toThrow(
+        'AI error',
+      );
+    });
+
+    it('should throw if zod validation fails', async () => {
+      // Missing required fields to trigger zod error
+      aiService.extractClauses.mockResolvedValue([{ foo: 'bar' }]);
+      await expect(service.extractClauses('t', 'NDA')).rejects.toThrow();
     });
   });
 
@@ -116,6 +136,30 @@ describe('HybridReviewService', () => {
       expect(storeSpy).toHaveBeenCalledWith(expect.any(String), 'txt');
       expect(session.close).toHaveBeenCalled();
     });
+
+    it('should close session if session.run fails', async () => {
+      session.run.mockRejectedValueOnce(new Error('DB error'));
+      const clauses = [
+        { title: 't', clauseType: 'c', text: 'txt', riskScore: 'Low' },
+      ];
+      await expect(
+        service.saveContract('1', 'Title', clauses as any),
+      ).rejects.toThrow('DB error');
+      expect(session.close).toHaveBeenCalled();
+    });
+
+    it('should close session if storeEmbedding fails', async () => {
+      jest
+        .spyOn<any, any>(service as any, 'storeEmbedding')
+        .mockRejectedValueOnce(new Error('Embedding error'));
+      const clauses = [
+        { title: 't', clauseType: 'c', text: 'txt', riskScore: 'Low' },
+      ];
+      await expect(
+        service.saveContract('1', 'Title', clauses as any),
+      ).rejects.toThrow('Embedding error');
+      expect(session.close).toHaveBeenCalled();
+    });
   });
 
   describe('searchClauses', () => {
@@ -135,6 +179,26 @@ describe('HybridReviewService', () => {
         { ids: ['c1'] },
       );
       expect(result).toEqual([{ id: 'c1', title: 'T' }]);
+      expect(session.close).toHaveBeenCalled();
+    });
+
+    it('should close session if similaritySearch fails', async () => {
+      vectorStore.similaritySearch.mockRejectedValueOnce(
+        new Error('Vector error'),
+      );
+      await expect(service.searchClauses('q', 2)).rejects.toThrow(
+        'Vector error',
+      );
+      // session should not be opened if similaritySearch fails, but let's check
+      expect(session.close).not.toHaveBeenCalled();
+    });
+
+    it('should close session if session.run fails', async () => {
+      vectorStore.similaritySearch.mockResolvedValue([
+        { metadata: { id: 'c1' } },
+      ]);
+      session.run.mockRejectedValueOnce(new Error('DB error'));
+      await expect(service.searchClauses('q', 2)).rejects.toThrow('DB error');
       expect(session.close).toHaveBeenCalled();
     });
   });

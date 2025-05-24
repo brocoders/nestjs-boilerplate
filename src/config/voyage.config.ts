@@ -1,11 +1,17 @@
 import { registerAs } from '@nestjs/config';
-import { IsOptional, IsString, IsBoolean, IsNumber } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsBoolean,
+  IsNumber,
+  IsIn,
+} from 'class-validator';
 import validateConfig from '../utils/validate-config';
 import { VoyageConfig } from './voyage-config.type';
 
 class EnvironmentVariablesValidator {
   @IsString()
-  VOYAGE_API_KEY: string | undefined;
+  VOYAGE_API_KEY: string;
 
   @IsString()
   @IsOptional()
@@ -13,6 +19,7 @@ class EnvironmentVariablesValidator {
 
   @IsString()
   @IsOptional()
+  @IsIn(['query', 'document'])
   VOYAGE_INPUT_TYPE: 'query' | 'document';
 
   @IsBoolean()
@@ -38,10 +45,18 @@ export default registerAs<VoyageConfig>('voyage', () => {
   return {
     apiKey: process.env.VOYAGE_API_KEY,
     model: process.env.VOYAGE_MODEL,
-    inputType: process.env.VOYAGE_INPUT_TYPE as 'query' | 'document',
-    truncation: process.env.VOYAGE_TRUNCATION === 'true',
+    inputType: process.env.VOYAGE_INPUT_TYPE as
+      | 'query'
+      | 'document'
+      | undefined,
+    truncation: process.env.VOYAGE_TRUNCATION
+      ? process.env.VOYAGE_TRUNCATION === 'true'
+      : undefined,
     outputDimension: process.env.VOYAGE_OUTPUT_DIMENSION
-      ? parseInt(process.env.VOYAGE_OUTPUT_DIMENSION, 10)
+      ? (() => {
+          const parsed = parseInt(process.env.VOYAGE_OUTPUT_DIMENSION!, 10);
+          return isNaN(parsed) ? undefined : parsed;
+        })()
       : undefined,
     outputDtype: process.env.VOYAGE_OUTPUT_DTYPE as 'float' | 'int8',
     encodingFormat: process.env.VOYAGE_ENCODING_FORMAT as 'base64' | 'ubinary',

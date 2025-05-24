@@ -18,9 +18,36 @@ describe('Hybrid Review', () => {
   });
 
   it('should search clauses via GET /hybrid/search', async () => {
-    return request(app)
+    // Ingest a contract to ensure test data exists
+    const ingestRes = await request(app)
+      .post('/api/v1/hybrid/ingest')
+      .send(ingestData)
+      .expect(201);
+    expect(ingestRes.body).toHaveProperty('clauseCount');
+    expect(typeof ingestRes.body.clauseCount).toBe('number');
+
+    // Now search for clauses
+    const res = await request(app)
       .get('/api/v1/hybrid/search')
       .query({ q: 'test' })
       .expect(200);
+
+    // Assert response structure
+    expect(Array.isArray(res.body)).toBe(true);
+    if (res.body.length > 0) {
+      const clause = res.body[0];
+      expect(clause).toHaveProperty('id');
+      expect(clause).toHaveProperty('title');
+      expect(clause).toHaveProperty('clauseType');
+      expect(clause).toHaveProperty('text');
+      expect(clause).toHaveProperty('riskScore');
+      // Optional fields
+      expect(clause).toHaveProperty('riskJustification');
+      // entities, amounts, dates, legalReferences are optional arrays
+      if ('entities' in clause) expect(Array.isArray(clause.entities)).toBe(true);
+      if ('amounts' in clause) expect(Array.isArray(clause.amounts)).toBe(true);
+      if ('dates' in clause) expect(Array.isArray(clause.dates)).toBe(true);
+      if ('legalReferences' in clause) expect(Array.isArray(clause.legalReferences)).toBe(true);
+    }
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -26,7 +26,7 @@ import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
 import { CustomVoyageEmbeddings } from '../../utils/voyage-embeddings';
 
 @Injectable()
-export class AiService implements OnModuleInit {
+export class AiService implements OnModuleInit, OnModuleDestroy {
   private readonly llm: Llm;
   private readonly textSplitter: RecursiveCharacterTextSplitter;
   private readonly langfuseHandler!: CallbackHandler;
@@ -472,5 +472,24 @@ export class AiService implements OnModuleInit {
         risks: [],
       };
     }
+  }
+
+  async onModuleDestroy() {
+    // Close Neo4j connection
+    if (this.neo4jDriver) {
+      await this.neo4jDriver.close();
+    }
+
+    // Close Milvus connection if needed
+    if (
+      this.milvusClient &&
+      typeof this.milvusClient.closeConnection === 'function'
+    ) {
+      await this.milvusClient.closeConnection();
+    }
+
+    // Clear chat resources
+    this.chatGraphs.clear();
+    this.checkpointers.clear();
   }
 }

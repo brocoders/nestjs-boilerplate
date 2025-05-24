@@ -37,7 +37,7 @@ describe('StandardClausesService', () => {
         type: 't',
         contractType: 'c',
         text: 'txt',
-      } as any;
+      };
       const entity = { id: 1, ...dto } as StandardClause;
       (repo.create as jest.Mock).mockReturnValue(entity);
       (repo.save as jest.Mock).mockResolvedValue(entity);
@@ -80,6 +80,74 @@ describe('StandardClausesService', () => {
     it('should throw NotFoundException when nothing deleted', async () => {
       (repo.delete as jest.Mock).mockResolvedValue({ affected: 0 });
       await expect(service.remove(1)).rejects.toBeInstanceOf(NotFoundException);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all clauses', async () => {
+      const clauses = [{ id: 1 }, { id: 2 }] as StandardClause[];
+      (repo.find as jest.Mock).mockResolvedValue(clauses);
+
+      const result = await service.findAll();
+
+      expect(repo.find).toHaveBeenCalled();
+      expect(result).toBe(clauses);
+    });
+  });
+
+  describe('findByType', () => {
+    it('should return clauses by type', async () => {
+      const type = 'confidentiality';
+      const clauses = [{ id: 1, type }] as StandardClause[];
+      (repo.find as jest.Mock).mockResolvedValue(clauses);
+
+      const result = await service.findByType(type);
+
+      expect(repo.find).toHaveBeenCalledWith({ where: { type } });
+      expect(result).toBe(clauses);
+    });
+  });
+
+  describe('findByContractType', () => {
+    it('should return clauses by contract type', async () => {
+      const contractType = 'NDA';
+      const clauses = [{ id: 1, contractType }] as StandardClause[];
+      (repo.find as jest.Mock).mockResolvedValue(clauses);
+
+      const result = await service.findByContractType(contractType);
+
+      expect(repo.find).toHaveBeenCalledWith({ where: { contractType } });
+      expect(result).toBe(clauses);
+    });
+  });
+
+  describe('update', () => {
+    it('should update and return the clause', async () => {
+      const id = 1;
+      const existing = {
+        id,
+        name: 'A',
+        type: 't',
+        contractType: 'c',
+        text: 'txt',
+      } as StandardClause;
+      const dto = { name: 'B', text: 'new text' };
+      const updated = { ...existing, ...dto } as StandardClause;
+      (service.findOne as jest.Mock).mockResolvedValue(existing);
+      (repo.save as jest.Mock).mockResolvedValue(updated);
+
+      // Patch service.findOne to be a jest mock for this test
+      const origFindOne = service.findOne;
+      service.findOne = jest.fn().mockResolvedValue(existing);
+
+      const result = await service.update(id, dto);
+
+      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(repo.save).toHaveBeenCalledWith({ ...existing, ...dto });
+      expect(result).toBe(updated);
+
+      // Restore original findOne
+      service.findOne = origFindOne;
     });
   });
 });

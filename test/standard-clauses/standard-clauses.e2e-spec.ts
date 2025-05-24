@@ -41,4 +41,13 @@ describe('Standard Clauses', () => {
         expect(body.id).toBe(createdId);
       });
   });
+
+  afterAll(async () => {
+    if (createdId) {
+      await request(app)
+        .delete(`/api/v1/standard-clauses/${createdId}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
 });
