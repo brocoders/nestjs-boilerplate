@@ -101,7 +101,7 @@
     "@swc/cli": "0.6.0",
     "@swc/core": "1.11.21",
     "@types/bcryptjs": "3.0.0",
-    "@types/express": "5.0.1",
+    "@types/express": "5.0.2",
     "@types/facebook-js-sdk": "3.3.12",
     "@types/jest": "29.5.14",
     "@types/ms": "2.1.0",
