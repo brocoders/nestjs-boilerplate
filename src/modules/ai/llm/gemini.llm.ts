@@ -13,7 +13,7 @@ export class GeminiLlm implements Llm {
     });
 
     if (!apiKey) {
-      throw new Error('Gemini API key (ai.gemini.apiKey) is not set');
+      throw new Error('Gemini API key (GEMINI_API_KEY) is not set');
     }
     this.model = new ChatGoogleGenerativeAI({
       apiKey,
@@ -32,7 +32,29 @@ export class GeminiLlm implements Llm {
   async *streamInvoke(
     input: string | Record<string, unknown>,
   ): AsyncIterable<string> {
-    // For now, just yield the result of invoke
-    yield await this.invoke(input);
+    const stream = await this.model.stream(input as string);
+    for await (const chunk of stream) {
+      // chunk.content can be a string or an array (for multimodal/tool-calling)
+      if (Array.isArray(chunk.content)) {
+        // Join only the string parts or objects with a 'text' property (ignore images/tool calls)
+        const text = chunk.content
+          .map((part) => {
+            if (typeof part === 'string') return part;
+            if (
+              typeof part === 'object' &&
+              part &&
+              'text' in part &&
+              typeof part.text === 'string'
+            ) {
+              return part.text;
+            }
+            return '';
+          })
+          .join('');
+        if (text) yield text;
+      } else if (typeof chunk.content === 'string') {
+        yield chunk.content;
+      }
+    }
   }
 }

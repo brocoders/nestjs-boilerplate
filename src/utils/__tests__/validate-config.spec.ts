@@ -17,6 +17,14 @@ describe('validateConfig', () => {
   });
 
   it('should throw for invalid config', () => {
-    expect(() => validateConfig({ NAME: 123 }, Env)).toThrow();
+    expect(() => validateConfig({ NAME: 123, PORT: '3000' }, Env)).toThrow();
+  });
+
+  it('should throw for missing required properties', () => {
+    expect(() => validateConfig({ NAME: 'app' }, Env)).toThrow();
+  });
+
+  it('should throw for completely invalid input', () => {
+    expect(() => validateConfig({}, Env)).toThrow();
   });
 });

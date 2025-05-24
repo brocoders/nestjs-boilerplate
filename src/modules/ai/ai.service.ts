@@ -47,28 +47,36 @@ export class AiService implements OnModuleInit {
       chunkOverlap: 200,
       separators: ['\n\n', '\n', ' ', ''],
     });
+
+    // Validate Langfuse configuration
+    const langfusePublicKey = this.configService.get<string>(
+      'langfuse.publicKey',
+      { infer: true },
+    );
+    const langfuseSecretKey = this.configService.get<string>(
+      'langfuse.secretKey',
+      { infer: true },
+    );
+    const langfuseBaseUrl = this.configService.get<string>('langfuse.baseUrl', {
+      infer: true,
+    });
+
+    if (!langfusePublicKey || !langfuseSecretKey) {
+      throw new Error(
+        'Missing required Langfuse configuration (publicKey, secretKey)',
+      );
+    }
+
     // Initialize Langfuse callback handler
     this.langfuseHandler = new CallbackHandler({
-      publicKey: this.configService.get<string>('langfuse.publicKey', {
-        infer: true,
-      }),
-      secretKey: this.configService.get<string>('langfuse.secretKey', {
-        infer: true,
-      }),
-      baseUrl: this.configService.get<string>('langfuse.baseUrl', {
-        infer: true,
-      }),
+      publicKey: langfusePublicKey,
+      secretKey: langfuseSecretKey,
+      baseUrl: langfuseBaseUrl,
     });
     this.langfuse = new Langfuse({
-      publicKey: this.configService.get<string>('langfuse.publicKey', {
-        infer: true,
-      }),
-      secretKey: this.configService.get<string>('langfuse.secretKey', {
-        infer: true,
-      }),
-      baseUrl: this.configService.get<string>('langfuse.baseUrl', {
-        infer: true,
-      }),
+      publicKey: langfusePublicKey,
+      secretKey: langfuseSecretKey,
+      baseUrl: langfuseBaseUrl,
     });
   }
 
