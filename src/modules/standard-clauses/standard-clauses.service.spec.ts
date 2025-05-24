@@ -133,12 +133,10 @@ describe('StandardClausesService', () => {
       } as StandardClause;
       const dto = { name: 'B', text: 'new text' };
       const updated = { ...existing, ...dto } as StandardClause;
-      (service.findOne as jest.Mock).mockResolvedValue(existing);
+      const findOneMock = jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValue(existing);
       (repo.save as jest.Mock).mockResolvedValue(updated);
-
-      // Patch service.findOne to be a jest mock for this test
-      const origFindOne = service.findOne;
-      service.findOne = jest.fn().mockResolvedValue(existing);
 
       const result = await service.update(id, dto);
 
@@ -146,8 +144,7 @@ describe('StandardClausesService', () => {
       expect(repo.save).toHaveBeenCalledWith({ ...existing, ...dto });
       expect(result).toBe(updated);
 
-      // Restore original findOne
-      service.findOne = origFindOne;
+      findOneMock.mockRestore();
     });
   });
 });

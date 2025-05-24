@@ -101,7 +101,7 @@ export class AiService implements OnModuleInit, OnModuleDestroy {
       infer: true,
     });
 
-    const missingVars = [];
+    const missingVars: string[] = [];
     if (!milvusAddress) missingVars.push('MILVUS_ADDRESS');
     if (!voyageApiKey) missingVars.push('VOYAGE_API_KEY');
     if (!milvusCollection) missingVars.push('MILVUS_COLLECTION');
@@ -161,11 +161,14 @@ export class AiService implements OnModuleInit, OnModuleDestroy {
       const modelWithSchema = (this.llm as any).model.withStructuredOutput(
         schema,
       );
-      result = await modelWithSchema.invoke(
-        promptTemplate,
-        { ...inputVars, ...(schemaDescription ? { schemaDescription } : {}) },
-        { callbacks: [this.langfuseHandler] },
-      );
+      // Render the prompt with inputVars
+      const renderedPrompt = await promptTemplate.format({
+        ...inputVars,
+        ...(schemaDescription ? { schemaDescription } : {}),
+      });
+      result = await modelWithSchema.invoke(renderedPrompt, {
+        callbacks: [this.langfuseHandler],
+      });
     } else {
       const chain = promptTemplate
         .pipe((this.llm as any).model)
