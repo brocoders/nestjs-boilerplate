@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AnalysisService } from './analysis.service';
-jest.mock('./ai.service', () => ({ AiService: jest.fn() }));
-import { AiService } from './ai.service';
+import { AiService } from '../ai/ai.service';
 import {
   Contract,
   ContractStatus,

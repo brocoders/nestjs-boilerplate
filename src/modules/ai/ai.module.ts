@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AiService } from './ai.service';
 import configuration from '../../config/configuration';
-import { LlmFactory } from '../analysis/llm/llm.factory';
-import { GeminiLlm } from '../analysis/llm/gemini.llm';
-import { OpenAiLlm } from '../analysis/llm/openai.llm';
+import { LlmFactory } from './llm/llm.factory';
+import { GeminiLlm } from './llm/gemini.llm';
+import { OpenAiLlm } from './llm/openai.llm';
 import { AiGateway } from './ai.gateway';
 
 @Module({

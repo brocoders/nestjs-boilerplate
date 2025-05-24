@@ -89,9 +89,6 @@ importers:
       class-validator:
         specifier: 0.14.1
         version: 0.14.1
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       dotenv:
         specifier: 16.4.7
         version: 16.4.7
@@ -252,6 +249,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.26.1
         version: 8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       env-cmd:
         specifier: 10.1.0
         version: 10.1.0

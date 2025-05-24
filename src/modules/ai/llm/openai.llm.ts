@@ -23,4 +23,11 @@ export class OpenAiLlm implements Llm {
     // @ts-expect-error LangChain types return AIMessage
     return result.content || '';
   }
+
+  async *streamInvoke(
+    input: string | Record<string, unknown>,
+  ): AsyncIterable<string> {
+    // For now, just yield the result of invoke
+    yield await this.invoke(input);
+  }
 }

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { LlmFactory } from '../analysis/llm/llm.factory';
+import { LlmFactory } from './llm/llm.factory';
 
 jest.mock('langfuse-langchain', () => ({
   CallbackHandler: jest.fn().mockImplementation(() => ({})),

@@ -21,7 +21,7 @@ import { CreateHumanReviewDto } from './dto/create-human-review.dto';
 import { UpdateHumanReviewDto } from './dto/update-human-review.dto';
 import { ContractStatus } from './entities/contract.entity';
 import { ReviewStatus } from './entities/human-review.entity';
-import { AiService } from './ai.service';
+import { AiService } from '../ai/ai.service';
 
 @Injectable()
 export class AnalysisService {
@@ -413,8 +413,17 @@ export class AnalysisService {
       context = clause.text;
     }
 
-    const answer = await this.aiService.answerQuestion(question, context);
-
+    const answerResult = await this.aiService.answerQuestion(question, context);
+    let answer: string;
+    if (
+      answerResult &&
+      typeof answerResult === 'object' &&
+      'answer' in answerResult
+    ) {
+      answer = answerResult.answer;
+    } else {
+      answer = '';
+    }
     return this.createQnA(contractId, clauseId, {
       question,
       answer,

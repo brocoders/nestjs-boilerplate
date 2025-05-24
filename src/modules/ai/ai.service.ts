@@ -4,8 +4,8 @@ import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
-import { LlmFactory } from '../analysis/llm/llm.factory';
-import { Llm } from '../analysis/llm/llm.interface';
+import { LlmFactory } from './llm/llm.factory';
+import { Llm } from './llm/llm.interface';
 import { z } from 'zod';
 import { zodSchemaToPromptDescription } from '../../utils/zod-schema-to-prompt';
 import { CallbackHandler } from 'langfuse-langchain';
@@ -22,7 +22,6 @@ import {
 import { MilvusClient } from '@zilliz/milvus2-sdk-node';
 import { Milvus } from '@langchain/community/vectorstores/milvus';
 import neo4j, { Driver } from 'neo4j-driver';
-import { ChatOpenAI } from '@langchain/openai';
 import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
 import { CustomVoyageEmbeddings } from '../../utils/voyage-embeddings';
 
@@ -77,8 +76,9 @@ export class AiService implements OnModuleInit {
     // Initialize Milvus
     this.milvusClient = new MilvusClient({
       address:
-        this.configService.get<string>('MILVUS_ADDRESS', { infer: true }) ||
-        'localhost:19530',
+        this.configService.get<string>('MILVUS_ADDRESS', {
+          infer: true,
+        }) || 'localhost:19530',
     });
 
     this.vectorStore = new Milvus(
@@ -199,7 +199,7 @@ export class AiService implements OnModuleInit {
     return result;
   }
 
-  private async generateSummary(
+  public async generateSummary(
     text: string,
     contractType: string,
   ): Promise<z.infer<typeof ContractSummarySchema>> {
@@ -359,23 +359,11 @@ export class AiService implements OnModuleInit {
 
   // Node: Generate answer using LLM
   private generateAnswerNode = async (state: any) => {
-    const model = new ChatOpenAI({
-      openAIApiKey:
-        this.configService.get<string>('ai.openai.apiKey', { infer: true }) ||
-        '',
-      modelName:
-        this.configService.get<string>('ai.openai.model', { infer: true }) ||
-        'gpt-4',
-    });
     const lastUserMsg = state.messages[state.messages.length - 1];
     const context = state.context;
     const prompt = `You are a contract Q&A assistant. Use the following context from the contract to answer the user's question.\n\nContext:\n${context}\n\nQuestion: ${lastUserMsg.content}\n\nIf the answer is not in the context, say so.`;
-    const response = await model.invoke([new HumanMessage(prompt)]);
-    // Ensure response.content is a string
-    const answer =
-      typeof response.content === 'string'
-        ? response.content
-        : String(response.content);
+    const llm = this.llmFactory.getLlm();
+    const answer = await llm.invoke(prompt);
     return { messages: [new AIMessage(answer)] };
   };
 
@@ -435,6 +423,46 @@ export class AiService implements OnModuleInit {
     });
     for await (const update of stream) {
       yield update;
+    }
+  }
+
+  /**
+   * Split contract text into clauses using Gemini if available, otherwise fallback to textSplitter.
+   */
+  async splitIntoClauses(text: string): Promise<string[]> {
+    const prompt = `Split the following contract text into individual clauses. Each clause should be a complete, self-contained unit of the contract. Return the clauses as a JSON array of strings. Contract text: ${text}`;
+    try {
+      const llm = this.llmFactory.getLlm();
+      const result = await llm.invoke(prompt);
+      return JSON.parse(result);
+    } catch {
+      // Fallback to basic splitting if AI fails
+      return this.textSplitter.splitText(text);
+    }
+  }
+
+  /**
+   * Analyze a single clause using Gemini if available, otherwise fallback to OpenAI (llmFactory).
+   */
+  async analyzeClause(clause: string): Promise<{
+    type: string;
+    risks: Array<{
+      type: string;
+      severity: 'LOW' | 'MEDIUM' | 'HIGH';
+      description: string;
+      suggestedResolution: string;
+    }>;
+  }> {
+    const prompt = `Analyze the following contract clause and identify: 1. The type of clause (e.g., "Termination", "Confidentiality", "Indemnification") 2. Any potential risks or issues, including: - Type of risk - Severity (LOW, MEDIUM, or HIGH) - Description of the risk - Suggested resolution. Return the analysis as a JSON object with the following structure: { "type": "string", "risks": [ { "type": "string", "severity": "LOW" | "MEDIUM" | "HIGH", "description": "string", "suggestedResolution": "string" } ] } Clause: ${clause}`;
+    try {
+      const llm = this.llmFactory.getLlm();
+      const result = await llm.invoke(prompt);
+      return JSON.parse(result);
+    } catch {
+      return {
+        type: 'Unknown',
+        risks: [],
+      };
     }
   }
 }
