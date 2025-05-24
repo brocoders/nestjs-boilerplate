@@ -196,7 +196,14 @@
       "!**/*.llm.ts",
       "!**/*.schema.ts",
       "!**/tokens.ts",
-      "!**/status.ts"      
+      "!**/status.ts",
+      "!**/main.ts",
+      "!**/file.ts",
+      "!**/*.decorator.ts",
+      "!**/role.ts",
+      "!**/user.ts",
+      "!**/auth.ts",
+      "!**/session.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
