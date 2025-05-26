@@ -32,6 +32,13 @@ export class AddTenantFieldsAndTenantTypeTable1745143148021
       `ALTER TABLE "tenant" ADD CONSTRAINT "UQ_0ed69b4239b1f892b96798065a1" UNIQUE ("logoId")`,
     );
     await queryRunner.query(`ALTER TABLE "tenant" ADD "typeId" uuid`);
+    // await queryRunner.query(
+    //   `ALTER TABLE "tenant" ADD "domain" character varying`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "tenant" ADD "isActive" boolean NOT NULL DEFAULT false`,
+    // );
+    await queryRunner.query(`ALTER TABLE "tenant" ADD "databaseConfig" jsonb`);
     await queryRunner.query(
       `ALTER TABLE "tenant" ADD CONSTRAINT "FK_0ed69b4239b1f892b96798065a1" FOREIGN KEY ("logoId") REFERENCES "file"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
@@ -59,5 +66,10 @@ export class AddTenantFieldsAndTenantTypeTable1745143148021
     await queryRunner.query(`ALTER TABLE "tenant" DROP COLUMN "schemaName"`);
     await queryRunner.query(`DROP TABLE "tenant_type"`);
     await queryRunner.query(`DROP TYPE "public"."tenant_type_code_enum"`);
+    await queryRunner.query(
+      `ALTER TABLE "tenant" DROP COLUMN "databaseConfig"`,
+    );
+    // await queryRunner.query(`ALTER TABLE "tenant" DROP COLUMN "isActive"`);
+    // await queryRunner.query(`ALTER TABLE "tenant" DROP COLUMN "domain"`);
   }
 }

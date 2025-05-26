@@ -29,16 +29,16 @@ import { RoleEntity } from 'src/roles/infrastructure/persistence/relational/enti
 })
 export class TenantEntity extends EntityRelationalHelper {
   @Column({
-    nullable: true,
+    nullable: false,
     type: 'jsonb',
   })
-  databaseConfig?: {
+  databaseConfig: {
     host: string;
     port: number;
     username: string;
     password: string;
     database: string;
-  } | null;
+  };
 
   @OneToMany(() => RoleEntity, (role) => role.tenant)
   roles: RoleEntity[];
@@ -104,7 +104,7 @@ export class TenantEntity extends EntityRelationalHelper {
   kycSubmissions?: KycDetailsEntity[] | null;
 
   @OneToMany(() => UserEntity, (childEntity) => childEntity.tenant, {
-    eager: true,
+    eager: false,
     nullable: true,
   })
   users?: UserEntity[] | null;

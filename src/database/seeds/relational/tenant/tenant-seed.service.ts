@@ -34,6 +34,15 @@ export class TenantSeedService {
             primaryPhone: '+1234567890',
             isActive: true,
             schemaName: `tenant_${tenantType.code.toLowerCase()}`,
+            databaseConfig: {
+              host: process.env.DATABASE_HOST || 'localhost',
+              port: parseInt(process.env.DATABASE_PORT || '5432', 10),
+              username: process.env.DATABASE_USERNAME || 'tenant_user',
+              password: process.env.DATABASE_PASSWORD || 'secure_password',
+              database:
+                process.env.DATABASE_HOST ||
+                `tenant_${tenantType.code.toLowerCase()}`, // use schema as db name
+            },
           }),
         );
       }
