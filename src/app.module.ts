@@ -61,8 +61,14 @@ import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
 import { TenantDataSourceProvider } from './providers/tenant-data-source.provider';
 import { TenantMiddleware } from './middleware/tenant.middleware';
 
+import { PaymentNotificationsModule } from './payment-notifications/payment-notifications.module';
+
 @Module({
   imports: [
+    PaymentNotificationsModule,
+    SentryModule.forRoot(),
+    AccountsModule,
+    ResidencesModule,
     TenantConfigsModule,
     RegionsModule,
     SettingsModule,
