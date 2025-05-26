@@ -71,12 +71,44 @@ class EnvironmentVariablesValidator {
   @IsOptional()
   DATABASE_CERT: string;
 }
-
 export default registerAs<DatabaseConfig>('database', () => {
   validateConfig(process.env, EnvironmentVariablesValidator);
 
   return {
+    // Required properties from DatabaseConfig type
     isDocumentDatabase: ['mongodb'].includes(process.env.DATABASE_TYPE ?? ''),
+    maxConnections: process.env.DATABASE_MAX_CONNECTIONS
+      ? parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10)
+      : 100,
+
+    // Existing multi-tenant configuration
+    isMultiTenant: process.env.DATABASE_MULTI_TENANT === 'true',
+    core: {
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '5432', 10),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      migrations: [__dirname + '/migrations/core/*{.ts,.js}'],
+      synchronize: false,
+    },
+    tenantPrefix: process.env.TENANT_DB_PREFIX || 'tenant_',
+    tenantConfig: {
+      type: 'database',
+      defaultHost: process.env.TENANT_DB_HOST || 'localhost',
+      defaultPort: parseInt(process.env.TENANT_DB_PORT || '5432', 10),
+      defaultUsername: process.env.TENANT_DB_USER || 'saka',
+      defaultPassword: process.env.TENANT_DB_PASSWORD || '',
+    },
+
+    // Add other DatabaseConfig properties with defaults
+    sslEnabled: process.env.DATABASE_SSL_ENABLED === 'true',
+    rejectUnauthorized: process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
+    ca: process.env.DATABASE_CA,
+    key: process.env.DATABASE_KEY,
+    cert: process.env.DATABASE_CERT,
     url: process.env.DATABASE_URL,
     type: process.env.DATABASE_TYPE,
     host: process.env.DATABASE_HOST,
@@ -87,13 +119,5 @@ export default registerAs<DatabaseConfig>('database', () => {
     name: process.env.DATABASE_NAME,
     username: process.env.DATABASE_USERNAME,
     synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
-    maxConnections: process.env.DATABASE_MAX_CONNECTIONS
-      ? parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10)
-      : 100,
-    sslEnabled: process.env.DATABASE_SSL_ENABLED === 'true',
-    rejectUnauthorized: process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
-    ca: process.env.DATABASE_CA,
-    key: process.env.DATABASE_KEY,
-    cert: process.env.DATABASE_CERT,
   };
 });
