@@ -32,12 +32,12 @@ import {
 
 export class CreateTenantDto {
   @ApiProperty({
-    required: false,
+    required: true,
     type: () => String,
   })
   @IsOptional()
   @IsString()
-  databaseConfig?: string | null;
+  databaseConfig: string;
 
   @ApiProperty({
     required: false,

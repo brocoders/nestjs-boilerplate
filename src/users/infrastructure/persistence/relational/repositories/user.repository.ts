@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
-import { FindOptionsWhere, Repository, In } from 'typeorm';
+import { FindOptionsWhere, Repository, In, DataSource } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
@@ -15,6 +15,7 @@ export class UsersRelationalRepository implements UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    @InjectDataSource() private dataSource: DataSource,
   ) {}
 
   async create(data: User): Promise<User> {
@@ -40,7 +41,9 @@ export class UsersRelationalRepository implements UserRepository {
         id: Number(role.id),
       }));
     }
-
+    // const entities_ = this.dataSource
+    //   .getRepository(UserEntity)
+    //   .findOneBy({ id });
     const entities = await this.usersRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,

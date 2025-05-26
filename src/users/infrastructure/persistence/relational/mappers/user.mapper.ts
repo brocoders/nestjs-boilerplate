@@ -54,7 +54,14 @@ export class UserMapper {
     if (raw.photo) {
       domainEntity.photo = FileMapper.toDomain(raw.photo);
     }
-    domainEntity.role = raw.role;
+    if (raw.role) {
+      domainEntity.role = {
+        ...raw.role,
+        tenant: raw.role.tenant
+          ? TenantMapper.toDomain(raw.role.tenant)
+          : undefined,
+      };
+    }
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -68,6 +75,9 @@ export class UserMapper {
     if (domainEntity.role) {
       role = new RoleEntity();
       role.id = Number(domainEntity.role.id);
+      if (domainEntity.role.tenant) {
+        role.tenant = TenantMapper.toPersistence(domainEntity.role.tenant);
+      }
     }
 
     let photo: FileEntity | undefined | null = undefined;

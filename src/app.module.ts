@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -53,6 +58,8 @@ import { SettingsModule } from './settings/settings.module';
 import { RegionsModule } from './regions/regions.module';
 
 import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
+import { TenantDataSourceProvider } from './providers/tenant-data-source.provider';
+import { TenantMiddleware } from './middleware/tenant.middleware';
 
 @Module({
   imports: [
@@ -111,5 +118,16 @@ import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
     MailerModule,
     HomeModule,
   ],
+  providers: [TenantDataSourceProvider],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TenantMiddleware)
+      .exclude(
+        { path: 'auth/(.*)', method: RequestMethod.ALL },
+        { path: 'admin/(.*)', method: RequestMethod.ALL },
+      )
+      .forRoutes('*');
+  }
+}

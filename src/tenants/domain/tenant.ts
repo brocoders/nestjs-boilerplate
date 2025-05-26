@@ -9,9 +9,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Tenant {
   @ApiProperty({
     type: () => String,
-    nullable: true,
+    nullable: false,
   })
-  databaseConfig?: string | null;
+  databaseConfig: string;
 
   @ApiProperty({
     type: () => String,

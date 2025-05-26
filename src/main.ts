@@ -43,6 +43,13 @@ async function bootstrap() {
     .addBearerAuth()
     .addGlobalParameters({
       in: 'header',
+      name: 'x-tenant-id',
+      description: 'Tenant ID for database context',
+      required: false,
+      schema: { type: 'string' },
+    })
+    .addGlobalParameters({
+      in: 'header',
       required: false,
       name: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
       schema: {
