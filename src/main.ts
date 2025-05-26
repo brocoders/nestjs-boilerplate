@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import './sentry/sentry.config';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
@@ -12,6 +13,8 @@ import { AppModule } from './app.module';
 import validationOptions from './utils/validation-options';
 import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
+import { SentryInterceptor } from './sentry/sentry.interceptor';
+import { SentryFilter } from './sentry/sentry.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -34,7 +37,10 @@ async function bootstrap() {
     // https://github.com/typestack/class-transformer/issues/549
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
+    new SentryInterceptor(),
   );
+
+  app.useGlobalFilters(new SentryFilter());
 
   const options = new DocumentBuilder()
     .setTitle('API')

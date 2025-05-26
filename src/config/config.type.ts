@@ -16,4 +16,11 @@ export type AllConfigType = {
   file: FileConfig;
   google: GoogleConfig;
   mail: MailConfig;
+  sentry: {
+    dsn?: string;
+    environment?: string;
+    tracesSampleRate?: number;
+    profilesSampleRate?: number;
+    debug?: boolean;
+  };
 };
