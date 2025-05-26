@@ -32,6 +32,14 @@ import {
 
 export class CreateTenantDto {
   @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  databaseConfig: string;
+
+  @ApiProperty({
     required: false,
     type: () => String,
   })
