@@ -74,7 +74,7 @@ npm run add:property:to-document
 ```bash
 npm run add:property:to-relational
 ```
-
+ 
 #### Video guideline how to add property for relational database (PostgreSQL + TypeORM)
 
 <https://github.com/user-attachments/assets/95b9d70a-70cf-442a-b8bf-a73d32810e0c>

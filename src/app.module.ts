@@ -65,9 +65,58 @@ import { PaymentNotificationsModule } from './payment-notifications/payment-noti
 import { ResidencesModule } from './residences/residences.module';
 import { AccountsModule } from './accounts/accounts.module';
 
+import { AccountsPayablesModule } from './accounts-payables/accounts-payables.module';
+
+import { AccountsReceivablesModule } from './accounts-receivables/accounts-receivables.module';
+
+import { TransactionsModule } from './transactions/transactions.module';
+
+import { InvoicesModule } from './invoices/invoices.module';
+
+import { PaymentPlansModule } from './payment-plans/payment-plans.module';
+
+import { CustomerPlansModule } from './customer-plans/customer-plans.module';
+
+import { VendorsModule } from './vendors/vendors.module';
+
+import { VendorBillsModule } from './vendor-bills/vendor-bills.module';
+
+import { PaymentsModule } from './payments/payments.module';
+
+import { InventoriesModule } from './inventories/inventories.module';
+
+import { DiscountsModule } from './discounts/discounts.module';
+
+import { ExemptionsModule } from './exemptions/exemptions.module';
+
+import { RemindersModule } from './reminders/reminders.module';
+
+import { PaymentMethodsModule } from './payment-methods/payment-methods.module';
+
+import { PaymentAggregatorsModule } from './payment-aggregators/payment-aggregators.module';
+
+import { CreditBalancesModule } from './credit-balances/credit-balances.module';
+
 @Module({
   imports: [
     PaymentNotificationsModule,
+    //SentryModule.forRoot(),
+    CreditBalancesModule,
+    PaymentAggregatorsModule,
+    PaymentMethodsModule,
+    RemindersModule,
+    ExemptionsModule,
+    DiscountsModule,
+    InventoriesModule,
+    PaymentsModule,
+    VendorBillsModule,
+    VendorsModule,
+    CustomerPlansModule,
+    PaymentPlansModule,
+    InvoicesModule,
+    TransactionsModule,
+    AccountsReceivablesModule,
+    AccountsPayablesModule,
     AccountsModule,
     ResidencesModule,
     TenantConfigsModule,
