@@ -24,8 +24,11 @@ import { ResidenceSeedModule } from './residence/residence-seed.module';
 
 import { AccountSeedModule } from './account/account-seed.module';
 
+import { PaymentNotificationSeedModule } from './payment-notification/payment-notification-seed.module';
+
 @Module({
   imports: [
+    PaymentNotificationSeedModule,
     AccountSeedModule,
     ResidenceSeedModule,
     TenantTypesSeedModule,

@@ -52,7 +52,34 @@ export class TenantsService {
     // Dependencies here
     private readonly tenantRepository: TenantRepository,
   ) {}
+  //  private generateDbConfig(name: string): TenantConnectionConfig {
+  //   const prefix = this.configService.get('database.tenantPrefix');
+  //   return {
+  //     id: uuidv4(),
+  //     type: 'postgres',
+  //     host: this.configService.get('database.tenantConfig.defaultHost'),
+  //     port: this.configService.get('database.tenantConfig.defaultPort'),
+  //     username: this.configService.get('database.tenantConfig.defaultUsername'),
+  //     password: this.configService.get('database.tenantConfig.defaultPassword'),
+  //     database: `${prefix}${name}`,
+  //     schema: 'public'
+  //   };
+  // }
 
+  // private async createDatabase(config: TenantConnectionConfig): Promise<void> {
+  //     const adminDs = new DataSource({
+  //       type: 'postgres',
+  //       host: config.host,
+  //       port: config.port,
+  //       username: config.username,
+  //       password: config.password
+  //     });
+
+  //     await adminDs.initialize();
+  //     await adminDs.query(`CREATE DATABASE "${config.database}"`);
+  //     await adminDs.destroy();
+  //   }
+  // }
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
@@ -173,9 +200,17 @@ export class TenantsService {
       users = null;
     }
 
+    // const dbConfig = this.generateDbConfig(name);
+
+    // // Create database
+    // await this.createDatabase(dbConfig);
+
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      databaseConfig: createTenantDto.databaseConfig,
+      // databaseConfig: dbConfig,
+
       domain: createTenantDto.domain,
 
       regions,
@@ -352,6 +387,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      databaseConfig: updateTenantDto.databaseConfig,
+
       domain: updateTenantDto.domain,
 
       regions,

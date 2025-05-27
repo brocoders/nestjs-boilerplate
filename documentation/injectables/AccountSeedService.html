@@ -1,0 +1,881 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>nestjs-boilerplate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">nestjs-boilerplate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >AccountSeedService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/database/seeds/relational/account/account-seed.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#logger" >logger</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#run" >run</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(accountRepository: <a href="../classes/Account.html" target="_self">Repository&lt;AccountEntity&gt;</a>, tenantRepository: <a href="../classes/Tenant.html" target="_self">Repository&lt;TenantEntity&gt;</a>, userRepository: <a href="../classes/User.html" target="_self">Repository&lt;UserEntity&gt;</a>, roleRepository: <a href="../classes/Role.html" target="_self">Repository&lt;RoleEntity&gt;</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/database/seeds/relational/account/account-seed.service.ts:16</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>accountRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Account.html" target="_self" >Repository&lt;AccountEntity&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tenantRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Tenant.html" target="_self" >Repository&lt;TenantEntity&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>userRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/User.html" target="_self" >Repository&lt;UserEntity&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>roleRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Role.html" target="_self" >Repository&lt;RoleEntity&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="run"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>run</b></span>
+                        <a href="#run"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>run()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="29"
+                                    class="link-to-prism">src/database/seeds/relational/account/account-seed.service.ts:29</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logger"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>logger</b></span>
+                        <a href="#logger"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Logger(AccountSeedService.name)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/database/seeds/relational/account/account-seed.service.ts:16</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
+import { InjectRepository } from &#x27;@nestjs/typeorm&#x27;;
+import { Repository } from &#x27;typeorm&#x27;;
+import { AccountEntity } from &#x27;../../../../accounts/infrastructure/persistence/relational/entities/account.entity&#x27;;
+import { TenantEntity } from &#x27;../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity&#x27;;
+import { UserEntity } from &#x27;../../../../users/infrastructure/persistence/relational/entities/user.entity&#x27;;
+import { RoleEntity } from &#x27;../../../../roles/infrastructure/persistence/relational/entities/role.entity&#x27;;
+import { AccountTypeEnum } from &#x27;../../../../utils/enum/account-type.enum&#x27;;
+import {
+  NotificationChannelEnum,
+  NotificationTypeEnum,
+} from &#x27;../../../../utils/enum/account-type.enum&#x27;;
+
+@Injectable()
+export class AccountSeedService {
+  private readonly logger &#x3D; new Logger(AccountSeedService.name);
+
+  constructor(
+    @InjectRepository(AccountEntity)
+    private readonly accountRepository: Repository&lt;AccountEntity&gt;,
+    @InjectRepository(TenantEntity)
+    private readonly tenantRepository: Repository&lt;TenantEntity&gt;,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository&lt;UserEntity&gt;,
+    @InjectRepository(RoleEntity)
+    private readonly roleRepository: Repository&lt;RoleEntity&gt;,
+  ) {}
+
+  async run() {
+    const tenants &#x3D; await this.tenantRepository.find();
+
+    for (const tenant of tenants) {
+      const accountsCount &#x3D; await this.accountRepository.count({
+        where: { tenant: { id: tenant.id } },
+      });
+
+      if (accountsCount &gt; 0) {
+        this.logger.log(&#x60;Accounts already exist for tenant: ${tenant.name}&#x60;);
+        continue;
+      }
+
+      const financeRole &#x3D; await this.roleRepository.findOne({
+        where: {
+          name: &#x27;Finance&#x27;,
+          tenant: { id: tenant.id },
+        },
+      });
+
+      let owners: any &#x3D; [];
+      if (financeRole) {
+        owners &#x3D; await this.userRepository.find({
+          where: {
+            role: { id: financeRole.id },
+            tenant: { id: tenant.id },
+          },
+        });
+      }
+
+      const wasteManagementAccounts: Partial&lt;AccountEntity&gt;[] &#x3D; [
+        // Asset Accounts
+
+        {
+          name: &#x27;Waste Collection Vehicles&#x27;,
+          description: &#x27;Trucks and specialized vehicles for waste collection&#x27;,
+          type: AccountTypeEnum.asset,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-ASSET-001&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Recycling Equipment&#x27;,
+          description: &#x27;Sorting lines, balers, and processing machinery&#x27;,
+          type: AccountTypeEnum.asset,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-ASSET-002&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Accounts Receivable&#x27;,
+          description: &#x27;Customer payments for waste management services&#x27;,
+          type: AccountTypeEnum.asset,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-ASSET-003&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Mobile Money Wallet&#x27;,
+          description: &#x27;Tracks all mobile money funds&#x27;,
+          type: AccountTypeEnum.asset,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-ASSET-004&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Bank Account&#x27;,
+          description: &#x27;Main business bank account&#x27;,
+          type: AccountTypeEnum.asset,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-ASSET-005&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Petty Cash&#x27;,
+          description: &#x27;Cash on hand for small expenses&#x27;,
+          type: AccountTypeEnum.asset,
+          number: &#x27;WM-ASSET-006&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Vendor Advances&#x27;,
+          description: &#x27;Prepayments to vendors/suppliers&#x27;,
+          type: AccountTypeEnum.asset,
+          number: &#x27;WM-ASSET-007&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Inventory&#x27;,
+          description: &#x27;Value of inventory in stock&#x27;,
+          type: AccountTypeEnum.asset,
+          number: &#x27;WM-ASSET-008&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+
+        // Liability Accounts
+        {
+          name: &#x27;Equipment Financing&#x27;,
+          description: &#x27;Loans for waste processing equipment purchases&#x27;,
+          type: AccountTypeEnum.liability,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-LIAB-001&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Landfill Fees Payable&#x27;,
+          description: &#x27;Outstanding payments to landfill operators&#x27;,
+          type: AccountTypeEnum.liability,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-LIAB-002&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Accounts Payable&#x27;,
+          description: &#x27;Outstanding amounts owed to vendors&#x27;,
+          type: AccountTypeEnum.liability,
+          number: &#x27;WM-LIAB-003&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Advance Customer Payments&#x27;,
+          description: &#x27;Prepayments from customers before delivery&#x27;,
+          type: AccountTypeEnum.liability,
+          number: &#x27;WM-LIAB-004&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Tax Payable&#x27;,
+          description: &#x27;Taxes owed to government&#x27;,
+          type: AccountTypeEnum.liability,
+          number: &#x27;WM-LIAB-005&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        // Revenue Accounts
+        {
+          name: &#x27;Residential Collection Fees&#x27;,
+          description: &#x27;Income from household waste collection services&#x27;,
+          type: AccountTypeEnum.revenue,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-REV-001&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Commercial Recycling Contracts&#x27;,
+          description: &#x27;Revenue from business recycling agreements&#x27;,
+          type: AccountTypeEnum.revenue,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-REV-002&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Recycled Materials Sales&#x27;,
+          description: &#x27;Income from sales of sorted recyclables&#x27;,
+          type: AccountTypeEnum.revenue,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-REV-003&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Product Sales&#x27;,
+          description: &#x27;Revenue from sales of goods or produce&#x27;,
+          type: AccountTypeEnum.revenue,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-REV-004&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Service Income&#x27;,
+          description: &#x27;Revenue from services or subscriptions&#x27;,
+          type: AccountTypeEnum.revenue,
+          number: &#x27;WM-REV-005&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+
+        // Expense Accounts
+        {
+          name: &#x27;Vehicle Maintenance&#x27;,
+          description: &#x27;Fuel, repairs, and maintenance for collection trucks&#x27;,
+          type: AccountTypeEnum.expense,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EXP-001&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Waste Processing Costs&#x27;,
+          description: &#x27;Costs associated with recycling operations&#x27;,
+          type: AccountTypeEnum.expense,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EXP-002&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Environmental Compliance&#x27;,
+          description: &#x27;Costs for permits and regulatory compliance&#x27;,
+          type: AccountTypeEnum.expense,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EXP-003&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Safety Equipment&#x27;,
+          description: &#x27;Protective gear for waste handlers&#x27;,
+          type: AccountTypeEnum.expense,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EXP-004&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Cost of Goods Sold (COGS)&#x27;,
+          description: &#x27;Cost of inventory items sold&#x27;,
+          type: AccountTypeEnum.expense,
+          balance: 0,
+          number: &#x27;WM-EXP-005&#x27;,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Inventory Shrinkage&#x27;,
+          description: &#x27;Loss due to spoilage, theft, or errors&#x27;,
+          type: AccountTypeEnum.expense,
+          number: &#x27;WM-EXP-006&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Salaries &amp; Wages&#x27;,
+          description: &#x27;Employee payroll and wages&#x27;,
+          type: AccountTypeEnum.expense,
+          number: &#x27;WM-EXP-007&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Utilities &amp; Internet&#x27;,
+          description: &#x27;Monthly utility bills and internet costs&#x27;,
+          type: AccountTypeEnum.expense,
+          number: &#x27;WM-EXP-008&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Marketing &amp; Advertising&#x27;,
+          description: &#x27;Costs for ads, campaigns, and promotions&#x27;,
+          type: AccountTypeEnum.expense,
+          number: &#x27;WM-EXP-009&#x27;,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          tenant,
+          owner: owners,
+        },
+
+        // Equity Accounts
+        {
+          name: &#x27;Environmental Grants&#x27;,
+          description: &#x27;Funding received for green initiatives&#x27;,
+          type: AccountTypeEnum.equity,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EQUITY-001&#x27;,
+          tenant,
+          owner: owners,
+        },
+        {
+          name: &#x27;Retained Earnings&#x27;,
+          description: &#x27;Reinvested profits from operations&#x27;,
+          type: AccountTypeEnum.equity,
+          balance: 0,
+          active: true,
+          receiveNotification: true,
+          notificationChannel: NotificationChannelEnum.EMAIL,
+          notificationType: NotificationTypeEnum.ALERT,
+          number: &#x27;WM-EQUITY-002&#x27;,
+          tenant,
+          owner: owners,
+        },
+      ];
+
+      await this.accountRepository.save(
+        this.accountRepository.create(wasteManagementAccounts),
+      );
+      this.logger.log(
+        &#x60;Seeded ${wasteManagementAccounts.length} waste management accounts for tenant ${tenant.name}&#x60;,
+      );
+    }
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'AccountSeedService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

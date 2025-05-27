@@ -9,6 +9,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Tenant {
   @ApiProperty({
     type: () => String,
+    nullable: false,
+  })
+  databaseConfig: string;
+
+  @ApiProperty({
+    type: () => String,
     nullable: true,
   })
   domain?: string | null;

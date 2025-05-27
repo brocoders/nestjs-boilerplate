@@ -1,0 +1,1928 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>nestjs-boilerplate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">nestjs-boilerplate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >AuthService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/auth/auth.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#confirmEmail" >confirmEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#confirmNewEmail" >confirmNewEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#forgotPassword" >forgotPassword</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#getTokensData" >getTokensData</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#logout" >logout</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#me" >me</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#refreshToken" >refreshToken</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#register" >register</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#resetPassword" >resetPassword</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#softDelete" >softDelete</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#update" >update</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#validateLogin" >validateLogin</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#validateSocialLogin" >validateSocialLogin</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(jwtService: JwtService, usersService: <a href="../injectables/UsersService.html" target="_self">UsersService</a>, sessionService: <a href="../injectables/SessionService.html" target="_self">SessionService</a>, mailService: <a href="../injectables/MailService.html" target="_self">MailService</a>, configService: <a href="../undefineds/AllConfigType.html" target="_self">ConfigService&lt;AllConfigType&gt;</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/auth/auth.service.ts:34</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>jwtService</td>
+                                                  
+                                                        <td>
+                                                                    <code>JwtService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>usersService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/UsersService.html" target="_self" >UsersService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>sessionService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SessionService.html" target="_self" >SessionService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>mailService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MailService.html" target="_self" >MailService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>configService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../miscellaneous/typealiases.html#AllConfigType" target="_self" >ConfigService&lt;AllConfigType&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="confirmEmail"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>confirmEmail</b></span>
+                        <a href="#confirmEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>confirmEmail(hash: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="233"
+                                    class="link-to-prism">src/auth/auth.service.ts:233</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>hash</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="confirmNewEmail"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>confirmNewEmail</b></span>
+                        <a href="#confirmNewEmail"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>confirmNewEmail(hash: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="274"
+                                    class="link-to-prism">src/auth/auth.service.ts:274</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>hash</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="forgotPassword"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>forgotPassword</b></span>
+                        <a href="#forgotPassword"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>forgotPassword(email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="316"
+                                    class="link-to-prism">src/auth/auth.service.ts:316</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>email</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getTokensData"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>getTokensData</b></span>
+                        <a href="#getTokensData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getTokensData(data: literal type)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="550"
+                                    class="link-to-prism">src/auth/auth.service.ts:550</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                        <code>literal type</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logout"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>logout</b></span>
+                        <a href="#logout"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>logout(data: <a href="../undefineds/JwtRefreshPayloadType.html" target="_self">Pick&lt;JwtRefreshPayloadType | sessionId&gt;</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="546"
+                                    class="link-to-prism">src/auth/auth.service.ts:546</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#JwtRefreshPayloadType" target="_self" >Pick&lt;JwtRefreshPayloadType | sessionId&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="me"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>me</b></span>
+                        <a href="#me"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>me(userJwtPayload: <a href="../undefineds/JwtPayloadType.html" target="_self">JwtPayloadType</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="397"
+                                    class="link-to-prism">src/auth/auth.service.ts:397</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>userJwtPayload</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#JwtPayloadType" target="_self" >JwtPayloadType</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;NullableType&lt;User&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="refreshToken"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>refreshToken</b></span>
+                        <a href="#refreshToken"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>refreshToken(data: <a href="../undefineds/JwtRefreshPayloadType.html" target="_self">Pick&lt;JwtRefreshPayloadType | &quot;sessionId&quot; | &quot;hash&quot;&gt;</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="498"
+                                    class="link-to-prism">src/auth/auth.service.ts:498</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#JwtRefreshPayloadType" target="_self" >Pick&lt;JwtRefreshPayloadType | &quot;sessionId&quot; | &quot;hash&quot;&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/LoginResponseDto.html" target="_self" >Promise&lt;Omit&lt;LoginResponseDto, user&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="register"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>register</b></span>
+                        <a href="#register"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>register(dto: <a href="../classes/AuthRegisterLoginDto.html" target="_self">AuthRegisterLoginDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="198"
+                                    class="link-to-prism">src/auth/auth.service.ts:198</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>dto</td>
+                                            <td>
+                                                            <code><a href="../classes/AuthRegisterLoginDto.html" target="_self" >AuthRegisterLoginDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="resetPassword"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>resetPassword</b></span>
+                        <a href="#resetPassword"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>resetPassword(hash: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, password: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="355"
+                                    class="link-to-prism">src/auth/auth.service.ts:355</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>hash</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>password</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="softDelete"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>softDelete</b></span>
+                        <a href="#softDelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>softDelete(user: <a href="../classes/User.html" target="_self">User</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="542"
+                                    class="link-to-prism">src/auth/auth.service.ts:542</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>user</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="update"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>update</b></span>
+                        <a href="#update"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>update(userJwtPayload: <a href="../undefineds/JwtPayloadType.html" target="_self">JwtPayloadType</a>, userDto: <a href="../classes/AuthUpdateDto.html" target="_self">AuthUpdateDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="401"
+                                    class="link-to-prism">src/auth/auth.service.ts:401</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>userJwtPayload</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#JwtPayloadType" target="_self" >JwtPayloadType</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>userDto</td>
+                                            <td>
+                                                            <code><a href="../classes/AuthUpdateDto.html" target="_self" >AuthUpdateDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;NullableType&lt;User&gt;&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateLogin"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>validateLogin</b></span>
+                        <a href="#validateLogin"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>validateLogin(loginDto: <a href="../classes/AuthEmailLoginDto.html" target="_self">AuthEmailLoginDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="43"
+                                    class="link-to-prism">src/auth/auth.service.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>loginDto</td>
+                                            <td>
+                                                            <code><a href="../classes/AuthEmailLoginDto.html" target="_self" >AuthEmailLoginDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/LoginResponseDto.html" target="_self" >Promise&lt;LoginResponseDto&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateSocialLogin"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>validateSocialLogin</b></span>
+                        <a href="#validateSocialLogin"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>validateSocialLogin(authProvider: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, socialData: <a href="../interfaces/SocialInterface.html" target="_self">SocialInterface</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="112"
+                                    class="link-to-prism">src/auth/auth.service.ts:112</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authProvider</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>socialData</td>
+                                            <td>
+                                                            <code><a href="../interfaces/SocialInterface.html" target="_self" >SocialInterface</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/LoginResponseDto.html" target="_self" >Promise&lt;LoginResponseDto&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from &#x27;@nestjs/common&#x27;;
+import ms from &#x27;ms&#x27;;
+import crypto from &#x27;crypto&#x27;;
+import { randomStringGenerator } from &#x27;@nestjs/common/utils/random-string-generator.util&#x27;;
+import { JwtService } from &#x27;@nestjs/jwt&#x27;;
+import bcrypt from &#x27;bcryptjs&#x27;;
+import { AuthEmailLoginDto } from &#x27;./dto/auth-email-login.dto&#x27;;
+import { AuthUpdateDto } from &#x27;./dto/auth-update.dto&#x27;;
+import { AuthProvidersEnum } from &#x27;./auth-providers.enum&#x27;;
+import { SocialInterface } from &#x27;../social/interfaces/social.interface&#x27;;
+import { AuthRegisterLoginDto } from &#x27;./dto/auth-register-login.dto&#x27;;
+import { NullableType } from &#x27;../utils/types/nullable.type&#x27;;
+import { LoginResponseDto } from &#x27;./dto/login-response.dto&#x27;;
+import { ConfigService } from &#x27;@nestjs/config&#x27;;
+import { JwtRefreshPayloadType } from &#x27;./strategies/types/jwt-refresh-payload.type&#x27;;
+import { JwtPayloadType } from &#x27;./strategies/types/jwt-payload.type&#x27;;
+import { UsersService } from &#x27;../users/users.service&#x27;;
+import { AllConfigType } from &#x27;../config/config.type&#x27;;
+import { MailService } from &#x27;../mail/mail.service&#x27;;
+import { RoleEnum } from &#x27;../roles/roles.enum&#x27;;
+import { Session } from &#x27;../session/domain/session&#x27;;
+import { SessionService } from &#x27;../session/session.service&#x27;;
+import { StatusEnum } from &#x27;../statuses/statuses.enum&#x27;;
+import { User } from &#x27;../users/domain/user&#x27;;
+import { TenantDto } from &#x27;src/tenants/dto/tenant.dto&#x27;;
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UsersService,
+    private sessionService: SessionService,
+    private mailService: MailService,
+    private configService: ConfigService&lt;AllConfigType&gt;,
+  ) {}
+
+  async validateLogin(loginDto: AuthEmailLoginDto): Promise&lt;LoginResponseDto&gt; {
+    const user &#x3D; await this.usersService.findByEmail(loginDto.email);
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: &#x27;notFound&#x27;,
+        },
+      });
+    }
+
+    if (user.provider !&#x3D;&#x3D; AuthProvidersEnum.email) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: &#x60;needLoginViaProvider:${user.provider}&#x60;,
+        },
+      });
+    }
+
+    if (!user.password) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: &#x27;incorrectPassword&#x27;,
+        },
+      });
+    }
+
+    const isValidPassword &#x3D; await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isValidPassword) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: &#x27;incorrectPassword&#x27;,
+        },
+      });
+    }
+
+    const hash &#x3D; crypto
+      .createHash(&#x27;sha256&#x27;)
+      .update(randomStringGenerator())
+      .digest(&#x27;hex&#x27;);
+
+    const session &#x3D; await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const { token, refreshToken, tokenExpires } &#x3D; await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash,
+    });
+
+    return {
+      refreshToken,
+      token,
+      tokenExpires,
+      user,
+    };
+  }
+
+  async validateSocialLogin(
+    authProvider: string,
+    socialData: SocialInterface,
+  ): Promise&lt;LoginResponseDto&gt; {
+    let user: NullableType&lt;User&gt; &#x3D; null;
+    const socialEmail &#x3D; socialData.email?.toLowerCase();
+    let userByEmail: NullableType&lt;User&gt; &#x3D; null;
+
+    if (socialEmail) {
+      userByEmail &#x3D; await this.usersService.findByEmail(socialEmail);
+    }
+
+    if (socialData.id) {
+      user &#x3D; await this.usersService.findBySocialIdAndProvider({
+        socialId: socialData.id,
+        provider: authProvider,
+      });
+    }
+
+    if (user) {
+      if (socialEmail &amp;&amp; !userByEmail) {
+        user.email &#x3D; socialEmail;
+      }
+      await this.usersService.update(user.id, user);
+    } else if (userByEmail) {
+      user &#x3D; userByEmail;
+    } else if (socialData.id) {
+      const role &#x3D; {
+        id: RoleEnum.user,
+      };
+      const status &#x3D; {
+        id: StatusEnum.active,
+      };
+
+      user &#x3D; await this.usersService.create({
+        email: socialEmail ?? null,
+        firstName: socialData.firstName ?? null,
+        lastName: socialData.lastName ?? null,
+        socialId: socialData.id,
+        provider: authProvider,
+        role,
+        status,
+        tenant: new TenantDto(),
+      });
+
+      user &#x3D; await this.usersService.findById(user.id);
+    }
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: &#x27;userNotFound&#x27;,
+        },
+      });
+    }
+
+    const hash &#x3D; crypto
+      .createHash(&#x27;sha256&#x27;)
+      .update(randomStringGenerator())
+      .digest(&#x27;hex&#x27;);
+
+    const session &#x3D; await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+    } &#x3D; await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash,
+    });
+
+    return {
+      refreshToken,
+      token: jwtToken,
+      tokenExpires,
+      user,
+    };
+  }
+
+  async register(dto: AuthRegisterLoginDto): Promise&lt;void&gt; {
+    const user &#x3D; await this.usersService.create({
+      ...dto,
+      email: dto.email,
+      role: {
+        id: RoleEnum.user,
+      },
+      status: {
+        id: StatusEnum.inactive,
+      },
+      tenant: new TenantDto(),
+    });
+
+    const hash &#x3D; await this.jwtService.signAsync(
+      {
+        confirmEmailUserId: user.id,
+      },
+      {
+        secret: this.configService.getOrThrow(&#x27;auth.confirmEmailSecret&#x27;, {
+          infer: true,
+        }),
+        expiresIn: this.configService.getOrThrow(&#x27;auth.confirmEmailExpires&#x27;, {
+          infer: true,
+        }),
+      },
+    );
+
+    await this.mailService.userSignUp({
+      to: dto.email,
+      data: {
+        hash,
+      },
+    });
+  }
+
+  async confirmEmail(hash: string): Promise&lt;void&gt; {
+    let userId: User[&#x27;id&#x27;];
+
+    try {
+      const jwtData &#x3D; await this.jwtService.verifyAsync&lt;{
+        confirmEmailUserId: User[&#x27;id&#x27;];
+      }&gt;(hash, {
+        secret: this.configService.getOrThrow(&#x27;auth.confirmEmailSecret&#x27;, {
+          infer: true,
+        }),
+      });
+
+      userId &#x3D; jwtData.confirmEmailUserId;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: &#x60;invalidHash&#x60;,
+        },
+      });
+    }
+
+    const user &#x3D; await this.usersService.findById(userId);
+
+    if (
+      !user ||
+      user?.status?.id?.toString() !&#x3D;&#x3D; StatusEnum.inactive.toString()
+    ) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: &#x60;notFound&#x60;,
+      });
+    }
+
+    user.status &#x3D; {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
+  async confirmNewEmail(hash: string): Promise&lt;void&gt; {
+    let userId: User[&#x27;id&#x27;];
+    let newEmail: User[&#x27;email&#x27;];
+
+    try {
+      const jwtData &#x3D; await this.jwtService.verifyAsync&lt;{
+        confirmEmailUserId: User[&#x27;id&#x27;];
+        newEmail: User[&#x27;email&#x27;];
+      }&gt;(hash, {
+        secret: this.configService.getOrThrow(&#x27;auth.confirmEmailSecret&#x27;, {
+          infer: true,
+        }),
+      });
+
+      userId &#x3D; jwtData.confirmEmailUserId;
+      newEmail &#x3D; jwtData.newEmail;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: &#x60;invalidHash&#x60;,
+        },
+      });
+    }
+
+    const user &#x3D; await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: &#x60;notFound&#x60;,
+      });
+    }
+
+    user.email &#x3D; newEmail;
+    user.status &#x3D; {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
+  async forgotPassword(email: string): Promise&lt;void&gt; {
+    const user &#x3D; await this.usersService.findByEmail(email);
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: &#x27;emailNotExists&#x27;,
+        },
+      });
+    }
+
+    const tokenExpiresIn &#x3D; this.configService.getOrThrow(&#x27;auth.forgotExpires&#x27;, {
+      infer: true,
+    });
+
+    const tokenExpires &#x3D; Date.now() + ms(tokenExpiresIn);
+
+    const hash &#x3D; await this.jwtService.signAsync(
+      {
+        forgotUserId: user.id,
+      },
+      {
+        secret: this.configService.getOrThrow(&#x27;auth.forgotSecret&#x27;, {
+          infer: true,
+        }),
+        expiresIn: tokenExpiresIn,
+      },
+    );
+
+    await this.mailService.forgotPassword({
+      to: email,
+      data: {
+        hash,
+        tokenExpires,
+      },
+    });
+  }
+
+  async resetPassword(hash: string, password: string): Promise&lt;void&gt; {
+    let userId: User[&#x27;id&#x27;];
+
+    try {
+      const jwtData &#x3D; await this.jwtService.verifyAsync&lt;{
+        forgotUserId: User[&#x27;id&#x27;];
+      }&gt;(hash, {
+        secret: this.configService.getOrThrow(&#x27;auth.forgotSecret&#x27;, {
+          infer: true,
+        }),
+      });
+
+      userId &#x3D; jwtData.forgotUserId;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: &#x60;invalidHash&#x60;,
+        },
+      });
+    }
+
+    const user &#x3D; await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: &#x60;notFound&#x60;,
+        },
+      });
+    }
+
+    user.password &#x3D; password;
+
+    await this.sessionService.deleteByUserId({
+      userId: user.id,
+    });
+
+    await this.usersService.update(user.id, user);
+  }
+
+  async me(userJwtPayload: JwtPayloadType): Promise&lt;NullableType&lt;User&gt;&gt; {
+    return this.usersService.findById(userJwtPayload.id);
+  }
+
+  async update(
+    userJwtPayload: JwtPayloadType,
+    userDto: AuthUpdateDto,
+  ): Promise&lt;NullableType&lt;User&gt;&gt; {
+    const currentUser &#x3D; await this.usersService.findById(userJwtPayload.id);
+
+    if (!currentUser) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: &#x27;userNotFound&#x27;,
+        },
+      });
+    }
+
+    if (userDto.password) {
+      if (!userDto.oldPassword) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            oldPassword: &#x27;missingOldPassword&#x27;,
+          },
+        });
+      }
+
+      if (!currentUser.password) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            oldPassword: &#x27;incorrectOldPassword&#x27;,
+          },
+        });
+      }
+
+      const isValidOldPassword &#x3D; await bcrypt.compare(
+        userDto.oldPassword,
+        currentUser.password,
+      );
+
+      if (!isValidOldPassword) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            oldPassword: &#x27;incorrectOldPassword&#x27;,
+          },
+        });
+      } else {
+        await this.sessionService.deleteByUserIdWithExclude({
+          userId: currentUser.id,
+          excludeSessionId: userJwtPayload.sessionId,
+        });
+      }
+    }
+
+    if (userDto.email &amp;&amp; userDto.email !&#x3D;&#x3D; currentUser.email) {
+      const userByEmail &#x3D; await this.usersService.findByEmail(userDto.email);
+
+      if (userByEmail &amp;&amp; userByEmail.id !&#x3D;&#x3D; currentUser.id) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: &#x27;emailExists&#x27;,
+          },
+        });
+      }
+
+      const hash &#x3D; await this.jwtService.signAsync(
+        {
+          confirmEmailUserId: currentUser.id,
+          newEmail: userDto.email,
+        },
+        {
+          secret: this.configService.getOrThrow(&#x27;auth.confirmEmailSecret&#x27;, {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow(&#x27;auth.confirmEmailExpires&#x27;, {
+            infer: true,
+          }),
+        },
+      );
+
+      await this.mailService.confirmNewEmail({
+        to: userDto.email,
+        data: {
+          hash,
+        },
+      });
+    }
+
+    delete userDto.email;
+    delete userDto.oldPassword;
+
+    await this.usersService.update(userJwtPayload.id, userDto);
+
+    return this.usersService.findById(userJwtPayload.id);
+  }
+
+  async refreshToken(
+    data: Pick&lt;JwtRefreshPayloadType, &#x27;sessionId&#x27; | &#x27;hash&#x27;&gt;,
+  ): Promise&lt;Omit&lt;LoginResponseDto, &#x27;user&#x27;&gt;&gt; {
+    const session &#x3D; await this.sessionService.findById(data.sessionId);
+
+    if (!session) {
+      throw new UnauthorizedException();
+    }
+
+    if (session.hash !&#x3D;&#x3D; data.hash) {
+      throw new UnauthorizedException();
+    }
+
+    const hash &#x3D; crypto
+      .createHash(&#x27;sha256&#x27;)
+      .update(randomStringGenerator())
+      .digest(&#x27;hex&#x27;);
+
+    const user &#x3D; await this.usersService.findById(session.user.id);
+
+    if (!user?.role) {
+      throw new UnauthorizedException();
+    }
+
+    await this.sessionService.update(session.id, {
+      hash,
+    });
+
+    const { token, refreshToken, tokenExpires } &#x3D; await this.getTokensData({
+      id: session.user.id,
+      role: {
+        id: user.role.id,
+      },
+      sessionId: session.id,
+      hash,
+    });
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+    };
+  }
+
+  async softDelete(user: User): Promise&lt;void&gt; {
+    await this.usersService.remove(user.id);
+  }
+
+  async logout(data: Pick&lt;JwtRefreshPayloadType, &#x27;sessionId&#x27;&gt;) {
+    return this.sessionService.deleteById(data.sessionId);
+  }
+
+  private async getTokensData(data: {
+    id: User[&#x27;id&#x27;];
+    role: User[&#x27;role&#x27;];
+    sessionId: Session[&#x27;id&#x27;];
+    hash: Session[&#x27;hash&#x27;];
+  }) {
+    const tokenExpiresIn &#x3D; this.configService.getOrThrow(&#x27;auth.expires&#x27;, {
+      infer: true,
+    });
+
+    const tokenExpires &#x3D; Date.now() + ms(tokenExpiresIn);
+
+    const [token, refreshToken] &#x3D; await Promise.all([
+      await this.jwtService.signAsync(
+        {
+          id: data.id,
+          role: data.role,
+          sessionId: data.sessionId,
+        },
+        {
+          secret: this.configService.getOrThrow(&#x27;auth.secret&#x27;, { infer: true }),
+          expiresIn: tokenExpiresIn,
+        },
+      ),
+      await this.jwtService.signAsync(
+        {
+          sessionId: data.sessionId,
+          hash: data.hash,
+        },
+        {
+          secret: this.configService.getOrThrow(&#x27;auth.refreshSecret&#x27;, {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow(&#x27;auth.refreshExpires&#x27;, {
+            infer: true,
+          }),
+        },
+      ),
+    ]);
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+    };
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'AuthService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

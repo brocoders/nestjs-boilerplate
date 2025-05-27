@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -52,9 +57,11 @@ import { SettingsModule } from './settings/settings.module';
 
 import { RegionsModule } from './regions/regions.module';
 
-import { ResidencesModule } from './residences/residences.module';
+import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
+import { TenantDataSourceProvider } from './providers/tenant-data-source.provider';
+import { TenantMiddleware } from './middleware/tenant.middleware';
 
-import { AccountsModule } from './accounts/accounts.module';
+import { PaymentNotificationsModule } from './payment-notifications/payment-notifications.module';
 
 import { AccountsPayablesModule } from './accounts-payables/accounts-payables.module';
 
@@ -90,6 +97,8 @@ import { CreditBalancesModule } from './credit-balances/credit-balances.module';
 
 @Module({
   imports: [
+    PaymentNotificationsModule,
+    //SentryModule.forRoot(),
     CreditBalancesModule,
     PaymentAggregatorsModule,
     PaymentMethodsModule,
@@ -108,7 +117,7 @@ import { CreditBalancesModule } from './credit-balances/credit-balances.module';
     AccountsPayablesModule,
     AccountsModule,
     ResidencesModule,
-    ResidencesModule,
+    TenantConfigsModule,
     RegionsModule,
     SettingsModule,
     TenantTypesModule,
@@ -163,5 +172,16 @@ import { CreditBalancesModule } from './credit-balances/credit-balances.module';
     MailerModule,
     HomeModule,
   ],
+  providers: [TenantDataSourceProvider],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TenantMiddleware)
+      .exclude(
+        { path: 'auth/(.*)', method: RequestMethod.ALL },
+        { path: 'admin/(.*)', method: RequestMethod.ALL },
+      )
+      .forRoutes('*');
+  }
+}
