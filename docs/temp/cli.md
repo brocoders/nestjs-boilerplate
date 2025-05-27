@@ -1,3 +1,14 @@
+### For relational database (PostgreSQL + TypeORM)
+
+```bash
+npm run generate:resource:relational -- --name ResourceName
+```
+
+### Property for relational database (PostgreSQL + TypeORM)
+
+```bash
+npm run add:property:to-relational
+```
 Creating seeds (TypeORM)
 Create seed file with npm run seed:create:relational -- --name Post. Where Post is name of entity.
 Go to src/database/seeds/relational/post/post-seed.service.ts.
