@@ -62,6 +62,8 @@ import { TenantDataSourceProvider } from './providers/tenant-data-source.provide
 import { TenantMiddleware } from './middleware/tenant.middleware';
 
 import { PaymentNotificationsModule } from './payment-notifications/payment-notifications.module';
+import { ResidencesModule } from './residences/residences.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 import { AccountsPayablesModule } from './accounts-payables/accounts-payables.module';
 

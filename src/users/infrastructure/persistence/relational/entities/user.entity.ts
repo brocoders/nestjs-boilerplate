@@ -49,7 +49,7 @@ export class UserEntity extends EntityRelationalHelper {
   kycSubmissions?: KycDetailsEntity[] | null;
 
   @ManyToOne(() => TenantEntity, (parentEntity) => parentEntity.users, {
-    eager: false,
+    eager: true,
     nullable: false,
   })
   tenant: TenantEntity;
