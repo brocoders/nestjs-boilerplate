@@ -13,22 +13,17 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { PlanStatusEnum } from '../../../../../utils/enum/plan-type.enum';
 
 @Entity({
   name: 'customer_plan',
 })
 export class CustomerPlanEntity extends EntityRelationalHelper {
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  customSchedule?: string | null;
-
-  // @Column({ type: 'jsonb' })
-  // customSchedule: {
-  //   lastPaymentDate: Date;
-  //   paymentCount: number;
-  // };
+  @Column({ type: 'jsonb', nullable: true })
+  customSchedule?: {
+    lastPaymentDate: Date;
+    paymentCount: number;
+  } | null;
 
   @Column({
     nullable: true,
@@ -40,27 +35,15 @@ export class CustomerPlanEntity extends EntityRelationalHelper {
   assignedBy?: UserEntity | null;
 
   @Column({
+    type: 'enum',
+    enum: PlanStatusEnum,
     nullable: false,
-    type: String,
+    default: PlanStatusEnum.ACTIVE,
   })
-  status: string;
+  status: PlanStatusEnum;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: PlanStatus,
-  //   nullable: false,
-  //   default: PlanStatus.ACTIVE,
-  // })
-  // status: PlanStatus;
-
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  customRates?: string | null;
-
-  // @Column({ type: 'jsonb', nullable: true })
-  // customRates: Record<string, any>;
+  @Column({ type: 'jsonb', nullable: true })
+  customRates: Record<string, any>;
   @Column({
     nullable: true,
     type: Date,

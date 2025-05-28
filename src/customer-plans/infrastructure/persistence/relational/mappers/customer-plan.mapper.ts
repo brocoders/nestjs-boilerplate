@@ -62,7 +62,7 @@ export class CustomerPlanMapper {
 
     persistenceEntity.status = domainEntity.status;
 
-    persistenceEntity.customRates = domainEntity.customRates;
+    persistenceEntity.customRates = domainEntity.customRates ?? {};
 
     persistenceEntity.endDate = domainEntity.endDate;
 

@@ -1,13 +1,16 @@
+import { CustomScheduleDto } from '../../common/dto/custom-schedule.dto';
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
+import { PlanStatusEnum } from '../../utils/enum/plan-type.enum';
 
 export class CustomerPlan {
   @ApiProperty({
-    type: () => String,
+    type: CustomScheduleDto,
+    required: false,
     nullable: true,
   })
-  customSchedule?: string | null;
+  customSchedule?: CustomScheduleDto | null;
 
   @ApiProperty({
     type: () => Date,
@@ -22,16 +25,20 @@ export class CustomerPlan {
   assignedBy?: User | null;
 
   @ApiProperty({
-    type: () => String,
+    enum: PlanStatusEnum,
+    enumName: 'PlanStatusEnum',
     nullable: false,
   })
-  status: string;
+  status: PlanStatusEnum;
 
   @ApiProperty({
-    type: () => String,
+    type: 'object',
     nullable: true,
+    description: 'Custom rates map (key-value pairs)',
+    example: { rateA: 100, rateB: 150 },
+    additionalProperties: { type: 'number' },
   })
-  customRates?: string | null;
+  customRates?: Record<string, number> | null;
 
   @ApiProperty({
     type: () => Date,

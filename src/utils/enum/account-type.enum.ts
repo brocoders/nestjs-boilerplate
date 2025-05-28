@@ -17,3 +17,10 @@ export enum NotificationTypeEnum {
   REMINDER = 'REMINDER',
   REPORT = 'REPORT',
 }
+
+export enum TransactionTypeEnum {
+  CREDIT = 'CREDIT',
+  DEBIT = 'DEBIT',
+  TRANSFER = 'TRANSFER',
+  REFUND = 'REFUND',
+}

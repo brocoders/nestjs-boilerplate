@@ -12,6 +12,10 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import {
+  AccountTypeEnum,
+  TransactionTypeEnum,
+} from '../../../../../utils/enum/account-type.enum';
 
 @Entity({
   name: 'accounts_receivable',
@@ -26,10 +30,10 @@ export class AccountsReceivableEntity extends EntityRelationalHelper {
   owner?: UserEntity[] | null;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: AccountTypeEnum,
   })
-  accountType?: string | null;
+  accountType?: AccountTypeEnum | null;
 
   @Column({
     nullable: false,
@@ -38,10 +42,11 @@ export class AccountsReceivableEntity extends EntityRelationalHelper {
   amount: number;
 
   @Column({
+    type: 'enum',
+    enum: TransactionTypeEnum,
     nullable: false,
-    type: String,
   })
-  transactionType: string;
+  transactionType: TransactionTypeEnum;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;

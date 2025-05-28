@@ -1,6 +1,11 @@
+import { UsersService } from '../users/users.service';
+import { User } from '../users/domain/user';
+
 import {
   // common
   Injectable,
+  HttpStatus,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateCreditBalanceDto } from './dto/create-credit-balance.dto';
 import { UpdateCreditBalanceDto } from './dto/update-credit-balance.dto';
@@ -11,20 +16,37 @@ import { CreditBalance } from './domain/credit-balance';
 @Injectable()
 export class CreditBalancesService {
   constructor(
+    private readonly userService: UsersService,
+
     // Dependencies here
     private readonly creditBalanceRepository: CreditBalanceRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createCreditBalanceDto: CreateCreditBalanceDto,
-  ) {
+  async create(createCreditBalanceDto: CreateCreditBalanceDto) {
     // Do not remove comment below.
     // <creating-property />
+
+    const customerObject = await this.userService.findById(
+      createCreditBalanceDto.customer.id,
+    );
+    if (!customerObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          customer: 'notExists',
+        },
+      });
+    }
+    const customer = customerObject;
 
     return this.creditBalanceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      auditLog: createCreditBalanceDto.auditLog,
+
+      amount: createCreditBalanceDto.amount,
+
+      customer,
     });
   }
 
@@ -51,15 +73,37 @@ export class CreditBalancesService {
 
   async update(
     id: CreditBalance['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updateCreditBalanceDto: UpdateCreditBalanceDto,
   ) {
     // Do not remove comment below.
     // <updating-property />
 
+    let customer: User | undefined = undefined;
+
+    if (updateCreditBalanceDto.customer) {
+      const customerObject = await this.userService.findById(
+        updateCreditBalanceDto.customer.id,
+      );
+      if (!customerObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            customer: 'notExists',
+          },
+        });
+      }
+      customer = customerObject;
+    }
+
     return this.creditBalanceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      auditLog: updateCreditBalanceDto.auditLog,
+
+      amount: updateCreditBalanceDto.amount,
+
+      customer,
     });
   }
 

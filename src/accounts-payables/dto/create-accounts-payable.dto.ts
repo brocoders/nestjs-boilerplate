@@ -10,17 +10,23 @@ import {
   IsOptional,
   IsArray,
   ValidateNested,
+  IsEnum,
 } from 'class-validator';
 
 import {
   // decorators here
   ApiProperty,
+  ApiPropertyOptional,
 } from '@nestjs/swagger';
 
 import {
   // decorators here
   Type,
 } from 'class-transformer';
+import {
+  AccountTypeEnum,
+  TransactionTypeEnum,
+} from '../../utils/enum/account-type.enum';
 
 export class CreateAccountsPayableDto {
   @ApiProperty({
@@ -43,13 +49,14 @@ export class CreateAccountsPayableDto {
   @IsArray()
   owner?: UserDto[] | null;
 
-  @ApiProperty({
-    required: false,
-    type: () => String,
+  @ApiPropertyOptional({
+    enum: AccountTypeEnum,
+    description: 'The type of account. Can be SAVINGS, CHECKING, or CURRENT.',
+    nullable: true,
   })
   @IsOptional()
-  @IsString()
-  accountType?: string | null;
+  @IsEnum(AccountTypeEnum)
+  accountType?: AccountTypeEnum | null;
 
   @ApiProperty({
     required: false,
@@ -97,11 +104,10 @@ export class CreateAccountsPayableDto {
   amount: number;
 
   @ApiProperty({
+    enum: TransactionTypeEnum,
     required: true,
-    type: () => String,
+    description: 'The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND.',
   })
-  @IsString()
-  transactionType: string;
-
-  // Don't forget to use the class-validator decorators in the DTO properties.
+  @IsEnum(TransactionTypeEnum)
+  transactionType: TransactionTypeEnum;
 }

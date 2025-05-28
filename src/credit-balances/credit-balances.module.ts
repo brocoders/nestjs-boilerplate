@@ -1,3 +1,4 @@
+import { UsersModule } from '../users/users.module';
 import {
   // common
   Module,
@@ -8,6 +9,8 @@ import { RelationalCreditBalancePersistenceModule } from './infrastructure/persi
 
 @Module({
   imports: [
+    UsersModule,
+
     // import modules, etc.
     RelationalCreditBalancePersistenceModule,
   ],

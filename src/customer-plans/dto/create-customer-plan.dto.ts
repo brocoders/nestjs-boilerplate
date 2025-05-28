@@ -15,7 +15,6 @@ import {
   ValidateNested,
   IsDate,
   IsOptional,
-  IsString,
   IsNotEmptyObject,
 } from 'class-validator';
 
@@ -23,15 +22,16 @@ import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
+import { CustomScheduleDto } from '../../common/dto/custom-schedule.dto';
+import { PlanStatusEnum } from '../../utils/enum/plan-type.enum';
 
 export class CreateCustomerPlanDto {
   @ApiProperty({
+    type: CustomScheduleDto,
     required: false,
-    type: () => String,
+    nullable: true,
   })
-  @IsOptional()
-  @IsString()
-  customSchedule?: string | null;
+  customSchedule?: CustomScheduleDto | null;
 
   @ApiProperty({
     required: false,
@@ -53,19 +53,20 @@ export class CreateCustomerPlanDto {
   assignedBy?: UserDto | null;
 
   @ApiProperty({
-    required: true,
-    type: () => String,
+    enum: PlanStatusEnum,
+    enumName: 'PlanStatusEnum',
+    nullable: false,
   })
-  @IsString()
-  status: string;
+  status: PlanStatusEnum;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    type: 'object',
+    nullable: true,
+    description: 'Custom rates map (key-value pairs)',
+    example: { rateA: 100, rateB: 150 },
+    additionalProperties: { type: 'number' },
   })
-  @IsOptional()
-  @IsString()
-  customRates?: string | null;
+  customRates?: Record<string, number> | null;
 
   @ApiProperty({
     required: false,
