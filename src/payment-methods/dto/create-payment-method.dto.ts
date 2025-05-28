@@ -1,8 +1,12 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import {
   // decorators here
 
   IsString,
   IsOptional,
+  ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -11,7 +15,21 @@ import {
 } from '@nestjs/swagger';
 import { PaymentMethodConfig } from '../infrastructure/persistence/relational/entities/payment-method.entity';
 
+import {
+  // decorators here
+  Type,
+} from 'class-transformer';
+
 export class CreatePaymentMethodDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => Object,

@@ -36,6 +36,10 @@ export class CreatePaymentPlanDto {
 
   @ApiProperty({
     required: true,
+    type: () => TenantDto,
+  })
+  @ApiProperty({
+    required: true,
     type: () => Boolean,
   })
   @IsBoolean()

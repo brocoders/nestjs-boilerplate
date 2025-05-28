@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { RegionsService } from '../regions/regions.service';
 import { Region } from '../regions/domain/region';
 
@@ -22,6 +25,8 @@ import { Discount } from './domain/discount';
 @Injectable()
 export class DiscountsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly regionService: RegionsService,
 
     private readonly userService: UsersService,
@@ -35,6 +40,19 @@ export class DiscountsService {
   async create(createDiscountDto: CreateDiscountDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createDiscountDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let region: Region | null | undefined = undefined;
 
     if (createDiscountDto.region) {
@@ -95,6 +113,8 @@ export class DiscountsService {
     return this.discountRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       region,
 
       customer,
@@ -141,6 +161,23 @@ export class DiscountsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateDiscountDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateDiscountDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let region: Region | null | undefined = undefined;
 
     if (updateDiscountDto.region) {
@@ -201,6 +238,8 @@ export class DiscountsService {
     return this.discountRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       region,
 
       customer,

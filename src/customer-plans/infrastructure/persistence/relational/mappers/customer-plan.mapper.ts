@@ -1,4 +1,5 @@
 import { CustomerPlan } from '../../../../domain/customer-plan';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { PaymentPlanMapper } from '../../../../../payment-plans/infrastructure/persistence/relational/mappers/payment-plan.mapper';
 
@@ -9,6 +10,10 @@ import { CustomerPlanEntity } from '../entities/customer-plan.entity';
 export class CustomerPlanMapper {
   static toDomain(raw: CustomerPlanEntity): CustomerPlan {
     const domainEntity = new CustomerPlan();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.customSchedule = raw.customSchedule;
 
     domainEntity.nextPaymentDate = raw.nextPaymentDate;
@@ -48,6 +53,12 @@ export class CustomerPlanMapper {
 
   static toPersistence(domainEntity: CustomerPlan): CustomerPlanEntity {
     const persistenceEntity = new CustomerPlanEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     persistenceEntity.customSchedule = domainEntity.customSchedule;
 
     persistenceEntity.nextPaymentDate = domainEntity.nextPaymentDate;

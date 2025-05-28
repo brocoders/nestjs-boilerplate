@@ -1,8 +1,20 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { User } from '../../users/domain/user';
 import { Invoice } from '../../invoices/domain/invoice';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsEnum } from 'class-validator';
+import {
+  ReminderChannel,
+  ReminderStatus,
+} from '../infrastructure/persistence/relational/entities/reminder.entity';
 
 export class Reminder {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => User,
     nullable: true,
@@ -16,16 +28,22 @@ export class Reminder {
   invoice?: Invoice | null;
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    enum: ReminderChannel,
+    required: true,
+    nullable: false,
   })
-  channel?: string | null;
+  @IsOptional()
+  @IsEnum(ReminderChannel)
+  channel: ReminderChannel;
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    enum: ReminderStatus,
+    required: true,
+    nullable: false,
   })
-  status?: string | null;
+  @IsOptional()
+  @IsEnum(ReminderStatus)
+  status: ReminderStatus;
 
   @ApiProperty({
     type: () => Date,

@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { PaymentPlanEntity } from '../../../../../payment-plans/infrastructure/persistence/relational/entities/payment-plan.entity';
 
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -19,6 +21,9 @@ import { PlanStatusEnum } from '../../../../../utils/enum/plan-type.enum';
   name: 'customer_plan',
 })
 export class CustomerPlanEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @Column({ type: 'jsonb', nullable: true })
   customSchedule?: {
     lastPaymentDate: Date;

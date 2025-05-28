@@ -11,6 +11,10 @@ import { ResidenceEntity } from '../entities/residence.entity';
 export class ResidenceMapper {
   static toDomain(raw: ResidenceEntity): Residence {
     const domainEntity = new Residence();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.type = raw.type;
 
     if (raw.occupants) {
@@ -44,6 +48,12 @@ export class ResidenceMapper {
 
   static toPersistence(domainEntity: Residence): ResidenceEntity {
     const persistenceEntity = new ResidenceEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     persistenceEntity.type = domainEntity.type;
 
     if (domainEntity.occupants) {

@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
 
@@ -16,6 +19,8 @@ import { CreditBalance } from './domain/credit-balance';
 @Injectable()
 export class CreditBalancesService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly userService: UsersService,
 
     // Dependencies here
@@ -25,6 +30,18 @@ export class CreditBalancesService {
   async create(createCreditBalanceDto: CreateCreditBalanceDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createCreditBalanceDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
 
     const customerObject = await this.userService.findById(
       createCreditBalanceDto.customer.id,
@@ -42,6 +59,8 @@ export class CreditBalancesService {
     return this.creditBalanceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       auditLog: createCreditBalanceDto.auditLog,
 
       amount: createCreditBalanceDto.amount,
@@ -78,6 +97,22 @@ export class CreditBalancesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateCreditBalanceDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateCreditBalanceDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
 
     let customer: User | undefined = undefined;
 
@@ -99,6 +134,7 @@ export class CreditBalancesService {
     return this.creditBalanceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
       auditLog: updateCreditBalanceDto.auditLog,
 
       amount: updateCreditBalanceDto.amount,

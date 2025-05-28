@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { AccountsModule } from '../accounts/accounts.module';
 import { UsersModule } from '../users/users.module';
 import {
@@ -10,6 +11,8 @@ import { RelationalAccountsPayablePersistenceModule } from './infrastructure/per
 
 @Module({
   imports: [
+    TenantsModule,
+
     AccountsModule,
 
     UsersModule,

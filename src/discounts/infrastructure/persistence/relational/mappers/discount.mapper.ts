@@ -1,4 +1,6 @@
 import { Discount } from '../../../../domain/discount';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
 import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
 
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
@@ -10,6 +12,10 @@ import { DiscountEntity } from '../entities/discount.entity';
 export class DiscountMapper {
   static toDomain(raw: DiscountEntity): Discount {
     const domainEntity = new Discount();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     if (raw.region) {
       domainEntity.region = RegionMapper.toDomain(raw.region);
     } else if (raw.region === null) {
@@ -47,6 +53,12 @@ export class DiscountMapper {
 
   static toPersistence(domainEntity: Discount): DiscountEntity {
     const persistenceEntity = new DiscountEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.region) {
       persistenceEntity.region = RegionMapper.toPersistence(
         domainEntity.region,

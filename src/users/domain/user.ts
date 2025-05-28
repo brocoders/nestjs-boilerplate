@@ -18,6 +18,18 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 
 export class User {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  phoneNumber?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  countryCode?: string | null;
+
+  @ApiProperty({
     type: () => [Region],
     nullable: true,
   })

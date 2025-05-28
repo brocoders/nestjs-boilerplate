@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { ExemptionsService } from '../exemptions/exemptions.service';
 import { Exemption } from '../exemptions/domain/exemption';
 
@@ -30,6 +33,8 @@ import { Invoice } from './domain/invoice';
 @Injectable()
 export class InvoicesService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     @Inject(forwardRef(() => ExemptionsService))
     private readonly exemptionService: ExemptionsService,
 
@@ -48,6 +53,19 @@ export class InvoicesService {
   async create(createInvoiceDto: CreateInvoiceDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createInvoiceDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let exemption: Exemption | null | undefined = undefined;
 
     if (createInvoiceDto.exemption) {
@@ -147,6 +165,8 @@ export class InvoicesService {
     return this.invoiceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       exemption,
 
       discount,
@@ -199,6 +219,23 @@ export class InvoicesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateInvoiceDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateInvoiceDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let exemption: Exemption | null | undefined = undefined;
 
     if (updateInvoiceDto.exemption) {
@@ -298,6 +335,8 @@ export class InvoicesService {
     return this.invoiceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       exemption,
 
       discount,

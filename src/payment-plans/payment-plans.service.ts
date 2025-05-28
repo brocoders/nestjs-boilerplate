@@ -25,6 +25,7 @@ export class PaymentPlansService {
   async create(createPaymentPlanDto: CreatePaymentPlanDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createPaymentPlanDto.tenant.id,
     );
@@ -83,6 +84,7 @@ export class PaymentPlansService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updatePaymentPlanDto.tenant) {

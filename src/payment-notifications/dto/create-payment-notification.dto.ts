@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { PaymentAggregatorDto } from '../../payment-aggregators/dto/payment-aggregator.dto';
 
 import {
@@ -32,6 +34,15 @@ import {
 } from '../../utils/enum/payment-notification.enums';
 
 export class CreatePaymentNotificationDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: true,
     type: () => PaymentAggregatorDto,

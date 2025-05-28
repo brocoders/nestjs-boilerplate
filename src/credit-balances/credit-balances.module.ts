@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { UsersModule } from '../users/users.module';
 import {
   // common
@@ -9,6 +10,8 @@ import { RelationalCreditBalancePersistenceModule } from './infrastructure/persi
 
 @Module({
   imports: [
+    TenantsModule,
+
     UsersModule,
 
     // import modules, etc.

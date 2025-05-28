@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { RegionEntity } from '../../../../../regions/infrastructure/persistence/relational/entities/region.entity';
 
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -19,6 +21,9 @@ import { DiscountTypeEnum } from '../../../../../utils/enum/account-type.enum';
   name: 'discount',
 })
 export class DiscountEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(() => RegionEntity, { eager: true, nullable: true })
   region?: RegionEntity | null;
 

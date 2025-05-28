@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { AccountDto } from '../../accounts/dto/account.dto';
 
 import { UserDto } from '../../users/dto/user.dto';
@@ -11,6 +13,7 @@ import {
   IsArray,
   ValidateNested,
   IsEnum,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -29,6 +32,15 @@ import {
 } from '../../utils/enum/account-type.enum';
 
 export class CreateAccountsPayableDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => [AccountDto],

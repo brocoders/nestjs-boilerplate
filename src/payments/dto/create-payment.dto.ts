@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { InvoiceDto } from '../../invoices/dto/invoice.dto';
 
 import { PaymentNotificationDto } from '../../payment-notifications/dto/payment-notification.dto';
@@ -31,8 +33,18 @@ import {
   Transform,
   Type,
 } from 'class-transformer';
+import { PaymentStatus } from '../../utils/enum/payment-notification.enums';
 
 export class CreatePaymentDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => InvoiceDto,
@@ -84,11 +96,10 @@ export class CreatePaymentDto {
   transactionId?: TransactionDto[] | null;
 
   @ApiProperty({
-    required: true,
-    type: () => String,
+    enum: PaymentStatus,
+    nullable: false,
   })
-  @IsString()
-  status: string;
+  status: PaymentStatus;
 
   @ApiProperty({
     required: true,

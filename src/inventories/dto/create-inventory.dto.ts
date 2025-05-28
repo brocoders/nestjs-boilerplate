@@ -1,9 +1,13 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import {
   // decorators here
 
   IsString,
   IsOptional,
   IsNumber,
+  ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -11,7 +15,21 @@ import {
   ApiProperty,
 } from '@nestjs/swagger';
 
+import {
+  // decorators here
+  Type,
+} from 'class-transformer';
+
 export class CreateInventoryDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => String,

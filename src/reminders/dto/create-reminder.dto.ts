@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { UserDto } from '../../users/dto/user.dto';
 
 import { InvoiceDto } from '../../invoices/dto/invoice.dto';
@@ -14,17 +16,30 @@ import {
 
   IsOptional,
   IsDate,
-  IsString,
   ValidateNested,
   IsNotEmptyObject,
+  IsEnum,
 } from 'class-validator';
 
 import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
+import {
+  ReminderChannel,
+  ReminderStatus,
+} from '../infrastructure/persistence/relational/entities/reminder.entity';
 
 export class CreateReminderDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => UserDto,
@@ -46,20 +61,22 @@ export class CreateReminderDto {
   invoice?: InvoiceDto | null;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    enum: ReminderChannel,
+    required: true,
+    nullable: false,
   })
   @IsOptional()
-  @IsString()
-  channel?: string | null;
+  @IsEnum(ReminderChannel)
+  channel: ReminderChannel | null;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    enum: ReminderStatus,
+    required: true,
+    nullable: false,
   })
   @IsOptional()
-  @IsString()
-  status?: string | null;
+  @IsEnum(ReminderStatus)
+  status: ReminderStatus | null;
 
   @ApiProperty({
     required: true,

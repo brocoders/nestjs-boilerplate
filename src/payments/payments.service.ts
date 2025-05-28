@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { InvoicesService } from '../invoices/invoices.service';
 import { Invoice } from '../invoices/domain/invoice';
 
@@ -30,6 +33,8 @@ import { Payment } from './domain/payment';
 @Injectable()
 export class PaymentsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly invoiceService: InvoicesService,
 
     private readonly paymentNotificationService: PaymentNotificationsService,
@@ -48,6 +53,19 @@ export class PaymentsService {
   async create(createPaymentDto: CreatePaymentDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createPaymentDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let invoice: Invoice | null | undefined = undefined;
 
     if (createPaymentDto.invoice) {
@@ -148,6 +166,8 @@ export class PaymentsService {
     return this.paymentRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       invoice,
 
       notification,
@@ -159,8 +179,6 @@ export class PaymentsService {
       transactionId,
 
       status: createPaymentDto.status,
-
-      method: createPaymentDto.method,
 
       paymentDate: createPaymentDto.paymentDate,
 
@@ -196,6 +214,23 @@ export class PaymentsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updatePaymentDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updatePaymentDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let invoice: Invoice | null | undefined = undefined;
 
     if (updatePaymentDto.invoice) {
@@ -296,6 +331,8 @@ export class PaymentsService {
     return this.paymentRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       invoice,
 
       notification,
@@ -307,8 +344,6 @@ export class PaymentsService {
       transactionId,
 
       status: updatePaymentDto.status,
-
-      method: updatePaymentDto.method,
 
       paymentDate: updatePaymentDto.paymentDate,
 

@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { PaymentAggregatorsModule } from '../payment-aggregators/payment-aggregators.module';
 import {
   // common
@@ -10,6 +11,8 @@ import { RelationalPaymentNotificationPersistenceModule } from './infrastructure
 
 @Module({
   imports: [
+    TenantsModule,
+
     forwardRef(() => PaymentAggregatorsModule),
 
     // import modules, etc.

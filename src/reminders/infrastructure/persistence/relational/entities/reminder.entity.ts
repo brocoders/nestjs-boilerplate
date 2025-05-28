@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 
 import { InvoiceEntity } from '../../../../../invoices/infrastructure/persistence/relational/entities/invoice.entity';
@@ -12,10 +14,24 @@ import {
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
+export enum ReminderChannel {
+  EMAIL = 'EMAIL',
+  SMS = 'SMS',
+  PUSH = 'PUSH',
+}
+
+export enum ReminderStatus {
+  SCHEDULED = 'SCHEDULED',
+  SENT = 'SENT',
+  FAILED = 'FAILED',
+}
 @Entity({
   name: 'reminder',
 })
 export class ReminderEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(() => UserEntity, { eager: true, nullable: true })
   user?: UserEntity | null;
 
@@ -23,27 +39,17 @@ export class ReminderEntity extends EntityRelationalHelper {
   invoice?: InvoiceEntity | null;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: ReminderChannel,
   })
-  channel?: string | null;
-  // @Column({
-  //   type: 'enum',
-  //   enum: ReminderChannel
-  // })
-  // channel: ReminderChannel;
+  channel: ReminderChannel;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: ReminderStatus,
+    default: ReminderStatus.SCHEDULED,
   })
-  status?: string | null;
-  //   @Column({
-  //   type: 'enum',
-  //   enum: ReminderStatus,
-  //   default: ReminderStatus.SCHEDULED
-  // })
-  // status: ReminderStatus;
+  status: ReminderStatus;
 
   @Column({
     nullable: false,

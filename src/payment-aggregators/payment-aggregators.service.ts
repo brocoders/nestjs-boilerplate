@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { PaymentNotificationsService } from '../payment-notifications/payment-notifications.service';
 import { PaymentNotification } from '../payment-notifications/domain/payment-notification';
 
@@ -18,6 +21,8 @@ import { PaymentAggregator } from './domain/payment-aggregator';
 @Injectable()
 export class PaymentAggregatorsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     @Inject(forwardRef(() => PaymentNotificationsService))
     private readonly paymentNotificationService: PaymentNotificationsService,
 
@@ -28,6 +33,18 @@ export class PaymentAggregatorsService {
   async create(createPaymentAggregatorDto: CreatePaymentAggregatorDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createPaymentAggregatorDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
 
     let notifications: PaymentNotification[] | null | undefined = undefined;
 
@@ -55,6 +72,8 @@ export class PaymentAggregatorsService {
     return this.paymentAggregatorRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       config: createPaymentAggregatorDto.config,
 
       name: createPaymentAggregatorDto.name,
@@ -91,6 +110,22 @@ export class PaymentAggregatorsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updatePaymentAggregatorDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updatePaymentAggregatorDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
 
     let notifications: PaymentNotification[] | null | undefined = undefined;
 
@@ -118,6 +153,8 @@ export class PaymentAggregatorsService {
     return this.paymentAggregatorRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       config: updatePaymentAggregatorDto.config,
 
       name: updatePaymentAggregatorDto.name,

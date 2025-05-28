@@ -1,3 +1,4 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { Type } from 'class-transformer';
 import { IsOptional, IsArray, ValidateNested } from 'class-validator';
 import { AuditLogEntry } from '../../common/dto/audit-log-entry.dto';
@@ -5,6 +6,12 @@ import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreditBalance {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => [AuditLogEntry],
     required: false,

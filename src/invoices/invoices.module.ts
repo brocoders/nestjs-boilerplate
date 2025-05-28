@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { ExemptionsModule } from '../exemptions/exemptions.module';
 import { DiscountsModule } from '../discounts/discounts.module';
 import { AccountsReceivablesModule } from '../accounts-receivables/accounts-receivables.module';
@@ -14,6 +15,8 @@ import { RelationalInvoicePersistenceModule } from './infrastructure/persistence
 
 @Module({
   imports: [
+    TenantsModule,
+
     forwardRef(() => ExemptionsModule),
 
     DiscountsModule,

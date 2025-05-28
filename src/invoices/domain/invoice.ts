@@ -1,12 +1,23 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { Exemption } from '../../exemptions/domain/exemption';
 import { Discount } from '../../discounts/domain/discount';
 import { AccountsReceivable } from '../../accounts-receivables/domain/accounts-receivable';
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
-import { Breakdown } from '../infrastructure/persistence/relational/entities/invoice.entity';
+import {
+  Breakdown,
+  InvoiceStatus,
+} from '../infrastructure/persistence/relational/entities/invoice.entity';
+import { IsEnum } from 'class-validator';
 
 export class Invoice {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => Exemption,
     nullable: true,
@@ -57,10 +68,11 @@ export class Invoice {
   })
   breakdown?: Breakdown | null;
   @ApiProperty({
-    type: () => String,
-    nullable: false,
+    enum: InvoiceStatus,
+    required: true,
   })
-  status: string;
+  @IsEnum(InvoiceStatus)
+  status: InvoiceStatus;
 
   @ApiProperty({
     type: () => Date,

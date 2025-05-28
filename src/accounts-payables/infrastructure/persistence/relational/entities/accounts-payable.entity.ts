@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { AccountEntity } from '../../../../../accounts/infrastructure/persistence/relational/entities/account.entity';
 
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -10,6 +12,7 @@ import {
   Column,
   JoinTable,
   ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import {
@@ -21,6 +24,9 @@ import {
   name: 'accounts_payable',
 })
 export class AccountsPayableEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToMany(() => AccountEntity, { eager: true, nullable: true })
   @JoinTable()
   account?: AccountEntity[] | null;

@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { PaymentPlanDto } from '../../payment-plans/dto/payment-plan.dto';
 
 import { UserDto } from '../../users/dto/user.dto';
@@ -26,6 +28,15 @@ import { CustomScheduleDto } from '../../common/dto/custom-schedule.dto';
 import { PlanStatusEnum } from '../../utils/enum/plan-type.enum';
 
 export class CreateCustomerPlanDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     type: CustomScheduleDto,
     required: false,

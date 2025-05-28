@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { InvoiceDto } from '../../invoices/dto/invoice.dto';
 
 import { ResidenceDto } from '../../residences/dto/residence.dto';
@@ -29,6 +31,15 @@ import {
 } from 'class-transformer';
 
 export class CreateExemptionDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => InvoiceDto,

@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { InvoiceEntity } from '../../../../../invoices/infrastructure/persistence/relational/entities/invoice.entity';
 
 import { PaymentNotificationEntity } from '../../../../../payment-notifications/infrastructure/persistence/relational/entities/payment-notification.entity';
@@ -20,11 +22,15 @@ import {
   OneToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { PaymentStatus } from '../../../../../utils/enum/payment-notification.enums';
 
 @Entity({
   name: 'payment',
 })
 export class PaymentEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(() => InvoiceEntity, { eager: true, nullable: true })
   invoice?: InvoiceEntity | null;
 
@@ -45,29 +51,11 @@ export class PaymentEntity extends EntityRelationalHelper {
   transactionId?: TransactionEntity[] | null;
 
   @Column({
-    nullable: false,
-    type: String,
+    type: 'enum',
+    enum: PaymentStatus,
+    default: PaymentStatus.PENDING,
   })
-  status: string;
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: PaymentStatus,
-  //   default: PaymentStatus.PENDING
-  // })
-  // status: PaymentStatus;
-
-  @Column({
-    nullable: false,
-    type: String,
-  })
-  method: string;
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: PaymentMethod
-  // })
-  // method: PaymentMethod;
+  status: PaymentStatus;
 
   @Column({
     nullable: false,
@@ -76,10 +64,12 @@ export class PaymentEntity extends EntityRelationalHelper {
   paymentDate: Date;
 
   @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
     nullable: false,
-    type: Number,
+    default: 0.0,
   })
-  // @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
 
   @PrimaryGeneratedColumn('uuid')

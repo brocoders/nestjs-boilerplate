@@ -1,3 +1,4 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { CustomScheduleDto } from '../../common/dto/custom-schedule.dto';
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
 import { User } from '../../users/domain/user';
@@ -5,6 +6,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { PlanStatusEnum } from '../../utils/enum/plan-type.enum';
 
 export class CustomerPlan {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: CustomScheduleDto,
     required: false,

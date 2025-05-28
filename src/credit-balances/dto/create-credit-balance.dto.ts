@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { UserDto } from '../../users/dto/user.dto';
 
 import {
@@ -22,6 +24,15 @@ import {
 import { AuditLogEntry } from '../../common/dto/audit-log-entry.dto';
 
 export class CreateCreditBalanceDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     type: () => [AuditLogEntry],
     required: false,

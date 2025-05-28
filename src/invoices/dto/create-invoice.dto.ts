@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { ExemptionDto } from '../../exemptions/dto/exemption.dto';
 
 import { DiscountDto } from '../../discounts/dto/discount.dto';
@@ -22,17 +24,29 @@ import {
   IsOptional,
   IsNumber,
   IsDate,
-  IsString,
   IsArray,
+  IsEnum,
 } from 'class-validator';
 
 import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
-import { Breakdown } from '../infrastructure/persistence/relational/entities/invoice.entity';
+import {
+  Breakdown,
+  InvoiceStatus,
+} from '../infrastructure/persistence/relational/entities/invoice.entity';
 
 export class CreateInvoiceDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => ExemptionDto,
@@ -104,11 +118,11 @@ export class CreateInvoiceDto {
   breakdown?: Breakdown | null;
 
   @ApiProperty({
+    enum: InvoiceStatus,
     required: true,
-    type: () => String,
   })
-  @IsString()
-  status: string;
+  @IsEnum(InvoiceStatus)
+  status: InvoiceStatus;
 
   @ApiProperty({
     required: false,

@@ -1,3 +1,4 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { IsOptional, IsEnum } from 'class-validator';
 import { Account } from '../../accounts/domain/account';
 import { User } from '../../users/domain/user';
@@ -8,6 +9,12 @@ import {
 } from '../../utils/enum/account-type.enum';
 
 export class AccountsReceivable {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => [Account],
     nullable: true,

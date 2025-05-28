@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { PaymentNotificationsModule } from '../payment-notifications/payment-notifications.module';
 import { PaymentMethodsModule } from '../payment-methods/payment-methods.module';
@@ -14,6 +15,8 @@ import { RelationalPaymentPersistenceModule } from './infrastructure/persistence
 
 @Module({
   imports: [
+    TenantsModule,
+
     InvoicesModule,
 
     PaymentNotificationsModule,

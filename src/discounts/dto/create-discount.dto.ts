@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { RegionDto } from '../../regions/dto/region.dto';
 
 import { UserDto } from '../../users/dto/user.dto';
@@ -28,6 +30,15 @@ import {
 import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class CreateDiscountDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => RegionDto,

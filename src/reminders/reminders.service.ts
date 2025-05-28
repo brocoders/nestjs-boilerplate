@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
 
@@ -15,10 +18,16 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { ReminderRepository } from './infrastructure/persistence/reminder.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Reminder } from './domain/reminder';
+import {
+  ReminderChannel,
+  ReminderStatus,
+} from './infrastructure/persistence/relational/entities/reminder.entity';
 
 @Injectable()
 export class RemindersService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly userService: UsersService,
 
     private readonly invoiceService: InvoicesService,
@@ -30,6 +39,19 @@ export class RemindersService {
   async create(createReminderDto: CreateReminderDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createReminderDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let user: User | null | undefined = undefined;
 
     if (createReminderDto.user) {
@@ -71,14 +93,15 @@ export class RemindersService {
     return this.reminderRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       user,
 
       invoice,
 
-      channel: createReminderDto.channel,
+      channel: createReminderDto.channel ?? ReminderChannel.EMAIL,
 
-      status: createReminderDto.status,
-
+      status: createReminderDto.status ?? ReminderStatus.SCHEDULED,
       scheduledAt: createReminderDto.scheduledAt,
 
       sentAt: createReminderDto.sentAt,
@@ -113,6 +136,23 @@ export class RemindersService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateReminderDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateReminderDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let user: User | null | undefined = undefined;
 
     if (updateReminderDto.user) {
@@ -154,13 +194,14 @@ export class RemindersService {
     return this.reminderRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       user,
 
       invoice,
 
-      channel: updateReminderDto.channel,
-
-      status: updateReminderDto.status,
+      channel: updateReminderDto.channel ?? ReminderChannel.EMAIL,
+      status: updateReminderDto.status ?? ReminderStatus.SCHEDULED,
 
       scheduledAt: updateReminderDto.scheduledAt,
 

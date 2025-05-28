@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { RegionsModule } from '../regions/regions.module';
 import { UsersModule } from '../users/users.module';
 import { PaymentPlansModule } from '../payment-plans/payment-plans.module';
@@ -11,6 +12,8 @@ import { RelationalDiscountPersistenceModule } from './infrastructure/persistenc
 
 @Module({
   imports: [
+    TenantsModule,
+
     RegionsModule,
 
     UsersModule,

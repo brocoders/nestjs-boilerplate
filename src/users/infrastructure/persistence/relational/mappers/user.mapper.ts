@@ -1,4 +1,5 @@
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
+
 import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
 
 import { SettingsMapper } from '../../../../../settings/infrastructure/persistence/relational/mappers/settings.mapper';
@@ -16,6 +17,10 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    domainEntity.phoneNumber = raw.phoneNumber;
+
+    domainEntity.countryCode = raw.countryCode;
+
     if (raw.regions) {
       domainEntity.regions = raw.regions.map((item) =>
         RegionMapper.toDomain(item),
@@ -98,6 +103,10 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    persistenceEntity.phoneNumber = domainEntity.phoneNumber;
+
+    persistenceEntity.countryCode = domainEntity.countryCode;
+
     if (domainEntity.regions) {
       persistenceEntity.regions = domainEntity.regions.map((item) =>
         RegionMapper.toPersistence(item),

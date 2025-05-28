@@ -1,6 +1,13 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Inventory {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => String,
     nullable: true,

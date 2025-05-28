@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { PaymentNotificationDto } from '../../payment-notifications/dto/payment-notification.dto';
 
 import {
@@ -12,6 +14,7 @@ import {
   ValidateNested,
   IsOptional,
   IsString,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -21,6 +24,15 @@ import {
 import { PaymentConfig } from '../infrastructure/persistence/relational/entities/payment-aggregator.entity';
 
 export class CreatePaymentAggregatorDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: Object,

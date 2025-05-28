@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { InvoiceEntity } from '../../../../../invoices/infrastructure/persistence/relational/entities/invoice.entity';
 
 import { ResidenceEntity } from '../../../../../residences/infrastructure/persistence/relational/entities/residence.entity';
@@ -20,6 +22,9 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'exemption',
 })
 export class ExemptionEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(() => InvoiceEntity, { eager: true, nullable: true })
   invoice?: InvoiceEntity | null;
 

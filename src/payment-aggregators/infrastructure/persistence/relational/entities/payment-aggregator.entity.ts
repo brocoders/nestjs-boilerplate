@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { PaymentNotificationEntity } from '../../../../../payment-notifications/infrastructure/persistence/relational/entities/payment-notification.entity';
 
 import {
@@ -7,6 +9,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   Column,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 export interface PaymentConfig {
@@ -21,6 +24,9 @@ export interface PaymentConfig {
   name: 'payment_aggregator',
 })
 export class PaymentAggregatorEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @Column({ type: 'jsonb', nullable: true })
   config?: {
     webhookUrl: string;

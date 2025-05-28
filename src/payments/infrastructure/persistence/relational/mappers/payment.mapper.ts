@@ -1,4 +1,6 @@
 import { Payment } from '../../../../domain/payment';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
 import { InvoiceMapper } from '../../../../../invoices/infrastructure/persistence/relational/mappers/invoice.mapper';
 
 import { PaymentNotificationMapper } from '../../../../../payment-notifications/infrastructure/persistence/relational/mappers/payment-notification.mapper';
@@ -14,6 +16,10 @@ import { PaymentEntity } from '../entities/payment.entity';
 export class PaymentMapper {
   static toDomain(raw: PaymentEntity): Payment {
     const domainEntity = new Payment();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     if (raw.invoice) {
       domainEntity.invoice = InvoiceMapper.toDomain(raw.invoice);
     } else if (raw.invoice === null) {
@@ -52,8 +58,6 @@ export class PaymentMapper {
 
     domainEntity.status = raw.status;
 
-    domainEntity.method = raw.method;
-
     domainEntity.paymentDate = raw.paymentDate;
 
     domainEntity.amount = raw.amount;
@@ -67,6 +71,12 @@ export class PaymentMapper {
 
   static toPersistence(domainEntity: Payment): PaymentEntity {
     const persistenceEntity = new PaymentEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.invoice) {
       persistenceEntity.invoice = InvoiceMapper.toPersistence(
         domainEntity.invoice,
@@ -108,8 +118,6 @@ export class PaymentMapper {
     }
 
     persistenceEntity.status = domainEntity.status;
-
-    persistenceEntity.method = domainEntity.method;
 
     persistenceEntity.paymentDate = domainEntity.paymentDate;
 

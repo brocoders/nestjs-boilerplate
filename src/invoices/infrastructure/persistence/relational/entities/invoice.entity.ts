@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { ExemptionEntity } from '../../../../../exemptions/infrastructure/persistence/relational/entities/exemption.entity';
 
 import { DiscountEntity } from '../../../../../discounts/infrastructure/persistence/relational/entities/discount.entity';
@@ -27,10 +29,21 @@ export interface Breakdown {
   tax: number;
   adjustments: number;
 }
+
+export enum InvoiceStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  CANCELLED = 'CANCELLED',
+  OVERDUE = 'OVERDUE',
+  FAILED = 'FAILED',
+}
 @Entity({
   name: 'invoice',
 })
 export class InvoiceEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(() => ExemptionEntity, { eager: true, nullable: true })
   exemption?: ExemptionEntity | null;
 
@@ -62,16 +75,11 @@ export class InvoiceEntity extends EntityRelationalHelper {
   } | null;
 
   @Column({
-    nullable: false,
-    type: String,
+    type: 'enum',
+    enum: InvoiceStatus,
+    default: InvoiceStatus.PENDING,
   })
-  status: string;
-  // @Column({
-  //   type: 'enum',
-  //   enum: InvoiceStatus,
-  //   default: InvoiceStatus.PENDING
-  // })
-  // status: InvoiceStatus;
+  status: InvoiceStatus;
 
   // @Column({ type: 'uuid' })
   // billingCycleId: string;

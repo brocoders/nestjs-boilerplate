@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { ResidencesModule } from '../residences/residences.module';
 import { RegionsModule } from '../regions/regions.module';
@@ -13,6 +14,8 @@ import { RelationalExemptionPersistenceModule } from './infrastructure/persisten
 
 @Module({
   imports: [
+    TenantsModule,
+
     forwardRef(() => InvoicesModule),
 
     ResidencesModule,

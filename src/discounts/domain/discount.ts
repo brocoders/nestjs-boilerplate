@@ -1,3 +1,4 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { Region } from '../../regions/domain/region';
 import { User } from '../../users/domain/user';
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
@@ -5,6 +6,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class Discount {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => Region,
     nullable: true,

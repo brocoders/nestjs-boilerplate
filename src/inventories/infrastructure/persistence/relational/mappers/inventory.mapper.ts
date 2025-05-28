@@ -1,10 +1,15 @@
 import { Inventory } from '../../../../domain/inventory';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { InventoryEntity } from '../entities/inventory.entity';
 
 export class InventoryMapper {
   static toDomain(raw: InventoryEntity): Inventory {
     const domainEntity = new Inventory();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.unitOfMeasure = raw.unitOfMeasure;
 
     domainEntity.materialType = raw.materialType;
@@ -30,6 +35,12 @@ export class InventoryMapper {
 
   static toPersistence(domainEntity: Inventory): InventoryEntity {
     const persistenceEntity = new InventoryEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     persistenceEntity.unitOfMeasure = domainEntity.unitOfMeasure;
 
     persistenceEntity.materialType = domainEntity.materialType;

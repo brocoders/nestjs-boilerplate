@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { PaymentPlansService } from '../payment-plans/payment-plans.service';
 import { PaymentPlan } from '../payment-plans/domain/payment-plan';
 
@@ -19,6 +22,8 @@ import { CustomerPlan } from './domain/customer-plan';
 @Injectable()
 export class CustomerPlansService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly paymentPlanService: PaymentPlansService,
 
     private readonly userService: UsersService,
@@ -30,6 +35,18 @@ export class CustomerPlansService {
   async create(createCustomerPlanDto: CreateCustomerPlanDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createCustomerPlanDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
 
     let assignedBy: User | null | undefined = undefined;
 
@@ -79,6 +96,8 @@ export class CustomerPlansService {
     return this.customerPlanRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       customSchedule: createCustomerPlanDto.customSchedule,
 
       nextPaymentDate: createCustomerPlanDto.nextPaymentDate,
@@ -127,6 +146,22 @@ export class CustomerPlansService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateCustomerPlanDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateCustomerPlanDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
 
     let assignedBy: User | null | undefined = undefined;
 
@@ -184,6 +219,8 @@ export class CustomerPlansService {
     return this.customerPlanRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       customSchedule: updateCustomerPlanDto.customSchedule,
 
       nextPaymentDate: updateCustomerPlanDto.nextPaymentDate,

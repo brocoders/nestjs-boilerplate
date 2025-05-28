@@ -35,7 +35,6 @@ export class KycDetailsService {
   async create(createKycDetailsDto: CreateKycDetailsDto) {
     // Do not remove comment below.
     // <creating-property />
-
     const tenantObject = await this.tenantService.findById(
       createKycDetailsDto.tenant.id,
     );
@@ -65,6 +64,7 @@ export class KycDetailsService {
     return this.kycDetailsRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+
       verifiedBy: createKycDetailsDto.verifiedBy,
 
       verifiedAt: createKycDetailsDto.verifiedAt,
@@ -115,7 +115,6 @@ export class KycDetailsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
-
     let tenant: Tenant | undefined = undefined;
 
     if (updateKycDetailsDto.tenant) {

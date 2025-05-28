@@ -10,6 +10,10 @@ export class PaymentPlanMapper {
       domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
     }
 
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.isActive = raw.isActive;
 
     domainEntity.unit = raw.unit;
@@ -29,6 +33,12 @@ export class PaymentPlanMapper {
 
   static toPersistence(domainEntity: PaymentPlan): PaymentPlanEntity {
     const persistenceEntity = new PaymentPlanEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.tenant) {
       persistenceEntity.tenant = TenantMapper.toPersistence(
         domainEntity.tenant,

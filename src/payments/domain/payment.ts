@@ -1,11 +1,19 @@
+import { Tenant } from '../../tenants/domain/tenant';
 import { Invoice } from '../../invoices/domain/invoice';
 import { PaymentNotification } from '../../payment-notifications/domain/payment-notification';
 import { PaymentMethod } from '../../payment-methods/domain/payment-method';
 import { User } from '../../users/domain/user';
 import { Transaction } from '../../transactions/domain/transaction';
 import { ApiProperty } from '@nestjs/swagger';
+import { PaymentStatus } from '../../utils/enum/payment-notification.enums';
 
 export class Payment {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => Invoice,
     nullable: true,
@@ -37,16 +45,10 @@ export class Payment {
   transactionId?: Transaction[] | null;
 
   @ApiProperty({
-    type: () => String,
+    enum: PaymentStatus,
     nullable: false,
   })
-  status: string;
-
-  @ApiProperty({
-    type: () => String,
-    nullable: false,
-  })
-  method: string;
+  status: PaymentStatus;
 
   @ApiProperty({
     type: () => Date,

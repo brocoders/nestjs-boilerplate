@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { PaymentAggregatorEntity } from '../../../../../payment-aggregators/infrastructure/persistence/relational/entities/payment-aggregator.entity';
 
 import {
@@ -20,6 +22,9 @@ import {
   name: 'payment_notification',
 })
 export class PaymentNotificationEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(
     () => PaymentAggregatorEntity,
     (parentEntity) => parentEntity.notifications,
