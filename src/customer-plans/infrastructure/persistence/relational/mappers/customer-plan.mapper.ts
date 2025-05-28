@@ -9,6 +9,10 @@ import { CustomerPlanEntity } from '../entities/customer-plan.entity';
 export class CustomerPlanMapper {
   static toDomain(raw: CustomerPlanEntity): CustomerPlan {
     const domainEntity = new CustomerPlan();
+    domainEntity.customSchedule = raw.customSchedule;
+
+    domainEntity.nextPaymentDate = raw.nextPaymentDate;
+
     if (raw.assignedBy) {
       domainEntity.assignedBy = UserMapper.toDomain(raw.assignedBy);
     } else if (raw.assignedBy === null) {
@@ -44,6 +48,10 @@ export class CustomerPlanMapper {
 
   static toPersistence(domainEntity: CustomerPlan): CustomerPlanEntity {
     const persistenceEntity = new CustomerPlanEntity();
+    persistenceEntity.customSchedule = domainEntity.customSchedule;
+
+    persistenceEntity.nextPaymentDate = domainEntity.nextPaymentDate;
+
     if (domainEntity.assignedBy) {
       persistenceEntity.assignedBy = UserMapper.toPersistence(
         domainEntity.assignedBy,

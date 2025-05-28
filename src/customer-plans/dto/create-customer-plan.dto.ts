@@ -27,6 +27,23 @@ import {
 export class CreateCustomerPlanDto {
   @ApiProperty({
     required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  customSchedule?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => Date,
+  })
+  @IsOptional()
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  nextPaymentDate?: Date | null;
+
+  @ApiProperty({
+    required: false,
     type: () => UserDto,
   })
   @IsOptional()

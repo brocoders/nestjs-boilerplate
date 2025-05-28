@@ -13,6 +13,7 @@ import { UpdateAccountsPayableDto } from './dto/update-accounts-payable.dto';
 import { AccountsPayableRepository } from './infrastructure/persistence/accounts-payable.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AccountsPayable } from './domain/accounts-payable';
+import { Account } from '../accounts/domain/account';
 
 @Injectable()
 export class AccountsPayablesService {

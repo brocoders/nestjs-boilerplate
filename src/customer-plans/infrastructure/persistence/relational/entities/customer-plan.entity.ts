@@ -18,6 +18,24 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'customer_plan',
 })
 export class CustomerPlanEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  customSchedule?: string | null;
+
+  // @Column({ type: 'jsonb' })
+  // customSchedule: {
+  //   lastPaymentDate: Date;
+  //   paymentCount: number;
+  // };
+
+  @Column({
+    nullable: true,
+    type: Date,
+  })
+  nextPaymentDate?: Date | null;
+
   @ManyToOne(() => UserEntity, { eager: true, nullable: true })
   assignedBy?: UserEntity | null;
 
@@ -27,12 +45,22 @@ export class CustomerPlanEntity extends EntityRelationalHelper {
   })
   status: string;
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: PlanStatus,
+  //   nullable: false,
+  //   default: PlanStatus.ACTIVE,
+  // })
+  // status: PlanStatus;
+
   @Column({
     nullable: true,
     type: String,
   })
   customRates?: string | null;
 
+  // @Column({ type: 'jsonb', nullable: true })
+  // customRates: Record<string, any>;
   @Column({
     nullable: true,
     type: Date,

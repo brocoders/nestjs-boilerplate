@@ -1,3 +1,5 @@
+import { UsersModule } from '../users/users.module';
+import { InvoicesModule } from '../invoices/invoices.module';
 import {
   // common
   Module,
@@ -8,6 +10,10 @@ import { RelationalReminderPersistenceModule } from './infrastructure/persistenc
 
 @Module({
   imports: [
+    UsersModule,
+
+    InvoicesModule,
+
     // import modules, etc.
     RelationalReminderPersistenceModule,
   ],

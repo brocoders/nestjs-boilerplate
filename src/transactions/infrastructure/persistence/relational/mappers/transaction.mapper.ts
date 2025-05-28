@@ -1,4 +1,5 @@
 import { Transaction } from '../../../../domain/transaction';
+import { PaymentMapper } from '../../../../../payments/infrastructure/persistence/relational/mappers/payment.mapper';
 
 import { AccountMapper } from '../../../../../accounts/infrastructure/persistence/relational/mappers/account.mapper';
 
@@ -7,6 +8,10 @@ import { TransactionEntity } from '../entities/transaction.entity';
 export class TransactionMapper {
   static toDomain(raw: TransactionEntity): Transaction {
     const domainEntity = new Transaction();
+    if (raw.payment) {
+      domainEntity.payment = PaymentMapper.toDomain(raw.payment);
+    }
+
     domainEntity.creditAccountName = raw.creditAccountName;
 
     domainEntity.debitAccountName = raw.debitAccountName;
@@ -42,6 +47,12 @@ export class TransactionMapper {
 
   static toPersistence(domainEntity: Transaction): TransactionEntity {
     const persistenceEntity = new TransactionEntity();
+    if (domainEntity.payment) {
+      persistenceEntity.payment = PaymentMapper.toPersistence(
+        domainEntity.payment,
+      );
+    }
+
     persistenceEntity.creditAccountName = domainEntity.creditAccountName;
 
     persistenceEntity.debitAccountName = domainEntity.debitAccountName;

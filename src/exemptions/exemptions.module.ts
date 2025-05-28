@@ -1,4 +1,9 @@
+import { InvoicesModule } from '../invoices/invoices.module';
+import { ResidencesModule } from '../residences/residences.module';
+import { RegionsModule } from '../regions/regions.module';
+import { UsersModule } from '../users/users.module';
 import {
+  forwardRef,
   // common
   Module,
 } from '@nestjs/common';
@@ -8,6 +13,14 @@ import { RelationalExemptionPersistenceModule } from './infrastructure/persisten
 
 @Module({
   imports: [
+    forwardRef(() => InvoicesModule),
+
+    ResidencesModule,
+
+    RegionsModule,
+
+    UsersModule,
+
     // import modules, etc.
     RelationalExemptionPersistenceModule,
   ],

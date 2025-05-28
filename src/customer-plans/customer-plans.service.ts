@@ -30,6 +30,7 @@ export class CustomerPlansService {
   async create(createCustomerPlanDto: CreateCustomerPlanDto) {
     // Do not remove comment below.
     // <creating-property />
+
     let assignedBy: User | null | undefined = undefined;
 
     if (createCustomerPlanDto.assignedBy) {
@@ -78,6 +79,10 @@ export class CustomerPlansService {
     return this.customerPlanRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      customSchedule: createCustomerPlanDto.customSchedule,
+
+      nextPaymentDate: createCustomerPlanDto.nextPaymentDate,
+
       assignedBy,
 
       status: createCustomerPlanDto.status,
@@ -122,6 +127,7 @@ export class CustomerPlansService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let assignedBy: User | null | undefined = undefined;
 
     if (updateCustomerPlanDto.assignedBy) {
@@ -178,6 +184,10 @@ export class CustomerPlansService {
     return this.customerPlanRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      customSchedule: updateCustomerPlanDto.customSchedule,
+
+      nextPaymentDate: updateCustomerPlanDto.nextPaymentDate,
+
       assignedBy,
 
       status: updateCustomerPlanDto.status,

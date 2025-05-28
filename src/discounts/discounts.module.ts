@@ -1,3 +1,6 @@
+import { RegionsModule } from '../regions/regions.module';
+import { UsersModule } from '../users/users.module';
+import { PaymentPlansModule } from '../payment-plans/payment-plans.module';
 import {
   // common
   Module,
@@ -8,6 +11,12 @@ import { RelationalDiscountPersistenceModule } from './infrastructure/persistenc
 
 @Module({
   imports: [
+    RegionsModule,
+
+    UsersModule,
+
+    PaymentPlansModule,
+
     // import modules, etc.
     RelationalDiscountPersistenceModule,
   ],

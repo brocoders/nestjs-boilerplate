@@ -1,3 +1,11 @@
+import { ExemptionDto } from '../../exemptions/dto/exemption.dto';
+
+import { DiscountDto } from '../../discounts/dto/discount.dto';
+
+import { AccountsReceivableDto } from '../../accounts-receivables/dto/accounts-receivable.dto';
+
+import { PaymentPlanDto } from '../../payment-plans/dto/payment-plan.dto';
+
 import { UserDto } from '../../users/dto/user.dto';
 
 import {
@@ -15,6 +23,7 @@ import {
   IsNumber,
   IsDate,
   IsString,
+  IsArray,
 } from 'class-validator';
 
 import {
@@ -23,6 +32,62 @@ import {
 } from '@nestjs/swagger';
 
 export class CreateInvoiceDto {
+  @ApiProperty({
+    required: false,
+    type: () => ExemptionDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ExemptionDto)
+  @IsNotEmptyObject()
+  exemption?: ExemptionDto | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => DiscountDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => DiscountDto)
+  @IsNotEmptyObject()
+  discount?: DiscountDto | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => AccountsReceivableDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AccountsReceivableDto)
+  @IsNotEmptyObject()
+  accountsReceivable?: AccountsReceivableDto | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  amountDue?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  amountPaid?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [PaymentPlanDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PaymentPlanDto)
+  @IsArray()
+  plan?: PaymentPlanDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => String,

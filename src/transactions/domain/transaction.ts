@@ -1,7 +1,14 @@
+import { Payment } from '../../payments/domain/payment';
 import { Account } from '../../accounts/domain/account';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Transaction {
+  @ApiProperty({
+    type: () => Payment,
+    nullable: false,
+  })
+  payment: Payment;
+
   @ApiProperty({
     type: () => String,
     nullable: true,

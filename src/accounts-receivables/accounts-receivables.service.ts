@@ -13,6 +13,7 @@ import { UpdateAccountsReceivableDto } from './dto/update-accounts-receivable.dt
 import { AccountsReceivableRepository } from './infrastructure/persistence/accounts-receivable.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AccountsReceivable } from './domain/accounts-receivable';
+import { Account } from '../accounts/domain/account';
 
 @Injectable()
 export class AccountsReceivablesService {

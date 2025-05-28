@@ -4,6 +4,18 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CustomerPlan {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  customSchedule?: string | null;
+
+  @ApiProperty({
+    type: () => Date,
+    nullable: true,
+  })
+  nextPaymentDate?: Date | null;
+
+  @ApiProperty({
     type: () => User,
     nullable: true,
   })
