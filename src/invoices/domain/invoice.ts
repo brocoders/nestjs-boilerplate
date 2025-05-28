@@ -4,6 +4,7 @@ import { AccountsReceivable } from '../../accounts-receivables/domain/accounts-r
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
+import { Breakdown } from '../infrastructure/persistence/relational/entities/invoice.entity';
 
 export class Invoice {
   @ApiProperty({
@@ -43,11 +44,18 @@ export class Invoice {
   plan?: PaymentPlan[] | null;
 
   @ApiProperty({
-    type: () => String,
+    description: 'Payment breakdown structure',
+    type: Object,
+    example: {
+      baseAmount: { type: 'number', example: 100.0 },
+      discounts: { type: 'number', example: 10.0 },
+      tax: { type: 'number', example: 18.0 },
+      adjustments: { type: 'number', example: 5.0 },
+    },
+    required: false,
     nullable: true,
   })
-  breakdown?: string | null;
-
+  breakdown?: Breakdown | null;
   @ApiProperty({
     type: () => String,
     nullable: false,

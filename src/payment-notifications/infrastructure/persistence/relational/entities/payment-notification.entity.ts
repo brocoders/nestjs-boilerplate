@@ -1,9 +1,12 @@
+import { PaymentAggregatorEntity } from '../../../../../payment-aggregators/infrastructure/persistence/relational/entities/payment-aggregator.entity';
+
 import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   Column,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import {
@@ -17,6 +20,13 @@ import {
   name: 'payment_notification',
 })
 export class PaymentNotificationEntity extends EntityRelationalHelper {
+  @ManyToOne(
+    () => PaymentAggregatorEntity,
+    (parentEntity) => parentEntity.notifications,
+    { eager: false, nullable: false },
+  )
+  aggregator: PaymentAggregatorEntity;
+
   @Column({
     nullable: true,
     type: 'timestamp',

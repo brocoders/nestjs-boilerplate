@@ -4,7 +4,6 @@ import {
   // decorators here
 
   IsString,
-  IsOptional,
   IsNumber,
   IsBoolean,
   ValidateNested,
@@ -20,6 +19,10 @@ import {
   // decorators here
   Type,
 } from 'class-transformer';
+import {
+  PlanType,
+  RateStructure,
+} from '../infrastructure/persistence/relational/entities/payment-plan.entity';
 
 export class CreatePaymentPlanDto {
   @ApiProperty({
@@ -53,20 +56,51 @@ export class CreatePaymentPlanDto {
   minimumCharge: number;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    type: Object,
+    oneOf: [
+      { properties: { type: { enum: ['FLAT'] }, amount: { type: 'number' } } },
+      {
+        properties: { type: { enum: ['PER_UNIT'] }, rate: { type: 'number' } },
+      },
+      {
+        properties: {
+          type: { enum: ['CREDIT_RATE'] },
+          rate: { type: 'number' },
+        },
+      },
+      {
+        properties: {
+          type: { enum: ['TIERED'] },
+          tiers: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                from: { type: 'number' },
+                to: { type: 'number' },
+                rate: { type: 'number' },
+              },
+              required: ['from', 'to', 'rate'],
+            },
+          },
+        },
+      },
+      {
+        properties: {
+          type: { enum: ['PREPAID'] },
+          creditRate: { type: 'number' },
+        },
+      },
+    ],
+    nullable: true,
   })
-  @IsOptional()
-  @IsString()
-  rateStructure?: string | null;
+  rateStructure?: RateStructure | null;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    enum: PlanType,
+    nullable: false,
   })
-  @IsOptional()
-  @IsString()
-  type?: string | null;
+  type: PlanType;
 
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

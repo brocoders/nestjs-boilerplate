@@ -2,6 +2,7 @@ import { Region } from '../../regions/domain/region';
 import { User } from '../../users/domain/user';
 import { PaymentPlan } from '../../payment-plans/domain/payment-plan';
 import { ApiProperty } from '@nestjs/swagger';
+import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class Discount {
   @ApiProperty({
@@ -47,10 +48,11 @@ export class Discount {
   value: number;
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    enum: DiscountTypeEnum,
+    enumName: 'DiscountType',
+    nullable: false,
   })
-  type?: string | null;
+  type: DiscountTypeEnum;
 
   @ApiProperty({
     type: String,

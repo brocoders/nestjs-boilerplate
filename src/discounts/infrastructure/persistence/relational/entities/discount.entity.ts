@@ -13,6 +13,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { DiscountTypeEnum } from '../../../../../utils/enum/account-type.enum';
 
 @Entity({
   name: 'discount',
@@ -46,22 +47,20 @@ export class DiscountEntity extends EntityRelationalHelper {
   validFrom: Date;
 
   @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
     nullable: false,
-    type: Number,
+    default: 0.0,
   })
-  //@Column({ type: 'decimal', precision: 5, scale: 2 })
   value: number;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: DiscountTypeEnum,
+    nullable: false,
   })
-  type?: string | null;
-  //  @Column({
-  //   type: 'enum',
-  //   enum: DiscountType
-  // })
-  // type: DiscountType;
+  type: DiscountTypeEnum;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;

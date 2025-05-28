@@ -15,16 +15,18 @@ export class PaymentMethodsService {
     private readonly paymentMethodRepository: PaymentMethodRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createPaymentMethodDto: CreatePaymentMethodDto,
-  ) {
+  async create(createPaymentMethodDto: CreatePaymentMethodDto) {
     // Do not remove comment below.
     // <creating-property />
 
     return this.paymentMethodRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      config: createPaymentMethodDto.config,
+
+      processorType: createPaymentMethodDto.processorType,
+
+      name: createPaymentMethodDto.name,
     });
   }
 
@@ -51,7 +53,7 @@ export class PaymentMethodsService {
 
   async update(
     id: PaymentMethod['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updatePaymentMethodDto: UpdatePaymentMethodDto,
   ) {
     // Do not remove comment below.
@@ -60,6 +62,11 @@ export class PaymentMethodsService {
     return this.paymentMethodRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      config: updatePaymentMethodDto.config,
+
+      processorType: updatePaymentMethodDto.processorType,
+
+      name: updatePaymentMethodDto.name,
     });
   }
 

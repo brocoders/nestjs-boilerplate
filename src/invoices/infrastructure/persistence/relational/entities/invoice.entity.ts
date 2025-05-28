@@ -21,7 +21,12 @@ import {
   OneToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-
+export interface Breakdown {
+  baseAmount: number;
+  discounts: number;
+  tax: number;
+  adjustments: number;
+}
 @Entity({
   name: 'invoice',
 })
@@ -40,34 +45,21 @@ export class InvoiceEntity extends EntityRelationalHelper {
   // allocations: PaymentAllocation[];
   // @ManyToOne(() => TaxConfiguration, tax => tax.invoices)
   // taxConfiguration: TaxConfiguration;
-  @Column({
-    nullable: true,
-    type: Number,
-  })
-  // @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   amountDue?: number | null;
-  @Column({
-    nullable: true,
-    type: Number,
-  })
-  // @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   amountPaid?: number | null;
   @ManyToMany(() => PaymentPlanEntity, { eager: true, nullable: true })
   @JoinTable()
   plan?: PaymentPlanEntity[] | null;
 
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  breakdown?: string | null;
-  //  @Column({ type: 'jsonb' })
-  // breakdown: {
-  //   baseAmount: number;
-  //   discounts: number;
-  //   tax: number;
-  //   adjustments: number;
-  // };
+  @Column({ type: 'jsonb' })
+  breakdown?: {
+    baseAmount: number;
+    discounts: number;
+    tax: number;
+    adjustments: number;
+  } | null;
 
   @Column({
     nullable: false,

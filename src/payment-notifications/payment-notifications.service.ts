@@ -1,6 +1,13 @@
+import { PaymentAggregatorsService } from '../payment-aggregators/payment-aggregators.service';
+import { PaymentAggregator } from '../payment-aggregators/domain/payment-aggregator';
+
 import {
   // common
   Injectable,
+  HttpStatus,
+  UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreatePaymentNotificationDto } from './dto/create-payment-notification.dto';
 import { UpdatePaymentNotificationDto } from './dto/update-payment-notification.dto';
@@ -11,6 +18,9 @@ import { PaymentNotification } from './domain/payment-notification';
 @Injectable()
 export class PaymentNotificationsService {
   constructor(
+    @Inject(forwardRef(() => PaymentAggregatorsService))
+    private readonly paymentAggregatorService: PaymentAggregatorsService,
+
     // Dependencies here
     private readonly paymentNotificationRepository: PaymentNotificationRepository,
   ) {}
@@ -18,10 +28,24 @@ export class PaymentNotificationsService {
   async create(createPaymentNotificationDto: CreatePaymentNotificationDto) {
     // Do not remove comment below.
     // <creating-property />
+    const aggregatorObject = await this.paymentAggregatorService.findById(
+      createPaymentNotificationDto.aggregator.id,
+    );
+    if (!aggregatorObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          aggregator: 'notExists',
+        },
+      });
+    }
+    const aggregator = aggregatorObject;
 
     return this.paymentNotificationRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      aggregator,
+
       processed_at: createPaymentNotificationDto.processed_at,
 
       processed: createPaymentNotificationDto.processed,
@@ -72,10 +96,28 @@ export class PaymentNotificationsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let aggregator: PaymentAggregator | undefined = undefined;
+
+    if (updatePaymentNotificationDto.aggregator) {
+      const aggregatorObject = await this.paymentAggregatorService.findById(
+        updatePaymentNotificationDto.aggregator.id,
+      );
+      if (!aggregatorObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            aggregator: 'notExists',
+          },
+        });
+      }
+      aggregator = aggregatorObject;
+    }
 
     return this.paymentNotificationRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      aggregator,
+
       processed_at: updatePaymentNotificationDto.processed_at,
 
       processed: updatePaymentNotificationDto.processed,

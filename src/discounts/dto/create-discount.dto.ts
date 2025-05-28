@@ -6,8 +6,6 @@ import { PaymentPlanDto } from '../../payment-plans/dto/payment-plan.dto';
 
 import {
   // decorators here
-
-  IsString,
   IsOptional,
   IsNumber,
   IsDate,
@@ -27,6 +25,7 @@ import {
   Transform,
   Type,
 } from 'class-transformer';
+import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class CreateDiscountDto {
   @ApiProperty({
@@ -90,12 +89,11 @@ export class CreateDiscountDto {
   value: number;
 
   @ApiProperty({
-    required: false,
-    type: () => String,
+    enum: DiscountTypeEnum,
+    enumName: 'DiscountType',
+    nullable: false,
   })
-  @IsOptional()
-  @IsString()
-  type?: string | null;
+  type: DiscountTypeEnum;
 
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

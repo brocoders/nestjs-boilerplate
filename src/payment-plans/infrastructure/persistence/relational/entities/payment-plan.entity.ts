@@ -10,6 +10,26 @@ import {
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
+export enum PlanType {
+  FLAT_MONTHLY = 'FLAT_MONTHLY',
+  PER_WEIGHT = 'PER_WEIGHT',
+  TIERED = 'TIERED',
+  PREPAID = 'PREPAID',
+  CREDIT = 'CREDIT',
+}
+
+export type RateStructure =
+  | { type: 'FLAT'; amount: number }
+  | { type: 'PER_UNIT'; rate: number }
+  | { type: 'CREDIT_RATE'; rate: number }
+  | { type: 'TIERED'; tiers: Tier[] }
+  | { type: 'PREPAID'; creditRate: number };
+
+export type Tier = {
+  from: number;
+  to: number;
+  rate: number;
+};
 @Entity({
   name: 'payment_plan',
 })
@@ -30,32 +50,22 @@ export class PaymentPlanEntity extends EntityRelationalHelper {
   unit: string;
 
   @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
     nullable: false,
-    type: Number,
+    default: 0.0,
   })
-  // @Column({ type: 'decimal', precision: 10, scale: 2 })
   minimumCharge: number;
 
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  rateStructure?: string | null;
-
-  // @Column({ type: 'jsonb' })
-  // rateStructure: RateStructure;
+  @Column({ type: 'jsonb', nullable: true })
+  rateStructure?: RateStructure | null;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: PlanType,
   })
-  type?: string | null;
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: PlanType
-  // })
-  // type: PlanType;
+  type: PlanType;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -66,24 +76,3 @@ export class PaymentPlanEntity extends EntityRelationalHelper {
   @UpdateDateColumn()
   updatedAt: Date;
 }
-
-// export enum PlanType {
-//   FLAT_MONTHLY = 'FLAT_MONTHLY',
-//   PER_WEIGHT = 'PER_WEIGHT',
-//   TIERED = 'TIERED',
-//   PREPAID = 'PREPAID',
-//   CREDIT = 'CREDIT'
-// }
-
-// type RateStructure =
-//   | { type: 'FLAT'; amount: number }
-//   | { type: 'PER_UNIT'; rate: number }
-//   | { type: 'CREDIT_RATE'; rate: number }
-//   | { type: 'TIERED'; tiers: Tier[] }
-//   | { type: 'PREPAID'; creditRate: number };
-
-// type Tier = {
-//   from: number;
-//   to: number;
-//   rate: number;
-// };

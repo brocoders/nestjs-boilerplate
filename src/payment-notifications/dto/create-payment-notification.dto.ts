@@ -1,3 +1,5 @@
+import { PaymentAggregatorDto } from '../../payment-aggregators/dto/payment-aggregator.dto';
+
 import {
   // decorators here
 
@@ -7,6 +9,8 @@ import {
   IsBoolean,
   IsOptional,
   IsEnum,
+  ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -18,6 +22,7 @@ import {
   // decorators here
 
   Transform,
+  Type,
 } from 'class-transformer';
 import {
   PaymentStatus,
@@ -27,6 +32,15 @@ import {
 } from '../../utils/enum/payment-notification.enums';
 
 export class CreatePaymentNotificationDto {
+  @ApiProperty({
+    required: true,
+    type: () => PaymentAggregatorDto,
+  })
+  @ValidateNested()
+  @Type(() => PaymentAggregatorDto)
+  @IsNotEmptyObject()
+  aggregator: PaymentAggregatorDto;
+
   @ApiProperty({
     required: false,
     type: () => Date,

@@ -1,5 +1,9 @@
 import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  PlanType,
+  RateStructure,
+} from '../infrastructure/persistence/relational/entities/payment-plan.entity';
 
 export class PaymentPlan {
   @ApiProperty({
@@ -27,16 +31,51 @@ export class PaymentPlan {
   minimumCharge: number;
 
   @ApiProperty({
-    type: () => String,
+    type: Object,
+    oneOf: [
+      { properties: { type: { enum: ['FLAT'] }, amount: { type: 'number' } } },
+      {
+        properties: { type: { enum: ['PER_UNIT'] }, rate: { type: 'number' } },
+      },
+      {
+        properties: {
+          type: { enum: ['CREDIT_RATE'] },
+          rate: { type: 'number' },
+        },
+      },
+      {
+        properties: {
+          type: { enum: ['TIERED'] },
+          tiers: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                from: { type: 'number' },
+                to: { type: 'number' },
+                rate: { type: 'number' },
+              },
+              required: ['from', 'to', 'rate'],
+            },
+          },
+        },
+      },
+      {
+        properties: {
+          type: { enum: ['PREPAID'] },
+          creditRate: { type: 'number' },
+        },
+      },
+    ],
     nullable: true,
   })
-  rateStructure?: string | null;
+  rateStructure?: RateStructure | null;
 
   @ApiProperty({
-    type: () => String,
-    nullable: true,
+    enum: PlanType,
+    nullable: false,
   })
-  type?: string | null;
+  type: PlanType;
 
   @ApiProperty({
     type: String,

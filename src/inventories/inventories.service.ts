@@ -15,16 +15,28 @@ export class InventoriesService {
     private readonly inventoryRepository: InventoryRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createInventoryDto: CreateInventoryDto,
-  ) {
+  async create(createInventoryDto: CreateInventoryDto) {
     // Do not remove comment below.
     // <creating-property />
 
     return this.inventoryRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      unitOfMeasure: createInventoryDto.unitOfMeasure,
+
+      materialType: createInventoryDto.materialType,
+
+      accountType: createInventoryDto.accountType,
+
+      salePrice: createInventoryDto.salePrice,
+
+      purchasePrice: createInventoryDto.purchasePrice,
+
+      quantity: createInventoryDto.quantity,
+
+      itemDescription: createInventoryDto.itemDescription,
+
+      itemName: createInventoryDto.itemName,
     });
   }
 
@@ -51,7 +63,7 @@ export class InventoriesService {
 
   async update(
     id: Inventory['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updateInventoryDto: UpdateInventoryDto,
   ) {
     // Do not remove comment below.
@@ -60,6 +72,21 @@ export class InventoriesService {
     return this.inventoryRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      unitOfMeasure: updateInventoryDto.unitOfMeasure,
+
+      materialType: updateInventoryDto.materialType,
+
+      accountType: updateInventoryDto.accountType,
+
+      salePrice: updateInventoryDto.salePrice,
+
+      purchasePrice: updateInventoryDto.purchasePrice,
+
+      quantity: updateInventoryDto.quantity,
+
+      itemDescription: updateInventoryDto.itemDescription,
+
+      itemName: updateInventoryDto.itemName,
     });
   }
 

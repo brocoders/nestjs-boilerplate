@@ -30,6 +30,7 @@ import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
+import { Breakdown } from '../infrastructure/persistence/relational/entities/invoice.entity';
 
 export class CreateInvoiceDto {
   @ApiProperty({
@@ -89,12 +90,18 @@ export class CreateInvoiceDto {
   plan?: PaymentPlanDto[] | null;
 
   @ApiProperty({
+    description: 'Payment breakdown structure',
+    type: Object,
+    example: {
+      baseAmount: { type: 'number', example: 100.0 },
+      discounts: { type: 'number', example: 10.0 },
+      tax: { type: 'number', example: 18.0 },
+      adjustments: { type: 'number', example: 5.0 },
+    },
     required: false,
-    type: () => String,
+    nullable: true,
   })
-  @IsOptional()
-  @IsString()
-  breakdown?: string | null;
+  breakdown?: Breakdown | null;
 
   @ApiProperty({
     required: true,
