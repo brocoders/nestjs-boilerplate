@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { AccountsPayableDto } from '../../accounts-payables/dto/accounts-payable.dto';
 
 import { VendorDto } from '../../vendors/dto/vendor.dto';
@@ -21,6 +23,15 @@ import {
 } from '@nestjs/swagger';
 
 export class CreateVendorBillDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => AccountsPayableDto,

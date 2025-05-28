@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { AccountsPayablesService } from '../accounts-payables/accounts-payables.service';
 import { AccountsPayable } from '../accounts-payables/domain/accounts-payable';
 
@@ -20,6 +23,8 @@ import { Vendor } from '../vendors/domain/vendor';
 @Injectable()
 export class VendorBillsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly accountsPayableService: AccountsPayablesService,
 
     @Inject(forwardRef(() => VendorsService))
@@ -32,6 +37,19 @@ export class VendorBillsService {
   async create(createVendorBillDto: CreateVendorBillDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createVendorBillDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let accountsPayable: AccountsPayable | null | undefined = undefined;
 
     if (createVendorBillDto.accountsPayable) {
@@ -67,6 +85,8 @@ export class VendorBillsService {
     return this.vendorBillRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       accountsPayable,
 
       vendor,
@@ -101,6 +121,23 @@ export class VendorBillsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateVendorBillDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateVendorBillDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let accountsPayable: AccountsPayable | null | undefined = undefined;
 
     if (updateVendorBillDto.accountsPayable) {
@@ -140,6 +177,8 @@ export class VendorBillsService {
     return this.vendorBillRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       accountsPayable,
 
       vendor,

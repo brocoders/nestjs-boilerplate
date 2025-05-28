@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { VendorBillEntity } from '../../../../../vendor-bills/infrastructure/persistence/relational/entities/vendor-bill.entity';
 
 import {
@@ -7,6 +9,7 @@ import {
   UpdateDateColumn,
   Column,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -14,6 +17,9 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'vendor',
 })
 export class VendorEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @OneToMany(() => VendorBillEntity, (childEntity) => childEntity.vendor, {
     eager: true,
     nullable: true,

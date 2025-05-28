@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { VendorBillsModule } from '../vendor-bills/vendor-bills.module';
 import {
   // common
@@ -10,6 +11,8 @@ import { RelationalVendorPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    TenantsModule,
+
     forwardRef(() => VendorBillsModule),
 
     // import modules, etc.

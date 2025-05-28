@@ -13,6 +13,10 @@ import {
 export class SettingsMapper {
   static toDomain(raw: SettingsEntity): Settings {
     const domainEntity = new Settings();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     domainEntity.config = raw.config;
 
     domainEntity.settingsType = raw.settingsType;
@@ -38,6 +42,12 @@ export class SettingsMapper {
 
   static toPersistence(domainEntity: Settings): SettingsEntity {
     const persistenceEntity = new SettingsEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.config) {
       persistenceEntity.config = domainEntity.config;
     }

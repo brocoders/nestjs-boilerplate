@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import { AccountsPayablesModule } from '../accounts-payables/accounts-payables.module';
 import { VendorsModule } from '../vendors/vendors.module';
 import {
@@ -11,6 +12,8 @@ import { RelationalVendorBillPersistenceModule } from './infrastructure/persiste
 
 @Module({
   imports: [
+    TenantsModule,
+
     AccountsPayablesModule,
 
     forwardRef(() => VendorsModule),

@@ -1,3 +1,5 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
 import { VendorBillDto } from '../../vendor-bills/dto/vendor-bill.dto';
 
 import {
@@ -7,6 +9,7 @@ import {
   IsOptional,
   IsArray,
   ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -20,6 +23,15 @@ import {
 } from 'class-transformer';
 
 export class CreateVendorDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
   @ApiProperty({
     required: false,
     type: () => [VendorBillDto],

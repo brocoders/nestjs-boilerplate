@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { PaymentsService } from '../payments/payments.service';
 import { Payment } from '../payments/domain/payment';
 
@@ -21,6 +24,8 @@ import { Transaction } from './domain/transaction';
 @Injectable()
 export class TransactionsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     @Inject(forwardRef(() => PaymentsService))
     private readonly paymentService: PaymentsService,
 
@@ -33,6 +38,19 @@ export class TransactionsService {
   async create(createTransactionDto: CreateTransactionDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createTransactionDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     const paymentObject = await this.paymentService.findById(
       createTransactionDto.payment.id,
     );
@@ -79,6 +97,8 @@ export class TransactionsService {
     return this.transactionRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       payment,
 
       creditAccountName: createTransactionDto.creditAccountName,
@@ -129,6 +149,23 @@ export class TransactionsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateTransactionDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateTransactionDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let payment: Payment | undefined = undefined;
 
     if (updateTransactionDto.payment) {
@@ -188,6 +225,8 @@ export class TransactionsService {
     return this.transactionRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       payment,
 
       creditAccountName: updateTransactionDto.creditAccountName,

@@ -1,4 +1,6 @@
 import { Vendor } from '../../../../domain/vendor';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
 import { VendorBillMapper } from '../../../../../vendor-bills/infrastructure/persistence/relational/mappers/vendor-bill.mapper';
 
 import { VendorEntity } from '../entities/vendor.entity';
@@ -6,6 +8,10 @@ import { VendorEntity } from '../entities/vendor.entity';
 export class VendorMapper {
   static toDomain(raw: VendorEntity): Vendor {
     const domainEntity = new Vendor();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     if (raw.bills) {
       domainEntity.bills = raw.bills.map((item) =>
         VendorBillMapper.toDomain(item),
@@ -29,6 +35,12 @@ export class VendorMapper {
 
   static toPersistence(domainEntity: Vendor): VendorEntity {
     const persistenceEntity = new VendorEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.bills) {
       persistenceEntity.bills = domainEntity.bills.map((item) =>
         VendorBillMapper.toPersistence(item),

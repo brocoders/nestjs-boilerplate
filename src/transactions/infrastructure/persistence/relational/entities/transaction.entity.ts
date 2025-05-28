@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { PaymentEntity } from '../../../../../payments/infrastructure/persistence/relational/entities/payment.entity';
 
 import { AccountEntity } from '../../../../../accounts/infrastructure/persistence/relational/entities/account.entity';
@@ -18,6 +20,9 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'transaction',
 })
 export class TransactionEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToOne(
     () => PaymentEntity,
     (parentEntity) => parentEntity.transactionId,
