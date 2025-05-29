@@ -1,4 +1,5 @@
 import { PaymentAggregator } from '../../../../domain/payment-aggregator';
+
 import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { PaymentNotificationMapper } from '../../../../../payment-notifications/infrastructure/persistence/relational/mappers/payment-notification.mapper';
@@ -8,6 +9,10 @@ import { PaymentAggregatorEntity } from '../entities/payment-aggregator.entity';
 export class PaymentAggregatorMapper {
   static toDomain(raw: PaymentAggregatorEntity): PaymentAggregator {
     const domainEntity = new PaymentAggregator();
+    domainEntity.logo = raw.logo;
+
+    domainEntity.isActive = raw.isActive;
+
     if (raw.tenant) {
       domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
     }
@@ -35,6 +40,10 @@ export class PaymentAggregatorMapper {
     domainEntity: PaymentAggregator,
   ): PaymentAggregatorEntity {
     const persistenceEntity = new PaymentAggregatorEntity();
+    persistenceEntity.logo = domainEntity.logo;
+
+    persistenceEntity.isActive = domainEntity.isActive;
+
     if (domainEntity.tenant) {
       persistenceEntity.tenant = TenantMapper.toPersistence(
         domainEntity.tenant,

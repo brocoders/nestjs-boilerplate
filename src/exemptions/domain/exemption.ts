@@ -7,6 +7,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Exemption {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

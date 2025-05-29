@@ -24,6 +24,18 @@ export interface PaymentConfig {
   name: 'payment_aggregator',
 })
 export class PaymentAggregatorEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  logo?: string | null;
+
+  @Column({
+    nullable: false,
+    type: Boolean,
+  })
+  isActive: boolean;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 

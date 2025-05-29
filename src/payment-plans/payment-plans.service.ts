@@ -42,6 +42,10 @@ export class PaymentPlansService {
     return this.paymentPlanRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      description: createPaymentPlanDto.description,
+
+      name: createPaymentPlanDto.name,
+
       tenant,
 
       isActive: createPaymentPlanDto.isActive,
@@ -105,6 +109,10 @@ export class PaymentPlansService {
     return this.paymentPlanRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      description: updatePaymentPlanDto.description,
+
+      name: updatePaymentPlanDto.name,
+
       tenant,
 
       isActive: updatePaymentPlanDto.isActive,

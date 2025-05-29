@@ -5,6 +5,18 @@ import { PaymentConfig } from '../infrastructure/persistence/relational/entities
 
 export class PaymentAggregator {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  logo?: string | null;
+
+  @ApiProperty({
+    type: () => Boolean,
+    nullable: false,
+  })
+  isActive: boolean;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

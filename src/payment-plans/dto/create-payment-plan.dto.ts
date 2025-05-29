@@ -8,6 +8,7 @@ import {
   IsBoolean,
   ValidateNested,
   IsNotEmptyObject,
+  IsOptional,
 } from 'class-validator';
 
 import {
@@ -25,6 +26,21 @@ import {
 } from '../infrastructure/persistence/relational/entities/payment-plan.entity';
 
 export class CreatePaymentPlanDto {
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string | null;
+
+  @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  name: string;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,

@@ -15,6 +15,7 @@ import {
   IsOptional,
   IsString,
   IsNotEmptyObject,
+  IsBoolean,
 } from 'class-validator';
 
 import {
@@ -24,6 +25,21 @@ import {
 import { PaymentConfig } from '../infrastructure/persistence/relational/entities/payment-aggregator.entity';
 
 export class CreatePaymentAggregatorDto {
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  logo?: string | null;
+
+  @ApiProperty({
+    required: true,
+    type: () => Boolean,
+  })
+  @IsBoolean()
+  isActive: boolean;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,

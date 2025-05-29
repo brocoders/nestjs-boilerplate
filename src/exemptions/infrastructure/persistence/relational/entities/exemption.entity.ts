@@ -22,6 +22,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'exemption',
 })
 export class ExemptionEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  description?: string | null;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 

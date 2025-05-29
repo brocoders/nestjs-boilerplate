@@ -32,6 +32,14 @@ import {
 
 export class CreateExemptionDto {
   @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string | null;
+
+  @ApiProperty({
     required: true,
     type: () => TenantDto,
   })

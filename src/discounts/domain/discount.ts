@@ -7,6 +7,18 @@ import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class Discount {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
+    type: () => Number,
+    nullable: true,
+  })
+  minVolume?: number | null;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

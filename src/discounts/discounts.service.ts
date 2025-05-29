@@ -40,6 +40,7 @@ export class DiscountsService {
   async create(createDiscountDto: CreateDiscountDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createDiscountDto.tenant.id,
     );
@@ -113,6 +114,10 @@ export class DiscountsService {
     return this.discountRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      description: createDiscountDto.description,
+
+      minVolume: createDiscountDto.minVolume,
+
       tenant,
 
       region,
@@ -161,6 +166,7 @@ export class DiscountsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateDiscountDto.tenant) {
@@ -238,6 +244,10 @@ export class DiscountsService {
     return this.discountRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      description: updateDiscountDto.description,
+
+      minVolume: updateDiscountDto.minVolume,
+
       tenant,
 
       region,

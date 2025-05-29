@@ -45,6 +45,7 @@ export class ExemptionsService {
   async create(createExemptionDto: CreateExemptionDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createExemptionDto.tenant.id,
     );
@@ -137,6 +138,8 @@ export class ExemptionsService {
     return this.exemptionRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      description: createExemptionDto.description,
+
       tenant,
 
       invoice,
@@ -183,6 +186,7 @@ export class ExemptionsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateExemptionDto.tenant) {
@@ -279,6 +283,8 @@ export class ExemptionsService {
     return this.exemptionRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      description: updateExemptionDto.description,
+
       tenant,
 
       invoice,

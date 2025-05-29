@@ -28,6 +28,7 @@ export class CustomerPlanEntity extends EntityRelationalHelper {
   customSchedule?: {
     lastPaymentDate: Date;
     paymentCount: number;
+    nextPaymentDates?: Date[];
   } | null;
 
   @Column({

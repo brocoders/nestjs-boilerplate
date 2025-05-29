@@ -1,4 +1,5 @@
 import { Exemption } from '../../../../domain/exemption';
+
 import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { InvoiceMapper } from '../../../../../invoices/infrastructure/persistence/relational/mappers/invoice.mapper';
@@ -14,6 +15,8 @@ import { ExemptionEntity } from '../entities/exemption.entity';
 export class ExemptionMapper {
   static toDomain(raw: ExemptionEntity): Exemption {
     const domainEntity = new Exemption();
+    domainEntity.description = raw.description;
+
     if (raw.tenant) {
       domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
     }
@@ -57,6 +60,8 @@ export class ExemptionMapper {
 
   static toPersistence(domainEntity: Exemption): ExemptionEntity {
     const persistenceEntity = new ExemptionEntity();
+    persistenceEntity.description = domainEntity.description;
+
     if (domainEntity.tenant) {
       persistenceEntity.tenant = TenantMapper.toPersistence(
         domainEntity.tenant,

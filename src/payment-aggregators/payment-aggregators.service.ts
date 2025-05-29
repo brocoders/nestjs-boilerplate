@@ -33,6 +33,7 @@ export class PaymentAggregatorsService {
   async create(createPaymentAggregatorDto: CreatePaymentAggregatorDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createPaymentAggregatorDto.tenant.id,
     );
@@ -72,6 +73,10 @@ export class PaymentAggregatorsService {
     return this.paymentAggregatorRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      logo: createPaymentAggregatorDto.logo,
+
+      isActive: createPaymentAggregatorDto.isActive,
+
       tenant,
 
       config: createPaymentAggregatorDto.config,
@@ -110,6 +115,7 @@ export class PaymentAggregatorsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updatePaymentAggregatorDto.tenant) {
@@ -153,6 +159,10 @@ export class PaymentAggregatorsService {
     return this.paymentAggregatorRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      logo: updatePaymentAggregatorDto.logo,
+
+      isActive: updatePaymentAggregatorDto.isActive,
+
       tenant,
 
       config: updatePaymentAggregatorDto.config,

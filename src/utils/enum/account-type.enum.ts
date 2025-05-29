@@ -25,6 +25,6 @@ export enum TransactionTypeEnum {
   REFUND = 'REFUND',
 }
 export enum DiscountTypeEnum {
-  FIXED = 'FIXED',
+  FIXED_AMOUNT = 'FIXED',
   PERCENTAGE = 'PERCENTAGE',
 }

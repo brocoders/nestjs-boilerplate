@@ -34,6 +34,18 @@ export type Tier = {
   name: 'payment_plan',
 })
 export class PaymentPlanEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  description?: string | null;
+
+  @Column({
+    nullable: false,
+    type: String,
+  })
+  name: string;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 

@@ -21,6 +21,18 @@ import { DiscountTypeEnum } from '../../../../../utils/enum/account-type.enum';
   name: 'discount',
 })
 export class DiscountEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  description?: string | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  minVolume?: number | null;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 

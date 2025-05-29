@@ -7,6 +7,18 @@ import {
 
 export class PaymentPlan {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  name: string;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

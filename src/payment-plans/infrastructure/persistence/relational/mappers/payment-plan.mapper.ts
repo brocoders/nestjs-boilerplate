@@ -1,4 +1,5 @@
 import { PaymentPlan } from '../../../../domain/payment-plan';
+
 import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { PaymentPlanEntity } from '../entities/payment-plan.entity';
@@ -6,6 +7,10 @@ import { PaymentPlanEntity } from '../entities/payment-plan.entity';
 export class PaymentPlanMapper {
   static toDomain(raw: PaymentPlanEntity): PaymentPlan {
     const domainEntity = new PaymentPlan();
+    domainEntity.description = raw.description;
+
+    domainEntity.name = raw.name;
+
     if (raw.tenant) {
       domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
     }
@@ -33,6 +38,10 @@ export class PaymentPlanMapper {
 
   static toPersistence(domainEntity: PaymentPlan): PaymentPlanEntity {
     const persistenceEntity = new PaymentPlanEntity();
+    persistenceEntity.description = domainEntity.description;
+
+    persistenceEntity.name = domainEntity.name;
+
     if (domainEntity.tenant) {
       persistenceEntity.tenant = TenantMapper.toPersistence(
         domainEntity.tenant,

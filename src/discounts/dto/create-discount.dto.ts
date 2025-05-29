@@ -14,6 +14,7 @@ import {
   IsBoolean,
   ValidateNested,
   IsNotEmptyObject,
+  IsString,
 } from 'class-validator';
 
 import {
@@ -30,6 +31,22 @@ import {
 import { DiscountTypeEnum } from '../../utils/enum/account-type.enum';
 
 export class CreateDiscountDto {
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  minVolume?: number | null;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,
