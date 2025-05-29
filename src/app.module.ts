@@ -97,8 +97,14 @@ import { PaymentAggregatorsModule } from './payment-aggregators/payment-aggregat
 
 import { CreditBalancesModule } from './credit-balances/credit-balances.module';
 
+import { OnboardingsModule } from './onboardings/onboardings.module';
+
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
+
 @Module({
   imports: [
+    AuditLogsModule,
+    OnboardingsModule,
     PaymentNotificationsModule,
     //SentryModule.forRoot(),
     CreditBalancesModule,
