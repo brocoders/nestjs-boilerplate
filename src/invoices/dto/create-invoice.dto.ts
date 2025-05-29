@@ -26,6 +26,7 @@ import {
   IsDate,
   IsArray,
   IsEnum,
+  IsString,
 } from 'class-validator';
 
 import {
@@ -38,6 +39,13 @@ import {
 } from '../infrastructure/persistence/relational/entities/invoice.entity';
 
 export class CreateInvoiceDto {
+  @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  invoiceNumber: string;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,

@@ -53,6 +53,7 @@ export class InvoicesService {
   async create(createInvoiceDto: CreateInvoiceDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createInvoiceDto.tenant.id,
     );
@@ -165,6 +166,8 @@ export class InvoicesService {
     return this.invoiceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      invoiceNumber: createInvoiceDto.invoiceNumber,
+
       tenant,
 
       exemption,
@@ -219,6 +222,7 @@ export class InvoicesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateInvoiceDto.tenant) {
@@ -335,6 +339,8 @@ export class InvoicesService {
     return this.invoiceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      invoiceNumber: updateInvoiceDto.invoiceNumber,
+
       tenant,
 
       exemption,

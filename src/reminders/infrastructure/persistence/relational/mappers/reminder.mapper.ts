@@ -1,4 +1,5 @@
 import { Reminder } from '../../../../domain/reminder';
+
 import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
@@ -10,6 +11,8 @@ import { ReminderEntity } from '../entities/reminder.entity';
 export class ReminderMapper {
   static toDomain(raw: ReminderEntity): Reminder {
     const domainEntity = new Reminder();
+    domainEntity.message = raw.message;
+
     if (raw.tenant) {
       domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
     }
@@ -43,6 +46,8 @@ export class ReminderMapper {
 
   static toPersistence(domainEntity: Reminder): ReminderEntity {
     const persistenceEntity = new ReminderEntity();
+    persistenceEntity.message = domainEntity.message;
+
     if (domainEntity.tenant) {
       persistenceEntity.tenant = TenantMapper.toPersistence(
         domainEntity.tenant,

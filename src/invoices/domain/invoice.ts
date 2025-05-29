@@ -13,6 +13,12 @@ import { IsEnum } from 'class-validator';
 
 export class Invoice {
   @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  invoiceNumber: string;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

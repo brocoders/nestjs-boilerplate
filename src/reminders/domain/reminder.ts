@@ -10,6 +10,12 @@ import {
 
 export class Reminder {
   @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  message?: string | null;
+
+  @ApiProperty({
     type: () => Tenant,
     nullable: false,
   })

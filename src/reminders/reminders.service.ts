@@ -39,6 +39,7 @@ export class RemindersService {
   async create(createReminderDto: CreateReminderDto) {
     // Do not remove comment below.
     // <creating-property />
+
     const tenantObject = await this.tenantService.findById(
       createReminderDto.tenant.id,
     );
@@ -93,6 +94,8 @@ export class RemindersService {
     return this.reminderRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      message: createReminderDto.message,
+
       tenant,
 
       user,
@@ -136,6 +139,7 @@ export class RemindersService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+
     let tenant: Tenant | undefined = undefined;
 
     if (updateReminderDto.tenant) {
@@ -194,6 +198,8 @@ export class RemindersService {
     return this.reminderRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      message: updateReminderDto.message,
+
       tenant,
 
       user,

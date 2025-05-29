@@ -29,6 +29,12 @@ export enum ReminderStatus {
   name: 'reminder',
 })
 export class ReminderEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  message?: string | null;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 

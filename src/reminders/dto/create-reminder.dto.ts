@@ -19,6 +19,7 @@ import {
   ValidateNested,
   IsNotEmptyObject,
   IsEnum,
+  IsString,
 } from 'class-validator';
 
 import {
@@ -31,6 +32,14 @@ import {
 } from '../infrastructure/persistence/relational/entities/reminder.entity';
 
 export class CreateReminderDto {
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  message?: string | null;
+
   @ApiProperty({
     required: true,
     type: () => TenantDto,

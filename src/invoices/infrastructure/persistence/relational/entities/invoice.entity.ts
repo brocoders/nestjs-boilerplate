@@ -41,6 +41,12 @@ export enum InvoiceStatus {
   name: 'invoice',
 })
 export class InvoiceEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: false,
+    type: String,
+  })
+  invoiceNumber: string;
+
   @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
   tenant: TenantEntity;
 
