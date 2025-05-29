@@ -30,6 +30,12 @@ import { RoleEntity } from 'src/roles/infrastructure/persistence/relational/enti
 export class TenantEntity extends EntityRelationalHelper {
   @Column({
     nullable: false,
+    type: Boolean,
+  })
+  fullyOnboarded: boolean;
+
+  @Column({
+    nullable: false,
     type: 'jsonb',
   })
   databaseConfig: {

@@ -18,6 +18,12 @@ const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
 
 export class User {
   @ApiProperty({
+    type: () => Boolean,
+    nullable: false,
+  })
+  fullyOnboarded: boolean;
+
+  @ApiProperty({
     type: () => String,
     nullable: true,
   })

@@ -33,6 +33,7 @@ export class TenantSeedService {
             primaryEmail: `contact@${tenantName.toLowerCase().replace(/\s+/g, '-')}.com`,
             primaryPhone: '+1234567890',
             isActive: true,
+            fullyOnboarded: false,
             schemaName: `tenant_${tenantType.code.toLowerCase()}`,
             databaseConfig: {
               host: process.env.DATABASE_HOST || 'localhost',

@@ -33,6 +33,12 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 })
 export class UserEntity extends EntityRelationalHelper {
   @Column({
+    nullable: false,
+    type: Boolean,
+  })
+  fullyOnboarded: boolean;
+
+  @Column({
     nullable: true,
     type: String,
   })
