@@ -152,6 +152,7 @@ export class AuthService {
         role,
         status,
         tenant: new TenantDto(),
+        fullyOnboarded: false,
       });
 
       user = await this.usersService.findById(user.id);
@@ -206,6 +207,7 @@ export class AuthService {
         id: StatusEnum.inactive,
       },
       tenant: new TenantDto(),
+      fullyOnboarded: false,
     });
 
     const hash = await this.jwtService.signAsync(
