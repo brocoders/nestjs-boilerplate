@@ -134,7 +134,7 @@ export class UserSeedService {
           agentRegions.push(regions[(i + 1) % regions.length]);
         userData.regions = agentRegions;
       }
-
+      userData.fullyOnboarded = false;
       const savedUser = await this.userRepository.save(userData);
       await this.createUserSettings(tenant, savedUser);
       await this.createUserKyc(tenant, savedUser);
@@ -183,6 +183,7 @@ export class UserSeedService {
       password,
       tenant,
       role,
+      fullyOnboarded: false,
       provider: AuthProvidersEnum.email,
       status: { id: StatusEnum.active },
     });

@@ -17,6 +17,8 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    domainEntity.fullyOnboarded = raw.fullyOnboarded;
+
     domainEntity.phoneNumber = raw.phoneNumber;
 
     domainEntity.countryCode = raw.countryCode;
@@ -103,6 +105,8 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
+
     persistenceEntity.phoneNumber = domainEntity.phoneNumber;
 
     persistenceEntity.countryCode = domainEntity.countryCode;

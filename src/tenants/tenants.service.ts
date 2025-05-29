@@ -208,6 +208,8 @@ export class TenantsService {
     return this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      fullyOnboarded: createTenantDto.fullyOnboarded,
+
       databaseConfig: createTenantDto.databaseConfig,
       // databaseConfig: dbConfig,
 
@@ -387,6 +389,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      fullyOnboarded: updateTenantDto.fullyOnboarded,
+
       databaseConfig: updateTenantDto.databaseConfig,
 
       domain: updateTenantDto.domain,

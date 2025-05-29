@@ -17,6 +17,8 @@ import { TenantEntity } from '../entities/tenant.entity';
 export class TenantMapper {
   static toDomain(raw: TenantEntity): Tenant {
     const domainEntity = new Tenant();
+    domainEntity.fullyOnboarded = raw.fullyOnboarded;
+
     domainEntity.databaseConfig = JSON.stringify(raw.databaseConfig);
 
     domainEntity.domain = raw.domain;
@@ -84,6 +86,8 @@ export class TenantMapper {
 
   static toPersistence(domainEntity: Tenant): TenantEntity {
     const persistenceEntity = new TenantEntity();
+    persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
+
     persistenceEntity.databaseConfig = domainEntity.databaseConfig
       ? JSON.parse(domainEntity.databaseConfig)
       : undefined;

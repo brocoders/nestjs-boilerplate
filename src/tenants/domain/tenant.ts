@@ -8,6 +8,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Tenant {
   @ApiProperty({
+    type: () => Boolean,
+    nullable: false,
+  })
+  fullyOnboarded: boolean;
+
+  @ApiProperty({
     type: () => String,
     nullable: false,
   })

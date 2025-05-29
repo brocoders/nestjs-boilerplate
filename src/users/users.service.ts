@@ -213,6 +213,8 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      fullyOnboarded: createUserDto.fullyOnboarded,
+
       phoneNumber: createUserDto.phoneNumber,
 
       countryCode: createUserDto.countryCode,
@@ -455,6 +457,8 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      fullyOnboarded: updateUserDto.fullyOnboarded,
+
       phoneNumber: updateUserDto.phoneNumber,
 
       countryCode: updateUserDto.countryCode,
