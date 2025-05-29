@@ -15,6 +15,7 @@ export class AccountsPayableSeedService {
 
     if (count === 0) {
       // await this.repository.save(this.repository.create({}));
+      return;
     }
   }
 }

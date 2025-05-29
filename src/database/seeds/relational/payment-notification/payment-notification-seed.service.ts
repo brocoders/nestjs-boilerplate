@@ -95,7 +95,9 @@ export class PaymentNotificationSeedService {
         external_txn_id: `${baseTxnId}${i}`,
         provider: PaymentProvider.MPESA,
       });
-
+      this.logger.log(
+        `Seeded ${samples.length} waste management accounts for tenant ${tenant.name}`,
+      );
       samples.push(entity);
     }
 
