@@ -1,6 +1,9 @@
+import { TenantsModule } from '../tenants/tenants.module';
+import { PaymentNotificationsModule } from '../payment-notifications/payment-notifications.module';
 import {
   // common
   Module,
+  forwardRef,
 } from '@nestjs/common';
 import { PaymentAggregatorsService } from './payment-aggregators.service';
 import { PaymentAggregatorsController } from './payment-aggregators.controller';
@@ -8,6 +11,10 @@ import { RelationalPaymentAggregatorPersistenceModule } from './infrastructure/p
 
 @Module({
   imports: [
+    TenantsModule,
+
+    forwardRef(() => PaymentNotificationsModule),
+
     // import modules, etc.
     RelationalPaymentAggregatorPersistenceModule,
   ],

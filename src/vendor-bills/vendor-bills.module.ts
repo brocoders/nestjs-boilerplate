@@ -1,6 +1,10 @@
+import { TenantsModule } from '../tenants/tenants.module';
+import { AccountsPayablesModule } from '../accounts-payables/accounts-payables.module';
+import { VendorsModule } from '../vendors/vendors.module';
 import {
   // common
   Module,
+  forwardRef,
 } from '@nestjs/common';
 import { VendorBillsService } from './vendor-bills.service';
 import { VendorBillsController } from './vendor-bills.controller';
@@ -8,6 +12,12 @@ import { RelationalVendorBillPersistenceModule } from './infrastructure/persiste
 
 @Module({
   imports: [
+    TenantsModule,
+
+    AccountsPayablesModule,
+
+    forwardRef(() => VendorsModule),
+
     // import modules, etc.
     RelationalVendorBillPersistenceModule,
   ],

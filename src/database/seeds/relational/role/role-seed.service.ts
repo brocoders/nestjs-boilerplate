@@ -16,7 +16,7 @@ export class RoleSeedService {
 
   async run() {
     const rolesToSeed = [
-      { code: RoleEnum.platform_owner, name: 'Platform Owner' },
+      { code: RoleEnum.platform_owner, name: 'PlatformOwner' },
       { code: RoleEnum.admin, name: 'Admin' },
       { code: RoleEnum.agent, name: 'Agent' },
       { code: RoleEnum.customer, name: 'Customer' },

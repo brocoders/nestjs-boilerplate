@@ -1,10 +1,23 @@
 import { PaymentNotification } from '../../../../domain/payment-notification';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
+import { PaymentAggregatorMapper } from '../../../../../payment-aggregators/infrastructure/persistence/relational/mappers/payment-aggregator.mapper';
 
 import { PaymentNotificationEntity } from '../entities/payment-notification.entity';
 
 export class PaymentNotificationMapper {
   static toDomain(raw: PaymentNotificationEntity): PaymentNotification {
     const domainEntity = new PaymentNotification();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
+    if (raw.aggregator) {
+      domainEntity.aggregator = PaymentAggregatorMapper.toDomain(
+        raw.aggregator,
+      );
+    }
+
     domainEntity.processed_at = raw.processed_at;
 
     domainEntity.processed = raw.processed;
@@ -36,6 +49,18 @@ export class PaymentNotificationMapper {
     domainEntity: PaymentNotification,
   ): PaymentNotificationEntity {
     const persistenceEntity = new PaymentNotificationEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
+    if (domainEntity.aggregator) {
+      persistenceEntity.aggregator = PaymentAggregatorMapper.toPersistence(
+        domainEntity.aggregator,
+      );
+    }
+
     persistenceEntity.processed_at = domainEntity.processed_at;
 
     persistenceEntity.processed = domainEntity.processed;

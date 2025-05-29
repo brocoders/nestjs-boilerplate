@@ -1,17 +1,54 @@
+import { Tenant } from '../../tenants/domain/tenant';
+import { Invoice } from '../../invoices/domain/invoice';
+import { PaymentNotification } from '../../payment-notifications/domain/payment-notification';
+import { PaymentMethod } from '../../payment-methods/domain/payment-method';
+import { User } from '../../users/domain/user';
+import { Transaction } from '../../transactions/domain/transaction';
 import { ApiProperty } from '@nestjs/swagger';
+import { PaymentStatus } from '../../utils/enum/payment-notification.enums';
 
 export class Payment {
   @ApiProperty({
-    type: () => String,
+    type: () => Tenant,
     nullable: false,
   })
-  status: string;
+  tenant: Tenant;
 
   @ApiProperty({
-    type: () => String,
+    type: () => Invoice,
+    nullable: true,
+  })
+  invoice?: Invoice | null;
+
+  @ApiProperty({
+    type: () => PaymentNotification,
+    nullable: true,
+  })
+  notification?: PaymentNotification | null;
+
+  @ApiProperty({
+    type: () => PaymentMethod,
+    nullable: true,
+  })
+  paymentMethod?: PaymentMethod | null;
+
+  @ApiProperty({
+    type: () => User,
+    nullable: true,
+  })
+  customer?: User | null;
+
+  @ApiProperty({
+    type: () => [Transaction],
+    nullable: true,
+  })
+  transactionId?: Transaction[] | null;
+
+  @ApiProperty({
+    enum: PaymentStatus,
     nullable: false,
   })
-  method: string;
+  status: PaymentStatus;
 
   @ApiProperty({
     type: () => Date,

@@ -32,6 +32,18 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  phoneNumber?: string | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  countryCode?: string | null;
+
   @ManyToMany(() => RegionEntity, { eager: true, nullable: true })
   @JoinTable()
   regions?: RegionEntity[] | null;

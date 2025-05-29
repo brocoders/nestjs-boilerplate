@@ -1,6 +1,16 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
+import { VendorBillsService } from '../vendor-bills/vendor-bills.service';
+import { VendorBill } from '../vendor-bills/domain/vendor-bill';
+
 import {
   // common
   Injectable,
+  HttpStatus,
+  UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -11,20 +21,62 @@ import { Vendor } from './domain/vendor';
 @Injectable()
 export class VendorsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
+    @Inject(forwardRef(() => VendorBillsService))
+    private readonly vendorBillService: VendorBillsService,
+
     // Dependencies here
     private readonly vendorRepository: VendorRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createVendorDto: CreateVendorDto,
-  ) {
+  async create(createVendorDto: CreateVendorDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createVendorDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
+    let bills: VendorBill[] | null | undefined = undefined;
+
+    if (createVendorDto.bills) {
+      const billsObjects = await this.vendorBillService.findByIds(
+        createVendorDto.bills.map((entity) => entity.id),
+      );
+      if (billsObjects.length !== createVendorDto.bills.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            bills: 'notExists',
+          },
+        });
+      }
+      bills = billsObjects;
+    } else if (createVendorDto.bills === null) {
+      bills = null;
+    }
 
     return this.vendorRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
+      bills,
+
+      paymentTerms: createVendorDto.paymentTerms,
+
+      contactEmail: createVendorDto.contactEmail,
+
+      name: createVendorDto.name,
     });
   }
 
@@ -51,15 +103,59 @@ export class VendorsService {
 
   async update(
     id: Vendor['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updateVendorDto: UpdateVendorDto,
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateVendorDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateVendorDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
+    let bills: VendorBill[] | null | undefined = undefined;
+
+    if (updateVendorDto.bills) {
+      const billsObjects = await this.vendorBillService.findByIds(
+        updateVendorDto.bills.map((entity) => entity.id),
+      );
+      if (billsObjects.length !== updateVendorDto.bills.length) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            bills: 'notExists',
+          },
+        });
+      }
+      bills = billsObjects;
+    } else if (updateVendorDto.bills === null) {
+      bills = null;
+    }
 
     return this.vendorRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
+      bills,
+
+      paymentTerms: updateVendorDto.paymentTerms,
+
+      contactEmail: updateVendorDto.contactEmail,
+
+      name: updateVendorDto.name,
     });
   }
 

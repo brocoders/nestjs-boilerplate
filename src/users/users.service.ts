@@ -54,6 +54,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+
     let regions: Region[] | null | undefined = undefined;
 
     if (createUserDto.regions) {
@@ -212,6 +213,10 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      phoneNumber: createUserDto.phoneNumber,
+
+      countryCode: createUserDto.countryCode,
+
       regions,
 
       settings,
@@ -279,6 +284,7 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+
     let regions: Region[] | null | undefined = undefined;
 
     if (updateUserDto.regions) {
@@ -449,6 +455,10 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      phoneNumber: updateUserDto.phoneNumber,
+
+      countryCode: updateUserDto.countryCode,
+
       regions,
 
       settings,

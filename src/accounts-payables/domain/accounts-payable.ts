@@ -1,8 +1,20 @@
+import { Tenant } from '../../tenants/domain/tenant';
+import { IsOptional, IsEnum } from 'class-validator';
 import { Account } from '../../accounts/domain/account';
 import { User } from '../../users/domain/user';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  AccountTypeEnum,
+  TransactionTypeEnum,
+} from '../../utils/enum/account-type.enum';
 
 export class AccountsPayable {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
   @ApiProperty({
     type: () => [Account],
     nullable: true,
@@ -15,11 +27,14 @@ export class AccountsPayable {
   })
   owner?: User[] | null;
 
-  @ApiProperty({
-    type: () => String,
+  @ApiPropertyOptional({
+    enum: AccountTypeEnum,
+    description: 'The type of account. Can be SAVINGS, CHECKING, or CURRENT.',
     nullable: true,
   })
-  accountType?: string | null;
+  @IsOptional()
+  @IsEnum(AccountTypeEnum)
+  accountType?: AccountTypeEnum | null;
 
   @ApiProperty({
     type: () => Number,
@@ -58,10 +73,12 @@ export class AccountsPayable {
   amount: number;
 
   @ApiProperty({
-    type: () => String,
-    nullable: false,
+    enum: TransactionTypeEnum,
+    required: true,
+    description: 'The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND.',
   })
-  transactionType: string;
+  @IsEnum(TransactionTypeEnum)
+  transactionType: TransactionTypeEnum;
 
   @ApiProperty({
     type: String,

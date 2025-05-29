@@ -39,7 +39,6 @@ export class SettingsService {
   async create(createSettingsDto: CreateSettingsDto) {
     // Do not remove comment below.
     // <creating-property />
-
     const tenantObject = await this.tenantService.findById(
       createSettingsDto.tenant.id,
     );
@@ -109,7 +108,6 @@ export class SettingsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
-
     let tenant: Tenant | undefined = undefined;
 
     if (updateSettingsDto.tenant) {

@@ -1,3 +1,4 @@
+import { TenantsModule } from '../tenants/tenants.module';
 import {
   // common
   Module,
@@ -8,6 +9,8 @@ import { RelationalPaymentPlanPersistenceModule } from './infrastructure/persist
 
 @Module({
   imports: [
+    TenantsModule,
+
     // import modules, etc.
     RelationalPaymentPlanPersistenceModule,
   ],

@@ -1,3 +1,5 @@
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
+
 import { AccountEntity } from '../../../../../accounts/infrastructure/persistence/relational/entities/account.entity';
 
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
@@ -10,13 +12,21 @@ import {
   Column,
   JoinTable,
   ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import {
+  AccountTypeEnum,
+  TransactionTypeEnum,
+} from '../../../../../utils/enum/account-type.enum';
 
 @Entity({
   name: 'accounts_payable',
 })
 export class AccountsPayableEntity extends EntityRelationalHelper {
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  tenant: TenantEntity;
+
   @ManyToMany(() => AccountEntity, { eager: true, nullable: true })
   @JoinTable()
   account?: AccountEntity[] | null;
@@ -26,10 +36,10 @@ export class AccountsPayableEntity extends EntityRelationalHelper {
   owner?: UserEntity[] | null;
 
   @Column({
-    nullable: true,
-    type: String,
+    type: 'enum',
+    enum: AccountTypeEnum,
   })
-  accountType?: string | null;
+  accountType?: AccountTypeEnum | null;
 
   @Column({
     nullable: true,
@@ -68,10 +78,11 @@ export class AccountsPayableEntity extends EntityRelationalHelper {
   amount: number;
 
   @Column({
+    type: 'enum',
+    enum: TransactionTypeEnum,
     nullable: false,
-    type: String,
   })
-  transactionType: string;
+  transactionType: TransactionTypeEnum;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;

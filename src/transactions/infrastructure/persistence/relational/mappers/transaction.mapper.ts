@@ -1,4 +1,7 @@
 import { Transaction } from '../../../../domain/transaction';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
+import { PaymentMapper } from '../../../../../payments/infrastructure/persistence/relational/mappers/payment.mapper';
 
 import { AccountMapper } from '../../../../../accounts/infrastructure/persistence/relational/mappers/account.mapper';
 
@@ -7,6 +10,14 @@ import { TransactionEntity } from '../entities/transaction.entity';
 export class TransactionMapper {
   static toDomain(raw: TransactionEntity): Transaction {
     const domainEntity = new Transaction();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
+    if (raw.payment) {
+      domainEntity.payment = PaymentMapper.toDomain(raw.payment);
+    }
+
     domainEntity.creditAccountName = raw.creditAccountName;
 
     domainEntity.debitAccountName = raw.debitAccountName;
@@ -42,6 +53,18 @@ export class TransactionMapper {
 
   static toPersistence(domainEntity: Transaction): TransactionEntity {
     const persistenceEntity = new TransactionEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
+    if (domainEntity.payment) {
+      persistenceEntity.payment = PaymentMapper.toPersistence(
+        domainEntity.payment,
+      );
+    }
+
     persistenceEntity.creditAccountName = domainEntity.creditAccountName;
 
     persistenceEntity.debitAccountName = domainEntity.debitAccountName;

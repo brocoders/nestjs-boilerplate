@@ -35,7 +35,6 @@ export class ResidencesService {
   async create(createResidenceDto: CreateResidenceDto) {
     // Do not remove comment below.
     // <creating-property />
-
     let occupants: User[] | null | undefined = undefined;
 
     if (createResidenceDto.occupants) {
@@ -84,6 +83,7 @@ export class ResidencesService {
     return this.residenceRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+
       type: createResidenceDto.type,
 
       occupants,
@@ -185,6 +185,7 @@ export class ResidencesService {
     return this.residenceRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+
       type: updateResidenceDto.type,
 
       occupants,

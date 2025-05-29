@@ -1,5 +1,15 @@
 import { Invoice } from '../../../../domain/invoice';
 
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
+import { ExemptionMapper } from '../../../../../exemptions/infrastructure/persistence/relational/mappers/exemption.mapper';
+
+import { DiscountMapper } from '../../../../../discounts/infrastructure/persistence/relational/mappers/discount.mapper';
+
+import { AccountsReceivableMapper } from '../../../../../accounts-receivables/infrastructure/persistence/relational/mappers/accounts-receivable.mapper';
+
+import { PaymentPlanMapper } from '../../../../../payment-plans/infrastructure/persistence/relational/mappers/payment-plan.mapper';
+
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 
 import { InvoiceEntity } from '../entities/invoice.entity';
@@ -7,6 +17,44 @@ import { InvoiceEntity } from '../entities/invoice.entity';
 export class InvoiceMapper {
   static toDomain(raw: InvoiceEntity): Invoice {
     const domainEntity = new Invoice();
+    domainEntity.invoiceNumber = raw.invoiceNumber;
+
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
+    if (raw.exemption) {
+      domainEntity.exemption = ExemptionMapper.toDomain(raw.exemption);
+    } else if (raw.exemption === null) {
+      domainEntity.exemption = null;
+    }
+
+    if (raw.discount) {
+      domainEntity.discount = DiscountMapper.toDomain(raw.discount);
+    } else if (raw.discount === null) {
+      domainEntity.discount = null;
+    }
+
+    if (raw.accountsReceivable) {
+      domainEntity.accountsReceivable = AccountsReceivableMapper.toDomain(
+        raw.accountsReceivable,
+      );
+    } else if (raw.accountsReceivable === null) {
+      domainEntity.accountsReceivable = null;
+    }
+
+    domainEntity.amountDue = raw.amountDue;
+
+    domainEntity.amountPaid = raw.amountPaid;
+
+    if (raw.plan) {
+      domainEntity.plan = raw.plan.map((item) =>
+        PaymentPlanMapper.toDomain(item),
+      );
+    } else if (raw.plan === null) {
+      domainEntity.plan = null;
+    }
+
     domainEntity.breakdown = raw.breakdown;
 
     domainEntity.status = raw.status;
@@ -30,6 +78,49 @@ export class InvoiceMapper {
 
   static toPersistence(domainEntity: Invoice): InvoiceEntity {
     const persistenceEntity = new InvoiceEntity();
+    persistenceEntity.invoiceNumber = domainEntity.invoiceNumber;
+
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
+    if (domainEntity.exemption) {
+      persistenceEntity.exemption = ExemptionMapper.toPersistence(
+        domainEntity.exemption,
+      );
+    } else if (domainEntity.exemption === null) {
+      persistenceEntity.exemption = null;
+    }
+
+    if (domainEntity.discount) {
+      persistenceEntity.discount = DiscountMapper.toPersistence(
+        domainEntity.discount,
+      );
+    } else if (domainEntity.discount === null) {
+      persistenceEntity.discount = null;
+    }
+
+    if (domainEntity.accountsReceivable) {
+      persistenceEntity.accountsReceivable =
+        AccountsReceivableMapper.toPersistence(domainEntity.accountsReceivable);
+    } else if (domainEntity.accountsReceivable === null) {
+      persistenceEntity.accountsReceivable = null;
+    }
+
+    persistenceEntity.amountDue = domainEntity.amountDue;
+
+    persistenceEntity.amountPaid = domainEntity.amountPaid;
+
+    if (domainEntity.plan) {
+      persistenceEntity.plan = domainEntity.plan.map((item) =>
+        PaymentPlanMapper.toPersistence(item),
+      );
+    } else if (domainEntity.plan === null) {
+      persistenceEntity.plan = null;
+    }
+
     persistenceEntity.breakdown = domainEntity.breakdown;
 
     persistenceEntity.status = domainEntity.status;

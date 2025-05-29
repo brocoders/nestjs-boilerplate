@@ -1,4 +1,6 @@
 import { AccountsPayable } from '../../../../domain/accounts-payable';
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
 import { AccountMapper } from '../../../../../accounts/infrastructure/persistence/relational/mappers/account.mapper';
 
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
@@ -8,6 +10,10 @@ import { AccountsPayableEntity } from '../entities/accounts-payable.entity';
 export class AccountsPayableMapper {
   static toDomain(raw: AccountsPayableEntity): AccountsPayable {
     const domainEntity = new AccountsPayable();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
     if (raw.account) {
       domainEntity.account = raw.account.map((item) =>
         AccountMapper.toDomain(item),
@@ -47,6 +53,12 @@ export class AccountsPayableMapper {
 
   static toPersistence(domainEntity: AccountsPayable): AccountsPayableEntity {
     const persistenceEntity = new AccountsPayableEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
     if (domainEntity.account) {
       persistenceEntity.account = domainEntity.account.map((item) =>
         AccountMapper.toPersistence(item),

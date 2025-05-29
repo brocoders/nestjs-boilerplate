@@ -1,9 +1,34 @@
 import { PaymentAggregator } from '../../../../domain/payment-aggregator';
+
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
+
+import { PaymentNotificationMapper } from '../../../../../payment-notifications/infrastructure/persistence/relational/mappers/payment-notification.mapper';
+
 import { PaymentAggregatorEntity } from '../entities/payment-aggregator.entity';
 
 export class PaymentAggregatorMapper {
   static toDomain(raw: PaymentAggregatorEntity): PaymentAggregator {
     const domainEntity = new PaymentAggregator();
+    domainEntity.logo = raw.logo;
+
+    domainEntity.isActive = raw.isActive;
+
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    }
+
+    domainEntity.config = raw.config;
+
+    domainEntity.name = raw.name;
+
+    if (raw.notifications) {
+      domainEntity.notifications = raw.notifications.map((item) =>
+        PaymentNotificationMapper.toDomain(item),
+      );
+    } else if (raw.notifications === null) {
+      domainEntity.notifications = null;
+    }
+
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -15,6 +40,28 @@ export class PaymentAggregatorMapper {
     domainEntity: PaymentAggregator,
   ): PaymentAggregatorEntity {
     const persistenceEntity = new PaymentAggregatorEntity();
+    persistenceEntity.logo = domainEntity.logo;
+
+    persistenceEntity.isActive = domainEntity.isActive;
+
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    }
+
+    persistenceEntity.config = domainEntity.config;
+
+    persistenceEntity.name = domainEntity.name;
+
+    if (domainEntity.notifications) {
+      persistenceEntity.notifications = domainEntity.notifications.map((item) =>
+        PaymentNotificationMapper.toPersistence(item),
+      );
+    } else if (domainEntity.notifications === null) {
+      persistenceEntity.notifications = null;
+    }
+
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }

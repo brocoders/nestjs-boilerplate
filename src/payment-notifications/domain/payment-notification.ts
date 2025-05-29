@@ -1,3 +1,5 @@
+import { Tenant } from '../../tenants/domain/tenant';
+import { PaymentAggregator } from '../../payment-aggregators/domain/payment-aggregator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   PaymentStatus,
@@ -7,6 +9,18 @@ import {
 } from '../../utils/enum/payment-notification.enums';
 
 export class PaymentNotification {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: false,
+  })
+  tenant: Tenant;
+
+  @ApiProperty({
+    type: () => PaymentAggregator,
+    nullable: false,
+  })
+  aggregator: PaymentAggregator;
+
   @ApiProperty({
     type: Date,
     nullable: true,

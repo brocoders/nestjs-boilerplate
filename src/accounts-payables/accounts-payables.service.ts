@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { AccountsService } from '../accounts/accounts.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
@@ -13,10 +16,13 @@ import { UpdateAccountsPayableDto } from './dto/update-accounts-payable.dto';
 import { AccountsPayableRepository } from './infrastructure/persistence/accounts-payable.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AccountsPayable } from './domain/accounts-payable';
+import { Account } from '../accounts/domain/account';
 
 @Injectable()
 export class AccountsPayablesService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly accountService: AccountsService,
 
     private readonly userService: UsersService,
@@ -28,6 +34,19 @@ export class AccountsPayablesService {
   async create(createAccountsPayableDto: CreateAccountsPayableDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createAccountsPayableDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let account: Account[] | null | undefined = undefined;
 
     if (createAccountsPayableDto.account) {
@@ -69,6 +88,8 @@ export class AccountsPayablesService {
     return this.accountsPayableRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       account,
 
       owner,
@@ -119,6 +140,23 @@ export class AccountsPayablesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateAccountsPayableDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateAccountsPayableDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let account: Account[] | null | undefined = undefined;
 
     if (updateAccountsPayableDto.account) {
@@ -160,6 +198,8 @@ export class AccountsPayablesService {
     return this.accountsPayableRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       account,
 
       owner,

@@ -1,3 +1,7 @@
+import { TenantDto } from '../../tenants/dto/tenant.dto';
+
+import { PaymentDto } from '../../payments/dto/payment.dto';
+
 import { AccountDto } from '../../accounts/dto/account.dto';
 
 import {
@@ -8,6 +12,7 @@ import {
   IsNumber,
   IsArray,
   ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -21,6 +26,24 @@ import {
 } from 'class-transformer';
 
 export class CreateTransactionDto {
+  @ApiProperty({
+    required: true,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  tenant: TenantDto;
+
+  @ApiProperty({
+    required: true,
+    type: () => PaymentDto,
+  })
+  @ValidateNested()
+  @Type(() => PaymentDto)
+  @IsNotEmptyObject()
+  payment: PaymentDto;
+
   @ApiProperty({
     required: false,
     type: () => String,

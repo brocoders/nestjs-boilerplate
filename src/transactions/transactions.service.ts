@@ -1,3 +1,9 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
+import { PaymentsService } from '../payments/payments.service';
+import { Payment } from '../payments/domain/payment';
+
 import { AccountsService } from '../accounts/accounts.service';
 import { Account } from '../accounts/domain/account';
 
@@ -6,6 +12,8 @@ import {
   Injectable,
   HttpStatus,
   UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -16,6 +24,11 @@ import { Transaction } from './domain/transaction';
 @Injectable()
 export class TransactionsService {
   constructor(
+    private readonly tenantService: TenantsService,
+
+    @Inject(forwardRef(() => PaymentsService))
+    private readonly paymentService: PaymentsService,
+
     private readonly accountService: AccountsService,
 
     // Dependencies here
@@ -25,6 +38,31 @@ export class TransactionsService {
   async create(createTransactionDto: CreateTransactionDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createTransactionDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
+    const paymentObject = await this.paymentService.findById(
+      createTransactionDto.payment.id,
+    );
+    if (!paymentObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          payment: 'notExists',
+        },
+      });
+    }
+    const payment = paymentObject;
 
     const creditAccountObjects = await this.accountService.findByIds(
       createTransactionDto.creditAccount.map((entity) => entity.id),
@@ -59,6 +97,10 @@ export class TransactionsService {
     return this.transactionRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
+      payment,
+
       creditAccountName: createTransactionDto.creditAccountName,
 
       debitAccountName: createTransactionDto.debitAccountName,
@@ -107,6 +149,39 @@ export class TransactionsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateTransactionDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateTransactionDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
+    let payment: Payment | undefined = undefined;
+
+    if (updateTransactionDto.payment) {
+      const paymentObject = await this.paymentService.findById(
+        updateTransactionDto.payment.id,
+      );
+      if (!paymentObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            payment: 'notExists',
+          },
+        });
+      }
+      payment = paymentObject;
+    }
 
     let creditAccount: Account[] | undefined = undefined;
 
@@ -150,6 +225,10 @@ export class TransactionsService {
     return this.transactionRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
+      payment,
+
       creditAccountName: updateTransactionDto.creditAccountName,
 
       debitAccountName: updateTransactionDto.debitAccountName,

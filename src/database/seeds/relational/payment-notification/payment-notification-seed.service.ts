@@ -1,13 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaymentNotificationEntity } from '../../../../payment-notifications/infrastructure/persistence/relational/entities/payment-notification.entity';
+
 import {
   PaymentStatus,
   PaymentMethod,
   Currency,
   PaymentProvider,
 } from '../../../../utils/enum/payment-notification.enums';
+import { PaymentAggregatorEntity } from '../../../../payment-aggregators/infrastructure/persistence/relational/entities/payment-aggregator.entity';
+import { PaymentNotificationEntity } from '../../../../payment-notifications/infrastructure/persistence/relational/entities/payment-notification.entity';
+import { TenantEntity } from '../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 
 @Injectable()
 export class PaymentNotificationSeedService {
@@ -15,14 +18,38 @@ export class PaymentNotificationSeedService {
 
   constructor(
     @InjectRepository(PaymentNotificationEntity)
-    private repository: Repository<PaymentNotificationEntity>,
+    private readonly notificationRepo: Repository<PaymentNotificationEntity>,
+
+    @InjectRepository(TenantEntity)
+    private readonly tenantRepo: Repository<TenantEntity>,
+
+    @InjectRepository(PaymentAggregatorEntity)
+    private readonly aggregatorRepo: Repository<PaymentAggregatorEntity>,
   ) {}
 
   async run() {
-    const notifications = this.createSampleNotifications(10); // Create 10 seed entries
+    const tenants = await this.tenantRepo.find();
+    const aggregators = await this.aggregatorRepo.find();
+
+    if (!tenants.length) {
+      this.logger.error('No tenants found. Aborting seeding.');
+      return;
+    }
+
+    if (!aggregators.length) {
+      this.logger.warn(
+        'No aggregators found. Notifications will not be linked to aggregators.',
+      );
+    }
+
+    const notifications = this.createSampleNotifications(
+      tenants,
+      aggregators,
+      10,
+    );
 
     try {
-      await this.repository.save(notifications);
+      await this.notificationRepo.save(notifications);
       this.logger.log(
         `Successfully seeded ${notifications.length} payment notifications`,
       );
@@ -32,6 +59,8 @@ export class PaymentNotificationSeedService {
   }
 
   private createSampleNotifications(
+    tenants: TenantEntity[],
+    aggregators: PaymentAggregatorEntity[],
     count: number,
   ): PaymentNotificationEntity[] {
     const now = new Date();
@@ -40,7 +69,14 @@ export class PaymentNotificationSeedService {
     const samples: PaymentNotificationEntity[] = [];
 
     for (let i = 1; i <= count; i++) {
-      const entity = this.repository.create({
+      const tenant = tenants[i % tenants.length]; // Distribute across tenants
+      const aggregator = aggregators.length
+        ? aggregators[i % aggregators.length]
+        : null;
+
+      const entity = this.notificationRepo.create({
+        tenant: tenant,
+        ...(aggregator ? { aggregator } : {}),
         processed: i % 2 === 0,
         processed_at:
           i % 2 === 0 ? new Date(now.getTime() - 1000 * 60 * 30) : null,

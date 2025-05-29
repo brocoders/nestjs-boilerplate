@@ -1,3 +1,6 @@
+import { TenantsService } from '../tenants/tenants.service';
+import { Tenant } from '../tenants/domain/tenant';
+
 import { AccountsService } from '../accounts/accounts.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
@@ -13,10 +16,13 @@ import { UpdateAccountsReceivableDto } from './dto/update-accounts-receivable.dt
 import { AccountsReceivableRepository } from './infrastructure/persistence/accounts-receivable.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AccountsReceivable } from './domain/accounts-receivable';
+import { Account } from '../accounts/domain/account';
 
 @Injectable()
 export class AccountsReceivablesService {
   constructor(
+    private readonly tenantService: TenantsService,
+
     private readonly accountService: AccountsService,
 
     private readonly userService: UsersService,
@@ -28,6 +34,19 @@ export class AccountsReceivablesService {
   async create(createAccountsReceivableDto: CreateAccountsReceivableDto) {
     // Do not remove comment below.
     // <creating-property />
+    const tenantObject = await this.tenantService.findById(
+      createAccountsReceivableDto.tenant.id,
+    );
+    if (!tenantObject) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'notExists',
+        },
+      });
+    }
+    const tenant = tenantObject;
+
     let account: Account[] | null | undefined = undefined;
 
     if (createAccountsReceivableDto.account) {
@@ -71,6 +90,8 @@ export class AccountsReceivablesService {
     return this.accountsReceivableRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      tenant,
+
       account,
 
       owner,
@@ -111,6 +132,23 @@ export class AccountsReceivablesService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let tenant: Tenant | undefined = undefined;
+
+    if (updateAccountsReceivableDto.tenant) {
+      const tenantObject = await this.tenantService.findById(
+        updateAccountsReceivableDto.tenant.id,
+      );
+      if (!tenantObject) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            tenant: 'notExists',
+          },
+        });
+      }
+      tenant = tenantObject;
+    }
+
     let account: Account[] | null | undefined = undefined;
 
     if (updateAccountsReceivableDto.account) {
@@ -154,6 +192,8 @@ export class AccountsReceivablesService {
     return this.accountsReceivableRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      tenant,
+
       account,
 
       owner,
