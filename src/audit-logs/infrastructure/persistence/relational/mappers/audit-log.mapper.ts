@@ -65,9 +65,9 @@ export class AuditLogMapper {
 
     persistenceEntity.description = domainEntity.description;
 
-    persistenceEntity.afterState = domainEntity.afterState;
+    persistenceEntity.afterState = domainEntity.afterState ?? undefined;
 
-    persistenceEntity.beforeState = domainEntity.beforeState;
+    persistenceEntity.beforeState = domainEntity.beforeState ?? undefined;
 
     persistenceEntity.entityId = domainEntity.entityId;
 

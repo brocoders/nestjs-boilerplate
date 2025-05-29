@@ -32,9 +32,9 @@ export class AuditLogsService {
     // <creating-property />
     let performedByUser: User | null | undefined = undefined;
 
-    if (createAuditLogDto.performedByUser) {
+    if (createAuditLogDto.performedByUserId) {
       const performedByUserObject = await this.userService.findById(
-        createAuditLogDto.performedByUser.id,
+        createAuditLogDto.performedByUserId,
       );
       if (!performedByUserObject) {
         throw new UnprocessableEntityException({
@@ -45,15 +45,15 @@ export class AuditLogsService {
         });
       }
       performedByUser = performedByUserObject;
-    } else if (createAuditLogDto.performedByUser === null) {
+    } else if (createAuditLogDto.performedByUserId === null) {
       performedByUser = null;
     }
 
     let performedByTenant: Tenant | null | undefined = undefined;
 
-    if (createAuditLogDto.performedByTenant) {
+    if (createAuditLogDto.performedByTenantId) {
       const performedByTenantObject = await this.tenantService.findById(
-        createAuditLogDto.performedByTenant.id,
+        createAuditLogDto.performedByTenantId,
       );
       if (!performedByTenantObject) {
         throw new UnprocessableEntityException({
@@ -64,7 +64,7 @@ export class AuditLogsService {
         });
       }
       performedByTenant = performedByTenantObject;
-    } else if (createAuditLogDto.performedByTenant === null) {
+    } else if (createAuditLogDto.performedByTenantId === null) {
       performedByTenant = null;
     }
 
@@ -121,9 +121,9 @@ export class AuditLogsService {
     // <updating-property />
     let performedByUser: User | null | undefined = undefined;
 
-    if (updateAuditLogDto.performedByUser) {
+    if (updateAuditLogDto.performedByUserId) {
       const performedByUserObject = await this.userService.findById(
-        updateAuditLogDto.performedByUser.id,
+        updateAuditLogDto.performedByUserId,
       );
       if (!performedByUserObject) {
         throw new UnprocessableEntityException({
@@ -134,15 +134,15 @@ export class AuditLogsService {
         });
       }
       performedByUser = performedByUserObject;
-    } else if (updateAuditLogDto.performedByUser === null) {
+    } else if (updateAuditLogDto.performedByUserId === null) {
       performedByUser = null;
     }
 
     let performedByTenant: Tenant | null | undefined = undefined;
 
-    if (updateAuditLogDto.performedByTenant) {
+    if (updateAuditLogDto.performedByTenantId) {
       const performedByTenantObject = await this.tenantService.findById(
-        updateAuditLogDto.performedByTenant.id,
+        updateAuditLogDto.performedByTenantId,
       );
       if (!performedByTenantObject) {
         throw new UnprocessableEntityException({
@@ -153,7 +153,7 @@ export class AuditLogsService {
         });
       }
       performedByTenant = performedByTenantObject;
-    } else if (updateAuditLogDto.performedByTenant === null) {
+    } else if (updateAuditLogDto.performedByTenantId === null) {
       performedByTenant = null;
     }
 
