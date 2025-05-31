@@ -27,6 +27,9 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllOnboardingsDto } from './dto/find-all-onboardings.dto';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { OnboardingEntityType } from './infrastructure/persistence/relational/entities/onboarding.entity';
+import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 
 @ApiTags('Onboardings')
 @ApiBearerAuth()
@@ -36,7 +39,10 @@ import { FindAllOnboardingsDto } from './dto/find-all-onboardings.dto';
   version: '1',
 })
 export class OnboardingsController {
-  constructor(private readonly onboardingsService: OnboardingsService) {}
+  constructor(
+    private readonly onboardingsService: OnboardingsService,
+    private auditService: AuditLogsService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -107,5 +113,65 @@ export class OnboardingsController {
   })
   remove(@Param('id') id: string) {
     return this.onboardingsService.remove(id);
+  }
+
+  @Get('user/:userId/status')
+  getUserStatus(@Param('userId') userId: string) {
+    return this.onboardingsService.getOnboardingStatus(
+      OnboardingEntityType.USER,
+      userId,
+    );
+  }
+
+  @Post('user/:userId/complete/:stepKey')
+  async completeUserStep(
+    @Param('userId') userId: string,
+    @Param('stepKey') stepKey: string,
+    @Body() body: any,
+  ) {
+    const result = await this.onboardingsService.completeStep(
+      OnboardingEntityType.USER,
+      userId,
+      stepKey,
+      body.metadata,
+    );
+
+    await this.auditService.logEvent(
+      AuditAction.COMPLETE_STEP,
+      'user',
+      userId,
+      { userId },
+      undefined,
+      { step: stepKey, status: 'completed' },
+      `User completed onboarding step: ${stepKey}`,
+      stepKey,
+    );
+
+    return result;
+  }
+
+  @Post('tenant/:tenantId/skip/:stepKey')
+  async skipTenantStep(
+    @Param('tenantId') tenantId: string,
+    @Param('stepKey') stepKey: string,
+  ) {
+    const result = await this.onboardingsService.skipStep(
+      OnboardingEntityType.TENANT,
+      tenantId,
+      stepKey,
+    );
+
+    await this.auditService.logEvent(
+      AuditAction.SKIP_STEP,
+      'tenant',
+      tenantId,
+      { tenantId },
+      undefined,
+      { step: stepKey, status: 'skipped' },
+      `Tenant skipped onboarding step: ${stepKey}`,
+      stepKey,
+    );
+
+    return result;
   }
 }

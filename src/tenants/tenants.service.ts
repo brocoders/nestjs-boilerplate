@@ -29,6 +29,9 @@ import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { TenantRepository } from './infrastructure/persistence/tenant.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Tenant } from './domain/tenant';
+// import { AuditLogsService } from '../audit-logs/audit-logs.service';
+// import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
+// import { OnboardingsService } from '../onboardings/onboardings.service';
 
 @Injectable()
 export class TenantsService {
@@ -48,6 +51,12 @@ export class TenantsService {
 
     @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
+
+    // @Inject(forwardRef(() => AuditLogsService))
+    // private readonly auditService: AuditLogsService,
+
+    // @Inject(forwardRef(() => OnboardingsService))
+    // private readonly onboardingService: OnboardingsService,
 
     // Dependencies here
     private readonly tenantRepository: TenantRepository,
@@ -205,7 +214,7 @@ export class TenantsService {
     // // Create database
     // await this.createDatabase(dbConfig);
 
-    return this.tenantRepository.create({
+    const newTenant = this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
       databaseConfig: createTenantDto.databaseConfig,
@@ -237,6 +246,22 @@ export class TenantsService {
 
       isActive: createTenantDto.isActive,
     });
+    // Initialize onboarding
+    // await this.onboardingService.initializeTenantOnboarding(
+    //   (await newTenant).id,
+    // );
+
+    // Audit log
+    // await this.auditService.logEvent(
+    //   AuditAction.CREATE,
+    //   'tenant',
+    //   (await newTenant).id,
+    //   { tenantId: (await newTenant).id },
+    //   undefined,
+    //   newTenant,
+    //   'Tenant created',
+    // );
+    return newTenant;
   }
 
   findAllWithPagination({

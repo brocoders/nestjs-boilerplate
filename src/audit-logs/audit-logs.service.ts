@@ -15,9 +15,11 @@ import { UpdateAuditLogDto } from './dto/update-audit-log.dto';
 import { AuditLogRepository } from './infrastructure/persistence/audit-log.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AuditLog } from './domain/audit-log';
+import { AuditAction } from './infrastructure/persistence/relational/entities/audit-log.entity';
 
 @Injectable()
 export class AuditLogsService {
+  auditLogRepo: any;
   constructor(
     private readonly userService: UsersService,
 
@@ -26,7 +28,33 @@ export class AuditLogsService {
     // Dependencies here
     private readonly auditLogRepository: AuditLogRepository,
   ) {}
+  async logEvent(
+    action: AuditAction,
+    entityType: string,
+    entityId: string,
+    performedBy?: { userId?: string; tenantId?: string },
+    beforeState?: Record<string, any>,
+    afterState?: Record<string, any>,
+    description?: string,
+    relatedStep?: string,
+  ) {
+    const payload: any = {
+      action,
+      entityType,
+      entityId,
+      beforeState,
+      afterState,
+      description,
+      relatedStep,
+    };
+    if (performedBy?.userId)
+      payload.performedByUser = { id: performedBy.userId };
+    if (performedBy?.tenantId)
+      payload.performedByTenant = { id: performedBy.tenantId };
+    const log = this.auditLogRepository.create(payload);
 
+    return log;
+  }
   async create(createAuditLogDto: CreateAuditLogDto) {
     // Do not remove comment below.
     // <creating-property />
@@ -90,7 +118,20 @@ export class AuditLogsService {
       action: createAuditLogDto.action,
     });
   }
-
+  async getEntityAuditLogs(
+    entityType: string,
+    entityId: string,
+    page: number = 1,
+    limit: number = 20,
+  ) {
+    return await this.auditLogRepo.find({
+      where: { entityType, entityId },
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: ['performedByUser', 'performedByTenant'],
+    });
+  }
   findAllWithPagination({
     paginationOptions,
   }: {

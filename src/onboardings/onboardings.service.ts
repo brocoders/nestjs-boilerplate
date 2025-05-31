@@ -9,12 +9,22 @@ import {
   Injectable,
   HttpStatus,
   UnprocessableEntityException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateOnboardingDto } from './dto/create-onboarding.dto';
 import { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 import { OnboardingRepository } from './infrastructure/persistence/onboarding.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Onboarding } from './domain/onboarding';
+import {
+  OnboardingEntityType,
+  OnboardingStepStatus,
+} from './infrastructure/persistence/relational/entities/onboarding.entity';
+import {
+  OnboardingStepDefinition,
+  TENANT_ONBOARDING_STEPS,
+  USER_ONBOARDING_STEPS,
+} from './constants/onboarding-steps.constants';
 
 @Injectable()
 export class OnboardingsService {
@@ -26,6 +36,194 @@ export class OnboardingsService {
     // Dependencies here
     private readonly onboardingRepository: OnboardingRepository,
   ) {}
+  async initializeOnboarding(
+    entityType: OnboardingEntityType,
+    entityId: string,
+    steps: OnboardingStepDefinition[],
+  ): Promise<Onboarding[]> {
+    const stepEntities = await Promise.all(
+      steps.map((step) =>
+        this.onboardingRepository.create({
+          ...step,
+          entityType,
+          description: step.description ?? '',
+          [entityType]: { id: entityId },
+          metadata: null,
+          status: OnboardingStepStatus.PENDING,
+          stepKey: step.key,
+        }),
+      ),
+    );
+
+    return stepEntities;
+  }
+
+  async initializeUserOnboarding(userId: string): Promise<Onboarding[]> {
+    return this.initializeOnboarding(
+      OnboardingEntityType.USER,
+      userId,
+      USER_ONBOARDING_STEPS,
+    );
+  }
+
+  async initializeTenantOnboarding(tenantId: string): Promise<Onboarding[]> {
+    return this.initializeOnboarding(
+      OnboardingEntityType.TENANT,
+      tenantId,
+      TENANT_ONBOARDING_STEPS,
+    );
+  }
+
+  async completeStep(
+    entityType: OnboardingEntityType,
+    entityId: string,
+    stepKey: string,
+    metadata?: Record<string, any>,
+  ): Promise<Onboarding> {
+    const step = await this.onboardingRepository.findOne({
+      entityType,
+      stepKey,
+      [entityType]: { id: entityId },
+    });
+
+    if (!step) {
+      throw new NotFoundException(
+        `Onboarding step not found for ${entityType} ${entityId}`,
+      );
+    }
+
+    const updatePayload = {
+      status: OnboardingStepStatus.COMPLETED,
+      metadata: metadata || step.metadata,
+      completedAt: new Date(),
+    };
+
+    await this.onboardingRepository.update(step.id, updatePayload);
+    return this.onboardingRepository.findById(step.id) as Promise<Onboarding>;
+  }
+
+  async skipStep(
+    entityType: OnboardingEntityType,
+    entityId: string,
+    stepKey: string,
+  ): Promise<Onboarding> {
+    const step = await this.onboardingRepository.findOne({
+      entityType,
+      stepKey,
+      [entityType]: { id: entityId },
+    });
+
+    if (!step) {
+      throw new NotFoundException(
+        `Onboarding step not found for ${entityType} ${entityId}`,
+      );
+    }
+
+    const updatePayload = {
+      status: OnboardingStepStatus.SKIPPED,
+      completedAt: new Date(),
+    };
+
+    await this.onboardingRepository.update(step.id, updatePayload);
+    return this.onboardingRepository.findById(step.id) as Promise<Onboarding>;
+  }
+
+  async getOnboardingStatus(
+    entityType: OnboardingEntityType,
+    entityId: string,
+  ): Promise<{
+    steps: Onboarding[];
+    completedCount: number;
+    totalCount: number;
+    requiredCompleted: number;
+    totalRequired: number;
+    percentage: number;
+    currentStep: Onboarding | null;
+  }> {
+    const steps = await this.onboardingRepository.find({
+      where: { entityType, [entityType]: { id: entityId } },
+      order: { order: 'ASC' },
+    });
+
+    const requiredSteps = steps.filter((s) => s.isRequired);
+    const completedSteps = steps.filter(
+      (s) => s.status === OnboardingStepStatus.COMPLETED,
+    );
+
+    const requiredCompleted = requiredSteps.filter(
+      (s) => s.status === OnboardingStepStatus.COMPLETED,
+    ).length;
+
+    // Find first pending step that isn't blocked by dependencies
+    let currentStep: Onboarding | null = null;
+    for (const step of steps) {
+      if (step.status === OnboardingStepStatus.PENDING) {
+        // Check if dependencies are completed
+        const stepDef =
+          entityType === OnboardingEntityType.USER
+            ? USER_ONBOARDING_STEPS.find((s) => s.key === step.stepKey)
+            : TENANT_ONBOARDING_STEPS.find((s) => s.key === step.stepKey);
+
+        if (!stepDef) continue;
+
+        const dependenciesCompleted =
+          !stepDef.dependencies?.length ||
+          stepDef.dependencies.every((depKey) =>
+            steps.some(
+              (s) =>
+                s.stepKey === depKey &&
+                s.status === OnboardingStepStatus.COMPLETED,
+            ),
+          );
+
+        if (dependenciesCompleted) {
+          currentStep = step;
+          break;
+        }
+      }
+    }
+
+    const percentage = steps.length
+      ? Math.round((completedSteps.length / steps.length) * 100)
+      : 0;
+
+    return {
+      steps,
+      completedCount: completedSteps.length,
+      totalCount: steps.length,
+      requiredCompleted,
+      totalRequired: requiredSteps.length,
+      percentage,
+      currentStep,
+    };
+  }
+
+  async resetStep(
+    entityType: OnboardingEntityType,
+    entityId: string,
+    stepKey: string,
+  ): Promise<Onboarding> {
+    const step = await this.onboardingRepository.findOne({
+      entityType,
+      stepKey,
+      [entityType]: { id: entityId },
+    });
+
+    if (!step) {
+      throw new NotFoundException(
+        `Onboarding step not found for ${entityType} ${entityId}`,
+      );
+    }
+
+    const updatePayload = {
+      status: OnboardingStepStatus.PENDING,
+      completedAt: null,
+      metadata: null,
+    };
+
+    await this.onboardingRepository.update(step.id, updatePayload);
+    return this.onboardingRepository.findById(step.id) as Promise<Onboarding>;
+  }
 
   async create(createOnboardingDto: CreateOnboardingDto) {
     // Do not remove comment below.
