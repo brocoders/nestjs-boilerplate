@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserSeedService } from './user-seed.service';
@@ -8,6 +8,7 @@ import { RoleEntity } from '../../../../roles/infrastructure/persistence/relatio
 import { TenantEntity } from '../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 import { SettingsEntity } from '../../../../settings/infrastructure/persistence/relational/entities/settings.entity';
 import { KycDetailsEntity } from '../../../../kyc-details/infrastructure/persistence/relational/entities/kyc-details.entity';
+import { OnboardingsModule } from '../../../../onboardings/onboardings.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { KycDetailsEntity } from '../../../../kyc-details/infrastructure/persist
       SettingsEntity,
       KycDetailsEntity,
     ]),
+    forwardRef(() => OnboardingsModule),
   ],
   providers: [UserSeedService],
   exports: [UserSeedService],

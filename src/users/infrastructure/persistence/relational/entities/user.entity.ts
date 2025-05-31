@@ -1,3 +1,5 @@
+import { OnboardingEntity } from '../../../../../onboardings/infrastructure/persistence/relational/entities/onboarding.entity';
+
 import { RegionEntity } from '../../../../../regions/infrastructure/persistence/relational/entities/region.entity';
 
 import { SettingsEntity } from '../../../../../settings/infrastructure/persistence/relational/entities/settings.entity';
@@ -32,6 +34,13 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @OneToMany(
+    () => OnboardingEntity,
+    (childEntity) => childEntity.performedByUser,
+    { eager: true, nullable: true },
+  )
+  onboardingSteps?: OnboardingEntity[] | null;
+
   @Column({
     nullable: true,
     type: String,

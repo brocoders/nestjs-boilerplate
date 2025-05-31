@@ -1,3 +1,5 @@
+import { OnboardingEntity } from '../../../../../onboardings/infrastructure/persistence/relational/entities/onboarding.entity';
+
 import { RegionEntity } from '../../../../../regions/infrastructure/persistence/relational/entities/region.entity';
 
 import { SettingsEntity } from '../../../../../settings/infrastructure/persistence/relational/entities/settings.entity';
@@ -28,6 +30,13 @@ import { RoleEntity } from 'src/roles/infrastructure/persistence/relational/enti
   name: 'tenant',
 })
 export class TenantEntity extends EntityRelationalHelper {
+  @OneToMany(
+    () => OnboardingEntity,
+    (childEntity) => childEntity.performedByTenant,
+    { eager: true, nullable: true },
+  )
+  onboardingSteps?: OnboardingEntity[] | null;
+
   @Column({
     nullable: false,
     type: 'jsonb',

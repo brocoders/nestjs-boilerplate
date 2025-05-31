@@ -1,3 +1,4 @@
+import { OnboardingsModule } from '../onboardings/onboardings.module';
 import { RegionsModule } from '../regions/regions.module';
 import { SettingsModule } from '../settings/settings.module';
 import { FilesModule } from '../files/files.module';
@@ -15,6 +16,8 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
 
 @Module({
   imports: [
+    forwardRef(() => OnboardingsModule),
+
     forwardRef(() => RegionsModule),
 
     forwardRef(() => SettingsModule),

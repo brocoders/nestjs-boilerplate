@@ -1,3 +1,5 @@
+import { OnboardingDto } from '../../onboardings/dto/onboarding.dto';
+
 import { RegionDto } from '../../regions/dto/region.dto';
 
 import { SettingsDto } from '../../settings/dto/settings.dto';
@@ -29,6 +31,16 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: false,
+    type: () => [OnboardingDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OnboardingDto)
+  @IsArray()
+  onboardingSteps?: OnboardingDto[] | null;
+
   @ApiProperty({
     required: false,
     type: () => String,

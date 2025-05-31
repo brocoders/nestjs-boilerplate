@@ -2,6 +2,7 @@ import { UsersModule } from '../users/users.module';
 import { TenantsModule } from '../tenants/tenants.module';
 
 import {
+  forwardRef,
   // common
   Module,
 } from '@nestjs/common';
@@ -11,9 +12,9 @@ import { RelationalAuditLogPersistenceModule } from './infrastructure/persistenc
 
 @Module({
   imports: [
-    UsersModule,
+    forwardRef(() => TenantsModule),
 
-    TenantsModule,
+    forwardRef(() => UsersModule),
 
     // import modules, etc.
     RelationalAuditLogPersistenceModule,

@@ -1,3 +1,5 @@
+import { OnboardingDto } from '../../onboardings/dto/onboarding.dto';
+
 import { RegionDto } from '../../regions/dto/region.dto';
 
 import { SettingsDto } from '../../settings/dto/settings.dto';
@@ -31,6 +33,16 @@ import {
 } from 'class-transformer';
 
 export class CreateTenantDto {
+  @ApiProperty({
+    required: false,
+    type: () => [OnboardingDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OnboardingDto)
+  @IsArray()
+  onboardingSteps?: OnboardingDto[] | null;
+
   @ApiProperty({
     required: true,
     type: () => String,

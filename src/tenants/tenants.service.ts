@@ -29,12 +29,14 @@ import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { TenantRepository } from './infrastructure/persistence/tenant.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Tenant } from './domain/tenant';
+import { Onboarding } from '../onboardings/domain/onboarding';
 // import { AuditLogsService } from '../audit-logs/audit-logs.service';
 // import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { OnboardingsService } from '../onboardings/onboardings.service';
 
 @Injectable()
 export class TenantsService {
+  onboardingService: any;
   constructor(
     @Inject(forwardRef(() => RegionsService))
     private readonly regionService: RegionsService,
@@ -92,6 +94,26 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
+    let onboardingSteps: Onboarding[] | null | undefined = undefined;
+
+    if (createTenantDto.onboardingSteps) {
+      const onboardingStepsObjects = await this.onboardingService.findByIds(
+        createTenantDto.onboardingSteps.map((entity) => entity.id),
+      );
+      if (
+        onboardingStepsObjects.length !== createTenantDto.onboardingSteps.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            onboardingSteps: 'notExists',
+          },
+        });
+      }
+      onboardingSteps = onboardingStepsObjects;
+    } else if (createTenantDto.onboardingSteps === null) {
+      onboardingSteps = null;
+    }
 
     let regions: Region[] | null | undefined = undefined;
 
@@ -217,6 +239,8 @@ export class TenantsService {
     const newTenant = this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      onboardingSteps,
+
       databaseConfig: createTenantDto.databaseConfig,
       // databaseConfig: dbConfig,
 
@@ -292,6 +316,26 @@ export class TenantsService {
   ) {
     // Do not remove comment below.
     // <updating-property />
+    let onboardingSteps: Onboarding[] | null | undefined = undefined;
+
+    if (updateTenantDto.onboardingSteps) {
+      const onboardingStepsObjects = await this.onboardingService.findByIds(
+        updateTenantDto.onboardingSteps.map((entity) => entity.id),
+      );
+      if (
+        onboardingStepsObjects.length !== updateTenantDto.onboardingSteps.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            onboardingSteps: 'notExists',
+          },
+        });
+      }
+      onboardingSteps = onboardingStepsObjects;
+    } else if (updateTenantDto.onboardingSteps === null) {
+      onboardingSteps = null;
+    }
 
     let regions: Region[] | null | undefined = undefined;
 
@@ -412,6 +456,8 @@ export class TenantsService {
     return this.tenantRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      onboardingSteps,
+
       databaseConfig: updateTenantDto.databaseConfig,
 
       domain: updateTenantDto.domain,

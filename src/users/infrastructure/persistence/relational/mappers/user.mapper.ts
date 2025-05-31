@@ -1,4 +1,5 @@
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
+import { OnboardingMapper } from '../../../../../onboardings/infrastructure/persistence/relational/mappers/onboarding.mapper';
 
 import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
 
@@ -17,6 +18,14 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    if (raw.onboardingSteps) {
+      domainEntity.onboardingSteps = raw.onboardingSteps.map((item) =>
+        OnboardingMapper.toDomain(item),
+      );
+    } else if (raw.onboardingSteps === null) {
+      domainEntity.onboardingSteps = null;
+    }
+
     domainEntity.phoneNumber = raw.phoneNumber;
 
     domainEntity.countryCode = raw.countryCode;
@@ -103,6 +112,14 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    if (domainEntity.onboardingSteps) {
+      persistenceEntity.onboardingSteps = domainEntity.onboardingSteps.map(
+        (item) => OnboardingMapper.toPersistence(item),
+      );
+    } else if (domainEntity.onboardingSteps === null) {
+      persistenceEntity.onboardingSteps = null;
+    }
+
     persistenceEntity.phoneNumber = domainEntity.phoneNumber;
 
     persistenceEntity.countryCode = domainEntity.countryCode;

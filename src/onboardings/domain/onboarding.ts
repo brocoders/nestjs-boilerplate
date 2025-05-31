@@ -1,13 +1,26 @@
-import { IsOptional } from 'class-validator';
-import { Tenant } from '../../tenants/domain/tenant';
 import { User } from '../../users/domain/user';
+import { IsOptional } from 'class-validator';
+// import { Tenant } from '../../tenants/domain/tenant';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   OnboardingStepStatus,
   OnboardingEntityType,
 } from '../infrastructure/persistence/relational/entities/onboarding.entity';
+import { Tenant } from '../../tenants/domain/tenant';
 
 export class Onboarding {
+  @ApiProperty({
+    type: () => Tenant,
+    nullable: true,
+  })
+  performedByTenant?: Tenant | null;
+
+  @ApiProperty({
+    type: () => User,
+    nullable: true,
+  })
+  performedByUser?: User | null;
+
   @ApiProperty({
     type: () => Date,
     nullable: true,
@@ -73,17 +86,17 @@ export class Onboarding {
   })
   entityType: OnboardingEntityType;
 
-  @ApiProperty({
-    type: () => Tenant,
-    nullable: true,
-  })
-  tenant?: Tenant | null;
+  // @ApiProperty({
+  //   type: () => Tenant,
+  //   nullable: true,
+  // })
+  // tenant?: Tenant | null;
 
-  @ApiProperty({
-    type: () => User,
-    nullable: true,
-  })
-  user?: User | null;
+  // @ApiProperty({
+  //   type: () => User,
+  //   nullable: true,
+  // })
+  // user?: User | null;
 
   @ApiProperty({
     type: String,

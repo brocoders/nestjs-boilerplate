@@ -1,3 +1,4 @@
+import { Onboarding } from '../../onboardings/domain/onboarding';
 import { Region } from '../../regions/domain/region';
 import { Settings } from '../../settings/domain/settings';
 import { FileType } from '../../files/domain/file';
@@ -7,6 +8,12 @@ import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Tenant {
+  @ApiProperty({
+    type: () => [Onboarding],
+    nullable: true,
+  })
+  onboardingSteps?: Onboarding[] | null;
+
   @ApiProperty({
     type: () => String,
     nullable: false,

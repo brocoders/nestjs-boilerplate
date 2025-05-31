@@ -4,4 +4,7 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateOnboardingDto } from './create-onboarding.dto';
 
-export class UpdateOnboardingDto extends PartialType(CreateOnboardingDto) {}
+export class UpdateOnboardingDto extends PartialType(CreateOnboardingDto) {
+  tenant: any;
+  user: any;
+}
