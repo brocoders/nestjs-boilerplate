@@ -31,15 +31,15 @@ export class OnboardingEntity extends EntityRelationalHelper {
   @ManyToOne(
     () => TenantEntity,
     (parentEntity) => parentEntity.onboardingSteps,
-    { eager: false, nullable: false },
+    { eager: false, nullable: true },
   )
-  performedByTenant: TenantEntity;
+  performedByTenant?: TenantEntity;
 
   @ManyToOne(() => UserEntity, (parentEntity) => parentEntity.onboardingSteps, {
     eager: false,
-    nullable: false,
+    nullable: true,
   })
-  performedByUser: UserEntity;
+  performedByUser?: UserEntity;
 
   @Column({
     nullable: true,

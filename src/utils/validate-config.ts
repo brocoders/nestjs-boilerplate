@@ -6,7 +6,6 @@ function validateConfig<T extends object>(
   config: Record<string, unknown>,
   envVariablesClass: ClassConstructor<T>,
 ) {
-  console.log('Validating configuration:', config);
   const validatedConfig = plainToClass(envVariablesClass, config, {
     enableImplicitConversion: true,
   });
