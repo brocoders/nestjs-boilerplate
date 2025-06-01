@@ -1,3 +1,4 @@
+import { OnboardingsModule } from '../onboardings/onboardings.module';
 import { RegionsModule } from '../regions/regions.module';
 import { SettingsModule } from '../settings/settings.module';
 import { KycDetailsModule } from '../kyc-details/kyc-details.module';
@@ -26,13 +27,12 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
 
 @Module({
   imports: [
-    RegionsModule,
-
+    forwardRef(() => OnboardingsModule),
+    forwardRef(() => RegionsModule), // FIXED: Added forwardRef here
     forwardRef(() => SettingsModule),
-
     forwardRef(() => KycDetailsModule),
-
     forwardRef(() => TenantsModule),
+    forwardRef(() => FilesModule),
 
     // import modules, etc.
     infrastructurePersistenceModule,

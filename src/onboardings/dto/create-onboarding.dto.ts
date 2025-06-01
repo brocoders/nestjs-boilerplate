@@ -4,20 +4,19 @@ import { UserDto } from '../../users/dto/user.dto';
 
 import {
   // decorators here
-  Type,
   Transform,
+  Type,
 } from 'class-transformer';
 
 import {
   // decorators here
-
-  ValidateNested,
-  IsNotEmptyObject,
   IsOptional,
   IsString,
   IsNumber,
   IsBoolean,
   IsDate,
+  ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
 
 import {
@@ -30,6 +29,24 @@ import {
 } from '../infrastructure/persistence/relational/entities/onboarding.entity';
 
 export class CreateOnboardingDto {
+  @ApiProperty({
+    required: false,
+    type: () => TenantDto,
+  })
+  @ValidateNested()
+  @Type(() => TenantDto)
+  @IsNotEmptyObject()
+  performedByTenant?: TenantDto;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserDto,
+  })
+  @ValidateNested()
+  @Type(() => UserDto)
+  @IsNotEmptyObject()
+  performedByUser?: UserDto;
+
   @ApiProperty({
     required: false,
     type: () => Date,
@@ -103,26 +120,28 @@ export class CreateOnboardingDto {
     example: OnboardingEntityType.USER,
   })
   entityType: OnboardingEntityType;
+  tenant: any;
+  user: any;
 
-  @ApiProperty({
-    required: false,
-    type: () => TenantDto,
-  })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => TenantDto)
-  @IsNotEmptyObject()
-  tenant?: TenantDto | null;
+  // @ApiProperty({
+  //   required: false,
+  //   type: () => TenantDto,
+  // })
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => TenantDto)
+  // @IsNotEmptyObject()
+  // tenant?: TenantDto | null;
 
-  @ApiProperty({
-    required: false,
-    type: () => UserDto,
-  })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => UserDto)
-  @IsNotEmptyObject()
-  user?: UserDto | null;
+  // @ApiProperty({
+  //   required: false,
+  //   type: () => UserDto,
+  // })
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => UserDto)
+  // @IsNotEmptyObject()
+  // user?: UserDto | null;
 
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

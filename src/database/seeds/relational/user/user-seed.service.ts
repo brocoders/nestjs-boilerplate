@@ -19,6 +19,8 @@ import {
   KycSubjectType,
 } from '../../../../kyc-details/infrastructure/persistence/relational/entities/kyc-details.entity';
 import { AuthProvidersEnum } from '../../../../auth/auth-providers.enum';
+import { OnboardingsService } from 'src/onboardings/onboardings.service';
+import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity';
 
 @Injectable()
 export class UserSeedService {
@@ -37,6 +39,7 @@ export class UserSeedService {
     private readonly settingsRepository: Repository<SettingsEntity>,
     @InjectRepository(KycDetailsEntity)
     private readonly kycRepository: Repository<KycDetailsEntity>,
+    private readonly onboardingsService: OnboardingsService,
   ) {}
 
   async run() {
@@ -93,6 +96,7 @@ export class UserSeedService {
       const savedUser = await this.userRepository.save(userData);
       await this.createUserSettings(tenant, savedUser);
       await this.createUserKyc(tenant, savedUser);
+      await this.initializeUserOnboarding(savedUser);
     }
   }
 
@@ -138,6 +142,7 @@ export class UserSeedService {
       const savedUser = await this.userRepository.save(userData);
       await this.createUserSettings(tenant, savedUser);
       await this.createUserKyc(tenant, savedUser);
+      await this.initializeUserOnboarding(savedUser);
     }
   }
 
@@ -156,6 +161,87 @@ export class UserSeedService {
       const savedUser = await this.userRepository.save(userData);
       await this.createUserSettings(tenant, savedUser);
       await this.createUserKyc(tenant, savedUser);
+      await this.initializeUserOnboarding(savedUser);
+    }
+  }
+
+  private async initializeUserOnboarding(user: UserEntity) {
+    try {
+      // Check if onboarding already exists
+      const onboardingStatus =
+        await this.onboardingsService.getOnboardingStatus(
+          OnboardingEntityType.USER,
+          user.id.toString(),
+        );
+
+      if (onboardingStatus.steps.length === 0) {
+        // Initialize user onboarding
+        await this.onboardingsService.initializeUserOnboarding(
+          user.id.toString(),
+        );
+        this.logger.log(`✅ Initialized onboarding for user: ${user.email}`);
+
+        // Complete key steps for seed users
+        await this.completeKeyOnboardingSteps(user);
+      } else {
+        this.logger.log(`ℹ️ Onboarding already exists for user: ${user.email}`);
+      }
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to initialize onboarding for user ${user.email}: ${error.message}`,
+        error.stack,
+      );
+    }
+  }
+
+  private async completeKeyOnboardingSteps(user: UserEntity) {
+    try {
+      // Complete email verification step
+      await this.onboardingsService.completeStep(
+        OnboardingEntityType.USER,
+        user.id.toString(),
+        'email_verification',
+        { verifiedAt: new Date() },
+        { userId: user.id.toString() },
+      );
+
+      // Complete profile completion step
+      await this.onboardingsService.completeStep(
+        OnboardingEntityType.USER,
+        user.id.toString(),
+        'profile_completion',
+        { completedAt: new Date() },
+        { userId: user.id.toString() },
+      );
+
+      // Complete KYC submission for agents
+      if (user.role?.name === 'Agent') {
+        await this.onboardingsService.completeStep(
+          OnboardingEntityType.USER,
+          user.id.toString(),
+          'kyc_submission',
+          { submittedAt: new Date() },
+          { userId: user.id.toString() },
+        );
+
+        // Auto-approve KYC for agents
+        await this.onboardingsService.completeStep(
+          OnboardingEntityType.USER,
+          user.id.toString(),
+          'kyc_approval',
+          { approvedAt: new Date() },
+          { userId: user.id.toString() },
+        );
+      }
+
+      this.logger.log(
+        `✅ Completed key onboarding steps for user: ${user.email}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to complete onboarding steps for user ${user.email}: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -217,7 +303,7 @@ export class UserSeedService {
     });
 
     await this.settingsRepository.save(settings);
-    this.logger.log(`Created settings for ${roleName} user ${user.email}`);
+    this.logger.log(`⚙️ Created settings for ${roleName} user ${user.email}`);
   }
 
   private getCustomerSettings(): Partial<SettingsConfig> {
@@ -276,7 +362,7 @@ export class UserSeedService {
 
     await this.kycRepository.save(kycData);
     this.logger.log(
-      `Created KYC for ${roleName} user ${user.email} (Status: ${kycStatus})`,
+      `📝 Created KYC for ${roleName} user ${user.email} (Status: ${kycStatus})`,
     );
   }
 }

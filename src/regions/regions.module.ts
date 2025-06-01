@@ -7,11 +7,12 @@ import {
 import { RegionsService } from './regions.service';
 import { RegionsController } from './regions.controller';
 import { RelationalRegionPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     forwardRef(() => TenantsModule),
-
+    forwardRef(() => UsersModule),
     // import modules, etc.
     RelationalRegionPersistenceModule,
   ],

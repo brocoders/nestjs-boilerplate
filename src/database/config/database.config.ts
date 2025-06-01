@@ -11,7 +11,8 @@ import {
 } from 'class-validator';
 import validateConfig from '../../utils/validate-config';
 import { DatabaseConfig } from './database-config.type';
-
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env' }); // Load environment variables FIRST
 class EnvironmentVariablesValidator {
   @ValidateIf((envValues) => envValues.DATABASE_URL)
   @IsString()

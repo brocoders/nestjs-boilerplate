@@ -7,9 +7,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne,
   Column,
   Index,
+  ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 export enum OnboardingEntityType {
@@ -28,6 +28,19 @@ export enum OnboardingStepStatus {
   name: 'onboarding',
 })
 export class OnboardingEntity extends EntityRelationalHelper {
+  @ManyToOne(
+    () => TenantEntity,
+    (parentEntity) => parentEntity.onboardingSteps,
+    { eager: false, nullable: true },
+  )
+  performedByTenant?: TenantEntity;
+
+  @ManyToOne(() => UserEntity, (parentEntity) => parentEntity.onboardingSteps, {
+    eager: false,
+    nullable: true,
+  })
+  performedByUser?: UserEntity;
+
   @Column({
     nullable: true,
     type: Date,
@@ -87,11 +100,11 @@ export class OnboardingEntity extends EntityRelationalHelper {
   })
   entityType: OnboardingEntityType;
 
-  @ManyToOne(() => TenantEntity, { eager: true, nullable: true })
-  tenant?: TenantEntity | null;
+  // @ManyToOne(() => TenantEntity, { eager: true, nullable: true })
+  // tenant?: TenantEntity | null;
 
-  @ManyToOne(() => UserEntity, { eager: true, nullable: true })
-  user?: UserEntity | null;
+  // @ManyToOne(() => UserEntity, { eager: true, nullable: true })
+  // user?: UserEntity | null;
 
   @PrimaryGeneratedColumn('uuid')
   id: string;

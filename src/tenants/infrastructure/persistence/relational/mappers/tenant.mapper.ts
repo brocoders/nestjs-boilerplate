@@ -1,4 +1,5 @@
 import { Tenant } from '../../../../domain/tenant';
+import { OnboardingMapper } from '../../../../../onboardings/infrastructure/persistence/relational/mappers/onboarding.mapper';
 
 import { RegionMapper } from '../../../../../regions/infrastructure/persistence/relational/mappers/region.mapper';
 
@@ -17,6 +18,13 @@ import { TenantEntity } from '../entities/tenant.entity';
 export class TenantMapper {
   static toDomain(raw: TenantEntity): Tenant {
     const domainEntity = new Tenant();
+    if (raw.onboardingSteps) {
+      domainEntity.onboardingSteps = raw.onboardingSteps.map((item) =>
+        OnboardingMapper.toDomain(item),
+      );
+    } else if (raw.onboardingSteps === null) {
+      domainEntity.onboardingSteps = null;
+    }
     domainEntity.fullyOnboarded = raw.fullyOnboarded;
 
     domainEntity.databaseConfig = JSON.stringify(raw.databaseConfig);
@@ -86,6 +94,13 @@ export class TenantMapper {
 
   static toPersistence(domainEntity: Tenant): TenantEntity {
     const persistenceEntity = new TenantEntity();
+    if (domainEntity.onboardingSteps) {
+      persistenceEntity.onboardingSteps = domainEntity.onboardingSteps.map(
+        (item) => OnboardingMapper.toPersistence(item),
+      );
+    } else if (domainEntity.onboardingSteps === null) {
+      persistenceEntity.onboardingSteps = null;
+    }
     persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
 
     persistenceEntity.databaseConfig = domainEntity.databaseConfig

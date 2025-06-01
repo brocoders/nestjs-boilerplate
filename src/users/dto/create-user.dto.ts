@@ -1,3 +1,5 @@
+import { OnboardingDto } from '../../onboardings/dto/onboarding.dto';
+
 import { RegionDto } from '../../regions/dto/region.dto';
 
 import { SettingsDto } from '../../settings/dto/settings.dto';
@@ -36,6 +38,16 @@ export class CreateUserDto {
   })
   @IsBoolean()
   fullyOnboarded: boolean;
+
+  @ApiProperty({
+    required: false,
+    type: () => [OnboardingDto],
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OnboardingDto)
+  @IsArray()
+  onboardingSteps?: OnboardingDto[] | null;
 
   @ApiProperty({
     required: false,

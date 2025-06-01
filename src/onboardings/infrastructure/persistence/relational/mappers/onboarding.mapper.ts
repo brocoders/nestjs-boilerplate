@@ -7,8 +7,19 @@ import { UserMapper } from '../../../../../users/infrastructure/persistence/rela
 import { OnboardingEntity } from '../entities/onboarding.entity';
 
 export class OnboardingMapper {
+  static toPersistenceWhere: any;
   static toDomain(raw: OnboardingEntity): Onboarding {
     const domainEntity = new Onboarding();
+    if (raw.performedByTenant) {
+      domainEntity.performedByTenant = TenantMapper.toDomain(
+        raw.performedByTenant,
+      );
+    }
+
+    if (raw.performedByUser) {
+      domainEntity.performedByUser = UserMapper.toDomain(raw.performedByUser);
+    }
+
     domainEntity.completedAt = raw.completedAt;
 
     domainEntity.metadata = raw.metadata;
@@ -29,18 +40,6 @@ export class OnboardingMapper {
 
     domainEntity.entityType = raw.entityType;
 
-    if (raw.tenant) {
-      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
-    } else if (raw.tenant === null) {
-      domainEntity.tenant = null;
-    }
-
-    if (raw.user) {
-      domainEntity.user = UserMapper.toDomain(raw.user);
-    } else if (raw.user === null) {
-      domainEntity.user = null;
-    }
-
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -50,6 +49,18 @@ export class OnboardingMapper {
 
   static toPersistence(domainEntity: Onboarding): OnboardingEntity {
     const persistenceEntity = new OnboardingEntity();
+    if (domainEntity.performedByTenant) {
+      persistenceEntity.performedByTenant = TenantMapper.toPersistence(
+        domainEntity.performedByTenant,
+      );
+    }
+
+    if (domainEntity.performedByUser) {
+      persistenceEntity.performedByUser = UserMapper.toPersistence(
+        domainEntity.performedByUser,
+      );
+    }
+
     persistenceEntity.completedAt = domainEntity.completedAt;
 
     persistenceEntity.metadata = domainEntity.metadata;
@@ -69,20 +80,6 @@ export class OnboardingMapper {
     persistenceEntity.stepKey = domainEntity.stepKey;
 
     persistenceEntity.entityType = domainEntity.entityType;
-
-    if (domainEntity.tenant) {
-      persistenceEntity.tenant = TenantMapper.toPersistence(
-        domainEntity.tenant,
-      );
-    } else if (domainEntity.tenant === null) {
-      persistenceEntity.tenant = null;
-    }
-
-    if (domainEntity.user) {
-      persistenceEntity.user = UserMapper.toPersistence(domainEntity.user);
-    } else if (domainEntity.user === null) {
-      persistenceEntity.user = null;
-    }
 
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;

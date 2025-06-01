@@ -22,8 +22,8 @@ import { PaymentNotificationSeedService } from './payment-notification/payment-n
 import { AccountSeedService } from './account/account-seed.service';
 import { ResidenceSeedService } from './residence/residence-seed.service';
 import { TenantTypesSeedService } from './tenant-types/tenant-types-seed.service';
-// import { SettingsSeedService } from './settings/settings-seed.service';
-// import { KycDetailSeedService } from './kyc-detail/kyc-detail-seed.service';
+import { SettingsSeedService } from './settings/settings-seed.service';
+import { KycDetailSeedService } from './kyc-detail/kyc-detail-seed.service';
 import { TenantSeedService } from './tenant/tenant-seed.service';
 import { RegionSeedService } from './region/region-seed.service';
 import { RoleSeedService } from './role/role-seed.service';
@@ -41,9 +41,9 @@ const runSeed = async () => {
   await app.get(StatusSeedService).run();
   await app.get(RegionSeedService).run();
   await app.get(UserSeedService).run();
-  // await app.get(KycDetailSeedService).run();
+  await app.get(KycDetailSeedService).run();
 
-  // await app.get(SettingsSeedService).run();
+  await app.get(SettingsSeedService).run();
 
   await app.get(ResidenceSeedService).run();
 

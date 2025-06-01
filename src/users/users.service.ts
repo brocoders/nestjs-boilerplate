@@ -1,3 +1,6 @@
+import { OnboardingsService } from '../onboardings/onboardings.service';
+import { Onboarding } from '../onboardings/domain/onboarding';
+
 import { RegionsService } from '../regions/regions.service';
 import { Region } from '../regions/domain/region';
 
@@ -36,6 +39,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(forwardRef(() => OnboardingsService))
+    private readonly onboardingService: OnboardingsService,
+
+    @Inject(forwardRef(() => RegionsService))
     private readonly regionService: RegionsService,
 
     @Inject(forwardRef(() => SettingsService))
@@ -54,6 +61,26 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Do not remove comment below.
     // <creating-property />
+    let onboardingSteps: Onboarding[] | null | undefined = undefined;
+
+    if (createUserDto.onboardingSteps) {
+      const onboardingStepsObjects = await this.onboardingService.findByIds(
+        createUserDto.onboardingSteps.map((entity) => entity.id),
+      );
+      if (
+        onboardingStepsObjects.length !== createUserDto.onboardingSteps.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            onboardingSteps: 'notExists',
+          },
+        });
+      }
+      onboardingSteps = onboardingStepsObjects;
+    } else if (createUserDto.onboardingSteps === null) {
+      onboardingSteps = null;
+    }
 
     let regions: Region[] | null | undefined = undefined;
 
@@ -213,6 +240,7 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      onboardingSteps,
       fullyOnboarded: createUserDto.fullyOnboarded,
 
       phoneNumber: createUserDto.phoneNumber,
@@ -286,6 +314,26 @@ export class UsersService {
   ): Promise<User | null> {
     // Do not remove comment below.
     // <updating-property />
+    let onboardingSteps: Onboarding[] | null | undefined = undefined;
+
+    if (updateUserDto.onboardingSteps) {
+      const onboardingStepsObjects = await this.onboardingService.findByIds(
+        updateUserDto.onboardingSteps.map((entity) => entity.id),
+      );
+      if (
+        onboardingStepsObjects.length !== updateUserDto.onboardingSteps.length
+      ) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            onboardingSteps: 'notExists',
+          },
+        });
+      }
+      onboardingSteps = onboardingStepsObjects;
+    } else if (updateUserDto.onboardingSteps === null) {
+      onboardingSteps = null;
+    }
 
     let regions: Region[] | null | undefined = undefined;
 
@@ -457,6 +505,7 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      onboardingSteps,
       fullyOnboarded: updateUserDto.fullyOnboarded,
 
       phoneNumber: updateUserDto.phoneNumber,

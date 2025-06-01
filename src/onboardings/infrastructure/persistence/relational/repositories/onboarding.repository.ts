@@ -79,4 +79,22 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
   async remove(id: Onboarding['id']): Promise<void> {
     await this.onboardingRepository.delete(id);
   }
+
+  async findOne(
+    where: import('typeorm').FindOptionsWhere<Onboarding>,
+  ): Promise<NullableType<Onboarding>> {
+    // Map the domain-level where filter to persistence-level where filter
+    const persistenceWhere = OnboardingMapper.toPersistenceWhere
+      ? OnboardingMapper.toPersistenceWhere(where)
+      : (where as unknown as import('typeorm').FindOptionsWhere<OnboardingEntity>);
+    const entity = await this.onboardingRepository.findOne({
+      where: persistenceWhere,
+    });
+    return entity ? OnboardingMapper.toDomain(entity) : null;
+  }
+
+  async find(): Promise<Onboarding[]> {
+    const entities = await this.onboardingRepository.find();
+    return entities.map((entity) => OnboardingMapper.toDomain(entity));
+  }
 }
