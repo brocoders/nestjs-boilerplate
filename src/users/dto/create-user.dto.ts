@@ -24,6 +24,7 @@ import {
   IsNotEmptyObject,
   IsArray,
   IsString,
+  IsBoolean,
 } from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
 import { RoleDto } from '../../roles/dto/role.dto';
@@ -31,6 +32,13 @@ import { StatusDto } from '../../statuses/dto/status.dto';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
+  @ApiProperty({
+    required: true,
+    type: () => Boolean,
+  })
+  @IsBoolean()
+  fullyOnboarded: boolean;
+
   @ApiProperty({
     required: false,
     type: () => [OnboardingDto],

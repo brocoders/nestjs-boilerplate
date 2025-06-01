@@ -13,6 +13,11 @@ export class Tenant {
     nullable: true,
   })
   onboardingSteps?: Onboarding[] | null;
+  @ApiProperty({
+    type: () => Boolean,
+    nullable: false,
+  })
+  fullyOnboarded: boolean;
 
   @ApiProperty({
     type: () => String,

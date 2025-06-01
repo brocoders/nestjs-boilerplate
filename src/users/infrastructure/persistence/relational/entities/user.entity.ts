@@ -42,6 +42,12 @@ export class UserEntity extends EntityRelationalHelper {
   onboardingSteps?: OnboardingEntity[] | null;
 
   @Column({
+    nullable: false,
+    type: Boolean,
+  })
+  fullyOnboarded: boolean;
+
+  @Column({
     nullable: true,
     type: String,
   })

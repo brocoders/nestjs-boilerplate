@@ -240,6 +240,7 @@ export class TenantsService {
       // Do not remove comment below.
       // <creating-property-payload />
       onboardingSteps,
+      fullyOnboarded: createTenantDto.fullyOnboarded,
 
       databaseConfig: createTenantDto.databaseConfig,
       // databaseConfig: dbConfig,
@@ -457,6 +458,7 @@ export class TenantsService {
       // Do not remove comment below.
       // <updating-property-payload />
       onboardingSteps,
+      fullyOnboarded: updateTenantDto.fullyOnboarded,
 
       databaseConfig: updateTenantDto.databaseConfig,
 

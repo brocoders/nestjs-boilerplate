@@ -45,6 +45,13 @@ export class CreateTenantDto {
 
   @ApiProperty({
     required: true,
+    type: () => Boolean,
+  })
+  @IsBoolean()
+  fullyOnboarded: boolean;
+
+  @ApiProperty({
+    required: true,
     type: () => String,
   })
   @IsOptional()

@@ -25,6 +25,7 @@ export class TenantMapper {
     } else if (raw.onboardingSteps === null) {
       domainEntity.onboardingSteps = null;
     }
+    domainEntity.fullyOnboarded = raw.fullyOnboarded;
 
     domainEntity.databaseConfig = JSON.stringify(raw.databaseConfig);
 
@@ -100,6 +101,7 @@ export class TenantMapper {
     } else if (domainEntity.onboardingSteps === null) {
       persistenceEntity.onboardingSteps = null;
     }
+    persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
 
     persistenceEntity.databaseConfig = domainEntity.databaseConfig
       ? JSON.parse(domainEntity.databaseConfig)

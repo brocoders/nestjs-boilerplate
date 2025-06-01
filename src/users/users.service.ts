@@ -241,6 +241,7 @@ export class UsersService {
       // Do not remove comment below.
       // <creating-property-payload />
       onboardingSteps,
+      fullyOnboarded: createUserDto.fullyOnboarded,
 
       phoneNumber: createUserDto.phoneNumber,
 
@@ -505,6 +506,7 @@ export class UsersService {
       // Do not remove comment below.
       // <updating-property-payload />
       onboardingSteps,
+      fullyOnboarded: updateUserDto.fullyOnboarded,
 
       phoneNumber: updateUserDto.phoneNumber,
 

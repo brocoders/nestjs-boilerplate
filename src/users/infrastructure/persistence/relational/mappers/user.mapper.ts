@@ -25,6 +25,7 @@ export class UserMapper {
     } else if (raw.onboardingSteps === null) {
       domainEntity.onboardingSteps = null;
     }
+    domainEntity.fullyOnboarded = raw.fullyOnboarded;
 
     domainEntity.phoneNumber = raw.phoneNumber;
 
@@ -119,6 +120,7 @@ export class UserMapper {
     } else if (domainEntity.onboardingSteps === null) {
       persistenceEntity.onboardingSteps = null;
     }
+    persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
 
     persistenceEntity.phoneNumber = domainEntity.phoneNumber;
 
