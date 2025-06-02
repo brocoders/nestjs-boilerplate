@@ -150,6 +150,13 @@ export class OnboardingsController {
     return result;
   }
 
+  @Get('tenant/:tenantId/status')
+  getTenantStatus(@Param('tenantId') tenantId: string) {
+    return this.onboardingsService.getOnboardingStatus(
+      OnboardingEntityType.TENANT,
+      tenantId,
+    );
+  }
   @Post('tenant/:tenantId/skip/:stepKey')
   async skipTenantStep(
     @Param('tenantId') tenantId: string,
