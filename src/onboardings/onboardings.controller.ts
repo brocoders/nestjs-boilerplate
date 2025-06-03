@@ -122,7 +122,10 @@ export class OnboardingsController {
       userId,
     );
   }
-
+  @Post('initialize-user/:userId')
+  initializeUser(@Param('userId') userId: string) {
+    return this.onboardingsService.initializeUserOnboarding(userId);
+  }
   @Post('user/:userId/complete/:stepKey')
   async completeUserStep(
     @Param('userId') userId: string,
@@ -149,7 +152,17 @@ export class OnboardingsController {
 
     return result;
   }
-
+  @Get('tenant/:tenantId/status')
+  getTenantStatus(@Param('tenantId') tenantId: string) {
+    return this.onboardingsService.getOnboardingStatus(
+      OnboardingEntityType.TENANT,
+      tenantId,
+    );
+  }
+  @Post('initialize-tenant/:tenantId')
+  initializeTenant(@Param('tenantId') tenantId: string) {
+    return this.onboardingsService.initializeTenantOnboarding(tenantId);
+  }
   @Post('tenant/:tenantId/skip/:stepKey')
   async skipTenantStep(
     @Param('tenantId') tenantId: string,
