@@ -12,10 +12,8 @@ import { RelationalAuditLogPersistenceModule } from './infrastructure/persistenc
 
 @Module({
   imports: [
-    forwardRef(() => TenantsModule),
-
     forwardRef(() => UsersModule),
-
+    forwardRef(() => TenantsModule),
     // import modules, etc.
     RelationalAuditLogPersistenceModule,
   ],

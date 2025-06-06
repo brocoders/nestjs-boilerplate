@@ -27,7 +27,7 @@ export class TenantMapper {
     }
     domainEntity.fullyOnboarded = raw.fullyOnboarded;
 
-    domainEntity.databaseConfig = JSON.stringify(raw.databaseConfig);
+    domainEntity.databaseConfig = raw.databaseConfig;
 
     domainEntity.domain = raw.domain;
 
@@ -103,9 +103,7 @@ export class TenantMapper {
     }
     persistenceEntity.fullyOnboarded = domainEntity.fullyOnboarded;
 
-    persistenceEntity.databaseConfig = domainEntity.databaseConfig
-      ? JSON.parse(domainEntity.databaseConfig)
-      : undefined;
+    persistenceEntity.databaseConfig = domainEntity.databaseConfig;
 
     persistenceEntity.domain = domainEntity.domain;
 

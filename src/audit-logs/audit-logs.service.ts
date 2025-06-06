@@ -9,6 +9,8 @@ import {
   Injectable,
   HttpStatus,
   UnprocessableEntityException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { CreateAuditLogDto } from './dto/create-audit-log.dto';
 import { UpdateAuditLogDto } from './dto/update-audit-log.dto';
@@ -21,8 +23,9 @@ import { AuditAction } from './infrastructure/persistence/relational/entities/au
 export class AuditLogsService {
   auditLogRepo: any;
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
-
+    @Inject(forwardRef(() => TenantsService))
     private readonly tenantService: TenantsService,
 
     // Dependencies here

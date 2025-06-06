@@ -13,6 +13,7 @@ import {
 import { TenantsService } from './tenants.service';
 import { TenantsController } from './tenants.controller';
 import { RelationalTenantPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { RelationalTenantPersistenceModule } from './infrastructure/persistence/
     forwardRef(() => KycDetailsModule),
 
     forwardRef(() => UsersModule),
-
+    forwardRef(() => AuditLogsModule),
     // import modules, etc.
     RelationalTenantPersistenceModule,
   ],
