@@ -6,6 +6,9 @@ import { TenantType } from '../../tenant-types/domain/tenant-type';
 import { KycDetails } from '../../kyc-details/domain/kyc-details';
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { DatabaseConfigDto } from '../../onboardings/dto/database-config.dto';
 
 export class Tenant {
   @ApiProperty({
@@ -20,10 +23,13 @@ export class Tenant {
   fullyOnboarded: boolean;
 
   @ApiProperty({
-    type: () => String,
-    nullable: false,
+    required: true,
+    type: () => DatabaseConfigDto,
   })
-  databaseConfig: string;
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => DatabaseConfigDto)
+  databaseConfig: DatabaseConfigDto;
 
   @ApiProperty({
     type: () => String,

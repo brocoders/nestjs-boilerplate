@@ -31,6 +31,7 @@ import {
   // decorators here
   Type,
 } from 'class-transformer';
+import { DatabaseConfigDto } from '../../onboardings/dto/database-config.dto';
 
 export class CreateTenantDto {
   @ApiProperty({
@@ -52,11 +53,12 @@ export class CreateTenantDto {
 
   @ApiProperty({
     required: true,
-    type: () => String,
+    type: () => DatabaseConfigDto,
   })
   @IsOptional()
-  @IsString()
-  databaseConfig: string;
+  @ValidateNested()
+  @Type(() => DatabaseConfigDto)
+  databaseConfig: DatabaseConfigDto;
 
   @ApiProperty({
     required: false,

@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import { RegionsService } from '../regions/regions.service';
 import { Region } from '../regions/domain/region';
 
@@ -30,13 +31,17 @@ import { TenantRepository } from './infrastructure/persistence/tenant.repository
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Tenant } from './domain/tenant';
 import { Onboarding } from '../onboardings/domain/onboarding';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from '../config/config.type';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { OnboardingsService } from '../onboardings/onboardings.service';
+import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { AuditLogsService } from '../audit-logs/audit-logs.service';
 // import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { OnboardingsService } from '../onboardings/onboardings.service';
 
 @Injectable()
 export class TenantsService {
-  onboardingService: any;
   constructor(
     @Inject(forwardRef(() => RegionsService))
     private readonly regionService: RegionsService,
@@ -54,15 +59,31 @@ export class TenantsService {
     @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
 
-    // @Inject(forwardRef(() => AuditLogsService))
-    // private readonly auditService: AuditLogsService,
+    private configService: ConfigService<AllConfigType>,
 
-    // @Inject(forwardRef(() => OnboardingsService))
-    // private readonly onboardingService: OnboardingsService,
+    @Inject(forwardRef(() => AuditLogsService))
+    private readonly auditService: AuditLogsService,
+
+    @Inject(forwardRef(() => OnboardingsService))
+    private readonly onboardingService: OnboardingsService,
 
     // Dependencies here
     private readonly tenantRepository: TenantRepository,
   ) {}
+  private generateDbConfig(schemaName: string) {
+    const dbConfig = this.configService.get('database', { infer: true });
+    return {
+      host: dbConfig?.host || 'localhost',
+      port: dbConfig?.port || 5432,
+      type: dbConfig?.type || 'postgres',
+      // username: dbConfig?.username || 'postgres',
+      // password: dbConfig?.password || 'postgres',
+      // database: dbConfig?.database || 'postgres',
+      username: dbConfig?.username || `${schemaName}_user`,
+      password: dbConfig?.password || crypto.randomBytes(12).toString('hex'),
+      database: `${schemaName}_db`,
+    };
+  }
   //  private generateDbConfig(name: string): TenantConnectionConfig {
   //   const prefix = this.configService.get('database.tenantPrefix');
   //   return {
@@ -231,7 +252,17 @@ export class TenantsService {
       users = null;
     }
 
-    // const dbConfig = this.generateDbConfig(name);
+    let schemaName = createTenantDto.schemaName;
+    if (!schemaName) {
+      const baseName = (createTenantDto.name ?? 'tenant')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '_')
+        .substring(0, 20);
+      const uniqueSuffix = crypto.randomBytes(4).toString('hex');
+      schemaName = `${baseName}_${uniqueSuffix}`;
+    }
+
+    const dbConfig = this.generateDbConfig(schemaName);
 
     // // Create database
     // await this.createDatabase(dbConfig);
@@ -242,8 +273,7 @@ export class TenantsService {
       onboardingSteps,
       fullyOnboarded: createTenantDto.fullyOnboarded,
 
-      databaseConfig: createTenantDto.databaseConfig,
-      // databaseConfig: dbConfig,
+      databaseConfig: dbConfig,
 
       domain: createTenantDto.domain,
 
@@ -251,7 +281,7 @@ export class TenantsService {
 
       settings,
 
-      schemaName: createTenantDto.schemaName,
+      schemaName,
 
       logo,
 
@@ -271,21 +301,21 @@ export class TenantsService {
 
       isActive: createTenantDto.isActive,
     });
-    // Initialize onboarding
-    // await this.onboardingService.initializeTenantOnboarding(
-    //   (await newTenant).id,
-    // );
+    //Initialize onboarding
+    await this.onboardingService.initializeTenantOnboarding(
+      (await newTenant).id,
+    );
 
-    // Audit log
-    // await this.auditService.logEvent(
-    //   AuditAction.CREATE,
-    //   'tenant',
-    //   (await newTenant).id,
-    //   { tenantId: (await newTenant).id },
-    //   undefined,
-    //   newTenant,
-    //   'Tenant created',
-    // );
+    //Audit log
+    await this.auditService.logEvent(
+      AuditAction.CREATE,
+      'tenant',
+      (await newTenant).id,
+      { tenantId: (await newTenant).id },
+      undefined,
+      newTenant,
+      'Tenant created',
+    );
     return newTenant;
   }
 

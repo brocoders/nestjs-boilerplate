@@ -40,6 +40,7 @@ export class TenantEntity extends EntityRelationalHelper {
   @Column({
     nullable: false,
     type: Boolean,
+    default: false,
   })
   fullyOnboarded: boolean;
 
