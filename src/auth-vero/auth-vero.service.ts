@@ -153,8 +153,10 @@ export class AuthVeroService {
 
   async getProfileByToken(
     loginDto: AuthVeroLoginDto,
-  ): Promise<SocialInterface> {
+  ): Promise<{ profile: SocialInterface; exp?: number }> {
     const decodedToken = await this.verifyToken(loginDto.veroToken);
-    return this.veroMapper.mapPayloadToSocial(decodedToken);
+    const exp = decodedToken.exp;
+    const profile = this.veroMapper.mapPayloadToSocial(decodedToken);
+    return { profile, exp };
   }
 }

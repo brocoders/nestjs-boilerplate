@@ -1,9 +1,16 @@
+function getReadableDuration(msUntilExpiration: number): string {
+  const totalSeconds = Math.floor(msUntilExpiration / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}m ${seconds}s later`;
+}
 import {
   HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
+  Logger,
 } from '@nestjs/common';
 import ms from 'ms';
 import crypto from 'crypto';
@@ -31,6 +38,7 @@ import { User } from '../users/domain/user';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
@@ -99,6 +107,11 @@ export class AuthService {
       sessionId: session.id,
       hash,
     });
+    const readable = getReadableDuration(tokenExpires - Date.now());
+    this.logger.debug(
+      `Email login - userId: ${user.id}, username: ${user.email}, tokenExpires: ${tokenExpires} (${readable})`,
+    );
+    this.logger.log(`Email login - userId: ${user.id}`);
 
     return {
       refreshToken,
@@ -111,6 +124,7 @@ export class AuthService {
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
+    externalExp?: number,
   ): Promise<LoginResponseDto> {
     let user: NullableType<User> = null;
     const socialEmail = socialData.email?.toLowerCase();
@@ -183,7 +197,15 @@ export class AuthService {
       role: user.role,
       sessionId: session.id,
       hash,
+      externalExp,
     });
+    const readable = getReadableDuration(tokenExpires - Date.now());
+    this.logger.debug(
+      `Social login [${authProvider.toUpperCase()}] - userId: ${user.id}, username: ${user.email}, tokenExpires: ${tokenExpires} (${readable})`,
+    );
+    this.logger.log(
+      `Social login [${authProvider.toUpperCase()}] - userId: ${user.id}`,
+    );
 
     return {
       refreshToken,
@@ -549,12 +571,18 @@ export class AuthService {
     role: User['role'];
     sessionId: Session['id'];
     hash: Session['hash'];
+    externalExp?: number;
   }) {
-    const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
-      infer: true,
-    });
+    const expiresIn = data.externalExp
+      ? data.externalExp - Math.floor(Date.now() / 1000)
+      : Math.floor(
+          Number(
+            ms(this.configService.getOrThrow('auth.expires', { infer: true })),
+          ) / 1000,
+        );
 
-    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+    const tokenExpires =
+      (data.externalExp ?? Math.floor(Date.now() / 1000) + expiresIn) * 1000;
 
     const [token, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
@@ -565,7 +593,7 @@ export class AuthService {
         },
         {
           secret: this.configService.getOrThrow('auth.secret', { infer: true }),
-          expiresIn: tokenExpiresIn,
+          expiresIn: expiresIn,
         },
       ),
       await this.jwtService.signAsync(
