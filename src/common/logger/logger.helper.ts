@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import { pid } from 'process';
 import { LoggerType, LogLevel } from './types/logger-enum.type';
 
-
 function colorizeJsonString(jsonData: string): string {
   return jsonData
     .replace(/"([^"]+)":/g, (match) => chalk.yellow(match)) // Keys in yellow
