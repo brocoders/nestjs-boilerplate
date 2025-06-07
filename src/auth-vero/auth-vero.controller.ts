@@ -32,7 +32,8 @@ export class AuthVeroController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: AuthVeroLoginDto): Promise<LoginResponseDto> {
-    const socialData = await this.authVeroService.getProfileByToken(loginDto);
-    return this.authService.validateSocialLogin('vero', socialData);
+    const { profile, exp } =
+      await this.authVeroService.getProfileByToken(loginDto);
+    return this.authService.validateSocialLogin('vero', profile, exp);
   }
 }
