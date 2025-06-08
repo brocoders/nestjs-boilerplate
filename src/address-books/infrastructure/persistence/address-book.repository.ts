@@ -24,4 +24,24 @@ export abstract class AddressBookRepository {
   ): Promise<AddressBook | null>;
 
   abstract remove(id: AddressBook['id']): Promise<void>;
+
+  abstract findByUserId(userId: number): Promise<AddressBook[]>;
+
+  abstract findByLabel(
+    userId: number,
+    label: string,
+  ): Promise<NullableType<AddressBook>>;
+
+  abstract findFavorites(userId: number): Promise<AddressBook[]>;
+
+  abstract findByAssetType(
+    userId: number,
+    assetType: string,
+  ): Promise<AddressBook[]>;
+
+  abstract filter(
+    userId: number,
+    blockchain?: string,
+    assetType?: string,
+  ): Promise<AddressBook[]>;
 }

@@ -132,4 +132,34 @@ export class AddressBooksService {
   remove(id: AddressBook['id']) {
     return this.addressBookRepository.remove(id);
   }
+
+  async findAllByUser(userId: number): Promise<AddressBook[]> {
+    return this.addressBookRepository.findByUserId(userId);
+  }
+
+  async findByLabel(
+    userId: number,
+    label: string,
+  ): Promise<AddressBook | null> {
+    return this.addressBookRepository.findByLabel(userId, label);
+  }
+
+  async findFavorites(userId: number): Promise<AddressBook[]> {
+    return this.addressBookRepository.findFavorites(userId);
+  }
+
+  async findByAssetType(
+    userId: number,
+    assetType: string,
+  ): Promise<AddressBook[]> {
+    return this.addressBookRepository.findByAssetType(userId, assetType);
+  }
+
+  async filter(
+    userId: number,
+    blockchain?: string,
+    assetType?: string,
+  ): Promise<AddressBook[]> {
+    return this.addressBookRepository.filter(userId, blockchain, assetType);
+  }
 }

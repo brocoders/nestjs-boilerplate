@@ -79,4 +79,86 @@ export class AddressBookRelationalRepository implements AddressBookRepository {
   async remove(id: AddressBook['id']): Promise<void> {
     await this.addressBookRepository.delete(id);
   }
+
+  async findByUserId(userId: number): Promise<AddressBook[]> {
+    const entities = await this.addressBookRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      relations: ['user'],
+    });
+    return entities.map((entity) => AddressBookMapper.toDomain(entity));
+  }
+
+  async findByLabel(
+    userId: number,
+    label: string,
+  ): Promise<NullableType<AddressBook>> {
+    const entity = await this.addressBookRepository.findOne({
+      where: {
+        user: {
+          id: userId,
+        },
+        label,
+      },
+      relations: ['user'],
+    });
+    return entity ? AddressBookMapper.toDomain(entity) : null;
+  }
+
+  async findFavorites(userId: number): Promise<AddressBook[]> {
+    const entities = await this.addressBookRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+        isFavorite: true,
+      },
+      relations: ['user'],
+    });
+    return entities.map((entity) => AddressBookMapper.toDomain(entity));
+  }
+
+  async findByAssetType(
+    userId: number,
+    assetType: string,
+  ): Promise<AddressBook[]> {
+    const entities = await this.addressBookRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+        assetType,
+      },
+      relations: ['user'],
+    });
+    return entities.map((entity) => AddressBookMapper.toDomain(entity));
+  }
+
+  async filter(
+    userId: number,
+    blockchain?: string,
+    assetType?: string,
+  ): Promise<AddressBook[]> {
+    const where: any = {
+      user: {
+        id: userId,
+      },
+    };
+
+    if (blockchain) {
+      where.blockchain = blockchain;
+    }
+    if (assetType) {
+      where.assetType = assetType;
+    }
+
+    const entities = await this.addressBookRepository.find({
+      where,
+      relations: ['user'],
+    });
+    return entities.map((entity) => AddressBookMapper.toDomain(entity));
+  }
 }

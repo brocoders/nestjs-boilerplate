@@ -17,6 +17,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { AddressBook } from './domain/address-book';
@@ -107,5 +108,46 @@ export class AddressBooksController {
   })
   remove(@Param('id') id: string) {
     return this.addressBooksService.remove(id);
+  }
+
+  @Get('/user/:userId')
+  @ApiParam({ name: 'userId', type: Number })
+  findAllByUser(@Param('userId') userId: number) {
+    return this.addressBooksService.findAllByUser(userId);
+  }
+
+  @Get('/user/:userId/label/:label')
+  @ApiParam({ name: 'userId', type: Number })
+  @ApiParam({ name: 'label', type: String })
+  findByLabel(@Param('userId') userId: number, @Param('label') label: string) {
+    return this.addressBooksService.findByLabel(userId, label);
+  }
+
+  @Get('/user/:userId/favorites')
+  @ApiParam({ name: 'userId', type: Number })
+  findFavorites(@Param('userId') userId: number) {
+    return this.addressBooksService.findFavorites(userId);
+  }
+
+  @Get('/user/:userId/asset-type/:assetType')
+  @ApiParam({ name: 'userId', type: Number })
+  @ApiParam({ name: 'assetType', type: String })
+  findByAssetType(
+    @Param('userId') userId: number,
+    @Param('assetType') assetType: string,
+  ) {
+    return this.addressBooksService.findByAssetType(userId, assetType);
+  }
+
+  @Get('/user/:userId/filter')
+  @ApiParam({ name: 'userId', type: Number })
+  @ApiQuery({ name: 'blockchain', required: false })
+  @ApiQuery({ name: 'assetType', required: false })
+  filter(
+    @Param('userId') userId: number,
+    @Query('blockchain') blockchain?: string,
+    @Query('assetType') assetType?: string,
+  ) {
+    return this.addressBooksService.filter(userId, blockchain, assetType);
   }
 }
