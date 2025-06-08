@@ -43,8 +43,11 @@ import { MinioModule } from './providers/minio/minio.module';
 import minioConfig from './providers/minio/config/minio.config';
 import { LoggerModule } from './common/logger/logger.module';
 
+import { AddressBooksModule } from './address-books/address-books.module';
+
 @Module({
   imports: [
+    AddressBooksModule,
     DevicesModule,
     NotificationsModule,
     ConfigModule.forRoot({
