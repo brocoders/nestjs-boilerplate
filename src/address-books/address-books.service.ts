@@ -12,6 +12,10 @@ import { UpdateAddressBookDto } from './dto/update-address-book.dto';
 import { AddressBookRepository } from './infrastructure/persistence/address-book.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AddressBook } from './domain/address-book';
+import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
+import { CreateAddressBookUserDto } from './dto/create-address-book-user.dto';
+import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AddressBooksService {
@@ -162,4 +166,38 @@ export class AddressBooksService {
   ): Promise<AddressBook[]> {
     return this.addressBookRepository.filter(userId, blockchain, assetType);
   }
+
+  async createByUser(
+  createAddressBookUserDto: CreateAddressBookUserDto,
+  userJwtPayload: JwtPayloadType,
+) {
+  const user = await this.userService.findById(userJwtPayload.id);
+  if (!user) {
+    throw new UnprocessableEntityException({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errors: { user: 'UserNotExists' },
+    });
+  }
+
+  return this.addressBookRepository.create({
+    user,
+    isFavorite: createAddressBookUserDto.isFavorite,
+    notes: createAddressBookUserDto.notes,
+    memo: createAddressBookUserDto.memo,
+    tag: createAddressBookUserDto.tag,
+    assetType: createAddressBookUserDto.assetType,
+    blockchain: createAddressBookUserDto.blockchain,
+    address: createAddressBookUserDto.address,
+    label: createAddressBookUserDto.label,
+  });
+}
+
+async findByme(
+  userJwtPayload: JwtPayloadType,
+): Promise<AddressBookUserResponseDto[]> {
+  const addressBooks = await this.addressBookRepository.findByUserId(Number(userJwtPayload.id));
+  return addressBooks.map((item) =>
+    plainToInstance(AddressBookUserResponseDto, item),
+  );
+}
 }

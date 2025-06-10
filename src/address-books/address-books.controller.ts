@@ -8,13 +8,17 @@ import {
   Delete,
   UseGuards,
   Query,
+  Request,
+  HttpStatus,
 } from '@nestjs/common';
 import { AddressBooksService } from './address-books.service';
 import { CreateAddressBookDto } from './dto/create-address-book.dto';
+import { CreateAddressBookUserDto } from './dto/create-address-book-user.dto';
 import { UpdateAddressBookDto } from './dto/update-address-book.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
   ApiQuery,
@@ -28,6 +32,8 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllAddressBooksDto } from './dto/find-all-address-books.dto';
+import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
+import { ErrorTypeMessage } from '../utils/types/message.type';
 
 @ApiTags('Addressbooks')
 @ApiBearerAuth()
@@ -69,6 +75,43 @@ export class AddressBooksController {
       }),
       { page, limit },
     );
+  }
+
+  @Post('me')
+@ApiCreatedResponse({
+  type: AddressBook,
+})
+async createByUser(
+  @Request() request,
+  @Body() createAddressBookUserDto: CreateAddressBookUserDto,
+) {
+  return this.addressBooksService.createByUser(createAddressBookUserDto, request.user);
+}
+
+
+
+@Get('me')
+  @ApiOkResponse({
+    type: AddressBookUserResponseDto,
+    description: 'Successfully retrieved Address Book for the user',
+    isArray: true,
+  })
+  @ApiNotFoundResponse({
+    description: 'No Devices found for the user',
+    schema: {
+      example: {
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          devices: ErrorTypeMessage.getMessageByStatus(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          ),
+        },
+      },
+    },
+  })
+  @ApiOkResponse({ type: AddressBook, isArray: true })
+  async findAllByMe(@Request() request): Promise<AddressBookUserResponseDto[]> {
+    return  this.addressBooksService.findByme(request.user);
   }
 
   @Get(':id')
@@ -150,4 +193,8 @@ export class AddressBooksController {
   ) {
     return this.addressBooksService.filter(userId, blockchain, assetType);
   }
+
+
+
+
 }
