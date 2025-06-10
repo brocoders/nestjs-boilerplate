@@ -25,7 +25,9 @@ export abstract class AddressBookRepository {
 
   abstract remove(id: AddressBook['id']): Promise<void>;
 
-  abstract findByUserId(userId: AddressBook['user']['id']): Promise<AddressBook[]>;
+  abstract findByUserId(
+    userId: AddressBook['user']['id'],
+  ): Promise<AddressBook[]>;
 
   abstract findByLabel(
     userId: number,

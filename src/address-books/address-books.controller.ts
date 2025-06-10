@@ -78,19 +78,20 @@ export class AddressBooksController {
   }
 
   @Post('me')
-@ApiCreatedResponse({
-  type: AddressBook,
-})
-async createByUser(
-  @Request() request,
-  @Body() createAddressBookUserDto: CreateAddressBookUserDto,
-) {
-  return this.addressBooksService.createByUser(createAddressBookUserDto, request.user);
-}
+  @ApiCreatedResponse({
+    type: AddressBook,
+  })
+  async createByUser(
+    @Request() request,
+    @Body() createAddressBookUserDto: CreateAddressBookUserDto,
+  ) {
+    return this.addressBooksService.createByUser(
+      createAddressBookUserDto,
+      request.user,
+    );
+  }
 
-
-
-@Get('me')
+  @Get('me')
   @ApiOkResponse({
     type: AddressBookUserResponseDto,
     description: 'Successfully retrieved Address Book for the user',
@@ -111,7 +112,7 @@ async createByUser(
   })
   @ApiOkResponse({ type: AddressBook, isArray: true })
   async findAllByMe(@Request() request): Promise<AddressBookUserResponseDto[]> {
-    return  this.addressBooksService.findByme(request.user);
+    return this.addressBooksService.findByme(request.user);
   }
 
   @Get(':id')
@@ -193,8 +194,4 @@ async createByUser(
   ) {
     return this.addressBooksService.filter(userId, blockchain, assetType);
   }
-
-
-
-
 }

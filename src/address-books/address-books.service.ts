@@ -168,36 +168,38 @@ export class AddressBooksService {
   }
 
   async createByUser(
-  createAddressBookUserDto: CreateAddressBookUserDto,
-  userJwtPayload: JwtPayloadType,
-) {
-  const user = await this.userService.findById(userJwtPayload.id);
-  if (!user) {
-    throw new UnprocessableEntityException({
-      status: HttpStatus.UNPROCESSABLE_ENTITY,
-      errors: { user: 'UserNotExists' },
+    createAddressBookUserDto: CreateAddressBookUserDto,
+    userJwtPayload: JwtPayloadType,
+  ) {
+    const user = await this.userService.findById(userJwtPayload.id);
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { user: 'UserNotExists' },
+      });
+    }
+
+    return this.addressBookRepository.create({
+      user,
+      isFavorite: createAddressBookUserDto.isFavorite,
+      notes: createAddressBookUserDto.notes,
+      memo: createAddressBookUserDto.memo,
+      tag: createAddressBookUserDto.tag,
+      assetType: createAddressBookUserDto.assetType,
+      blockchain: createAddressBookUserDto.blockchain,
+      address: createAddressBookUserDto.address,
+      label: createAddressBookUserDto.label,
     });
   }
 
-  return this.addressBookRepository.create({
-    user,
-    isFavorite: createAddressBookUserDto.isFavorite,
-    notes: createAddressBookUserDto.notes,
-    memo: createAddressBookUserDto.memo,
-    tag: createAddressBookUserDto.tag,
-    assetType: createAddressBookUserDto.assetType,
-    blockchain: createAddressBookUserDto.blockchain,
-    address: createAddressBookUserDto.address,
-    label: createAddressBookUserDto.label,
-  });
-}
-
-async findByme(
-  userJwtPayload: JwtPayloadType,
-): Promise<AddressBookUserResponseDto[]> {
-  const addressBooks = await this.addressBookRepository.findByUserId(Number(userJwtPayload.id));
-  return addressBooks.map((item) =>
-    plainToInstance(AddressBookUserResponseDto, item),
-  );
-}
+  async findByme(
+    userJwtPayload: JwtPayloadType,
+  ): Promise<AddressBookUserResponseDto[]> {
+    const addressBooks = await this.addressBookRepository.findByUserId(
+      Number(userJwtPayload.id),
+    );
+    return addressBooks.map((item) =>
+      plainToInstance(AddressBookUserResponseDto, item),
+    );
+  }
 }
