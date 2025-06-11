@@ -42,7 +42,6 @@ import { DevicesModule } from './devices/devices.module';
 import { MinioModule } from './providers/minio/minio.module';
 import minioConfig from './providers/minio/config/minio.config';
 import { LoggerModule } from './common/logger/logger.module';
-import { SocketIoGateway } from './communication/socketio/socketio.gateway';
 import { SocketIoModule } from './communication/socketio/socketio.module';
 
 @Module({

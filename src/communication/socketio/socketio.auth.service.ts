@@ -30,6 +30,7 @@ export class SocketIoAuthService {
 
       socket.data.userId = payload.id;
       return { userId: payload.id };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
       throw new UnauthorizedException('Invalid or expired token');
     }
