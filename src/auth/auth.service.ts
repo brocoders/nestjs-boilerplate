@@ -618,4 +618,30 @@ export class AuthService {
       tokenExpires,
     };
   }
+
+  async validateSocketToken(token: string): Promise<User> {
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayloadType>(token, {
+        secret: this.configService.getOrThrow('auth.secret', { infer: true }),
+      });
+
+      const session = await this.sessionService.findById(payload.sessionId);
+
+      if (!session || session.user.id !== payload.id) {
+        throw new UnauthorizedException(
+          '[WS] Invalid session or token mismatch',
+        );
+      }
+
+      const user = await this.usersService.findById(payload.id);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return user;
+    } catch (err) {
+      this.logger.error('[WS] Token verification failed', err);
+      throw new UnauthorizedException('[WS] Invalid or expired token');
+    }
+  }
 }

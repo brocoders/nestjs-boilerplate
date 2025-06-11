@@ -64,8 +64,8 @@ async function bootstrap() {
   await APIDocs.setup(app, options); // doesent need use swagger SwaggerModule.setup
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
-  // Initialize and start RabbitMQ consumers
   rabbitMQService.initialize(app);
   await app.startAllMicroservices();
+  app.enableCors(); // <- Allow all CORS requests (default)
 }
 void bootstrap();

@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { VeroPayloadMapper } from './infrastructure/persistence/relational/mappers/vero.mapper';
 
 @Module({
-  imports: [ConfigModule, AuthModule, JwtModule.register({})],
+  imports: [ConfigModule, AuthModule, JwtModule],
   providers: [AuthVeroService, VeroPayloadMapper], // Added VeroMapper here
   exports: [AuthVeroService],
   controllers: [AuthVeroController],
