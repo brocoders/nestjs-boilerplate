@@ -9,6 +9,7 @@ import {
   UseGuards,
   Query,
   Request,
+  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { AddressBooksService } from './address-books.service';
@@ -46,14 +47,14 @@ export class AddressBooksController {
   constructor(private readonly addressBooksService: AddressBooksService) {}
 
   @Post()
-  @ApiCreatedResponse({
-    type: AddressBook,
-  })
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ type: AddressBook })
   create(@Body() createAddressBookDto: CreateAddressBookDto) {
     return this.addressBooksService.create(createAddressBookDto);
   }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: InfinityPaginationResponse(AddressBook),
   })
@@ -68,19 +69,15 @@ export class AddressBooksController {
 
     return infinityPagination(
       await this.addressBooksService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
+        paginationOptions: { page, limit },
       }),
       { page, limit },
     );
   }
 
   @Post('me')
-  @ApiCreatedResponse({
-    type: AddressBook,
-  })
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ type: AddressBook })
   async createByUser(
     @Request() request,
     @Body() createAddressBookUserDto: CreateAddressBookUserDto,
@@ -92,6 +89,7 @@ export class AddressBooksController {
   }
 
   @Get('me')
+  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: AddressBookUserResponseDto,
     description: 'Successfully retrieved Address Book for the user',
@@ -110,33 +108,22 @@ export class AddressBooksController {
       },
     },
   })
-  @ApiOkResponse({ type: AddressBook, isArray: true })
   async findAllByMe(@Request() request): Promise<AddressBookUserResponseDto[]> {
     return this.addressBooksService.findByme(request.user);
   }
 
   @Get(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: AddressBook,
-  })
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, required: true })
+  @ApiOkResponse({ type: AddressBook })
   findById(@Param('id') id: string) {
     return this.addressBooksService.findById(id);
   }
 
   @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: AddressBook,
-  })
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'id', type: String, required: true })
+  @ApiOkResponse({ type: AddressBook })
   update(
     @Param('id') id: string,
     @Body() updateAddressBookDto: UpdateAddressBookDto,
@@ -145,22 +132,21 @@ export class AddressBooksController {
   }
 
   @Delete(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({ name: 'id', type: String, required: true })
   remove(@Param('id') id: string) {
     return this.addressBooksService.remove(id);
   }
 
   @Get('/user/:userId')
+  @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'userId', type: Number })
   findAllByUser(@Param('userId') userId: number) {
     return this.addressBooksService.findAllByUser(userId);
   }
 
   @Get('/user/:userId/label/:label')
+  @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'userId', type: Number })
   @ApiParam({ name: 'label', type: String })
   findByLabel(@Param('userId') userId: number, @Param('label') label: string) {
@@ -168,12 +154,14 @@ export class AddressBooksController {
   }
 
   @Get('/user/:userId/favorites')
+  @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'userId', type: Number })
   findFavorites(@Param('userId') userId: number) {
     return this.addressBooksService.findFavorites(userId);
   }
 
   @Get('/user/:userId/asset-type/:assetType')
+  @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'userId', type: Number })
   @ApiParam({ name: 'assetType', type: String })
   findByAssetType(
@@ -184,6 +172,7 @@ export class AddressBooksController {
   }
 
   @Get('/user/:userId/filter')
+  @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'userId', type: Number })
   @ApiQuery({ name: 'blockchain', required: false })
   @ApiQuery({ name: 'assetType', required: false })
