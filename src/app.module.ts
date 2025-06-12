@@ -46,11 +46,11 @@ import { SocketIoModule } from './communication/socketio/socketio.module';
 
 import { PassphrasesModule } from './passphrases/passphrases.module';
 
-import { unnamedsModule } from './unnameds/unnameds.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
-    unnamedsModule,
+    MessagesModule,
     PassphrasesModule,
     DevicesModule,
     NotificationsModule,
