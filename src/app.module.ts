@@ -44,8 +44,14 @@ import minioConfig from './providers/minio/config/minio.config';
 import { LoggerModule } from './common/logger/logger.module';
 import { SocketIoModule } from './communication/socketio/socketio.module';
 
+import { PassphrasesModule } from './passphrases/passphrases.module';
+
+import { unnamedsModule } from './unnameds/unnameds.module';
+
 @Module({
   imports: [
+    unnamedsModule,
+    PassphrasesModule,
     DevicesModule,
     NotificationsModule,
     ConfigModule.forRoot({
