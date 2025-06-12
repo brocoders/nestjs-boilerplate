@@ -48,10 +48,13 @@ import { PassphrasesModule } from './passphrases/passphrases.module';
 
 import { MessagesModule } from './messages/messages.module';
 
+import { AddressBooksModule } from './address-books/address-books.module';
+
 @Module({
   imports: [
     MessagesModule,
     PassphrasesModule,
+    AddressBooksModule,
     DevicesModule,
     NotificationsModule,
     ConfigModule.forRoot({
