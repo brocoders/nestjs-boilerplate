@@ -43,8 +43,8 @@ import { QueryPassphraseDto } from './dto/query-passphrase.dto';
 import { ApiInfinityPaginatedResponse } from '../utils/decorators/paginated-response.decorator';
 
 @ApiTags('Passphrases')
-// @ApiBearerAuth()
-// @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'passphrases',
   version: '1',
