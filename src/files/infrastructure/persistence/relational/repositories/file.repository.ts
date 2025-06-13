@@ -17,9 +17,11 @@ export class FileRelationalRepository implements FileRepository {
 
   async create(data: FileType): Promise<FileType> {
     const persistenceModel = FileMapper.toPersistence(data);
-    return this.fileRepository.save(
+    const entity = await this.fileRepository.save(
       this.fileRepository.create(persistenceModel),
     );
+
+    return FileMapper.toDomain(entity);
   }
 
   async findById(id: FileType['id']): Promise<NullableType<FileType>> {
