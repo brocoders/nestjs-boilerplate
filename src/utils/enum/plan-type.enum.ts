@@ -4,4 +4,10 @@ export enum PlanStatusEnum {
   SUSPENDED = 'suspended',
   INACTIVE = 'inactive',
   CANCELLED = 'cancelled',
+  PENDING = 'pending',
+  EXPIRED = 'expired',
+  COMPLETED = 'completed',
+  ARCHIVED = 'archived',
+  DELETED = 'deleted',
+  UNKNOWN = 'unknown',
 }

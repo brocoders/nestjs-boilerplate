@@ -15,6 +15,8 @@ import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import { SentryInterceptor } from './sentry/sentry.interceptor';
 import { SentryFilter } from './sentry/sentry.filter';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -33,8 +35,6 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalInterceptors(
-    // ResolvePromisesInterceptor is used to resolve promises in responses because class-transformer can't do it
-    // https://github.com/typestack/class-transformer/issues/549
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
     new SentryInterceptor(),
@@ -66,6 +66,11 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
+
+  writeFileSync(
+    join(__dirname, '..', 'openapi.json'),
+    JSON.stringify(document, null, 2),
+  );
 
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
 }
