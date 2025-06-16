@@ -1,6 +1,9 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { TenantEntity } from '../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 import { TenantConnectionConfig } from './config/database-config.type';
+import { TypeOrmConfigService } from './typeorm-config.service';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from '../config/config.type';
 
 /**
  * Manages database connections for tenants
@@ -16,11 +19,25 @@ export class TenantDataSource {
   /**
    * Initialize core database connection (for tenant metadata)
    */
-  static async initializeCore(config: DataSourceOptions): Promise<void> {
-    console.log(
-      `Initializing core database with config:`, // ${JSON.stringify(config)}
-    );
-    this.coreDataSource = new DataSource(config);
+  // static async initializeCore(config: DataSourceOptions): Promise<void> {
+  //   console.log(
+  //     `Initializing core database with config:`, // ${JSON.stringify(config)}
+  //   );
+  //   this.coreDataSource = new DataSource(config);
+  //   await this.coreDataSource.initialize();
+  //   console.log('Core database connected');
+  // }
+  static async initializeCore(
+    configService: ConfigService<AllConfigType>,
+  ): Promise<void> {
+    const typeOrmConfigService = new TypeOrmConfigService(configService);
+    const options: any = typeOrmConfigService.createTypeOrmOptions();
+
+    this.coreDataSource = new DataSource({
+      ...options,
+      synchronize: false, // avoid auto sync in prod
+    });
+
     await this.coreDataSource.initialize();
     console.log('Core database connected');
   }

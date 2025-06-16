@@ -15,29 +15,15 @@ export class TenantMiddleware implements NestMiddleware {
       try {
         const tenantDataSource =
           await TenantDataSource.getTenantDataSource(tenantId);
-
         req['tenantDataSource'] = tenantDataSource;
         req['tenantId'] = tenantId;
       } catch (error) {
         console.error(`Tenant resolution failed: ${error.message}`);
-        throw new Error('Invalid tenant configuration');
+        // Fallback to core instead of throwing error
+        req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
       }
     } else {
-      console.warn(
-        'No tenant ID found in request, falling back to core database',
-      );
-      try {
-        const coreDataSource = await TenantDataSource.getCoreDataSource();
-        console.log(
-          'Using core database for request without tenant context',
-          coreDataSource,
-        );
-        // Attach core data source to request
-        req['tenantDataSource'] = coreDataSource;
-      } catch (error) {
-        console.error(`Tenant resolution failed: ${error.message}`);
-        throw new Error('Invalid tenant configuration');
-      }
+      req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
     }
 
     next();

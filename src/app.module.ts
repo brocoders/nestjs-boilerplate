@@ -202,6 +202,6 @@ export class AppModule implements NestModule, OnApplicationBootstrap {
     if (!coreDbConfig) {
       throw new Error('Core database configuration is missing');
     }
-    await TenantDataSource.initializeCore(coreDbConfig);
+    await TenantDataSource.initializeCore(this.configService);
   }
 }

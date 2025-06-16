@@ -66,6 +66,7 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
 
 @Module({
   imports: [
+    TenantTypesSeedModule,
     VendorSeedModule,
     VendorBillSeedModule,
     TransactionSeedModule,
@@ -88,7 +89,7 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
     PaymentNotificationSeedModule,
     AccountSeedModule,
     ResidenceSeedModule,
-    TenantTypesSeedModule,
+
     TenantSeedModule,
     RoleSeedModule,
     StatusSeedModule,

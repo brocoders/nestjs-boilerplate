@@ -1,8 +1,7 @@
 // tenant-seed.service.ts
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { TenantEntity } from '../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { TenantTypeEntity } from 'src/tenant-types/infrastructure/persistence/relational/entities/tenant-type.entity';
 import { OnboardingsService } from 'src/onboardings/onboardings.service'; // Add this import
 import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity'; // Add this import
@@ -10,14 +9,24 @@ import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence
 @Injectable()
 export class TenantSeedService {
   private readonly logger = new Logger(TenantSeedService.name);
+  private tenantRepository: Repository<TenantEntity>;
+  private tenantTypeRepository: Repository<TenantTypeEntity>;
 
+  // constructor(
+  //   @InjectRepository(TenantEntity)
+  //   private readonly tenantRepository: Repository<TenantEntity>,
+  //   @InjectRepository(TenantTypeEntity)
+  //   private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
+  //   private readonly onboardingsService: OnboardingsService, // Inject onboarding service
+  // ) {}
   constructor(
-    @InjectRepository(TenantEntity)
-    private readonly tenantRepository: Repository<TenantEntity>,
-    @InjectRepository(TenantTypeEntity)
-    private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
-    private readonly onboardingsService: OnboardingsService, // Inject onboarding service
-  ) {}
+    private dataSource: DataSource, // Inject DataSource instead of repositories
+    private readonly onboardingsService: OnboardingsService,
+  ) {
+    // Initialize repositories from DataSource
+    this.tenantRepository = this.dataSource.getRepository(TenantEntity);
+    this.tenantTypeRepository = this.dataSource.getRepository(TenantTypeEntity);
+  }
 
   async run() {
     // Get all tenant types from database

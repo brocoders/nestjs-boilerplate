@@ -9,23 +9,29 @@ import { UserRepository } from '../../user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { REQUEST } from '@nestjs/core/router/request';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class UsersRelationalRepository implements UserRepository {
   private usersRepository: Repository<UserEntity>;
 
   constructor(@Inject(REQUEST) private request: Request) {
-    // Get tenant-specific data source from request
-    const tenantDataSource: DataSource = this.request['tenantDataSource'];
-    this.usersRepository = tenantDataSource.getRepository(UserEntity);
+    // Ensure we have a data source even if tenant resolution failed
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.usersRepository = dataSource.getRepository(UserEntity);
   }
+  // users-relational.repository.ts
   private applyTenantFilter(
     where: FindOptionsWhere<UserEntity> = {},
   ): FindOptionsWhere<UserEntity> {
     const tenantId = this.request['tenantId'];
 
-    // Only apply tenant filter if tenant exists
-    if (tenantId) {
+    // Only apply tenant filter if tenant exists AND we're using tenant DB
+    if (
+      tenantId &&
+      this.request['tenantDataSource'] !== TenantDataSource.getCoreDataSource()
+    ) {
       return {
         ...where,
         tenant: { id: tenantId },
@@ -97,11 +103,11 @@ export class UsersRelationalRepository implements UserRepository {
 
   async findByEmail(email: User['email']): Promise<NullableType<User>> {
     if (!email) return null;
-
+    console.log('this.usersRepository', this.usersRepository);
     const entity = await this.usersRepository.findOne({
       where: this.applyTenantFilter({ email: email }),
     });
-
+    console.log('entity', entity);
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
