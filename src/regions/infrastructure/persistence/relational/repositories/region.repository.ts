@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { RegionEntity } from '../entities/region.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Region } from '../../../../domain/region';
 import { RegionRepository } from '../../region.repository';
 import { RegionMapper } from '../mappers/region.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class RegionRelationalRepository implements RegionRepository {
-  constructor(
-    @InjectRepository(RegionEntity)
-    private readonly regionRepository: Repository<RegionEntity>,
-  ) {}
+  private regionRepository: Repository<RegionEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.regionRepository = dataSource.getRepository(RegionEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<RegionEntity> = {},
+  ): FindOptionsWhere<RegionEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: Region): Promise<Region> {
     const persistenceModel = RegionMapper.toPersistence(data);
@@ -31,6 +50,7 @@ export class RegionRelationalRepository implements RegionRepository {
     const entities = await this.regionRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => RegionMapper.toDomain(entity));
@@ -38,7 +58,7 @@ export class RegionRelationalRepository implements RegionRepository {
 
   async findById(id: Region['id']): Promise<NullableType<Region>> {
     const entity = await this.regionRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? RegionMapper.toDomain(entity) : null;
@@ -46,7 +66,7 @@ export class RegionRelationalRepository implements RegionRepository {
 
   async findByIds(ids: Region['id'][]): Promise<Region[]> {
     const entities = await this.regionRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => RegionMapper.toDomain(entity));
@@ -54,7 +74,7 @@ export class RegionRelationalRepository implements RegionRepository {
 
   async update(id: Region['id'], payload: Partial<Region>): Promise<Region> {
     const entity = await this.regionRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -74,6 +94,14 @@ export class RegionRelationalRepository implements RegionRepository {
   }
 
   async remove(id: Region['id']): Promise<void> {
-    await this.regionRepository.delete(id);
+    const entity = await this.regionRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.regionRepository.softDelete(entity.id);
   }
 }

@@ -10,7 +10,7 @@ import { TenantDataSource } from '../database/tenant-data-source';
 export class TenantMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const tenantId = this.extractTenantId(req);
-
+    console.log('Extracting tenant ID from request', tenantId);
     if (tenantId) {
       try {
         const tenantDataSource =
@@ -21,9 +21,11 @@ export class TenantMiddleware implements NestMiddleware {
         console.error(`Tenant resolution failed: ${error.message}`);
         // Fallback to core instead of throwing error
         req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
+        req['tenantId'] = tenantId;
       }
     } else {
       req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
+      req['tenantId'] = tenantId;
     }
 
     next();

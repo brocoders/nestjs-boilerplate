@@ -7,7 +7,7 @@ import { OnboardingsModule } from 'src/onboardings/onboardings.module'; // Add t
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TenantEntity, TenantTypeEntity]),
+    TypeOrmModule.forFeature([TenantTypeEntity, TenantEntity]),
     forwardRef(() => OnboardingsModule),
   ],
   providers: [TenantSeedService],

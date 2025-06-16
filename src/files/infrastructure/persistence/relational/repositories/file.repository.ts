@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FileEntity } from '../entities/file.entity';
-import { In, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
 import { FileRepository } from '../../file.repository';
 
 import { FileMapper } from '../mappers/file.mapper';
 import { FileType } from '../../../../domain/file';
 import { NullableType } from '../../../../../utils/types/nullable.type';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
+import { FileEntity } from '../entities/file.entity';
 
 @Injectable()
 export class FileRelationalRepository implements FileRepository {
-  constructor(
-    @InjectRepository(FileEntity)
-    private readonly fileRepository: Repository<FileEntity>,
-  ) {}
+  private fileRepository: Repository<FileEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.fileRepository = dataSource.getRepository(FileEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<FileEntity> = {},
+  ): FindOptionsWhere<FileEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        //tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: FileType): Promise<FileType> {
     const persistenceModel = FileMapper.toPersistence(data);
@@ -24,9 +43,7 @@ export class FileRelationalRepository implements FileRepository {
 
   async findById(id: FileType['id']): Promise<NullableType<FileType>> {
     const entity = await this.fileRepository.findOne({
-      where: {
-        id: id,
-      },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? FileMapper.toDomain(entity) : null;
@@ -34,9 +51,7 @@ export class FileRelationalRepository implements FileRepository {
 
   async findByIds(ids: FileType['id'][]): Promise<FileType[]> {
     const entities = await this.fileRepository.find({
-      where: {
-        id: In(ids),
-      },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => FileMapper.toDomain(entity));

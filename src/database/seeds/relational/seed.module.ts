@@ -56,8 +56,6 @@ import { ReminderSeedModule } from './reminder/reminder-seed.module';
 
 import { TenantConfigSeedModule } from './tenant-config/tenant-config-seed.module';
 
-import { TenantTypeSeedModule } from './tenant-type/tenant-type-seed.module';
-
 import { TransactionSeedModule } from './transaction/transaction-seed.module';
 
 import { VendorBillSeedModule } from './vendor-bill/vendor-bill-seed.module';
@@ -70,7 +68,6 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
     VendorSeedModule,
     VendorBillSeedModule,
     TransactionSeedModule,
-    TenantTypeSeedModule,
     TenantConfigSeedModule,
     ReminderSeedModule,
     PaymentSeedModule,

@@ -1,21 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { PaymentAggregatorEntity } from '../entities/payment-aggregator.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { PaymentAggregator } from '../../../../domain/payment-aggregator';
 import { PaymentAggregatorRepository } from '../../payment-aggregator.repository';
 import { PaymentAggregatorMapper } from '../mappers/payment-aggregator.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class PaymentAggregatorRelationalRepository
   implements PaymentAggregatorRepository
 {
-  constructor(
-    @InjectRepository(PaymentAggregatorEntity)
-    private readonly paymentAggregatorRepository: Repository<PaymentAggregatorEntity>,
-  ) {}
+  private paymentAggregatorRepository: Repository<PaymentAggregatorEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.paymentAggregatorRepository = dataSource.getRepository(
+      PaymentAggregatorEntity,
+    );
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<PaymentAggregatorEntity> = {},
+  ): FindOptionsWhere<PaymentAggregatorEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: PaymentAggregator): Promise<PaymentAggregator> {
     const persistenceModel = PaymentAggregatorMapper.toPersistence(data);
@@ -33,6 +54,7 @@ export class PaymentAggregatorRelationalRepository
     const entities = await this.paymentAggregatorRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => PaymentAggregatorMapper.toDomain(entity));
@@ -42,7 +64,7 @@ export class PaymentAggregatorRelationalRepository
     id: PaymentAggregator['id'],
   ): Promise<NullableType<PaymentAggregator>> {
     const entity = await this.paymentAggregatorRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? PaymentAggregatorMapper.toDomain(entity) : null;
@@ -52,7 +74,7 @@ export class PaymentAggregatorRelationalRepository
     ids: PaymentAggregator['id'][],
   ): Promise<PaymentAggregator[]> {
     const entities = await this.paymentAggregatorRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => PaymentAggregatorMapper.toDomain(entity));
@@ -63,7 +85,7 @@ export class PaymentAggregatorRelationalRepository
     payload: Partial<PaymentAggregator>,
   ): Promise<PaymentAggregator> {
     const entity = await this.paymentAggregatorRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -83,6 +105,14 @@ export class PaymentAggregatorRelationalRepository
   }
 
   async remove(id: PaymentAggregator['id']): Promise<void> {
-    await this.paymentAggregatorRepository.delete(id);
+    const entity = await this.paymentAggregatorRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.paymentAggregatorRepository.softDelete(entity.id);
   }
 }

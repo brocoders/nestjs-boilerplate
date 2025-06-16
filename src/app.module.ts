@@ -59,7 +59,7 @@ import { SettingsModule } from './settings/settings.module';
 import { RegionsModule } from './regions/regions.module';
 
 import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
-import { TenantDataSourceProvider } from './providers/tenant-data-source.provider';
+import { TenantDataSourceProvider } from './database/providers/tenant-data-source.provider';
 import { TenantMiddleware } from './middleware/tenant.middleware';
 
 import { PaymentNotificationsModule } from './payment-notifications/payment-notifications.module';

@@ -92,6 +92,7 @@ export default registerAs<DatabaseConfig>('database', () => {
       password: process.env.CORE_DB_PASSWORD,
       database: process.env.CORE_DB_NAME,
       synchronize: false,
+      logging: false,
     },
     tenantPrefix: process.env.TENANT_DB_PREFIX || 'tenant_',
     tenantConfig: {
@@ -100,6 +101,7 @@ export default registerAs<DatabaseConfig>('database', () => {
       defaultPort: parseInt(process.env.TENANT_DB_PORT || '5432', 10),
       defaultUsername: process.env.TENANT_DB_USER || 'saka',
       defaultPassword: process.env.TENANT_DB_PASSWORD || '',
+      logging: false,
     },
 
     // Add other DatabaseConfig properties with defaults
@@ -111,6 +113,7 @@ export default registerAs<DatabaseConfig>('database', () => {
     url: process.env.DATABASE_URL,
     type: process.env.DATABASE_TYPE,
     host: process.env.DATABASE_HOST,
+    logging: false,
     port: process.env.DATABASE_PORT
       ? parseInt(process.env.DATABASE_PORT, 10)
       : 5432,

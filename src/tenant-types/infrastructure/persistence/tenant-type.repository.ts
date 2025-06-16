@@ -1,3 +1,4 @@
+import { FindOptionsWhere } from 'typeorm';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -7,7 +8,13 @@ export abstract class TenantTypeRepository {
   abstract create(
     data: Omit<TenantType, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<TenantType>;
-
+  abstract find({
+    where,
+    order,
+  }: {
+    where?: FindOptionsWhere<TenantType>;
+    order?: { [key in keyof TenantType]?: 'ASC' | 'DESC' };
+  }): Promise<TenantType[]>;
   abstract findAllWithPagination({
     paginationOptions,
   }: {

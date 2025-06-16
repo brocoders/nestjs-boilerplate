@@ -21,10 +21,12 @@ import {
 import { AuthProvidersEnum } from '../../../../auth/auth-providers.enum';
 import { OnboardingsService } from 'src/onboardings/onboardings.service';
 import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class UserSeedService {
   private readonly logger = new Logger(UserSeedService.name);
+  private onboardingsService: OnboardingsService; // Remove from constructor
 
   constructor(
     @InjectRepository(UserEntity)
@@ -39,7 +41,7 @@ export class UserSeedService {
     private readonly settingsRepository: Repository<SettingsEntity>,
     @InjectRepository(KycDetailsEntity)
     private readonly kycRepository: Repository<KycDetailsEntity>,
-    private readonly onboardingsService: OnboardingsService,
+    private readonly moduleRef: ModuleRef,
   ) {}
 
   async run() {
@@ -167,6 +169,9 @@ export class UserSeedService {
 
   private async initializeUserOnboarding(user: UserEntity) {
     try {
+      if (!this.onboardingsService) {
+        this.onboardingsService = await this.moduleRef.get(OnboardingsService);
+      }
       // Check if onboarding already exists
       const onboardingStatus =
         await this.onboardingsService.getOnboardingStatus(

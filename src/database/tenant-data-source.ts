@@ -60,7 +60,6 @@ export class TenantDataSource {
         where: { id: tenantId },
         relations: ['databaseConfig'],
       });
-
     // if (!tenant || !tenant.databaseConfig) {
     //   throw new Error(`Tenant ${tenantId} configuration not found`);
     // }

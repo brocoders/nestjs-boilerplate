@@ -1,21 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { AccountsPayableEntity } from '../entities/accounts-payable.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { AccountsPayable } from '../../../../domain/accounts-payable';
 import { AccountsPayableRepository } from '../../accounts-payable.repository';
 import { AccountsPayableMapper } from '../mappers/accounts-payable.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class AccountsPayableRelationalRepository
   implements AccountsPayableRepository
 {
-  constructor(
-    @InjectRepository(AccountsPayableEntity)
-    private readonly accountsPayableRepository: Repository<AccountsPayableEntity>,
-  ) {}
+  private accountsPayableRepository: Repository<AccountsPayableEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.accountsPayableRepository = dataSource.getRepository(
+      AccountsPayableEntity,
+    );
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<AccountsPayableEntity> = {},
+  ): FindOptionsWhere<AccountsPayableEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: AccountsPayable): Promise<AccountsPayable> {
     const persistenceModel = AccountsPayableMapper.toPersistence(data);
@@ -33,6 +54,7 @@ export class AccountsPayableRelationalRepository
     const entities = await this.accountsPayableRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => AccountsPayableMapper.toDomain(entity));
@@ -42,7 +64,7 @@ export class AccountsPayableRelationalRepository
     id: AccountsPayable['id'],
   ): Promise<NullableType<AccountsPayable>> {
     const entity = await this.accountsPayableRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? AccountsPayableMapper.toDomain(entity) : null;
@@ -50,7 +72,7 @@ export class AccountsPayableRelationalRepository
 
   async findByIds(ids: AccountsPayable['id'][]): Promise<AccountsPayable[]> {
     const entities = await this.accountsPayableRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => AccountsPayableMapper.toDomain(entity));
@@ -61,7 +83,7 @@ export class AccountsPayableRelationalRepository
     payload: Partial<AccountsPayable>,
   ): Promise<AccountsPayable> {
     const entity = await this.accountsPayableRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -81,6 +103,14 @@ export class AccountsPayableRelationalRepository
   }
 
   async remove(id: AccountsPayable['id']): Promise<void> {
-    await this.accountsPayableRepository.delete(id);
+    const entity = await this.accountsPayableRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.accountsPayableRepository.softDelete(entity.id);
   }
 }

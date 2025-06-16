@@ -1,19 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource } from 'typeorm';
 import { TenantEntity } from '../entities/tenant.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Tenant } from '../../../../domain/tenant';
 import { TenantRepository } from '../../tenant.repository';
 import { TenantMapper } from '../mappers/tenant.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class TenantRelationalRepository implements TenantRepository {
-  constructor(
-    @InjectRepository(TenantEntity)
-    private readonly tenantRepository: Repository<TenantEntity>,
-  ) {}
+  private tenantRepository: Repository<TenantEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.tenantRepository = dataSource.getRepository(TenantEntity);
+  }
 
   async create(data: Tenant): Promise<Tenant> {
     const persistenceModel = TenantMapper.toPersistence(data);

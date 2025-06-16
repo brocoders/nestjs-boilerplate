@@ -1,21 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { TenantConfigEntity } from '../entities/tenant-config.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { TenantConfig } from '../../../../domain/tenant-config';
 import { TenantConfigRepository } from '../../tenant-config.repository';
 import { TenantConfigMapper } from '../mappers/tenant-config.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class TenantConfigRelationalRepository
   implements TenantConfigRepository
 {
-  constructor(
-    @InjectRepository(TenantConfigEntity)
-    private readonly tenantConfigRepository: Repository<TenantConfigEntity>,
-  ) {}
+  private tenantConfigRepository: Repository<TenantConfigEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.tenantConfigRepository = dataSource.getRepository(TenantConfigEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<TenantConfigEntity> = {},
+  ): FindOptionsWhere<TenantConfigEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        //tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: TenantConfig): Promise<TenantConfig> {
     const persistenceModel = TenantConfigMapper.toPersistence(data);
@@ -40,7 +59,7 @@ export class TenantConfigRelationalRepository
 
   async findById(id: TenantConfig['id']): Promise<NullableType<TenantConfig>> {
     const entity = await this.tenantConfigRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? TenantConfigMapper.toDomain(entity) : null;
@@ -48,7 +67,7 @@ export class TenantConfigRelationalRepository
 
   async findByIds(ids: TenantConfig['id'][]): Promise<TenantConfig[]> {
     const entities = await this.tenantConfigRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => TenantConfigMapper.toDomain(entity));
@@ -59,7 +78,7 @@ export class TenantConfigRelationalRepository
     payload: Partial<TenantConfig>,
   ): Promise<TenantConfig> {
     const entity = await this.tenantConfigRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -79,6 +98,14 @@ export class TenantConfigRelationalRepository
   }
 
   async remove(id: TenantConfig['id']): Promise<void> {
-    await this.tenantConfigRepository.delete(id);
+    const entity = await this.tenantConfigRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.tenantConfigRepository.softDelete(entity.id);
   }
 }
