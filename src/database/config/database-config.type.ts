@@ -47,7 +47,6 @@ export type DatabaseConfig = {
 };
 
 export type TenantConnectionConfig = {
-  id: string;
   type: 'postgres';
   host: string;
   port: number;

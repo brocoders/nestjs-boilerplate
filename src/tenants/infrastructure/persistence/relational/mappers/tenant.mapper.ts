@@ -27,7 +27,10 @@ export class TenantMapper {
     }
     domainEntity.fullyOnboarded = raw.fullyOnboarded;
 
-    domainEntity.databaseConfig = raw.databaseConfig;
+    domainEntity.databaseConfig = {
+      ...raw.databaseConfig,
+      schema: raw.databaseConfig?.schema ?? '',
+    };
 
     domainEntity.domain = raw.domain;
 

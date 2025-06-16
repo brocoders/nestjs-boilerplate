@@ -8615,6 +8615,9 @@
           },
           "database": {
             "type": "string"
+          },
+          "schema": {
+            "type": "string"
           }
         },
         "required": [
@@ -8622,7 +8625,8 @@
           "port",
           "username",
           "password",
-          "database"
+          "database",
+          "schema"
         ]
       },
       "Region": {

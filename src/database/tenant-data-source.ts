@@ -1,115 +1,111 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { TenantEntity } from '../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 import { TenantConnectionConfig } from './config/database-config.type';
+
 /**
  * Manages database connections for tenants
- * Maintains connection pool for each tenant
+ * Supports:
+ * - Separate databases
+ * - Separate schemas
+ * - Row-based tenancy
  */
 export class TenantDataSource {
   private static coreDataSource: DataSource;
-  // private static tenantConnections = new Map<string, DataSource>();
-  private static instances = new Map<string, DataSource>();
+  private static tenantConnections = new Map<string, DataSource>();
 
   /**
-   * Initialize core database connection
+   * Initialize core database connection (for tenant metadata)
    */
   static async initializeCore(config: DataSourceOptions): Promise<void> {
+    console.log(
+      `Initializing core database with config:`, // ${JSON.stringify(config)}
+    );
     this.coreDataSource = new DataSource(config);
     await this.coreDataSource.initialize();
     console.log('Core database connected');
   }
 
-  // static async initializeTenantConnection(
-  //   tenantId: string,
-  // ): Promise<DataSource> {
-  //   if (!tenantId) {
-  //     throw new Error('Tenant ID is required');
-  //   }
-
-  //   if (this.tenantConnections.has(tenantId)) {
-  //     return this.tenantConnections.get(tenantId)!;
-  //   }
-
-  //   const tenant = await this.coreDataSource
-  //     .getRepository(Tenant)
-  //     .findOneBy({ id: tenantId });
-
-  //   if (!tenant) {
-  //     throw new Error(`Tenant ${tenantId} not found`);
-  //   }
-
-  //   const ds = new DataSource({
-  //     type: 'postgres',
-  //     ...JSON.parse(tenant.databaseConfig),
-  //     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  //     migrations: [__dirname + '/migrations/tenant/*{.ts,.js}'],
-  //   });
-
-  //   try {
-  //     await ds.initialize();
-  //     this.tenantConnections.set(tenantId, ds);
-  //     return ds;
-  //   } catch (error) {
-  //     throw new Error(`Failed to initialize tenant database: ${error.message}`);
-  //   }
-  // }
-
   /**
-   * Initialize or retrieve tenant database connection
+   * Get tenant-specific data source
+   * Creates new connection if doesn't exist
    */
-  // static async getTenantDataSource(
-  //   tenantId: string,
-  // ): Promise<DataSource | undefined> {
-  //   if (this.tenantConnections.has(tenantId)) {
-  //     return this.tenantConnections.get(tenantId);
-  //   }
+  static async getTenantDataSource(tenantId: string): Promise<DataSource> {
+    console.log(`Fetching tenant data source for tenant: ${tenantId}`);
+    // Return existing connection if available
+    if (this.tenantConnections.has(tenantId)) {
+      return this.tenantConnections.get(tenantId)!;
+    }
 
-  //   const tenant: any = await this.coreDataSource
-  //     .getRepository(Tenant)
-  //     .findOneBy({ id: tenantId });
-  //   if (!tenant) throw new Error(`Tenant ${tenantId} not found`);
+    // Fetch tenant config from core database
+    const tenant = await this.coreDataSource
+      .getRepository(TenantEntity)
+      .findOne({
+        where: { id: tenantId },
+        relations: ['databaseConfig'],
+      });
 
-  //   const ds = new DataSource({
-  //     type: 'postgres',
-  //     ...tenant.databaseConfig,
-  //     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  //     migrations: [__dirname + '/migrations/tenant/*{.ts,.js}'],
-  //   });
+    // if (!tenant || !tenant.databaseConfig) {
+    //   throw new Error(`Tenant ${tenantId} configuration not found`);
+    // }
 
-  //   await ds.initialize();
-  //   this.tenantConnections.set(tenantId, ds);
-  //   return ds;
-  // }
-  static getTenantDataSource(tenantId: string): DataSource {
-    const ds = this.instances.get(tenantId);
-    if (!ds) throw new Error(`No data source for tenant ${tenantId}`);
+    let ds: DataSource;
+
+    if (tenant?.databaseConfig) {
+      // Create new tenant-specific connection
+      ds = await this.initializeTenant(tenantId, {
+        ...tenant.databaseConfig,
+        type: 'postgres',
+      });
+      console.log(`Using tenant database for tenant: ${tenantId}`);
+    } else {
+      // Fallback to core with tenant context
+      ds = this.coreDataSource;
+      console.log(`Using core database for tenant: ${tenantId}`);
+    }
+
+    this.tenantConnections.set(tenantId, ds);
     return ds;
   }
-  static async initializeTenant(
+
+  /**
+   * Initialize tenant database connection based on config
+   */
+  private static async initializeTenant(
+    tenantId: string,
     config: TenantConnectionConfig,
   ): Promise<DataSource> {
-    const ds = new DataSource({
+    console.log(`Initializing tenant database for: ${tenantId}`);
+    const connectionOptions: DataSourceOptions = {
       type: 'postgres',
       host: config.host,
       port: config.port,
       username: config.username,
       password: config.password,
       database: config.database,
-      schema: config.schema,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      schema: config.schema || 'public',
+      entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
       migrations: [__dirname + '/migrations/tenant/*{.ts,.js}'],
       logging: false,
-    });
+      extra: {
+        // Set application_name for connection identification
+        application_name: `tenant_${tenantId}`,
+      },
+    };
 
+    const ds = new DataSource(connectionOptions);
     await ds.initialize();
-    this.instances.set(config.id, ds);
+    console.log(`Tenant database connected: ${tenantId}`);
     return ds;
   }
 
   /**
-   * Get core database connection
+   * Get core database connection (for tenant metadata)
    */
   static getCoreDataSource(): DataSource {
-    if (!this.coreDataSource) throw new Error('Core database not initialized');
+    console.log('Fetching core database connection');
+    if (!this.coreDataSource) {
+      throw new Error('Core database not initialized');
+    }
     return this.coreDataSource;
   }
 }

@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { FindOptionsWhere, Repository, In, DataSource } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
@@ -9,14 +8,31 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core/router/request';
 
 @Injectable()
 export class UsersRelationalRepository implements UserRepository {
-  constructor(
-    @InjectRepository(UserEntity)
-    private readonly usersRepository: Repository<UserEntity>,
-    @InjectDataSource() private dataSource: DataSource,
-  ) {}
+  private usersRepository: Repository<UserEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    // Get tenant-specific data source from request
+    const tenantDataSource: DataSource = this.request['tenantDataSource'];
+    this.usersRepository = tenantDataSource.getRepository(UserEntity);
+  }
+  private applyTenantFilter(
+    where: FindOptionsWhere<UserEntity> = {},
+  ): FindOptionsWhere<UserEntity> {
+    const tenantId = this.request['tenantId'];
+
+    // Only apply tenant filter if tenant exists
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+    return where;
+  }
 
   async create(data: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(data);
@@ -35,9 +51,12 @@ export class UsersRelationalRepository implements UserRepository {
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<User[]> {
-    const where: FindOptionsWhere<UserEntity> = {};
-    if (filterOptions?.roles?.length) {
-      where.role = filterOptions.roles.map((role) => ({
+    // Convert filterOptions to FindOptionsWhere<UserEntity> if present
+    const { roles, ...restFilterOptions } = filterOptions || {};
+    const baseWhere: FindOptionsWhere<UserEntity> = restFilterOptions;
+    const where = this.applyTenantFilter(baseWhere);
+    if (roles?.length) {
+      where.role = roles.map((role) => ({
         id: Number(role.id),
       }));
     }
@@ -62,7 +81,7 @@ export class UsersRelationalRepository implements UserRepository {
 
   async findById(id: User['id']): Promise<NullableType<User>> {
     const entity = await this.usersRepository.findOne({
-      where: { id: Number(id) },
+      where: this.applyTenantFilter({ id: Number(id) }),
     });
 
     return entity ? UserMapper.toDomain(entity) : null;
@@ -70,7 +89,7 @@ export class UsersRelationalRepository implements UserRepository {
 
   async findByIds(ids: User['id'][]): Promise<User[]> {
     const entities = await this.usersRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((user) => UserMapper.toDomain(user));
@@ -80,7 +99,7 @@ export class UsersRelationalRepository implements UserRepository {
     if (!email) return null;
 
     const entity = await this.usersRepository.findOne({
-      where: { email },
+      where: this.applyTenantFilter({ email: email }),
     });
 
     return entity ? UserMapper.toDomain(entity) : null;
@@ -96,7 +115,7 @@ export class UsersRelationalRepository implements UserRepository {
     if (!socialId || !provider) return null;
 
     const entity = await this.usersRepository.findOne({
-      where: { socialId, provider },
+      where: this.applyTenantFilter({ socialId, provider }),
     });
 
     return entity ? UserMapper.toDomain(entity) : null;
@@ -105,6 +124,7 @@ export class UsersRelationalRepository implements UserRepository {
   async update(id: User['id'], payload: Partial<User>): Promise<User> {
     const entity = await this.usersRepository.findOne({
       where: { id: Number(id) },
+      //where: this.applyTenantFilter({ id: Number(id) }),
     });
 
     if (!entity) {

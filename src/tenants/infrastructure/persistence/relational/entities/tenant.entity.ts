@@ -49,6 +49,7 @@ export class TenantEntity extends EntityRelationalHelper {
     type: 'jsonb',
   })
   databaseConfig: {
+    schema: string | undefined;
     host: string;
     port: number;
     username: string;

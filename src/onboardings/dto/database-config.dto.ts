@@ -21,4 +21,8 @@ export class DatabaseConfigDto {
   @ApiProperty()
   @IsString()
   database: string;
+
+  @ApiProperty()
+  @IsString()
+  schema: string;
 }

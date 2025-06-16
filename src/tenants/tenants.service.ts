@@ -36,6 +36,7 @@ import { AllConfigType } from '../config/config.type';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { OnboardingsService } from '../onboardings/onboardings.service';
 import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
+import { TenantDataSource } from '../database/tenant-data-source';
 // import { AuditLogsService } from '../audit-logs/audit-logs.service';
 // import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { OnboardingsService } from '../onboardings/onboardings.service';
@@ -82,6 +83,7 @@ export class TenantsService {
       username: dbConfig?.username || `${schemaName}_user`,
       password: dbConfig?.password || crypto.randomBytes(12).toString('hex'),
       database: `${schemaName}_db`,
+      schema: schemaName,
     };
   }
   //  private generateDbConfig(name: string): TenantConnectionConfig {
@@ -305,7 +307,8 @@ export class TenantsService {
     await this.onboardingService.initializeTenantOnboarding(
       (await newTenant).id,
     );
-
+    // Initialize tenant database
+    await TenantDataSource.getTenantDataSource((await newTenant).id);
     //Audit log
     await this.auditService.logEvent(
       AuditAction.CREATE,
