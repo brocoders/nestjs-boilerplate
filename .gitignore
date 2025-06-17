@@ -35,7 +35,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .data
-/files
 .env
 /ormconfig.json
 .codegpt
