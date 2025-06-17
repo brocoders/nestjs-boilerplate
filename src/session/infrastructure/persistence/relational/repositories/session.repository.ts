@@ -29,7 +29,7 @@ export class SessionRelationalRepository implements SessionRepository {
     if (tenantId) {
       return {
         ...where,
-        //tenant: { id: tenantId },
+        tenant: { id: tenantId },
       };
     }
 

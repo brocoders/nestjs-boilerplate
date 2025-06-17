@@ -11,6 +11,7 @@ import {
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { TenantEntity } from '../../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 
 @Entity({
   name: 'session',
@@ -36,4 +37,6 @@ export class SessionEntity extends EntityRelationalHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+  @ManyToOne(() => TenantEntity, { eager: true, nullable: true })
+  tenant?: TenantEntity | null;
 }

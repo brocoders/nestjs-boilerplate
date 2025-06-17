@@ -1,3 +1,4 @@
+import { TenantMapper } from '../../../../../tenants/infrastructure/persistence/relational/mappers/tenant.mapper';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { UserMapper } from '../../../../../users/infrastructure/persistence/relational/mappers/user.mapper';
 import { Session } from '../../../../domain/session';
@@ -6,6 +7,11 @@ import { SessionEntity } from '../entities/session.entity';
 export class SessionMapper {
   static toDomain(raw: SessionEntity): Session {
     const domainEntity = new Session();
+    if (raw.tenant) {
+      domainEntity.tenant = TenantMapper.toDomain(raw.tenant);
+    } else if (raw.tenant === null) {
+      domainEntity.tenant = null;
+    }
     domainEntity.id = raw.id;
     if (raw.user) {
       domainEntity.user = UserMapper.toDomain(raw.user);
@@ -22,6 +28,13 @@ export class SessionMapper {
     user.id = Number(domainEntity.user.id);
 
     const persistenceEntity = new SessionEntity();
+    if (domainEntity.tenant) {
+      persistenceEntity.tenant = TenantMapper.toPersistence(
+        domainEntity.tenant,
+      );
+    } else if (domainEntity.tenant === null) {
+      persistenceEntity.tenant = null;
+    }
     if (domainEntity.id && typeof domainEntity.id === 'number') {
       persistenceEntity.id = domainEntity.id;
     }
