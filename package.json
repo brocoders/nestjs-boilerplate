@@ -15,6 +15,7 @@
     "schema:drop": "npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
     "seed:create:relational": "hygen seeds create-relational",
     "seed:create:document": "hygen seeds create-document",
+    "seed:map-areas": "ts-node -r tsconfig-paths/register ./src/database/seeds/Map/Areas/run-seed.ts",
     "generate:resource:relational": "hygen generate relational-resource",
     "postgenerate:resource:relational": "npm run lint -- --fix",
     "generate:resource:document": "hygen generate document-resource",

@@ -173,15 +173,6 @@
     },
     {
       "type": "Feature",
-      "geometry": { "type": "MultiPolygon", "coordinates": [] },
-      "properties": {
-        "id": 4,
-        "code": "B390_000100.55",
-        "municipality": "Calci"
-      }
-    },
-    {
-      "type": "Feature",
       "geometry": {
         "type": "MultiPolygon",
         "coordinates": [
