@@ -7888,6 +7888,55 @@
         ]
       }
     },
+    "/api/v1/auth/phone/login": {
+      "post": {
+        "operationId": "AuthController_loginPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthPhoneLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/auth/email/register": {
       "post": {
         "operationId": "AuthController_register_v1",
@@ -7930,6 +7979,48 @@
         ]
       }
     },
+    "/api/v1/auth/tenant/register": {
+      "post": {
+        "operationId": "AuthController_registerTenant_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthRegisterTenantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/auth/email/confirm": {
       "post": {
         "operationId": "AuthController_confirmEmail_v1",
@@ -7957,7 +8048,91 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                "$ref": "#/components/schemas/AuthConfirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/phone/confirm": {
+      "post": {
+        "operationId": "AuthController_confirmPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthConfirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/phone/confirm/new": {
+      "post": {
+        "operationId": "AuthController_confirmNewPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthConfirmDto"
               }
             }
           }
@@ -7999,7 +8174,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                "$ref": "#/components/schemas/AuthConfirmDto"
               }
             }
           }
@@ -15326,6 +15501,22 @@
           "user"
         ]
       },
+      "AuthPhoneLoginDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "0743411403"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "password"
+        ]
+      },
       "AuthRegisterLoginDto": {
         "type": "object",
         "properties": {
@@ -15352,7 +15543,29 @@
           "lastName"
         ]
       },
-      "AuthConfirmEmailDto": {
+      "AuthRegisterTenantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "example": "test1@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0700000000"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone"
+        ]
+      },
+      "AuthConfirmDto": {
         "type": "object",
         "properties": {
           "hash": {

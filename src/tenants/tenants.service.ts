@@ -36,7 +36,6 @@ import { AllConfigType } from '../config/config.type';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { OnboardingsService } from '../onboardings/onboardings.service';
 import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
-import { TenantDataSource } from '../database/tenant-data-source';
 // import { AuditLogsService } from '../audit-logs/audit-logs.service';
 // import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { OnboardingsService } from '../onboardings/onboardings.service';
@@ -118,7 +117,7 @@ export class TenantsService {
     // Do not remove comment below.
     // <creating-property />
     let onboardingSteps: Onboarding[] | null | undefined = undefined;
-
+    console.log('createTenantDto', createTenantDto);
     if (createTenantDto.onboardingSteps) {
       const onboardingStepsObjects = await this.onboardingService.findByIds(
         createTenantDto.onboardingSteps.map((entity) => entity.id),
@@ -303,12 +302,13 @@ export class TenantsService {
 
       isActive: createTenantDto.isActive,
     });
+
     //Initialize onboarding
-    await this.onboardingService.initializeTenantOnboarding(
-      (await newTenant).id,
-    );
+    // await this.onboardingService.initializeTenantOnboarding(
+    //   (await newTenant).id,
+    // );
     // Initialize tenant database
-    await TenantDataSource.getTenantDataSource((await newTenant).id);
+    // await TenantDataSource.getTenantDataSource((await newTenant).id);
     //Audit log
     await this.auditService.logEvent(
       AuditAction.CREATE,
@@ -319,6 +319,7 @@ export class TenantsService {
       newTenant,
       'Tenant created',
     );
+    // console.log('data', newTenant);
     return newTenant;
   }
 

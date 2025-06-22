@@ -29,6 +29,12 @@ import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../statuses/statuses.enum';
 import { User } from '../users/domain/user';
 import { TenantDto } from 'src/tenants/dto/tenant.dto';
+import { TenantsService } from '../tenants/tenants.service';
+import { AuthRegisterTenantDto } from './dto/auth-register-tenant.dto';
+import { CreateTenantDto } from '../tenants/dto/create-tenant.dto';
+import { AuthPhoneLoginDto } from './dto/auth-phone-login.dto';
+import { TenantTypesService } from '../tenant-types/tenant-types.service';
+import { TenantTypeCode } from '../tenant-types/infrastructure/persistence/relational/entities/tenant-type.entity';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +43,8 @@ export class AuthService {
     private usersService: UsersService,
     private sessionService: SessionService,
     private mailService: MailService,
+    private tenantsService: TenantsService,
+    private tenantTypesService: TenantTypesService,
     private configService: ConfigService<AllConfigType>,
   ) {}
 
@@ -108,7 +116,76 @@ export class AuthService {
       user,
     };
   }
+  async validatePhoneLogin(
+    loginDto: AuthPhoneLoginDto,
+  ): Promise<LoginResponseDto> {
+    const user = await this.usersService.findByEmail(loginDto.phone);
 
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: 'notFound',
+        },
+      });
+    }
+
+    if (user.provider !== AuthProvidersEnum.email) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: `needLoginViaProvider:${user.provider}`,
+        },
+      });
+    }
+
+    if (!user.password) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: 'incorrectPassword',
+        },
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isValidPassword) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          password: 'incorrectPassword',
+        },
+      });
+    }
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const session = await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash,
+    });
+
+    return {
+      refreshToken,
+      token,
+      tokenExpires,
+      user,
+    };
+  }
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
@@ -231,8 +308,148 @@ export class AuthService {
       },
     });
   }
+  async registerTenant(
+    registerTenantDto: AuthRegisterTenantDto,
+  ): Promise<void> {
+    const { name, email, phone, type } = registerTenantDto;
+    console.log(' name, email, phone, type ', name, email, phone, type);
+    // Get or create default tenant type
+    const defaultType = await this.tenantTypesService.findOneByCode(
+      TenantTypeCode.GENERIC,
+    );
+
+    // 1. Create tenant
+    const tenantDto: CreateTenantDto = {
+      name,
+      primaryEmail: email,
+      primaryPhone: phone,
+      fullyOnboarded: false,
+      isActive: true,
+      type: type ?? (defaultType ? { id: defaultType?.id } : null),
+      regions: [],
+      settings: [],
+      onboardingSteps: [],
+      kycSubmissions: [],
+      users: [],
+      domain: `${name.toLowerCase().replace(/\s+/g, '-')}.example.com`,
+      // databaseConfig: {
+      //   host: '',
+      //   port: 0,
+      //   username: '',
+      //   password: '',
+      //   database: '',
+      //   schema: '',
+      // },
+    };
+
+    const tenant = await this.tenantsService.create(tenantDto);
+
+    // 3. Send confirmation email
+    const hash = await this.jwtService.signAsync(
+      {
+        confirmEmailTenantId: tenant.id,
+      },
+      {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+        expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
+          infer: true,
+        }),
+      },
+    );
+
+    await this.mailService.userSignUp({
+      to: email,
+      data: {
+        hash,
+      },
+    });
+  }
 
   async confirmEmail(hash: string): Promise<void> {
+    let userId: User['id'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: `invalidHash`,
+        },
+      });
+    }
+
+    const user = await this.usersService.findById(userId);
+
+    if (
+      !user ||
+      user?.status?.id?.toString() !== StatusEnum.inactive.toString()
+    ) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: `notFound`,
+      });
+    }
+
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
+  async confirmNewPhone(hash: string): Promise<void> {
+    let userId: User['id'];
+    let newEmail: User['email'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+        newEmail: User['email'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+      newEmail = jwtData.newEmail;
+    } catch {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: `invalidHash`,
+        },
+      });
+    }
+
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: `notFound`,
+      });
+    }
+
+    user.email = newEmail;
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+  async confirmPhone(hash: string): Promise<void> {
     let userId: User['id'];
 
     try {

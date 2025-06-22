@@ -15,6 +15,9 @@ export abstract class TenantTypeRepository {
   }): Promise<TenantType[]>;
 
   abstract findById(id: TenantType['id']): Promise<NullableType<TenantType>>;
+  abstract findByCode(
+    code: TenantType['code'],
+  ): Promise<NullableType<TenantType>>;
 
   abstract findByIds(ids: TenantType['id'][]): Promise<TenantType[]>;
 

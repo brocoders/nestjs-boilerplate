@@ -8,7 +8,6 @@ import { TenantTypeRepository } from './infrastructure/persistence/tenant-type.r
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { TenantType } from './domain/tenant-type';
 import { TenantTypeCode } from './infrastructure/persistence/relational/entities/tenant-type.entity';
-
 @Injectable()
 export class TenantTypesService {
   constructor(
@@ -52,6 +51,9 @@ export class TenantTypesService {
     return this.tenantTypeRepository.findByIds(ids);
   }
 
+  findOneByCode(code: TenantType['code']) {
+    return this.tenantTypeRepository.findByCode(code);
+  }
   async update(
     id: TenantType['id'],
 
