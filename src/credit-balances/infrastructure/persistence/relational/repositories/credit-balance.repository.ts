@@ -1,21 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { CreditBalanceEntity } from '../entities/credit-balance.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { CreditBalance } from '../../../../domain/credit-balance';
 import { CreditBalanceRepository } from '../../credit-balance.repository';
 import { CreditBalanceMapper } from '../mappers/credit-balance.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class CreditBalanceRelationalRepository
   implements CreditBalanceRepository
 {
-  constructor(
-    @InjectRepository(CreditBalanceEntity)
-    private readonly creditBalanceRepository: Repository<CreditBalanceEntity>,
-  ) {}
+  private creditBalanceRepository: Repository<CreditBalanceEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.creditBalanceRepository =
+      dataSource.getRepository(CreditBalanceEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<CreditBalanceEntity> = {},
+  ): FindOptionsWhere<CreditBalanceEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: CreditBalance): Promise<CreditBalance> {
     const persistenceModel = CreditBalanceMapper.toPersistence(data);
@@ -33,6 +53,7 @@ export class CreditBalanceRelationalRepository
     const entities = await this.creditBalanceRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => CreditBalanceMapper.toDomain(entity));
@@ -42,7 +63,7 @@ export class CreditBalanceRelationalRepository
     id: CreditBalance['id'],
   ): Promise<NullableType<CreditBalance>> {
     const entity = await this.creditBalanceRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? CreditBalanceMapper.toDomain(entity) : null;
@@ -50,7 +71,7 @@ export class CreditBalanceRelationalRepository
 
   async findByIds(ids: CreditBalance['id'][]): Promise<CreditBalance[]> {
     const entities = await this.creditBalanceRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => CreditBalanceMapper.toDomain(entity));
@@ -61,7 +82,7 @@ export class CreditBalanceRelationalRepository
     payload: Partial<CreditBalance>,
   ): Promise<CreditBalance> {
     const entity = await this.creditBalanceRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -81,6 +102,14 @@ export class CreditBalanceRelationalRepository
   }
 
   async remove(id: CreditBalance['id']): Promise<void> {
-    await this.creditBalanceRepository.delete(id);
+    const entity = await this.creditBalanceRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.creditBalanceRepository.softDelete(entity.id);
   }
 }

@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { ExemptionEntity } from '../entities/exemption.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Exemption } from '../../../../domain/exemption';
 import { ExemptionRepository } from '../../exemption.repository';
 import { ExemptionMapper } from '../mappers/exemption.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class ExemptionRelationalRepository implements ExemptionRepository {
-  constructor(
-    @InjectRepository(ExemptionEntity)
-    private readonly exemptionRepository: Repository<ExemptionEntity>,
-  ) {}
+  private exemptionRepository: Repository<ExemptionEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.exemptionRepository = dataSource.getRepository(ExemptionEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<ExemptionEntity> = {},
+  ): FindOptionsWhere<ExemptionEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: Exemption): Promise<Exemption> {
     const persistenceModel = ExemptionMapper.toPersistence(data);
@@ -38,7 +57,7 @@ export class ExemptionRelationalRepository implements ExemptionRepository {
 
   async findById(id: Exemption['id']): Promise<NullableType<Exemption>> {
     const entity = await this.exemptionRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? ExemptionMapper.toDomain(entity) : null;
@@ -46,7 +65,7 @@ export class ExemptionRelationalRepository implements ExemptionRepository {
 
   async findByIds(ids: Exemption['id'][]): Promise<Exemption[]> {
     const entities = await this.exemptionRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => ExemptionMapper.toDomain(entity));
@@ -57,7 +76,7 @@ export class ExemptionRelationalRepository implements ExemptionRepository {
     payload: Partial<Exemption>,
   ): Promise<Exemption> {
     const entity = await this.exemptionRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -77,6 +96,14 @@ export class ExemptionRelationalRepository implements ExemptionRepository {
   }
 
   async remove(id: Exemption['id']): Promise<void> {
-    await this.exemptionRepository.delete(id);
+    const entity = await this.exemptionRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.exemptionRepository.softDelete(entity.id);
   }
 }

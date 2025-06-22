@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { VendorBillEntity } from '../entities/vendor-bill.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { VendorBill } from '../../../../domain/vendor-bill';
 import { VendorBillRepository } from '../../vendor-bill.repository';
 import { VendorBillMapper } from '../mappers/vendor-bill.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class VendorBillRelationalRepository implements VendorBillRepository {
-  constructor(
-    @InjectRepository(VendorBillEntity)
-    private readonly vendorBillRepository: Repository<VendorBillEntity>,
-  ) {}
+  private vendorBillRepository: Repository<VendorBillEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.vendorBillRepository = dataSource.getRepository(VendorBillEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<VendorBillEntity> = {},
+  ): FindOptionsWhere<VendorBillEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: VendorBill): Promise<VendorBill> {
     const persistenceModel = VendorBillMapper.toPersistence(data);
@@ -38,7 +57,7 @@ export class VendorBillRelationalRepository implements VendorBillRepository {
 
   async findById(id: VendorBill['id']): Promise<NullableType<VendorBill>> {
     const entity = await this.vendorBillRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? VendorBillMapper.toDomain(entity) : null;
@@ -46,7 +65,7 @@ export class VendorBillRelationalRepository implements VendorBillRepository {
 
   async findByIds(ids: VendorBill['id'][]): Promise<VendorBill[]> {
     const entities = await this.vendorBillRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => VendorBillMapper.toDomain(entity));
@@ -57,7 +76,7 @@ export class VendorBillRelationalRepository implements VendorBillRepository {
     payload: Partial<VendorBill>,
   ): Promise<VendorBill> {
     const entity = await this.vendorBillRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -77,6 +96,14 @@ export class VendorBillRelationalRepository implements VendorBillRepository {
   }
 
   async remove(id: VendorBill['id']): Promise<void> {
-    await this.vendorBillRepository.delete(id);
+    const entity = await this.vendorBillRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.vendorBillRepository.softDelete(entity.id);
   }
 }

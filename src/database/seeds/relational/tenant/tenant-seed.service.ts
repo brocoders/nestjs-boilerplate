@@ -1,32 +1,27 @@
 // tenant-seed.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { TenantEntity } from '../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TenantTypeEntity } from 'src/tenant-types/infrastructure/persistence/relational/entities/tenant-type.entity';
-import { OnboardingsService } from 'src/onboardings/onboardings.service'; // Add this import
-import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity'; // Add this import
+// import { OnboardingsService } from 'src/onboardings/onboardings.service'; // Add this import
+// import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity'; // Add this import
+import { InjectRepository } from '@nestjs/typeorm';
+import { ModuleRef } from '@nestjs/core';
+import { OnboardingsService } from '../../../../onboardings/onboardings.service';
+import { OnboardingEntityType } from '../../../../onboardings/infrastructure/persistence/relational/entities/onboarding.entity';
 
 @Injectable()
 export class TenantSeedService {
   private readonly logger = new Logger(TenantSeedService.name);
-  private tenantRepository: Repository<TenantEntity>;
-  private tenantTypeRepository: Repository<TenantTypeEntity>;
+  private onboardingsService: OnboardingsService; // Remove from constructor
 
-  // constructor(
-  //   @InjectRepository(TenantEntity)
-  //   private readonly tenantRepository: Repository<TenantEntity>,
-  //   @InjectRepository(TenantTypeEntity)
-  //   private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
-  //   private readonly onboardingsService: OnboardingsService, // Inject onboarding service
-  // ) {}
   constructor(
-    private dataSource: DataSource, // Inject DataSource instead of repositories
-    private readonly onboardingsService: OnboardingsService,
-  ) {
-    // Initialize repositories from DataSource
-    this.tenantRepository = this.dataSource.getRepository(TenantEntity);
-    this.tenantTypeRepository = this.dataSource.getRepository(TenantTypeEntity);
-  }
+    @InjectRepository(TenantEntity)
+    private readonly tenantRepository: Repository<TenantEntity>,
+    @InjectRepository(TenantTypeEntity)
+    private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
+    private readonly moduleRef: ModuleRef, // Inject ModuleRef instead
+  ) {}
 
   async run() {
     // Get all tenant types from database
@@ -78,6 +73,9 @@ export class TenantSeedService {
 
   private async initializeTenantOnboarding(tenant: TenantEntity) {
     try {
+      if (!this.onboardingsService) {
+        this.onboardingsService = await this.moduleRef.get(OnboardingsService);
+      }
       // Check if onboarding already exists
       const onboardingStatus =
         await this.onboardingsService.getOnboardingStatus(

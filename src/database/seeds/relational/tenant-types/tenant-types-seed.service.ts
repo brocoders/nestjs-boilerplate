@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   TenantTypeCode,
@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TenantTypesSeedService {
+  private readonly logger = new Logger(TenantTypesSeedService.name);
   constructor(
     @InjectRepository(TenantTypeEntity)
     private repository: Repository<TenantTypeEntity>,
@@ -57,5 +58,7 @@ export class TenantTypesSeedService {
         );
       }
     }
+
+    this.logger.log('Finished seeding tenant types');
   }
 }

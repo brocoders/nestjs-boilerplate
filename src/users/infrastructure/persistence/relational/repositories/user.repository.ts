@@ -29,8 +29,7 @@ export class UsersRelationalRepository implements UserRepository {
 
     // Only apply tenant filter if tenant exists AND we're using tenant DB
     if (
-      tenantId &&
-      this.request['tenantDataSource'] !== TenantDataSource.getCoreDataSource()
+      tenantId /**&& this.request['tenantDataSource'] !== TenantDataSource.getCoreDataSource()**/
     ) {
       return {
         ...where,
@@ -59,12 +58,17 @@ export class UsersRelationalRepository implements UserRepository {
   }): Promise<User[]> {
     // Convert filterOptions to FindOptionsWhere<UserEntity> if present
     const { roles, ...restFilterOptions } = filterOptions || {};
-    const baseWhere: FindOptionsWhere<UserEntity> = restFilterOptions;
-    const where = this.applyTenantFilter(baseWhere);
+    // const baseWhere: FindOptionsWhere<UserEntity> = restFilterOptions;
+    // const where = this.applyTenantFilter(baseWhere);
+    // if (roles?.length) {
+    //   where.role = roles.map((role) => ({
+    //     id: Number(role.id),
+    //   }));
+    // }
+    const where = this.applyTenantFilter(restFilterOptions);
+
     if (roles?.length) {
-      where.role = roles.map((role) => ({
-        id: Number(role.id),
-      }));
+      where.role = In(roles.map((r) => Number(r.id)));
     }
     // const entities_ = this.dataSource
     //   .getRepository(UserEntity)
@@ -103,11 +107,9 @@ export class UsersRelationalRepository implements UserRepository {
 
   async findByEmail(email: User['email']): Promise<NullableType<User>> {
     if (!email) return null;
-    console.log('this.usersRepository', this.usersRepository);
     const entity = await this.usersRepository.findOne({
       where: this.applyTenantFilter({ email: email }),
     });
-    console.log('entity', entity);
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
@@ -129,8 +131,7 @@ export class UsersRelationalRepository implements UserRepository {
 
   async update(id: User['id'], payload: Partial<User>): Promise<User> {
     const entity = await this.usersRepository.findOne({
-      where: { id: Number(id) },
-      //where: this.applyTenantFilter({ id: Number(id) }),
+      where: this.applyTenantFilter({ id: Number(id) }),
     });
 
     if (!entity) {
@@ -150,6 +151,12 @@ export class UsersRelationalRepository implements UserRepository {
   }
 
   async remove(id: User['id']): Promise<void> {
-    await this.usersRepository.softDelete(id);
+    const entity = await this.usersRepository.findOne({
+      where: this.applyTenantFilter({ id: Number(id) }),
+    });
+    if (!entity) {
+      throw new Error('User not found or access denied');
+    }
+    await this.usersRepository.softDelete(entity.id);
   }
 }

@@ -1,21 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { PaymentNotificationEntity } from '../entities/payment-notification.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { PaymentNotification } from '../../../../domain/payment-notification';
 import { PaymentNotificationRepository } from '../../payment-notification.repository';
 import { PaymentNotificationMapper } from '../mappers/payment-notification.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class PaymentNotificationRelationalRepository
   implements PaymentNotificationRepository
 {
-  constructor(
-    @InjectRepository(PaymentNotificationEntity)
-    private readonly paymentNotificationRepository: Repository<PaymentNotificationEntity>,
-  ) {}
+  private paymentNotificationRepository: Repository<PaymentNotificationEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.paymentNotificationRepository = dataSource.getRepository(
+      PaymentNotificationEntity,
+    );
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<PaymentNotificationEntity> = {},
+  ): FindOptionsWhere<PaymentNotificationEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: PaymentNotification): Promise<PaymentNotification> {
     const persistenceModel = PaymentNotificationMapper.toPersistence(data);
@@ -33,6 +54,7 @@ export class PaymentNotificationRelationalRepository
     const entities = await this.paymentNotificationRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => PaymentNotificationMapper.toDomain(entity));
@@ -42,7 +64,7 @@ export class PaymentNotificationRelationalRepository
     id: PaymentNotification['id'],
   ): Promise<NullableType<PaymentNotification>> {
     const entity = await this.paymentNotificationRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? PaymentNotificationMapper.toDomain(entity) : null;
@@ -52,7 +74,7 @@ export class PaymentNotificationRelationalRepository
     ids: PaymentNotification['id'][],
   ): Promise<PaymentNotification[]> {
     const entities = await this.paymentNotificationRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => PaymentNotificationMapper.toDomain(entity));
@@ -63,7 +85,7 @@ export class PaymentNotificationRelationalRepository
     payload: Partial<PaymentNotification>,
   ): Promise<PaymentNotification> {
     const entity = await this.paymentNotificationRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -83,6 +105,14 @@ export class PaymentNotificationRelationalRepository
   }
 
   async remove(id: PaymentNotification['id']): Promise<void> {
-    await this.paymentNotificationRepository.delete(id);
+    const entity = await this.paymentNotificationRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.paymentNotificationRepository.softDelete(entity.id);
   }
 }

@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { OnboardingEntity } from '../entities/onboarding.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Onboarding } from '../../../../domain/onboarding';
 import { OnboardingRepository } from '../../onboarding.repository';
 import { OnboardingMapper } from '../mappers/onboarding.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class OnboardingRelationalRepository implements OnboardingRepository {
-  constructor(
-    @InjectRepository(OnboardingEntity)
-    private readonly onboardingRepository: Repository<OnboardingEntity>,
-  ) {}
+  private onboardingRepository: Repository<OnboardingEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.onboardingRepository = dataSource.getRepository(OnboardingEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<OnboardingEntity> = {},
+  ): FindOptionsWhere<OnboardingEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        //tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: Onboarding): Promise<Onboarding> {
     const persistenceModel = OnboardingMapper.toPersistence(data);
@@ -31,6 +50,7 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
     const entities = await this.onboardingRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: this.applyTenantFilter(),
     });
 
     return entities.map((entity) => OnboardingMapper.toDomain(entity));
@@ -38,7 +58,7 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
 
   async findById(id: Onboarding['id']): Promise<NullableType<Onboarding>> {
     const entity = await this.onboardingRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? OnboardingMapper.toDomain(entity) : null;
@@ -46,7 +66,7 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
 
   async findByIds(ids: Onboarding['id'][]): Promise<Onboarding[]> {
     const entities = await this.onboardingRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => OnboardingMapper.toDomain(entity));
@@ -57,7 +77,7 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
     payload: Partial<Onboarding>,
   ): Promise<Onboarding> {
     const entity = await this.onboardingRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -77,7 +97,15 @@ export class OnboardingRelationalRepository implements OnboardingRepository {
   }
 
   async remove(id: Onboarding['id']): Promise<void> {
-    await this.onboardingRepository.delete(id);
+    const entity = await this.onboardingRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.onboardingRepository.softDelete(entity.id);
   }
 
   async findOne(
