@@ -19,14 +19,6 @@ export class TenantDataSource {
   /**
    * Initialize core database connection (for tenant metadata)
    */
-  // static async initializeCore(config: DataSourceOptions): Promise<void> {
-  //   console.log(
-  //     `Initializing core database with config:`, // ${JSON.stringify(config)}
-  //   );
-  //   this.coreDataSource = new DataSource(config);
-  //   await this.coreDataSource.initialize();
-  //   console.log('Core database connected');
-  // }
   static async initializeCore(
     configService: ConfigService<AllConfigType>,
   ): Promise<void> {
@@ -58,7 +50,6 @@ export class TenantDataSource {
       .getRepository(TenantEntity)
       .findOne({
         where: { id: tenantId },
-        relations: ['databaseConfig'],
       });
     // if (!tenant || !tenant.databaseConfig) {
     //   throw new Error(`Tenant ${tenantId} configuration not found`);
@@ -67,6 +58,7 @@ export class TenantDataSource {
     let ds: DataSource;
 
     if (tenant?.databaseConfig) {
+      console.log(`Tenant ${tenantId} has specific database config`);
       // Create new tenant-specific connection
       ds = await this.initializeTenant(tenantId, {
         ...tenant.databaseConfig,
@@ -99,8 +91,8 @@ export class TenantDataSource {
       password: config.password,
       database: config.database,
       schema: config.schema || 'public',
-      entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-      migrations: [__dirname + '/migrations/tenant/*{.ts,.js}'],
+      //entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+      //migrations: [__dirname + '/migrations/tenant/*{.ts,.js}'],
       logging: false,
       extra: {
         // Set application_name for connection identification

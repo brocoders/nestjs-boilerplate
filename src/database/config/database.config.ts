@@ -84,6 +84,8 @@ export default registerAs<DatabaseConfig>('database', () => {
 
     // Existing multi-tenant configuration
     isMultiTenant: process.env.DATABASE_MULTI_TENANT === 'true',
+    allowSeparateTenantSchemas:
+      process.env.DATABASE_ALLOW_SEPARATE_TENANT_SCHEMAS === 'true',
     core: {
       type: 'postgres',
       host: process.env.CORE_DB_HOST,

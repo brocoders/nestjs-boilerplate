@@ -311,60 +311,84 @@ export class AuthService {
   async registerTenant(
     registerTenantDto: AuthRegisterTenantDto,
   ): Promise<void> {
-    const { name, email, phone, type } = registerTenantDto;
-    console.log(' name, email, phone, type ', name, email, phone, type);
-    // Get or create default tenant type
-    const defaultType = await this.tenantTypesService.findOneByCode(
-      TenantTypeCode.GENERIC,
-    );
+    try {
+      const { name, email, phone, type, password } = registerTenantDto;
+      // Get or create default tenant type
+      const defaultType = await this.tenantTypesService.findOneByCode(
+        TenantTypeCode.GENERIC,
+      );
 
-    // 1. Create tenant
-    const tenantDto: CreateTenantDto = {
-      name,
-      primaryEmail: email,
-      primaryPhone: phone,
-      fullyOnboarded: false,
-      isActive: true,
-      type: type ?? (defaultType ? { id: defaultType?.id } : null),
-      regions: [],
-      settings: [],
-      onboardingSteps: [],
-      kycSubmissions: [],
-      users: [],
-      domain: `${name.toLowerCase().replace(/\s+/g, '-')}.example.com`,
-      // databaseConfig: {
-      //   host: '',
-      //   port: 0,
-      //   username: '',
-      //   password: '',
-      //   database: '',
-      //   schema: '',
-      // },
-    };
+      // 1. Create tenant
+      const tenantDto: CreateTenantDto = {
+        name,
+        primaryEmail: email,
+        primaryPhone: phone,
+        fullyOnboarded: false,
+        isActive: true,
+        type: type ?? (defaultType ? { id: defaultType?.id } : null),
+        regions: [],
+        settings: [],
+        onboardingSteps: [],
+        kycSubmissions: [],
+        users: [],
+        domain: `${name.toLowerCase().replace(/\s+/g, '-')}.example.com`,
+        // databaseConfig: {
+        //   host: '',
+        //   port: 0,
+        //   username: '',
+        //   password: '',
+        //   database: '',
+        //   schema: '',
+        // },
+      };
 
-    const tenant = await this.tenantsService.create(tenantDto);
+      const tenant = await this.tenantsService.create(tenantDto);
 
-    // 3. Send confirmation email
-    const hash = await this.jwtService.signAsync(
-      {
-        confirmEmailTenantId: tenant.id,
-      },
-      {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
-        expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
-          infer: true,
-        }),
-      },
-    );
+      await this.usersService.create({
+        password: password,
+        email: email,
+        role: {
+          id: RoleEnum.admin,
+        },
+        status: {
+          id: StatusEnum.inactive,
+        },
+        tenant: tenant,
+        fullyOnboarded: false,
+        firstName: null,
+        lastName: null,
+      });
 
-    await this.mailService.userSignUp({
-      to: email,
-      data: {
-        hash,
-      },
-    });
+      // 3. Send confirmation email
+      const hash = await this.jwtService.signAsync(
+        {
+          confirmEmailTenantId: tenant.id,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
+            infer: true,
+          }),
+        },
+      );
+
+      await this.mailService.userSignUp({
+        to: email,
+        data: {
+          hash,
+        },
+      });
+    } catch (error) {
+      console.error('Error during tenant registration:', error);
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          tenant: 'tenantRegistrationFailed',
+        },
+      });
+    }
   }
 
   async confirmEmail(hash: string): Promise<void> {

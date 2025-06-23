@@ -41,9 +41,6 @@ import { ExemptionSeedModule } from './exemption/exemption-seed.module';
 import { InventorySeedModule } from './inventory/inventory-seed.module';
 
 import { InvoiceSeedModule } from './invoice/invoice-seed.module';
-
-import { KycDetailsSeedModule } from './kyc-details/kyc-details-seed.module';
-
 import { PaymentAggregatorSeedModule } from './payment-aggregator/payment-aggregator-seed.module';
 
 import { PaymentMethodSeedModule } from './payment-method/payment-method-seed.module';
@@ -74,7 +71,6 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
     PaymentPlanSeedModule,
     PaymentMethodSeedModule,
     PaymentAggregatorSeedModule,
-    KycDetailsSeedModule,
     InvoiceSeedModule,
     InventorySeedModule,
     ExemptionSeedModule,

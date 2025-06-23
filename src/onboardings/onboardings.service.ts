@@ -24,9 +24,18 @@ import {
   TENANT_ONBOARDING_STEPS,
   USER_ONBOARDING_STEPS,
 } from './constants/onboarding-steps.constants';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class OnboardingsService {
+  private readonly onboardingStepsMap: Record<
+    OnboardingEntityType,
+    OnboardingStepDefinition[]
+  > = {
+    [OnboardingEntityType.USER]: USER_ONBOARDING_STEPS,
+    [OnboardingEntityType.TENANT]: TENANT_ONBOARDING_STEPS,
+  };
+
   constructor(
     @Inject(forwardRef(() => TenantsService))
     private readonly tenantService: TenantsService,
@@ -36,27 +45,47 @@ export class OnboardingsService {
 
     private readonly onboardingRepository: OnboardingRepository,
   ) {}
-
   async initializeOnboarding(
     entityType: OnboardingEntityType,
     entityId: string,
     steps: OnboardingStepDefinition[],
   ): Promise<Onboarding[]> {
-    const stepEntities = await Promise.all(
-      steps.map((step) =>
-        this.onboardingRepository.create({
+    const existingSteps = await this.onboardingRepository.find({
+      where: {
+        entityType,
+        ...(entityType === OnboardingEntityType.TENANT
+          ? { performedByTenant: { id: entityId } }
+          : { performedByUser: { id: entityId } }),
+      },
+    });
+
+    const existingStepKeys = new Set(existingSteps.map((step) => step.stepKey));
+
+    const newSteps = steps
+      .filter((step) => !existingStepKeys.has(step.key))
+      .map((step) => {
+        const baseData = {
           ...step,
           entityType,
           description: step.description ?? '',
-          [entityType]: { id: entityId },
           metadata: null,
           status: OnboardingStepStatus.PENDING,
           stepKey: step.key,
-        }),
-      ),
-    );
+        };
 
-    return stepEntities;
+        return this.onboardingRepository.create({
+          ...baseData,
+          ...(entityType === OnboardingEntityType.TENANT
+            ? { performedByTenant: { id: entityId } as any }
+            : { performedByUser: { id: entityId } as any }),
+        });
+      });
+
+    if (!newSteps.length) {
+      return [];
+    }
+
+    return await Promise.all(newSteps);
   }
 
   async initializeUserOnboarding(userId: string): Promise<Onboarding[]> {
@@ -78,16 +107,17 @@ export class OnboardingsService {
   async completeStep(
     entityType: OnboardingEntityType,
     entityId: string,
-    stepKey: string,
+    stepId: string,
     metadata?: Record<string, any>,
     performedBy?: { userId?: string; tenantId?: string },
   ): Promise<Onboarding> {
     const whereCondition = {
-      entityType,
-      stepKey,
-      [entityType]: { id: entityId },
+      entityType: entityType.toLowerCase() as OnboardingEntityType,
+      id: stepId,
+      // [entityType.toLowerCase()]: { id: entityId },
     };
-
+    console.log('Where condition:', whereCondition);
+    console.log('Metadata:', metadata);
     const step = await this.onboardingRepository.findOne(whereCondition);
 
     if (!step) {
@@ -95,14 +125,14 @@ export class OnboardingsService {
         `Onboarding step not found for ${entityType} ${entityId}`,
       );
     }
-
+    //TODO : Validate stepKey against the onboarding steps map
+    // TODO : save metadata to actual table
     const updatePayload: Partial<Onboarding> = {
       status: OnboardingStepStatus.COMPLETED,
       metadata: metadata || step.metadata,
       completedAt: new Date(),
     };
 
-    // Set performer if provided
     if (performedBy) {
       if (performedBy.userId) {
         updatePayload.performedByUser = { id: performedBy.userId } as User;
@@ -145,7 +175,6 @@ export class OnboardingsService {
       completedAt: new Date(),
     };
 
-    // Set performer if provided
     if (performedBy) {
       if (performedBy.userId) {
         updatePayload.performedByUser = { id: performedBy.userId } as User;
@@ -175,11 +204,23 @@ export class OnboardingsService {
     percentage: number;
     currentStep: Onboarding | null;
   }> {
+    const condition: FindOptionsWhere<Onboarding> = {
+      entityType: entityType.toLowerCase() as OnboardingEntityType,
+    };
+
+    if (entityType.toLowerCase() === 'tenant') {
+      condition.performedByTenant = { id: entityId }; // Use relation object
+    } else {
+      condition.performedByUser = { id: entityId }; // Use relation object
+    }
+
     const steps = await this.onboardingRepository.find({
-      where: { entityType, [entityType]: { id: entityId } },
+      where: condition,
       order: { order: 'ASC' },
     });
 
+    console.log('getOnboardingStatus Where condition:', condition);
+    console.log('getOnboardingStatus Steps:', steps.length);
     const requiredSteps = steps.filter((s) => s.isRequired);
     const completedSteps = steps.filter(
       (s) => s.status === OnboardingStepStatus.COMPLETED,
@@ -189,15 +230,12 @@ export class OnboardingsService {
       (s) => s.status === OnboardingStepStatus.COMPLETED,
     ).length;
 
-    // Find first pending step that isn't blocked by dependencies
     let currentStep: Onboarding | null = null;
     for (const step of steps) {
       if (step.status === OnboardingStepStatus.PENDING) {
-        // Check if dependencies are completed
-        const stepDef =
-          entityType === OnboardingEntityType.USER
-            ? USER_ONBOARDING_STEPS.find((s) => s.key === step.stepKey)
-            : TENANT_ONBOARDING_STEPS.find((s) => s.key === step.stepKey);
+        const stepDef = this.onboardingStepsMap[entityType]?.find(
+          (s) => s.key === step.stepKey,
+        );
 
         if (!stepDef) continue;
 
@@ -231,6 +269,26 @@ export class OnboardingsService {
       percentage,
       currentStep,
     };
+  }
+
+  async getStepStatus(
+    entityType: OnboardingEntityType,
+    entityId: string,
+    stepKey: string,
+  ): Promise<Onboarding> {
+    const step = await this.onboardingRepository.findOne({
+      entityType,
+      stepKey,
+      [entityType]: { id: entityId },
+    });
+
+    if (!step) {
+      throw new NotFoundException(
+        `Onboarding step not found for ${entityType} ${entityId} and step ${stepKey}`,
+      );
+    }
+
+    return step;
   }
 
   async resetStep(

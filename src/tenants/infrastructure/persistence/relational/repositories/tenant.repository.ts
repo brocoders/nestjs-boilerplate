@@ -8,6 +8,7 @@ import { TenantMapper } from '../mappers/tenant.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { REQUEST } from '@nestjs/core';
 import { TenantDataSource } from '../../../../../database/tenant-data-source';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class TenantRelationalRepository implements TenantRepository {
@@ -17,6 +18,26 @@ export class TenantRelationalRepository implements TenantRepository {
     const dataSource: DataSource =
       this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
     this.tenantRepository = dataSource.getRepository(TenantEntity);
+  }
+  async findByTypeId(typeId: string): Promise<NullableType<Tenant>> {
+    const entity = await this.tenantRepository.findOne({
+      where: {
+        type: { id: typeId },
+      },
+      relations: ['type'],
+    });
+    return entity ? plainToClass(Tenant, entity) : null;
+  }
+
+  async findByIdWithRelations(
+    id: Tenant['id'],
+    relations: string[],
+  ): Promise<NullableType<Tenant>> {
+    const entity = await this.tenantRepository.findOne({
+      where: { id },
+      relations,
+    });
+    return entity ? plainToClass(Tenant, entity) : null;
   }
 
   async create(data: Tenant): Promise<Tenant> {

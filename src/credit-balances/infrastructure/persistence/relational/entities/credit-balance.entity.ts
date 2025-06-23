@@ -8,12 +8,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   JoinColumn,
-  OneToOne,
   Column,
   ManyToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { AuditLogEntry } from '../../../../../common/dto/audit-log-entry.dto';
+import { AuditLogEntry } from '../../../../dto/audit-log-entry.dto';
 
 @Entity({
   name: 'credit_balance',
@@ -31,7 +30,7 @@ export class CreditBalanceEntity extends EntityRelationalHelper {
   })
   amount: number;
 
-  @OneToOne(() => UserEntity, { eager: true, nullable: false })
+  @ManyToOne(() => UserEntity, { eager: true, nullable: false })
   @JoinColumn()
   customer: UserEntity;
 

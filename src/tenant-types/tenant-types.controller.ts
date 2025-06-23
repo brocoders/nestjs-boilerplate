@@ -27,10 +27,9 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllTenantTypesDto } from './dto/find-all-tenant-types.dto';
+import { Public } from '../auth/decorators/public.decorator'; // Add this import
 
 @ApiTags('Tenanttypes')
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'tenant-types',
   version: '1',
@@ -38,14 +37,7 @@ import { FindAllTenantTypesDto } from './dto/find-all-tenant-types.dto';
 export class TenantTypesController {
   constructor(private readonly tenantTypesService: TenantTypesService) {}
 
-  @Post()
-  @ApiCreatedResponse({
-    type: TenantType,
-  })
-  create(@Body() createTenantTypeDto: CreateTenantTypeDto) {
-    return this.tenantTypesService.create(createTenantTypeDto);
-  }
-
+  @Public() // Make this route public
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(TenantType),
@@ -70,6 +62,7 @@ export class TenantTypesController {
     );
   }
 
+  @Public() // Optionally make this public too if needed
   @Get(':id')
   @ApiParam({
     name: 'id',
@@ -83,6 +76,18 @@ export class TenantTypesController {
     return this.tenantTypesService.findById(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  @ApiCreatedResponse({
+    type: TenantType,
+  })
+  create(@Body() createTenantTypeDto: CreateTenantTypeDto) {
+    return this.tenantTypesService.create(createTenantTypeDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @ApiParam({
     name: 'id',
@@ -99,6 +104,8 @@ export class TenantTypesController {
     return this.tenantTypesService.update(id, updateTenantTypeDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @ApiParam({
     name: 'id',

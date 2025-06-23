@@ -36,6 +36,8 @@ import { AllConfigType } from '../config/config.type';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { OnboardingsService } from '../onboardings/onboardings.service';
 import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
+import { DataSource } from 'typeorm';
+import { TenantDataSource } from '../database/tenant-data-source';
 // import { AuditLogsService } from '../audit-logs/audit-logs.service';
 // import { AuditAction } from '../audit-logs/infrastructure/persistence/relational/entities/audit-log.entity';
 // import { OnboardingsService } from '../onboardings/onboardings.service';
@@ -72,52 +74,65 @@ export class TenantsService {
   ) {}
   private generateDbConfig(schemaName: string) {
     const dbConfig = this.configService.get('database', { infer: true });
+    const allow_separateTenantSchemas =
+      this.configService.get('database.allowSeparateTenantSchemas', {
+        infer: true,
+      }) || false;
     return {
       host: dbConfig?.host || 'localhost',
       port: dbConfig?.port || 5432,
       type: dbConfig?.type || 'postgres',
-      // username: dbConfig?.username || 'postgres',
-      // password: dbConfig?.password || 'postgres',
-      // database: dbConfig?.database || 'postgres',
       username: dbConfig?.username || `${schemaName}_user`,
       password: dbConfig?.password || crypto.randomBytes(12).toString('hex'),
-      database: `${schemaName}_db`,
-      schema: schemaName,
+      database: allow_separateTenantSchemas
+        ? `${schemaName}_db`
+        : dbConfig?.name || 'default_db',
+      schema: allow_separateTenantSchemas ? `${schemaName}_db` : 'public',
     };
   }
-  //  private generateDbConfig(name: string): TenantConnectionConfig {
-  //   const prefix = this.configService.get('database.tenantPrefix');
-  //   return {
-  //     id: uuidv4(),
-  //     type: 'postgres',
-  //     host: this.configService.get('database.tenantConfig.defaultHost'),
-  //     port: this.configService.get('database.tenantConfig.defaultPort'),
-  //     username: this.configService.get('database.tenantConfig.defaultUsername'),
-  //     password: this.configService.get('database.tenantConfig.defaultPassword'),
-  //     database: `${prefix}${name}`,
-  //     schema: 'public'
-  //   };
-  // }
 
-  // private async createDatabase(config: TenantConnectionConfig): Promise<void> {
-  //     const adminDs = new DataSource({
-  //       type: 'postgres',
-  //       host: config.host,
-  //       port: config.port,
-  //       username: config.username,
-  //       password: config.password
-  //     });
+  private async createDatabase(config: any): Promise<void> {
+    const adminDs = new DataSource({
+      type: 'postgres',
+      host: config.host,
+      port: config.port,
+      username: config.username,
+      password: config.password,
+      database: 'postgres', // Connect to default system database
+    });
 
-  //     await adminDs.initialize();
-  //     await adminDs.query(`CREATE DATABASE "${config.database}"`);
-  //     await adminDs.destroy();
-  //   }
-  // }
+    try {
+      await adminDs.initialize();
+
+      // Check if database exists
+      const databaseExists = await adminDs.query(
+        `SELECT 1 FROM pg_database WHERE datname = $1`,
+        [config.database],
+      );
+
+      if (databaseExists.length === 0) {
+        // Database doesn't exist, create it
+        await adminDs.query(`CREATE DATABASE "${config.database}"`);
+        console.log(`Database ${config.database} created successfully`);
+      } else {
+        console.log(
+          `Database ${config.database} already exists. Skipping creation.`,
+        );
+      }
+    } catch (error) {
+      console.error(`Error creating database ${config.database}:`, error);
+      throw error;
+    } finally {
+      if (adminDs.isInitialized) {
+        await adminDs.destroy();
+      }
+    }
+  }
+
   async create(createTenantDto: CreateTenantDto) {
     // Do not remove comment below.
     // <creating-property />
     let onboardingSteps: Onboarding[] | null | undefined = undefined;
-    console.log('createTenantDto', createTenantDto);
     if (createTenantDto.onboardingSteps) {
       const onboardingStepsObjects = await this.onboardingService.findByIds(
         createTenantDto.onboardingSteps.map((entity) => entity.id),
@@ -264,11 +279,10 @@ export class TenantsService {
     }
 
     const dbConfig = this.generateDbConfig(schemaName);
-
     // // Create database
-    // await this.createDatabase(dbConfig);
+    await this.createDatabase(dbConfig);
 
-    const newTenant = this.tenantRepository.create({
+    const newTenant = await this.tenantRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
       onboardingSteps,
@@ -304,11 +318,11 @@ export class TenantsService {
     });
 
     //Initialize onboarding
-    // await this.onboardingService.initializeTenantOnboarding(
-    //   (await newTenant).id,
-    // );
+    await this.onboardingService.initializeTenantOnboarding(
+      (await newTenant).id,
+    );
     // Initialize tenant database
-    // await TenantDataSource.getTenantDataSource((await newTenant).id);
+    await TenantDataSource.getTenantDataSource((await newTenant).id);
     //Audit log
     await this.auditService.logEvent(
       AuditAction.CREATE,
@@ -319,7 +333,7 @@ export class TenantsService {
       newTenant,
       'Tenant created',
     );
-    // console.log('data', newTenant);
+    console.log('data', newTenant);
     return newTenant;
   }
 

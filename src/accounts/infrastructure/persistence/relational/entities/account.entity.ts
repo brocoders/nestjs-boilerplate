@@ -23,10 +23,10 @@ import {
   name: 'account',
 })
 export class AccountEntity extends EntityRelationalHelper {
-  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  @ManyToOne(() => TenantEntity, { /**eager: true,**/ nullable: false })
   tenant: TenantEntity;
 
-  @ManyToMany(() => UserEntity, { eager: true, nullable: true })
+  @ManyToMany(() => UserEntity, { /**eager: true,**/ nullable: true })
   @JoinTable()
   owner?: UserEntity[] | null;
 

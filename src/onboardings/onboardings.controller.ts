@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { OnboardingsService } from './onboardings.service';
 import { CreateOnboardingDto } from './dto/create-onboarding.dto';
@@ -115,76 +116,123 @@ export class OnboardingsController {
     return this.onboardingsService.remove(id);
   }
 
-  @Get('user/:userId/status')
-  getUserStatus(@Param('userId') userId: string) {
-    return this.onboardingsService.getOnboardingStatus(
-      OnboardingEntityType.USER,
-      userId,
-    );
+  @Get(':entityType/:entityId/status')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  getOnboardingStatus(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
+  ) {
+    return this.onboardingsService.getOnboardingStatus(entityType, entityId);
   }
-  @Post('initialize-user/:userId')
-  initializeUser(@Param('userId') userId: string) {
-    return this.onboardingsService.initializeUserOnboarding(userId);
+
+  @Post('initialize/:entityType/:entityId')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  initialize(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
+  ) {
+    if (entityType === OnboardingEntityType.USER) {
+      return this.onboardingsService.initializeUserOnboarding(entityId);
+    } else if (entityType === OnboardingEntityType.TENANT) {
+      return this.onboardingsService.initializeTenantOnboarding(entityId);
+    }
+    throw new NotFoundException('Invalid entity type');
   }
-  @Post('user/:userId/complete/:stepKey')
-  async completeUserStep(
-    @Param('userId') userId: string,
-    @Param('stepKey') stepKey: string,
-    @Body() body: any,
+
+  @Post(':entityType/:entityId/complete/:stepKey')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  @ApiParam({ name: 'stepKey', type: String })
+  async completeStep(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
+    @Param('stepKey') stepId: string,
+    @Body() body: { metadata?: Record<string, any>; performedBy?: any },
   ) {
     const result = await this.onboardingsService.completeStep(
-      OnboardingEntityType.USER,
-      userId,
-      stepKey,
+      entityType,
+      entityId,
+      stepId,
       body.metadata,
+      body.performedBy,
     );
 
     await this.auditService.logEvent(
       AuditAction.COMPLETE_STEP,
-      'user',
-      userId,
-      { userId },
+      entityType,
+      entityId,
+      {
+        userId: entityType === OnboardingEntityType.USER ? entityId : undefined,
+        tenantId:
+          entityType === OnboardingEntityType.TENANT ? entityId : undefined,
+      },
       undefined,
-      { step: stepKey, status: 'completed' },
-      `User completed onboarding step: ${stepKey}`,
-      stepKey,
+      { step: stepId, status: 'completed' },
+      `${entityType} completed onboarding step: ${stepId}`,
+      stepId,
     );
 
     return result;
   }
-  @Get('tenant/:tenantId/status')
-  getTenantStatus(@Param('tenantId') tenantId: string) {
-    return this.onboardingsService.getOnboardingStatus(
-      OnboardingEntityType.TENANT,
-      tenantId,
-    );
-  }
-  @Post('initialize-tenant/:tenantId')
-  initializeTenant(@Param('tenantId') tenantId: string) {
-    return this.onboardingsService.initializeTenantOnboarding(tenantId);
-  }
-  @Post('tenant/:tenantId/skip/:stepKey')
-  async skipTenantStep(
-    @Param('tenantId') tenantId: string,
+
+  @Post(':entityType/:entityId/skip/:stepKey')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  @ApiParam({ name: 'stepKey', type: String })
+  async skipStep(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
     @Param('stepKey') stepKey: string,
+    @Body() body: { performedBy?: any },
   ) {
     const result = await this.onboardingsService.skipStep(
-      OnboardingEntityType.TENANT,
-      tenantId,
+      entityType,
+      entityId,
       stepKey,
+      body.performedBy,
     );
 
     await this.auditService.logEvent(
       AuditAction.SKIP_STEP,
-      'tenant',
-      tenantId,
-      { tenantId },
+      entityType,
+      entityId,
+      {
+        userId: entityType === OnboardingEntityType.USER ? entityId : undefined,
+        tenantId:
+          entityType === OnboardingEntityType.TENANT ? entityId : undefined,
+      },
       undefined,
       { step: stepKey, status: 'skipped' },
-      `Tenant skipped onboarding step: ${stepKey}`,
+      `${entityType} skipped onboarding step: ${stepKey}`,
       stepKey,
     );
 
     return result;
+  }
+
+  @Post(':entityType/:entityId/reset/:stepKey')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  @ApiParam({ name: 'stepKey', type: String })
+  async resetStep(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
+    @Param('stepKey') stepKey: string,
+  ) {
+    return this.onboardingsService.resetStep(entityType, entityId, stepKey);
+  }
+
+  @Get(':entityType/:entityId/step/:stepKey')
+  @ApiParam({ name: 'entityType', enum: OnboardingEntityType })
+  @ApiParam({ name: 'entityId', type: String })
+  @ApiParam({ name: 'stepKey', type: String })
+  async getStepStatus(
+    @Param('entityType') entityType: OnboardingEntityType,
+    @Param('entityId') entityId: string,
+    @Param('stepKey') stepKey: string,
+  ) {
+    return this.onboardingsService.getStepStatus(entityType, entityId, stepKey);
   }
 }

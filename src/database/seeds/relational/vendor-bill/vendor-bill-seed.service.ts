@@ -14,7 +14,7 @@ export class VendorBillSeedService {
     const count = await this.repository.count();
 
     if (count === 0) {
-      await this.repository.save(this.repository.create({}));
+      // await this.repository.save(this.repository.create({}));
     }
   }
 }

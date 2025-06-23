@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateInitialTables1748748869019 implements MigrationInterface {
-  name = 'CreateInitialTables1748748869019';
+export class CreateInitialTables1750571674100 implements MigrationInterface {
+  name = 'CreateInitialTables1750571674100';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -32,7 +32,10 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "status" ("id" integer NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_e12743a7086ec826733f54e1d95" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "file" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "path" character varying NOT NULL, CONSTRAINT "PK_36b46d232307066b3a2c9ea3a1d" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "file" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "path" character varying NOT NULL, "tenantId" uuid, CONSTRAINT "PK_36b46d232307066b3a2c9ea3a1d" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "credit_balance" ("auditLog" jsonb, "amount" integer NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "customerId" integer NOT NULL, CONSTRAINT "PK_0b0df850847d6f9d5969728bc07" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "user" ("fullyOnboarded" boolean NOT NULL, "phoneNumber" character varying, "countryCode" character varying, "id" SERIAL NOT NULL, "email" character varying, "password" character varying, "provider" character varying NOT NULL DEFAULT 'email', "socialId" character varying, "firstName" character varying, "lastName" character varying, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "tenantId" uuid NOT NULL, "photoId" uuid, "roleId" integer, "statusId" integer, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "REL_75e2be4ce11d447ef43be0e374" UNIQUE ("photoId"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`,
@@ -65,7 +68,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "tenant_type" ("description" character varying, "code" "public"."tenant_type_code_enum" NOT NULL, "name" character varying, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_4c0533c3a7e87116891dec23578" UNIQUE ("code"), CONSTRAINT "PK_4a98ba209be6df3b80a4feb5838" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "tenant" ("fullyOnboarded" boolean NOT NULL, "databaseConfig" jsonb NOT NULL, "domain" character varying, "schemaName" character varying, "address" character varying, "primaryPhone" character varying, "primaryEmail" character varying, "name" character varying, "isActive" boolean NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "logoId" uuid, "typeId" uuid, CONSTRAINT "REL_0ed69b4239b1f892b96798065a" UNIQUE ("logoId"), CONSTRAINT "PK_da8c6efd67bb301e810e56ac139" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "tenant" ("fullyOnboarded" boolean NOT NULL DEFAULT false, "databaseConfig" jsonb NOT NULL, "domain" character varying, "schemaName" character varying, "address" character varying, "primaryPhone" character varying, "primaryEmail" character varying, "name" character varying, "isActive" boolean NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "logoId" uuid, "typeId" uuid, CONSTRAINT "REL_0ed69b4239b1f892b96798065a" UNIQUE ("logoId"), CONSTRAINT "PK_da8c6efd67bb301e810e56ac139" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."account_type_enum" AS ENUM('asset', 'liability', 'equity', 'revenue', 'expense')`,
@@ -83,16 +86,16 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TYPE "public"."accounts_payable_accounttype_enum" AS ENUM('asset', 'liability', 'equity', 'revenue', 'expense')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."accounts_payable_transactiontype_enum" AS ENUM('CREDIT', 'DEBIT', 'TRANSFER', 'REFUND', 'WRITE_OFF', 'LATE_FEE', 'ADJUSTMENT', 'CREDIT_MEMO', 'INVOICE_PAYMENT', 'CHARGEBACK', 'PAYMENT', 'DISCOUNT', 'FEE', 'TAX', 'INTEREST', 'REVERSAL', 'PREPAYMENT', 'OVERPAYMENT', 'UNDERPAYMENT', 'ESCALATION_CHARGE', 'SERVICE_CHARGE', 'PENALTY', 'CASH_RECEIPT', 'ALLOCATION', 'MANUAL_ENTRY')`,
+      `CREATE TYPE "public"."accounts_payable_transactiontype_enum" AS ENUM('CREDIT', 'DEBIT', 'TRANSFER', 'REFUND', 'WRITE_OFF', 'LATE_FEE', 'ADJUSTMENT', 'CREDIT_MEMO', 'INVOICE_PAYMENT', 'CHARGEBACK', 'PAYMENT', 'DISCOUNT', 'FEE', 'TAX', 'INTEREST', 'REVERSAL', 'PREPAYMENT', 'OVERPAYMENT', 'UNDERPAYMENT', 'ESCALATION_CHARGE', 'SERVICE_CHARGE', 'PENALTY', 'CASH_RECEIPT', 'ALLOCATION', 'MANUAL_ENTRY', 'SERVICE_FEE', 'ASSET_PURCHASE', 'FUEL_PURCHASE', 'MAINTENANCE', 'WASTE_COLLECTION', 'OFFICE_SUPPLIES', 'VENDOR_PAYMENT')`,
     );
     await queryRunner.query(
       `CREATE TABLE "accounts_payable" ("accountType" "public"."accounts_payable_accounttype_enum" NOT NULL, "salePrice" integer, "purchasePrice" integer, "quantity" integer NOT NULL, "itemDescription" character varying, "itemName" character varying NOT NULL, "amount" integer NOT NULL, "transactionType" "public"."accounts_payable_transactiontype_enum" NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_d4579aa8c6efa870a8ced890861" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "vendor" ("paymentTerms" character varying, "contactEmail" character varying, "name" character varying NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_931a23f6231a57604f5a0e32780" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "vendor_bill" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "accountsPayableId" uuid, "vendorId" uuid NOT NULL, CONSTRAINT "REL_1dec4c6373cd299c63326e3d21" UNIQUE ("accountsPayableId"), CONSTRAINT "PK_40642a4b9508c9b9beaaa5a9a19" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "vendor_bill" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "accountsPayableId" uuid, "vendorId" uuid NOT NULL, CONSTRAINT "REL_1dec4c6373cd299c63326e3d21" UNIQUE ("accountsPayableId"), CONSTRAINT "PK_40642a4b9508c9b9beaaa5a9a19" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "vendor" ("paymentTerms" character varying, "contactEmail" character varying, "name" character varying NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_931a23f6231a57604f5a0e32780" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."residence_type_enum" AS ENUM('APARTMENT', 'HOUSE', 'DUPLEX', 'CONDO', 'TOWNHOUSE', 'OTHER')`,
@@ -119,7 +122,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TYPE "public"."accounts_receivable_accounttype_enum" AS ENUM('asset', 'liability', 'equity', 'revenue', 'expense')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."accounts_receivable_transactiontype_enum" AS ENUM('CREDIT', 'DEBIT', 'TRANSFER', 'REFUND', 'WRITE_OFF', 'LATE_FEE', 'ADJUSTMENT', 'CREDIT_MEMO', 'INVOICE_PAYMENT', 'CHARGEBACK', 'PAYMENT', 'DISCOUNT', 'FEE', 'TAX', 'INTEREST', 'REVERSAL', 'PREPAYMENT', 'OVERPAYMENT', 'UNDERPAYMENT', 'ESCALATION_CHARGE', 'SERVICE_CHARGE', 'PENALTY', 'CASH_RECEIPT', 'ALLOCATION', 'MANUAL_ENTRY')`,
+      `CREATE TYPE "public"."accounts_receivable_transactiontype_enum" AS ENUM('CREDIT', 'DEBIT', 'TRANSFER', 'REFUND', 'WRITE_OFF', 'LATE_FEE', 'ADJUSTMENT', 'CREDIT_MEMO', 'INVOICE_PAYMENT', 'CHARGEBACK', 'PAYMENT', 'DISCOUNT', 'FEE', 'TAX', 'INTEREST', 'REVERSAL', 'PREPAYMENT', 'OVERPAYMENT', 'UNDERPAYMENT', 'ESCALATION_CHARGE', 'SERVICE_CHARGE', 'PENALTY', 'CASH_RECEIPT', 'ALLOCATION', 'MANUAL_ENTRY', 'SERVICE_FEE', 'ASSET_PURCHASE', 'FUEL_PURCHASE', 'MAINTENANCE', 'WASTE_COLLECTION', 'OFFICE_SUPPLIES', 'VENDOR_PAYMENT')`,
     );
     await queryRunner.query(
       `CREATE TABLE "accounts_receivable" ("accountType" "public"."accounts_receivable_accounttype_enum" NOT NULL, "amount" integer NOT NULL, "transactionType" "public"."accounts_receivable_transactiontype_enum" NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_7a4fd7cf394ef2c2abfed284d9e" PRIMARY KEY ("id"))`,
@@ -134,7 +137,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "payment_aggregator" ("logo" character varying, "isActive" boolean NOT NULL, "config" jsonb, "name" character varying, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_2d65d5adbb8e4fad86d4eb41f2e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."payment_notification_status_enum" AS ENUM('pending', 'completed', 'failed', 'cancelled', 'reversed')`,
+      `CREATE TYPE "public"."payment_notification_status_enum" AS ENUM('partial', 'pending', 'completed', 'failed', 'cancelled', 'reversed', 'refunded', 'processing', 'declined', 'on_hold', 'expired', 'partially_refunded', 'authorized', 'declined_by_bank', 'declined_by_user', 'declined_by_provider', 'declined_by_fraud_check', 'declined_by_limit', 'declined_by_risk_check', 'declined_by_insufficient_funds', 'declined_by_currency_not_supported', 'declined_by_payment_method_not_supported', 'declined_by_payment_gateway', 'declined_by_bank_issuer', 'declined_by_bank_network', 'declined_by_bank_fraud_check', 'declined_by_bank_limit', 'declined_by_bank_risk_check', 'declined_by_bank_insufficient_funds', 'declined_by_bank_currency_not_supported', 'declined_by_bank_payment_method_not_supported', 'declined_by_bank_payment_gateway', 'declined_by_bank_bank_issuer', 'declined_by_bank_bank_network', 'declined_by_bank_bank_fraud_check')`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."payment_notification_payment_method_enum" AS ENUM('mobile_money', 'credit_card', 'debit_card', 'paypal', 'bank_transfer', 'crypto', 'ussd', 'agency_banking')`,
@@ -152,7 +155,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "payment_method" ("config" jsonb, "processorType" character varying NOT NULL, "name" character varying NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_7744c2b2dd932c9cf42f2b9bc3a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."payment_status_enum" AS ENUM('pending', 'completed', 'failed', 'cancelled', 'reversed')`,
+      `CREATE TYPE "public"."payment_status_enum" AS ENUM('partial', 'pending', 'completed', 'failed', 'cancelled', 'reversed', 'refunded', 'processing', 'declined', 'on_hold', 'expired', 'partially_refunded', 'authorized', 'declined_by_bank', 'declined_by_user', 'declined_by_provider', 'declined_by_fraud_check', 'declined_by_limit', 'declined_by_risk_check', 'declined_by_insufficient_funds', 'declined_by_currency_not_supported', 'declined_by_payment_method_not_supported', 'declined_by_payment_gateway', 'declined_by_bank_issuer', 'declined_by_bank_network', 'declined_by_bank_fraud_check', 'declined_by_bank_limit', 'declined_by_bank_risk_check', 'declined_by_bank_insufficient_funds', 'declined_by_bank_currency_not_supported', 'declined_by_bank_payment_method_not_supported', 'declined_by_bank_payment_gateway', 'declined_by_bank_bank_issuer', 'declined_by_bank_bank_network', 'declined_by_bank_bank_fraud_check')`,
     );
     await queryRunner.query(
       `CREATE TABLE "payment" ("status" "public"."payment_status_enum" NOT NULL DEFAULT 'pending', "paymentDate" TIMESTAMP NOT NULL, "amount" numeric(10,2) NOT NULL DEFAULT '0', "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "invoiceId" uuid, "notificationId" uuid, "paymentMethodId" uuid, "customerId" integer, CONSTRAINT "REL_dd9ca51143c93241dd07016f0d" UNIQUE ("notificationId"), CONSTRAINT "PK_fcaec7df5adf9cac408c686b2ab" PRIMARY KEY ("id"))`,
@@ -164,7 +167,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "tenant_config" ("value" jsonb NOT NULL, "key" character varying NOT NULL, "tenantId" character varying NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_1739ef7722e16d9cfe91c38d34a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "session" ("id" SERIAL NOT NULL, "hash" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "userId" integer, CONSTRAINT "PK_f55da76ac1c3ac420f444d2ff11" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "session" ("id" SERIAL NOT NULL, "hash" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "userId" integer, "tenantId" uuid, CONSTRAINT "PK_f55da76ac1c3ac420f444d2ff11" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_3d2f174ef04fb312fdebd0ddc5" ON "session" ("userId") `,
@@ -182,13 +185,10 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `CREATE TABLE "inventory" ("unitOfMeasure" character varying, "materialType" character varying, "accountType" character varying NOT NULL, "salePrice" integer, "purchasePrice" integer NOT NULL, "quantity" integer NOT NULL, "itemDescription" character varying, "itemName" character varying, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_82aa5da437c5bbfb80703b08309" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."customer_plan_status_enum" AS ENUM('trial', 'active', 'suspended', 'inactive', 'cancelled')`,
+      `CREATE TYPE "public"."customer_plan_status_enum" AS ENUM('trial', 'active', 'suspended', 'inactive', 'cancelled', 'pending', 'expired', 'completed', 'archived', 'deleted', 'unknown')`,
     );
     await queryRunner.query(
       `CREATE TABLE "customer_plan" ("customSchedule" jsonb, "nextPaymentDate" TIMESTAMP, "status" "public"."customer_plan_status_enum" NOT NULL DEFAULT 'active', "customRates" jsonb, "endDate" TIMESTAMP, "startDate" TIMESTAMP NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "assignedById" integer, CONSTRAINT "PK_8f8e7240de887aae547688903ae" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "credit_balance" ("auditLog" jsonb, "amount" integer NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "customerId" integer NOT NULL, CONSTRAINT "REL_d78a241ce70f49fb9f80d78f6a" UNIQUE ("customerId"), CONSTRAINT "PK_0b0df850847d6f9d5969728bc07" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."audit_log_action_enum" AS ENUM('create', 'read', 'update', 'delete', 'complete_step', 'skip_step', 'restart_step', 'login', 'logout', 'password_change', 'password_reset_request', 'password_reset_complete', 'assign_role', 'remove_role', 'update_permissions', 'invite_user', 'activate_user', 'deactivate_user', 'create_tenant', 'update_tenant', 'delete_tenant', 'switch_tenant', 'upload', 'download', 'export', 'import', 'update_settings', 'reset_settings', 'view_audit_log', 'export_audit_log', 'system_start', 'system_shutdown', 'system_error', 'send_notification', 'read_notification', 'archive', 'restore', 'tag', 'untag')`,
@@ -323,6 +323,15 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `ALTER TABLE "role" ADD CONSTRAINT "FK_1751a572e91385a09d41c624714" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "file" ADD CONSTRAINT "FK_85020d70f7c45e47db4f987b397" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "credit_balance" ADD CONSTRAINT "FK_6d7d6fe724ba5629b4e37bcef21" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "credit_balance" ADD CONSTRAINT "FK_d78a241ce70f49fb9f80d78f6aa" FOREIGN KEY ("customerId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "user" ADD CONSTRAINT "FK_685bf353c85f23b6f848e4dcded" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -353,9 +362,6 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `ALTER TABLE "accounts_payable" ADD CONSTRAINT "FK_d01c893c5a92cb70b0089d67ba3" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "vendor" ADD CONSTRAINT "FK_d5631577208943c2003699af66b" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "vendor_bill" ADD CONSTRAINT "FK_083596b0b38b19dc4872e9610a4" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -363,6 +369,9 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "vendor_bill" ADD CONSTRAINT "FK_110c7cfe94fb18def787758ec4f" FOREIGN KEY ("vendorId") REFERENCES "vendor"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "vendor" ADD CONSTRAINT "FK_d5631577208943c2003699af66b" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "residence" ADD CONSTRAINT "FK_bffa18d20b4a268de41fa3d4664" FOREIGN KEY ("regionId") REFERENCES "region"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -455,6 +464,9 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `ALTER TABLE "session" ADD CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "session" ADD CONSTRAINT "FK_f94c50ea7fc140db3bfa18cf5f9" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "reminder" ADD CONSTRAINT "FK_17ec44e7573c39526c538081cbd" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -471,12 +483,6 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "customer_plan" ADD CONSTRAINT "FK_7f18a5fdf060737c35c1d587345" FOREIGN KEY ("assignedById") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "credit_balance" ADD CONSTRAINT "FK_6d7d6fe724ba5629b4e37bcef21" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "credit_balance" ADD CONSTRAINT "FK_d78a241ce70f49fb9f80d78f6aa" FOREIGN KEY ("customerId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "audit_log" ADD CONSTRAINT "FK_6d4b82b8ac14815d3d270f6a21a" FOREIGN KEY ("performedByUserId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -638,12 +644,6 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `ALTER TABLE "audit_log" DROP CONSTRAINT "FK_6d4b82b8ac14815d3d270f6a21a"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "credit_balance" DROP CONSTRAINT "FK_d78a241ce70f49fb9f80d78f6aa"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "credit_balance" DROP CONSTRAINT "FK_6d7d6fe724ba5629b4e37bcef21"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "customer_plan" DROP CONSTRAINT "FK_7f18a5fdf060737c35c1d587345"`,
     );
     await queryRunner.query(
@@ -660,6 +660,9 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "reminder" DROP CONSTRAINT "FK_17ec44e7573c39526c538081cbd"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "session" DROP CONSTRAINT "FK_f94c50ea7fc140db3bfa18cf5f9"`,
     );
     await queryRunner.query(
       `ALTER TABLE "session" DROP CONSTRAINT "FK_3d2f174ef04fb312fdebd0ddc53"`,
@@ -752,6 +755,9 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `ALTER TABLE "residence" DROP CONSTRAINT "FK_bffa18d20b4a268de41fa3d4664"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "vendor" DROP CONSTRAINT "FK_d5631577208943c2003699af66b"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "vendor_bill" DROP CONSTRAINT "FK_110c7cfe94fb18def787758ec4f"`,
     );
     await queryRunner.query(
@@ -759,9 +765,6 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "vendor_bill" DROP CONSTRAINT "FK_083596b0b38b19dc4872e9610a4"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "vendor" DROP CONSTRAINT "FK_d5631577208943c2003699af66b"`,
     );
     await queryRunner.query(
       `ALTER TABLE "accounts_payable" DROP CONSTRAINT "FK_d01c893c5a92cb70b0089d67ba3"`,
@@ -792,6 +795,15 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "user" DROP CONSTRAINT "FK_685bf353c85f23b6f848e4dcded"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "credit_balance" DROP CONSTRAINT "FK_d78a241ce70f49fb9f80d78f6aa"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "credit_balance" DROP CONSTRAINT "FK_6d7d6fe724ba5629b4e37bcef21"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "file" DROP CONSTRAINT "FK_85020d70f7c45e47db4f987b397"`,
     );
     await queryRunner.query(
       `ALTER TABLE "role" DROP CONSTRAINT "FK_1751a572e91385a09d41c624714"`,
@@ -897,7 +909,6 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "user_regions_region"`);
     await queryRunner.query(`DROP TABLE "audit_log"`);
     await queryRunner.query(`DROP TYPE "public"."audit_log_action_enum"`);
-    await queryRunner.query(`DROP TABLE "credit_balance"`);
     await queryRunner.query(`DROP TABLE "customer_plan"`);
     await queryRunner.query(`DROP TYPE "public"."customer_plan_status_enum"`);
     await queryRunner.query(`DROP TABLE "inventory"`);
@@ -943,8 +954,8 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "exemption"`);
     await queryRunner.query(`DROP TABLE "residence"`);
     await queryRunner.query(`DROP TYPE "public"."residence_type_enum"`);
-    await queryRunner.query(`DROP TABLE "vendor_bill"`);
     await queryRunner.query(`DROP TABLE "vendor"`);
+    await queryRunner.query(`DROP TABLE "vendor_bill"`);
     await queryRunner.query(`DROP TABLE "accounts_payable"`);
     await queryRunner.query(
       `DROP TYPE "public"."accounts_payable_transactiontype_enum"`,
@@ -979,6 +990,7 @@ export class CreateInitialTables1748748869019 implements MigrationInterface {
       `DROP INDEX "public"."IDX_9bd2fe7a8e694dedc4ec2f666f"`,
     );
     await queryRunner.query(`DROP TABLE "user"`);
+    await queryRunner.query(`DROP TABLE "credit_balance"`);
     await queryRunner.query(`DROP TABLE "file"`);
     await queryRunner.query(`DROP TABLE "status"`);
     await queryRunner.query(`DROP TABLE "role"`);

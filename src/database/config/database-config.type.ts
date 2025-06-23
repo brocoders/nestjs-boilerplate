@@ -30,6 +30,7 @@ export type DatabaseConfig = {
     defaultPassword: string;
   };
   isDocumentDatabase: boolean;
+  allowSeparateTenantSchemas: boolean;
   url?: string;
   type?: string;
   host?: string;

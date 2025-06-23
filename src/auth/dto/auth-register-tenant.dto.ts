@@ -33,4 +33,8 @@ export class AuthRegisterTenantDto {
   @Type(() => TenantTypeDto)
   @IsNotEmptyObject()
   type?: TenantTypeDto | null;
+
+  @ApiProperty()
+  @MinLength(6)
+  password: string;
 }
