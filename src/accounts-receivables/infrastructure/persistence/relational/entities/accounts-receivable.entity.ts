@@ -24,14 +24,14 @@ import {
   name: 'accounts_receivable',
 })
 export class AccountsReceivableEntity extends EntityRelationalHelper {
-  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  @ManyToOne(() => TenantEntity, { /**eager: true,**/ nullable: false })
   tenant: TenantEntity;
 
-  @ManyToMany(() => AccountEntity, { eager: true, nullable: true })
+  @ManyToMany(() => AccountEntity, { /**eager: true,**/ nullable: true })
   @JoinTable()
   account?: AccountEntity[] | null;
 
-  @ManyToMany(() => UserEntity, { eager: true, nullable: true })
+  @ManyToMany(() => UserEntity, { /**eager: true,**/ nullable: true })
   @JoinTable()
   owner?: UserEntity[] | null;
 

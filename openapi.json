@@ -818,12 +818,24 @@
         ]
       }
     },
-    "/api/v1/onboardings/user/{userId}/status": {
+    "/api/v1/onboardings/{entityType}/{entityId}/status": {
       "get": {
-        "operationId": "OnboardingsController_getUserStatus_v1",
+        "operationId": "OnboardingsController_getOnboardingStatus_v1",
         "parameters": [
           {
-            "name": "userId",
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
             "required": true,
             "in": "path",
             "schema": {
@@ -863,12 +875,24 @@
         ]
       }
     },
-    "/api/v1/onboardings/initialize-user/{userId}": {
+    "/api/v1/onboardings/initialize/{entityType}/{entityId}": {
       "post": {
-        "operationId": "OnboardingsController_initializeUser_v1",
+        "operationId": "OnboardingsController_initialize_v1",
         "parameters": [
           {
-            "name": "userId",
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
             "required": true,
             "in": "path",
             "schema": {
@@ -908,12 +932,24 @@
         ]
       }
     },
-    "/api/v1/onboardings/user/{userId}/complete/{stepKey}": {
+    "/api/v1/onboardings/{entityType}/{entityId}/complete/{stepKey}": {
       "post": {
-        "operationId": "OnboardingsController_completeUserStep_v1",
+        "operationId": "OnboardingsController_completeStep_v1",
         "parameters": [
           {
-            "name": "userId",
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
             "required": true,
             "in": "path",
             "schema": {
@@ -961,102 +997,24 @@
         ]
       }
     },
-    "/api/v1/onboardings/tenant/{tenantId}/status": {
-      "get": {
-        "operationId": "OnboardingsController_getTenantStatus_v1",
+    "/api/v1/onboardings/{entityType}/{entityId}/skip/{stepKey}": {
+      "post": {
+        "operationId": "OnboardingsController_skipStep_v1",
         "parameters": [
           {
-            "name": "tenantId",
+            "name": "entityType",
             "required": true,
             "in": "path",
             "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
               "type": "string"
             }
           },
           {
-            "in": "header",
-            "name": "x-tenant-id",
-            "description": "Tenant ID for database context",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "required": false,
-            "name": "x-custom-lang",
-            "schema": {
-              "example": "en"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "Onboardings"
-        ]
-      }
-    },
-    "/api/v1/onboardings/initialize-tenant/{tenantId}": {
-      "post": {
-        "operationId": "OnboardingsController_initializeTenant_v1",
-        "parameters": [
-          {
-            "name": "tenantId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "name": "x-tenant-id",
-            "description": "Tenant ID for database context",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "required": false,
-            "name": "x-custom-lang",
-            "schema": {
-              "example": "en"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "Onboardings"
-        ]
-      }
-    },
-    "/api/v1/onboardings/tenant/{tenantId}/skip/{stepKey}": {
-      "post": {
-        "operationId": "OnboardingsController_skipTenantStep_v1",
-        "parameters": [
-          {
-            "name": "tenantId",
+            "name": "entityId",
             "required": true,
             "in": "path",
             "schema": {
@@ -1091,6 +1049,136 @@
         ],
         "responses": {
           "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Onboardings"
+        ]
+      }
+    },
+    "/api/v1/onboardings/{entityType}/{entityId}/reset/{stepKey}": {
+      "post": {
+        "operationId": "OnboardingsController_resetStep_v1",
+        "parameters": [
+          {
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Onboardings"
+        ]
+      }
+    },
+    "/api/v1/onboardings/{entityType}/{entityId}/step/{stepKey}": {
+      "get": {
+        "operationId": "OnboardingsController_getStepStatus_v1",
+        "parameters": [
+          {
+            "name": "entityType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "user",
+                "tenant"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepKey",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": ""
           }
         },
@@ -2233,58 +2321,6 @@
       }
     },
     "/api/v1/tenant-types": {
-      "post": {
-        "operationId": "TenantTypesController_create_v1",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-tenant-id",
-            "description": "Tenant ID for database context",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "required": false,
-            "name": "x-custom-lang",
-            "schema": {
-              "example": "en"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTenantTypeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TenantType"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "Tenanttypes"
-        ]
-      },
       "get": {
         "operationId": "TenantTypesController_findAll_v1",
         "parameters": [
@@ -2329,6 +2365,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InfinityPaginationTenantTypeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tenanttypes"
+        ]
+      },
+      "post": {
+        "operationId": "TenantTypesController_create_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTenantTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantType"
                 }
               }
             }
@@ -2386,11 +2469,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "tags": [
           "Tenanttypes"
         ]
@@ -7888,6 +7966,55 @@
         ]
       }
     },
+    "/api/v1/auth/phone/login": {
+      "post": {
+        "operationId": "AuthController_loginPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthPhoneLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/auth/email/register": {
       "post": {
         "operationId": "AuthController_register_v1",
@@ -7930,6 +8057,48 @@
         ]
       }
     },
+    "/api/v1/auth/tenant/register": {
+      "post": {
+        "operationId": "AuthController_registerTenant_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthRegisterTenantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/auth/email/confirm": {
       "post": {
         "operationId": "AuthController_confirmEmail_v1",
@@ -7957,7 +8126,91 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                "$ref": "#/components/schemas/AuthConfirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/phone/confirm": {
+      "post": {
+        "operationId": "AuthController_confirmPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthConfirmDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/auth/phone/confirm/new": {
+      "post": {
+        "operationId": "AuthController_confirmNewPhone_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthConfirmDto"
               }
             }
           }
@@ -7999,7 +8252,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                "$ref": "#/components/schemas/AuthConfirmDto"
               }
             }
           }
@@ -8615,6 +8868,9 @@
           },
           "database": {
             "type": "string"
+          },
+          "schema": {
+            "type": "string"
           }
         },
         "required": [
@@ -8622,7 +8878,8 @@
           "port",
           "username",
           "password",
-          "database"
+          "database",
+          "schema"
         ]
       },
       "Region": {
@@ -10624,6 +10881,25 @@
           "file"
         ]
       },
+      "InfinityPaginationTenantTypeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TenantType"
+            }
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "data",
+          "hasNextPage"
+        ]
+      },
       "CreateTenantTypeDto": {
         "type": "object",
         "properties": {
@@ -10659,25 +10935,6 @@
             "type": "string"
           }
         }
-      },
-      "InfinityPaginationTenantTypeResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TenantType"
-            }
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "example": true
-          }
-        },
-        "required": [
-          "data",
-          "hasNextPage"
-        ]
       },
       "UpdateTenantTypeDto": {
         "type": "object",
@@ -10748,6 +11005,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -10887,6 +11145,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -11111,6 +11370,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -12230,7 +12490,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           },
@@ -13312,7 +13579,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           }
@@ -13402,7 +13676,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           }
@@ -13851,6 +14132,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -13960,6 +14242,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -14169,6 +14452,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "partial",
               "pending",
               "completed",
               "failed",
@@ -14473,7 +14757,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           },
@@ -14714,7 +15005,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           }
@@ -14821,7 +15119,14 @@
               "PENALTY",
               "CASH_RECEIPT",
               "ALLOCATION",
-              "MANUAL_ENTRY"
+              "MANUAL_ENTRY",
+              "SERVICE_FEE",
+              "ASSET_PURCHASE",
+              "FUEL_PURCHASE",
+              "MAINTENANCE",
+              "WASTE_COLLECTION",
+              "OFFICE_SUPPLIES",
+              "VENDOR_PAYMENT"
             ],
             "description": "The type of transaction: CREDIT, DEBIT, TRANSFER, or REFUND."
           }
@@ -15322,6 +15627,22 @@
           "user"
         ]
       },
+      "AuthPhoneLoginDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "0743411403"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "password"
+        ]
+      },
       "AuthRegisterLoginDto": {
         "type": "object",
         "properties": {
@@ -15348,7 +15669,33 @@
           "lastName"
         ]
       },
-      "AuthConfirmEmailDto": {
+      "AuthRegisterTenantDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John"
+          },
+          "email": {
+            "type": "string",
+            "example": "test1@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0700000000"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "password"
+        ]
+      },
+      "AuthConfirmDto": {
         "type": "object",
         "properties": {
           "hash": {

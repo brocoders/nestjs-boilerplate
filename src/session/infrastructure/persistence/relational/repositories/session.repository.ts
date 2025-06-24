@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource, FindOptionsWhere, Not, Repository } from 'typeorm';
 import { SessionEntity } from '../entities/session.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 
@@ -9,19 +8,37 @@ import { Session } from '../../../../domain/session';
 
 import { SessionMapper } from '../mappers/session.mapper';
 import { User } from '../../../../../users/domain/user';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class SessionRelationalRepository implements SessionRepository {
-  constructor(
-    @InjectRepository(SessionEntity)
-    private readonly sessionRepository: Repository<SessionEntity>,
-  ) {}
+  private sessionRepository: Repository<SessionEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.sessionRepository = dataSource.getRepository(SessionEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<SessionEntity> = {},
+  ): FindOptionsWhere<SessionEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async findById(id: Session['id']): Promise<NullableType<Session>> {
     const entity = await this.sessionRepository.findOne({
-      where: {
-        id: Number(id),
-      },
+      where: this.applyTenantFilter({ id: Number(id) }),
     });
 
     return entity ? SessionMapper.toDomain(entity) : null;
@@ -45,7 +62,7 @@ export class SessionRelationalRepository implements SessionRepository {
     >,
   ): Promise<Session | null> {
     const entity = await this.sessionRepository.findOne({
-      where: { id: Number(id) },
+      where: this.applyTenantFilter({ id: Number(id) }),
     });
 
     if (!entity) {

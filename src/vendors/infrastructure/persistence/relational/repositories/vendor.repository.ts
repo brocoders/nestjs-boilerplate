@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Repository, In, DataSource, FindOptionsWhere } from 'typeorm';
 import { VendorEntity } from '../entities/vendor.entity';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { Vendor } from '../../../../domain/vendor';
 import { VendorRepository } from '../../vendor.repository';
 import { VendorMapper } from '../mappers/vendor.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { REQUEST } from '@nestjs/core';
+import { TenantDataSource } from '../../../../../database/tenant-data-source';
 
 @Injectable()
 export class VendorRelationalRepository implements VendorRepository {
-  constructor(
-    @InjectRepository(VendorEntity)
-    private readonly vendorRepository: Repository<VendorEntity>,
-  ) {}
+  private vendorRepository: Repository<VendorEntity>;
+
+  constructor(@Inject(REQUEST) private request: Request) {
+    const dataSource: DataSource =
+      this.request['tenantDataSource'] || TenantDataSource.getCoreDataSource();
+    this.vendorRepository = dataSource.getRepository(VendorEntity);
+  }
+
+  private applyTenantFilter(
+    where: FindOptionsWhere<VendorEntity> = {},
+  ): FindOptionsWhere<VendorEntity> {
+    const tenantId = this.request['tenantId'];
+
+    if (tenantId) {
+      return {
+        ...where,
+        tenant: { id: tenantId },
+      };
+    }
+
+    return where;
+  }
 
   async create(data: Vendor): Promise<Vendor> {
     const persistenceModel = VendorMapper.toPersistence(data);
@@ -38,7 +57,7 @@ export class VendorRelationalRepository implements VendorRepository {
 
   async findById(id: Vendor['id']): Promise<NullableType<Vendor>> {
     const entity = await this.vendorRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     return entity ? VendorMapper.toDomain(entity) : null;
@@ -46,7 +65,7 @@ export class VendorRelationalRepository implements VendorRepository {
 
   async findByIds(ids: Vendor['id'][]): Promise<Vendor[]> {
     const entities = await this.vendorRepository.find({
-      where: { id: In(ids) },
+      where: this.applyTenantFilter({ id: In(ids) }),
     });
 
     return entities.map((entity) => VendorMapper.toDomain(entity));
@@ -54,7 +73,7 @@ export class VendorRelationalRepository implements VendorRepository {
 
   async update(id: Vendor['id'], payload: Partial<Vendor>): Promise<Vendor> {
     const entity = await this.vendorRepository.findOne({
-      where: { id },
+      where: this.applyTenantFilter({ id }),
     });
 
     if (!entity) {
@@ -74,6 +93,14 @@ export class VendorRelationalRepository implements VendorRepository {
   }
 
   async remove(id: Vendor['id']): Promise<void> {
-    await this.vendorRepository.delete(id);
+    const entity = await this.vendorRepository.findOne({
+      where: this.applyTenantFilter({ id }),
+    });
+
+    if (!entity) {
+      throw new Error('Record not found or access denied');
+    }
+
+    await this.vendorRepository.softDelete(entity.id);
   }
 }

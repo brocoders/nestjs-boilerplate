@@ -30,6 +30,8 @@ const infrastructureUploaderModule =
 
 @Module({
   imports: [
+    // TenantsModule,
+
     // import modules, etc.
     infrastructurePersistenceModule,
     infrastructureUploaderModule,

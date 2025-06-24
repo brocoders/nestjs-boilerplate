@@ -24,4 +24,13 @@ export abstract class TenantRepository {
   ): Promise<Tenant | null>;
 
   abstract remove(id: Tenant['id']): Promise<void>;
+
+  // 🔧 New: Find tenant by type ID
+  abstract findByTypeId(typeId: string): Promise<NullableType<Tenant>>;
+
+  // 🔧 Optional: Support relation loading explicitly (for flexibility)
+  abstract findByIdWithRelations(
+    id: Tenant['id'],
+    relations: string[],
+  ): Promise<NullableType<Tenant>>;
 }

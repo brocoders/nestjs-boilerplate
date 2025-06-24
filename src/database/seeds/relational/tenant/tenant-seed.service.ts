@@ -1,22 +1,22 @@
-// tenant-seed.service.ts
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { TenantEntity } from '../../../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 import { Repository } from 'typeorm';
 import { TenantTypeEntity } from 'src/tenant-types/infrastructure/persistence/relational/entities/tenant-type.entity';
-import { OnboardingsService } from 'src/onboardings/onboardings.service'; // Add this import
-import { OnboardingEntityType } from 'src/onboardings/infrastructure/persistence/relational/entities/onboarding.entity'; // Add this import
+import { InjectRepository } from '@nestjs/typeorm';
+import { ModuleRef } from '@nestjs/core';
+import { OnboardingsService } from '../../../../onboardings/onboardings.service';
 
 @Injectable()
 export class TenantSeedService {
   private readonly logger = new Logger(TenantSeedService.name);
+  private onboardingsService: OnboardingsService; // Remove from constructor
 
   constructor(
     @InjectRepository(TenantEntity)
     private readonly tenantRepository: Repository<TenantEntity>,
     @InjectRepository(TenantTypeEntity)
     private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
-    private readonly onboardingsService: OnboardingsService, // Inject onboarding service
+    private readonly moduleRef: ModuleRef, // Inject ModuleRef instead
   ) {}
 
   async run() {
@@ -63,29 +63,32 @@ export class TenantSeedService {
       }
 
       // Initialize tenant onboarding if not already done
-      await this.initializeTenantOnboarding(tenant);
+      // await this.initializeTenantOnboarding(tenant);
     }
   }
 
-  private async initializeTenantOnboarding(tenant: TenantEntity) {
-    try {
-      // Check if onboarding already exists
-      const onboardingStatus =
-        await this.onboardingsService.getOnboardingStatus(
-          OnboardingEntityType.TENANT,
-          tenant.id,
-        );
+  // private async initializeTenantOnboarding(tenant: TenantEntity) {
+  //   try {
+  //     if (!this.onboardingsService) {
+  //       this.onboardingsService = await this.moduleRef.get(OnboardingsService);
+  //     }
+  //     // Check if onboarding already exists
+  //     const onboardingStatus =
+  //       await this.onboardingsService.getOnboardingStatus(
+  //         OnboardingEntityType.TENANT,
+  //         tenant.id,
+  //       );
 
-      if (onboardingStatus.steps.length === 0) {
-        await this.onboardingsService.initializeTenantOnboarding(tenant.id);
-        this.logger.log(`Initialized onboarding for tenant: ${tenant.name}`);
-      } else {
-        this.logger.log(`Onboarding already exists for tenant: ${tenant.name}`);
-      }
-    } catch (error) {
-      this.logger.error(
-        `Failed to initialize onboarding for tenant ${tenant.name}: ${error.message}`,
-      );
-    }
-  }
+  //     if (onboardingStatus.steps.length === 0) {
+  //       // await this.onboardingsService.initializeTenantOnboarding(tenant.id);
+  //       this.logger.log(`Initialized onboarding for tenant: ${tenant.name}`);
+  //     } else {
+  //       this.logger.log(`Onboarding already exists for tenant: ${tenant.name}`);
+  //     }
+  //   } catch (error) {
+  //     this.logger.error(
+  //       `Failed to initialize onboarding for tenant ${tenant.name}: ${error.message}`,
+  //     );
+  //   }
+  // }
 }

@@ -2,6 +2,7 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
+  OnApplicationBootstrap,
   RequestMethod,
 } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
@@ -58,7 +59,7 @@ import { SettingsModule } from './settings/settings.module';
 import { RegionsModule } from './regions/regions.module';
 
 import { TenantConfigsModule } from './tenant-configs/tenant-configs.module';
-import { TenantDataSourceProvider } from './providers/tenant-data-source.provider';
+import { TenantDataSourceProvider } from './database/providers/tenant-data-source.provider';
 import { TenantMiddleware } from './middleware/tenant.middleware';
 
 import { PaymentNotificationsModule } from './payment-notifications/payment-notifications.module';
@@ -100,13 +101,13 @@ import { CreditBalancesModule } from './credit-balances/credit-balances.module';
 import { OnboardingsModule } from './onboardings/onboardings.module';
 
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
+import { TenantDataSource } from './database/tenant-data-source';
 
 @Module({
   imports: [
     AuditLogsModule,
     OnboardingsModule,
     PaymentNotificationsModule,
-    //SentryModule.forRoot(),
     CreditBalancesModule,
     PaymentAggregatorsModule,
     PaymentMethodsModule,
@@ -182,7 +183,8 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
   ],
   providers: [TenantDataSourceProvider],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnApplicationBootstrap {
+  constructor(private configService: ConfigService<AllConfigType>) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
@@ -191,5 +193,15 @@ export class AppModule implements NestModule {
         { path: 'admin/(.*)', method: RequestMethod.ALL },
       )
       .forRoutes('*');
+  }
+  async onApplicationBootstrap() {
+    // Initialize core database
+    const coreDbConfig = this.configService.getOrThrow('database.core', {
+      infer: true,
+    });
+    if (!coreDbConfig) {
+      throw new Error('Core database configuration is missing');
+    }
+    await TenantDataSource.initializeCore(this.configService);
   }
 }

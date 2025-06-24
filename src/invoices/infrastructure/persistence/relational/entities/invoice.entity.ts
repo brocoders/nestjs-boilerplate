@@ -47,16 +47,18 @@ export class InvoiceEntity extends EntityRelationalHelper {
   })
   invoiceNumber: string;
 
-  @ManyToOne(() => TenantEntity, { eager: true, nullable: false })
+  @ManyToOne(() => TenantEntity, { /**eager: true,**/ nullable: false })
   tenant: TenantEntity;
 
-  @ManyToOne(() => ExemptionEntity, { eager: true, nullable: true })
+  @ManyToOne(() => ExemptionEntity, { /**eager: true,**/ nullable: true })
   exemption?: ExemptionEntity | null;
 
-  @ManyToOne(() => DiscountEntity, { eager: true, nullable: true })
+  @ManyToOne(() => DiscountEntity, { /**eager: true,**/ nullable: true })
   discount?: DiscountEntity | null;
 
-  @OneToOne(() => AccountsReceivableEntity, { eager: true, nullable: true })
+  @OneToOne(() => AccountsReceivableEntity, {
+    /**eager: true,**/ nullable: true,
+  })
   @JoinColumn()
   accountsReceivable?: AccountsReceivableEntity | null;
 
@@ -68,7 +70,7 @@ export class InvoiceEntity extends EntityRelationalHelper {
   amountDue?: number | null;
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   amountPaid?: number | null;
-  @ManyToMany(() => PaymentPlanEntity, { eager: true, nullable: true })
+  @ManyToMany(() => PaymentPlanEntity, { /**eager: true,**/ nullable: true })
   @JoinTable()
   plan?: PaymentPlanEntity[] | null;
 
@@ -102,7 +104,7 @@ export class InvoiceEntity extends EntityRelationalHelper {
   })
   amount: number;
 
-  @ManyToOne(() => UserEntity, { eager: true, nullable: true })
+  @ManyToOne(() => UserEntity, { /**eager: true,**/ nullable: true })
   customer?: UserEntity | null;
 
   @PrimaryGeneratedColumn('uuid')

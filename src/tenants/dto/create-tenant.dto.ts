@@ -58,7 +58,7 @@ export class CreateTenantDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => DatabaseConfigDto)
-  databaseConfig: DatabaseConfigDto;
+  databaseConfig?: DatabaseConfigDto;
 
   @ApiProperty({
     required: false,

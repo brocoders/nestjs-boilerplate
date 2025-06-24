@@ -21,7 +21,7 @@ import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
-import { AuditLogEntry } from '../../common/dto/audit-log-entry.dto';
+import { AuditLogEntry } from './audit-log-entry.dto';
 
 export class CreateCreditBalanceDto {
   @ApiProperty({

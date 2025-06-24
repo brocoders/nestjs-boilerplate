@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -30,4 +30,90 @@
     </table>
 </body>
 
+</html> --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .button {
+                width: 90% !important;
+                padding: 16px !important;
+            }
+        }
+        .footer-link {
+            color: #0099CC !important;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F8F8F8;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 40px auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+        <!-- Header -->
+        <tr style="background: linear-gradient(135deg, #008037 0%, #00a044 100%);">
+            <td style="padding: 30px 20px; text-align: center;">
+                <h1 style="margin: 0; color: #FFFFFF; font-size: 32px; font-weight: 600; letter-spacing: 0.5px;">
+                    {{app_name}}
+                </h1>
+            </td>
+        </tr>
+        
+        <!-- Content -->
+        <tr>
+            <td style="padding: 40px 30px;">
+                <h2 style="margin-top: 0; color: #333333; font-size: 24px; font-weight: 600;">Confirm Your Account</h2>
+                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                    {{text1}}<br>
+                    {{text2}} {{app_name}}.<br>
+                    {{text3}}
+                </p>
+                
+                <!-- Button -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{{url}}" 
+                       style="display: inline-block; 
+                              padding: 16px 36px; 
+                              background: #008037;
+                              background: linear-gradient(45deg, #008037 0%, #00a044 100%); 
+                              border-radius: 8px; 
+                              text-decoration: none; 
+                              color: #FFFFFF; 
+                              font-weight: 600; 
+                              font-size: 16px;
+                              box-shadow: 0 4px 15px rgba(0, 131, 143, 0.25);
+                              transition: all 0.3s ease;"
+                       class="button">
+                        {{actionTitle}}
+                    </a>
+                </div>
+                
+                <!-- Secondary Instructions -->
+                <p style="color: #777777; font-size: 14px; line-height: 1.6; text-align: center; margin-top: 30px;">
+                    If you didn't request this, please ignore this email.<br>
+                    Having trouble? <a href="mailto:support@sakataka.co.ke" style="color: #0099CC; text-decoration: none;">Contact our support team</a>
+                </p>
+            </td>
+        </tr>
+        
+        <!-- Footer -->
+        <tr style="background-color: #F2F2F2;">
+            <td style="padding: 20px; text-align: center;">
+                <p style="color: #777777; font-size: 12px; line-height: 1.5; margin: 5px 0;">
+                    &copy; {{year}} {{app_name}}. All rights reserved.<br>
+                    <a href="#" style="color: #0099CC; text-decoration: none;" class="footer-link">Privacy Policy</a> | 
+                    <a href="#" style="color: #0099CC; text-decoration: none;" class="footer-link">Terms of Service</a>
+                </p>
+                <p style="color: #AAAAAA; font-size: 11px; margin: 10px 0 0;">
+                    Sent with ♻️ for a greener planet
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
 </html>

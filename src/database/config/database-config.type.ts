@@ -30,6 +30,7 @@ export type DatabaseConfig = {
     defaultPassword: string;
   };
   isDocumentDatabase: boolean;
+  allowSeparateTenantSchemas: boolean;
   url?: string;
   type?: string;
   host?: string;
@@ -47,7 +48,6 @@ export type DatabaseConfig = {
 };
 
 export type TenantConnectionConfig = {
-  id: string;
   type: 'postgres';
   host: string;
   port: number;

@@ -10,18 +10,22 @@ import { TenantDataSource } from '../database/tenant-data-source';
 export class TenantMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const tenantId = this.extractTenantId(req);
-
+    console.log('Extracting tenant ID from request', tenantId);
     if (tenantId) {
       try {
         const tenantDataSource =
           await TenantDataSource.getTenantDataSource(tenantId);
-
         req['tenantDataSource'] = tenantDataSource;
         req['tenantId'] = tenantId;
       } catch (error) {
         console.error(`Tenant resolution failed: ${error.message}`);
-        throw new Error('Invalid tenant configuration');
+        // Fallback to core instead of throwing error
+        req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
+        req['tenantId'] = tenantId;
       }
+    } else {
+      req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
+      req['tenantId'] = tenantId;
     }
 
     next();

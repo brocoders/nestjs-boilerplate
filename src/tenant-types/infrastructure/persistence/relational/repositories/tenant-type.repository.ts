@@ -14,6 +14,20 @@ export class TenantTypeRelationalRepository implements TenantTypeRepository {
     @InjectRepository(TenantTypeEntity)
     private readonly tenantTypeRepository: Repository<TenantTypeEntity>,
   ) {}
+  async findByCode(
+    code: TenantType['code'],
+  ): Promise<NullableType<TenantType>> {
+    const entity = await this.tenantTypeRepository.findOne({
+      where: { code },
+    });
+
+    return entity ? TenantTypeMapper.toDomain(entity) : null;
+  }
+
+  async find(): Promise<TenantType[]> {
+    const entities = await this.tenantTypeRepository.find();
+    return entities.map((entity) => TenantTypeMapper.toDomain(entity));
+  }
 
   async create(data: TenantType): Promise<TenantType> {
     const persistenceModel = TenantTypeMapper.toPersistence(data);

@@ -8,6 +8,7 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { AppConfig } from '../../config/app-config.type';
 import appConfig from '../../config/app.config';
+//import { TenantEntity } from '../../tenants/infrastructure/persistence/relational/entities/tenant.entity';
 
 export class FileType {
   @ApiProperty({
@@ -21,6 +22,11 @@ export class FileType {
     type: String,
     example: 'https://example.com/path/to/file.jpg',
   })
+  // @ApiProperty({
+  //   type: () => TenantEntity,
+  //   nullable: true,
+  // })
+  // tenant?: TenantEntity | null;
   @Transform(
     ({ value }) => {
       if ((fileConfig() as FileConfig).driver === FileDriver.LOCAL) {

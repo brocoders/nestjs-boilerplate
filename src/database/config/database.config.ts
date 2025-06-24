@@ -84,16 +84,17 @@ export default registerAs<DatabaseConfig>('database', () => {
 
     // Existing multi-tenant configuration
     isMultiTenant: process.env.DATABASE_MULTI_TENANT === 'true',
+    allowSeparateTenantSchemas:
+      process.env.DATABASE_ALLOW_SEPARATE_TENANT_SCHEMAS === 'true',
     core: {
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      migrations: [__dirname + '/migrations/core/*{.ts,.js}'],
+      host: process.env.CORE_DB_HOST,
+      port: parseInt(process.env.CORE_DB_PORT || '5432', 10),
+      username: process.env.CORE_DB_USER,
+      password: process.env.CORE_DB_PASSWORD,
+      database: process.env.CORE_DB_NAME,
       synchronize: false,
+      logging: false,
     },
     tenantPrefix: process.env.TENANT_DB_PREFIX || 'tenant_',
     tenantConfig: {
@@ -102,6 +103,7 @@ export default registerAs<DatabaseConfig>('database', () => {
       defaultPort: parseInt(process.env.TENANT_DB_PORT || '5432', 10),
       defaultUsername: process.env.TENANT_DB_USER || 'saka',
       defaultPassword: process.env.TENANT_DB_PASSWORD || '',
+      logging: false,
     },
 
     // Add other DatabaseConfig properties with defaults
@@ -113,6 +115,7 @@ export default registerAs<DatabaseConfig>('database', () => {
     url: process.env.DATABASE_URL,
     type: process.env.DATABASE_TYPE,
     host: process.env.DATABASE_HOST,
+    logging: false,
     port: process.env.DATABASE_PORT
       ? parseInt(process.env.DATABASE_PORT, 10)
       : 5432,

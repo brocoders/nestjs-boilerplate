@@ -41,9 +41,6 @@ import { ExemptionSeedModule } from './exemption/exemption-seed.module';
 import { InventorySeedModule } from './inventory/inventory-seed.module';
 
 import { InvoiceSeedModule } from './invoice/invoice-seed.module';
-
-import { KycDetailsSeedModule } from './kyc-details/kyc-details-seed.module';
-
 import { PaymentAggregatorSeedModule } from './payment-aggregator/payment-aggregator-seed.module';
 
 import { PaymentMethodSeedModule } from './payment-method/payment-method-seed.module';
@@ -56,8 +53,6 @@ import { ReminderSeedModule } from './reminder/reminder-seed.module';
 
 import { TenantConfigSeedModule } from './tenant-config/tenant-config-seed.module';
 
-import { TenantTypeSeedModule } from './tenant-type/tenant-type-seed.module';
-
 import { TransactionSeedModule } from './transaction/transaction-seed.module';
 
 import { VendorBillSeedModule } from './vendor-bill/vendor-bill-seed.module';
@@ -66,17 +61,16 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
 
 @Module({
   imports: [
+    TenantTypesSeedModule,
     VendorSeedModule,
     VendorBillSeedModule,
     TransactionSeedModule,
-    TenantTypeSeedModule,
     TenantConfigSeedModule,
     ReminderSeedModule,
     PaymentSeedModule,
     PaymentPlanSeedModule,
     PaymentMethodSeedModule,
     PaymentAggregatorSeedModule,
-    KycDetailsSeedModule,
     InvoiceSeedModule,
     InventorySeedModule,
     ExemptionSeedModule,
@@ -88,7 +82,7 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
     PaymentNotificationSeedModule,
     AccountSeedModule,
     ResidenceSeedModule,
-    TenantTypesSeedModule,
+
     TenantSeedModule,
     RoleSeedModule,
     StatusSeedModule,

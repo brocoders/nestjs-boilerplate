@@ -33,7 +33,7 @@ export class TenantEntity extends EntityRelationalHelper {
   @OneToMany(
     () => OnboardingEntity,
     (childEntity) => childEntity.performedByTenant,
-    { eager: true, nullable: true },
+    { /**eager: true,**/ nullable: true },
   )
   onboardingSteps?: OnboardingEntity[] | null;
 
@@ -49,6 +49,7 @@ export class TenantEntity extends EntityRelationalHelper {
     type: 'jsonb',
   })
   databaseConfig: {
+    schema: string | undefined;
     host: string;
     port: number;
     username: string;
@@ -65,13 +66,13 @@ export class TenantEntity extends EntityRelationalHelper {
   domain?: string | null;
 
   @OneToMany(() => RegionEntity, (childEntity) => childEntity.tenant, {
-    eager: true,
+    /**eager: true,**/
     nullable: true,
   })
   regions?: RegionEntity[] | null;
 
   @OneToMany(() => SettingsEntity, (childEntity) => childEntity.tenant, {
-    eager: true,
+    /**eager: true,**/
     nullable: true,
   })
   settings?: SettingsEntity[] | null;
@@ -82,7 +83,7 @@ export class TenantEntity extends EntityRelationalHelper {
   })
   schemaName?: string | null;
 
-  @OneToOne(() => FileEntity, { eager: true, nullable: true })
+  @OneToOne(() => FileEntity, { /**eager: true,**/ nullable: true })
   @JoinColumn()
   logo?: FileEntity | null;
 
@@ -110,14 +111,19 @@ export class TenantEntity extends EntityRelationalHelper {
   })
   name?: string | null;
 
-  @ManyToOne(() => TenantTypeEntity, { eager: true, nullable: true })
+  @ManyToOne(() => TenantTypeEntity, { /**eager: true,**/ nullable: true })
   type?: TenantTypeEntity | null;
 
   @OneToMany(() => KycDetailsEntity, (childEntity) => childEntity.tenant, {
-    eager: true,
+    /**eager: true,**/
     nullable: true,
   })
   kycSubmissions?: KycDetailsEntity[] | null;
+
+  @OneToMany(() => FileEntity, (childEntity) => childEntity.tenant, {
+    nullable: true,
+  })
+  files?: FileEntity[] | null;
 
   @OneToMany(() => UserEntity, (childEntity) => childEntity.tenant, {
     eager: false,

@@ -29,11 +29,14 @@ import { FileEntity } from '../../../../../files/infrastructure/persistence/rela
 
 import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { CreditBalanceEntity } from '../../../../../credit-balances/infrastructure/persistence/relational/entities/credit-balance.entity';
 
 @Entity({
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @OneToMany(() => CreditBalanceEntity, (cb) => cb.customer)
+  creditBalances: CreditBalanceEntity[];
   @OneToMany(
     () => OnboardingEntity,
     (childEntity) => childEntity.performedByUser,
