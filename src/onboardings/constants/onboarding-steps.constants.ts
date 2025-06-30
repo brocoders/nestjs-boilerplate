@@ -95,12 +95,21 @@ export const USER_ONBOARDING_STEPS: OnboardingStepDefinition[] = [
 
 export const TENANT_ONBOARDING_STEPS: OnboardingStepDefinition[] = [
   {
+    key: 'plan_selection',
+    name: 'Plan Selection',
+    description: 'Select a subscription plan',
+    order: 0,
+    isRequired: true,
+    isSkippable: false,
+  },
+  {
     key: 'tenant_registration',
     name: 'Organization Registration',
     description: 'Register your organization',
     order: 1,
     isRequired: true,
     isSkippable: false,
+    dependencies: ['plan_selection'],
   },
   {
     key: 'admin_creation',
