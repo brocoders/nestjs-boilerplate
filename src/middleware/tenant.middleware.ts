@@ -8,14 +8,16 @@ import { TenantDataSource } from '../database/tenant-data-source';
  */
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  async use(req: Request, res: Response, next: NextFunction) {
+  use(req: Request, res: Response, next: NextFunction) {
     const tenantId = this.extractTenantId(req);
     console.log('Extracting tenant ID from request', tenantId);
     if (tenantId) {
       try {
-        const tenantDataSource =
-          await TenantDataSource.getTenantDataSource(tenantId);
-        req['tenantDataSource'] = tenantDataSource;
+        //TODO pick correct tenant data source
+        // const tenantDataSource =
+        //   await TenantDataSource.getTenantDataSource(tenantId);
+        // req['tenantDataSource'] = tenantDataSource;
+        req['tenantDataSource'] = TenantDataSource.getCoreDataSource();
         req['tenantId'] = tenantId;
       } catch (error) {
         console.error(`Tenant resolution failed: ${error.message}`);
