@@ -15684,6 +15684,14 @@
             "type": "string",
             "example": "0700000000"
           },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
           "password": {
             "type": "string"
           }
@@ -15692,6 +15700,8 @@
           "name",
           "email",
           "phone",
+          "firstName",
+          "lastName",
           "password"
         ]
       },

@@ -28,6 +28,14 @@ export class AuthRegisterTenantDto {
   @MinLength(9)
   phone?: string;
 
+  @ApiProperty({ example: 'John' })
+  @IsOptional()
+  firstName?: string;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsOptional()
+  lastName?: string;
+
   @IsOptional()
   @ValidateNested()
   @Type(() => TenantTypeDto)
