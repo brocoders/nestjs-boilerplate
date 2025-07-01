@@ -41,3 +41,4 @@ lerna-debug.log*
 .codegpt
 
 /documentation
+.env
