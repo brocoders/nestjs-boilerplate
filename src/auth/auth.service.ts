@@ -312,7 +312,8 @@ export class AuthService {
     registerTenantDto: AuthRegisterTenantDto,
   ): Promise<void> {
     try {
-      const { name, email, phone, type, password } = registerTenantDto;
+      const { name, email, phone, type, password, firstName, lastName } =
+        registerTenantDto;
       // Get or create default tenant type
       const defaultType = await this.tenantTypesService.findOneByCode(
         TenantTypeCode.GENERIC,
@@ -347,6 +348,7 @@ export class AuthService {
       await this.usersService.create({
         password: password,
         email: email,
+        phoneNumber: phone,
         role: {
           id: RoleEnum.admin,
         },
@@ -355,8 +357,8 @@ export class AuthService {
         },
         tenant: tenant,
         fullyOnboarded: false,
-        firstName: null,
-        lastName: null,
+        firstName: firstName || null,
+        lastName: lastName || null,
       });
 
       // 3. Send confirmation email
@@ -374,12 +376,15 @@ export class AuthService {
         },
       );
 
-      await this.mailService.userSignUp({
-        to: email,
-        data: {
-          hash,
-        },
-      });
+      // await this.mailService.userSignUp({
+      //   to: email,
+      //   data: {
+      //     hash,
+      //   },
+      // });
+      this.sendConfirmationEmail(email, hash).catch((error) =>
+        console.error('Background email failed:', error),
+      );
     } catch (error) {
       console.error('Error during tenant registration:', error);
       throw new UnprocessableEntityException({
@@ -835,5 +840,20 @@ export class AuthService {
       refreshToken,
       tokenExpires,
     };
+  }
+  private async sendConfirmationEmail(
+    email: string,
+    hash: string,
+  ): Promise<void> {
+    try {
+      await this.mailService.userSignUp({
+        to: email,
+        data: { hash },
+      });
+    } catch (error) {
+      // Handle email-specific errors here
+      console.error('Email sending failed:', error);
+      // Consider adding retry logic or dead-letter queue here
+    }
   }
 }

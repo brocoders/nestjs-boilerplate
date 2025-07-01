@@ -56,8 +56,8 @@ export default registerAs<MailConfig>('mail', () => {
     password: process.env.MAIL_PASSWORD,
     defaultEmail: process.env.MAIL_DEFAULT_EMAIL,
     defaultName: process.env.MAIL_DEFAULT_NAME,
-    ignoreTLS: process.env.MAIL_IGNORE_TLS === 'true',
-    secure: process.env.MAIL_SECURE === 'true',
-    requireTLS: process.env.MAIL_REQUIRE_TLS === 'true',
+    ignoreTLS: process.env.MAIL_IGNORE_TLS === 'true' || false,
+    secure: process.env.MAIL_SECURE === 'true' || false,
+    requireTLS: process.env.MAIL_REQUIRE_TLS === 'true' || false,
   };
 });

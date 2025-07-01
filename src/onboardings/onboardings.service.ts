@@ -145,9 +145,59 @@ export class OnboardingsService {
     }
 
     await this.onboardingRepository.update(step.id, updatePayload);
-    return this.onboardingRepository.findOne(
+    const updatedStep = (await this.onboardingRepository.findOne(
       whereCondition,
-    ) as Promise<Onboarding>;
+    )) as Onboarding;
+    console.log('Entity Type:', entityType);
+    console.log('Entity ID:', entityId);
+    console.log('OnboardingEntityType.TENANT:', OnboardingEntityType.TENANT);
+    // Check if this was the last step
+    if (entityType /**.toLocaleLowerCase() === OnboardingEntityType.TENANT**/) {
+      console.log('Checking if this was the last step');
+      const allSteps = await this.onboardingRepository.find({
+        where: {
+          entityType: entityType.toLowerCase() as OnboardingEntityType,
+          id: stepId,
+        },
+      });
+      const tenantSteps =
+        this.onboardingStepsMap[
+          entityType.toLowerCase() as OnboardingEntityType
+        ];
+      console.log('All tenantSteps:', tenantSteps);
+      const lastStep = tenantSteps.reduce(
+        (maxStep, step) => (step.order > maxStep.order ? step : maxStep),
+        tenantSteps[0],
+      );
+      console.log('Last step:', lastStep);
+      console.log('All steps:', allSteps);
+      const isLastStep = updatedStep.stepKey === lastStep.key;
+      // Create a map of stepKey to step definition for quick lookup
+      const stepsByKey = tenantSteps.reduce<
+        Record<string, OnboardingStepDefinition>
+      >((acc, stepDef) => {
+        acc[stepDef.key] = stepDef;
+        return acc;
+      }, {});
+      const allStepsCompleted = allSteps.every(
+        (s) =>
+          s.status === OnboardingStepStatus.COMPLETED ||
+          (s.status === OnboardingStepStatus.SKIPPED &&
+            stepsByKey[s.stepKey]?.isSkippable),
+      );
+      console.log(
+        'isLastStep',
+        isLastStep,
+        'allStepsCompleted',
+        allStepsCompleted,
+      );
+      if (/**isLastStep &&**/ allStepsCompleted) {
+        // Update tenant status
+        await this.tenantService.update(entityId, { fullyOnboarded: true });
+      }
+    }
+
+    return updatedStep;
   }
 
   async skipStep(
