@@ -67,17 +67,15 @@ const runSeed = async () => {
 
   await app.get(ReminderSeedService).run();
 
-  await app.get(TenantConfigSeedService).run(); //TODO: Implement tenant config seeding logic
+  await app.get(TenantConfigSeedService).run();
 
   await app.get(TransactionSeedService).run();
 
   await app.get(VendorSeedService).run();
-
-  await app.get(VendorBillSeedService).run();
-
   await app.get(AccountsPayableSeedService).run();
   await app.get(CreditBalanceSeedService).run(); //TODO: Implement credit balance seeding logic
   await app.get(PaymentSeedService).run(); //TODO: Implement payment seeding logic
+  await app.get(VendorBillSeedService).run();
 
   await app.close();
 };
