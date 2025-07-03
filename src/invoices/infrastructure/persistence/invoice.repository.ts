@@ -16,6 +16,8 @@ export abstract class InvoiceRepository {
 
   abstract findById(id: Invoice['id']): Promise<NullableType<Invoice>>;
 
+  abstract findById(id: Invoice['id']): Promise<NullableType<Invoice>>;
+
   abstract findByIds(ids: Invoice['id'][]): Promise<Invoice[]>;
 
   abstract update(

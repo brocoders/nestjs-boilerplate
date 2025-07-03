@@ -10,7 +10,7 @@ import { UserSeedService } from './user/user-seed.service';
 import { SettingsSeedService } from './settings/settings-seed.service';
 import { ResidenceSeedService } from './residence/residence-seed.service';
 import { AccountSeedService } from './account/account-seed.service';
-import { CustomerPlanSeedService } from './customer-plan/customer-plan-seed.service';
+import { SubscriptionSeedService } from './subscription/subscription-seed.service';
 import { DiscountSeedService } from './discount/discount-seed.service';
 import { InventorySeedService } from './inventory/inventory-seed.service';
 import { PaymentAggregatorSeedService } from './payment-aggregator/payment-aggregator-seed.service';
@@ -51,7 +51,7 @@ const runSeed = async () => {
 
   await app.get(AccountsReceivableSeedService).run();
 
-  await app.get(CustomerPlanSeedService).run();
+  await app.get(SubscriptionSeedService).run();
 
   await app.get(DiscountSeedService).run();
 

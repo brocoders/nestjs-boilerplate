@@ -46,12 +46,13 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<Invoice[]> {
+    console.log('dddddd', this.invoiceRepository);
     const entities = await this.invoiceRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: this.applyTenantFilter(),
     });
-
+    console.log('entities', entities);
     return entities.map((entity) => InvoiceMapper.toDomain(entity));
   }
 

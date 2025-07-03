@@ -1,6 +1,1479 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/reports/income-statement": {
+      "get": {
+        "operationId": "ReportsController_getIncomeStatement_v1",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Income Statement (Profit & Loss)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/balance-sheet": {
+      "get": {
+        "operationId": "ReportsController_getBalanceSheet_v1",
+        "parameters": [
+          {
+            "name": "asOfDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance Sheet"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/cash-flow": {
+      "get": {
+        "operationId": "ReportsController_getCashFlowStatement_v1",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cash Flow Statement"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/trial-balance": {
+      "get": {
+        "operationId": "ReportsController_getTrialBalance_v1",
+        "parameters": [
+          {
+            "name": "asOfDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trial Balance"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/general-ledger": {
+      "get": {
+        "operationId": "ReportsController_getGeneralLedger_v1",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "General Ledger Entries"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/ar-aging": {
+      "get": {
+        "operationId": "ReportsController_getAccountsReceivableAging_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts Receivable Aging Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/ap-aging": {
+      "get": {
+        "operationId": "ReportsController_getAccountsPayableAging_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts Payable Aging Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/inventory-valuation": {
+      "get": {
+        "operationId": "ReportsController_getInventoryValuation_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory Valuation Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/unapplied-payments": {
+      "get": {
+        "operationId": "ReportsController_getUnappliedPayments_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unapplied Payments Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/overpayments": {
+      "get": {
+        "operationId": "ReportsController_getOverpayments_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer Overpayments Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/revenue-by-customer": {
+      "get": {
+        "operationId": "ReportsController_getRevenueByCustomer_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue by Customer Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/revenue-by-plan": {
+      "get": {
+        "operationId": "ReportsController_getRevenueByPlan_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue by Payment Plan Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/payment-method-summary": {
+      "get": {
+        "operationId": "ReportsController_getPaymentMethodSummary_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of Payments by Method (Cash, Bank, Mpesa, etc.)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/discounts-summary": {
+      "get": {
+        "operationId": "ReportsController_getDiscountsSummary_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of Discounts Applied"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/exemptions-summary": {
+      "get": {
+        "operationId": "ReportsController_getExemptionsSummary_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of Exemptions Granted"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/reminders-performance": {
+      "get": {
+        "operationId": "ReportsController_getRemindersPerformance_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reminder Notification Delivery Performance"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/collection-compliance": {
+      "get": {
+        "operationId": "ReportsController_getCollectionCompliance_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Waste Collection Compliance vs. Schedule"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/bin-usage-stats": {
+      "get": {
+        "operationId": "ReportsController_getBinUsageStats_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bin Usage and Rotation Statistics"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/credit-balance-summary": {
+      "get": {
+        "operationId": "ReportsController_getCreditBalanceSummary_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of Credit Balances"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/active-vs-inactive-customers": {
+      "get": {
+        "operationId": "ReportsController_getActiveVsInactiveCustomers_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active vs Inactive Customers Overview"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/failed-payments": {
+      "get": {
+        "operationId": "ReportsController_getFailedPayments_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Failed Payment Attempts Report"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/revenue-growth": {
+      "get": {
+        "operationId": "ReportsController_getRevenueGrowth_v1",
+        "parameters": [
+          {
+            "name": "period",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue Growth Over Time"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/region-performance": {
+      "get": {
+        "operationId": "ReportsController_getRegionPerformance_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue and Collection by Region"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/platform-owner": {
+      "get": {
+        "operationId": "ReportsController_getPlatformOwnerStats_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Platform Owner Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/admin": {
+      "get": {
+        "operationId": "ReportsController_getAdminDashboardStats_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Admin Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/agent": {
+      "get": {
+        "operationId": "ReportsController_getAgentDashboardStats_v1",
+        "parameters": [
+          {
+            "name": "agentId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Agent Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/customer": {
+      "get": {
+        "operationId": "ReportsController_getCustomerDashboardStats_v1",
+        "parameters": [
+          {
+            "name": "customerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Customer Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/manager": {
+      "get": {
+        "operationId": "ReportsController_getManagerDashboardStats_v1",
+        "parameters": [
+          {
+            "name": "regionId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Manager Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/finance": {
+      "get": {
+        "operationId": "ReportsController_getFinanceDashboardStats_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Finance Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard/guest": {
+      "get": {
+        "operationId": "ReportsController_getGuestDashboardStats_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats for Guest or Basic User Dashboard"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
+    "/api/v1/system-modules": {
+      "post": {
+        "operationId": "SystemModulesController_create_v1",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSystemModuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModule"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Systemmodules"
+        ]
+      },
+      "get": {
+        "operationId": "SystemModulesController_findAll_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfinityPaginationSystemModuleResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Systemmodules"
+        ]
+      }
+    },
+    "/api/v1/system-modules/{id}": {
+      "get": {
+        "operationId": "SystemModulesController_findById_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModule"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Systemmodules"
+        ]
+      },
+      "patch": {
+        "operationId": "SystemModulesController_update_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSystemModuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemModule"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Systemmodules"
+        ]
+      },
+      "delete": {
+        "operationId": "SystemModulesController_remove_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-tenant-id",
+            "description": "Tenant ID for database context",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "required": false,
+            "name": "x-custom-lang",
+            "schema": {
+              "example": "en"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Systemmodules"
+        ]
+      }
+    },
     "/api/v1/audit-logs": {
       "post": {
         "operationId": "AuditLogsController_create_v1",
@@ -7383,9 +8856,9 @@
         ]
       }
     },
-    "/api/v1/customer-plans": {
+    "/api/v1/subscriptions": {
       "post": {
-        "operationId": "CustomerPlansController_create_v1",
+        "operationId": "SubscriptionsController_create_v1",
         "parameters": [
           {
             "in": "header",
@@ -7410,7 +8883,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCustomerPlanDto"
+                "$ref": "#/components/schemas/CreateSubscriptionDto"
               }
             }
           }
@@ -7421,7 +8894,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CustomerPlan"
+                  "$ref": "#/components/schemas/Subscription"
                 }
               }
             }
@@ -7437,7 +8910,7 @@
         ]
       },
       "get": {
-        "operationId": "CustomerPlansController_findAll_v1",
+        "operationId": "SubscriptionsController_findAll_v1",
         "parameters": [
           {
             "name": "page",
@@ -7479,7 +8952,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InfinityPaginationCustomerPlanResponseDto"
+                  "$ref": "#/components/schemas/InfinityPaginationSubscriptionResponseDto"
                 }
               }
             }
@@ -7495,9 +8968,9 @@
         ]
       }
     },
-    "/api/v1/customer-plans/{id}": {
+    "/api/v1/subscriptions/{id}": {
       "get": {
-        "operationId": "CustomerPlansController_findById_v1",
+        "operationId": "SubscriptionsController_findById_v1",
         "parameters": [
           {
             "name": "id",
@@ -7531,7 +9004,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CustomerPlan"
+                  "$ref": "#/components/schemas/Subscription"
                 }
               }
             }
@@ -7547,7 +9020,7 @@
         ]
       },
       "patch": {
-        "operationId": "CustomerPlansController_update_v1",
+        "operationId": "SubscriptionsController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -7580,7 +9053,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateCustomerPlanDto"
+                "$ref": "#/components/schemas/UpdateSubscriptionDto"
               }
             }
           }
@@ -7591,7 +9064,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CustomerPlan"
+                  "$ref": "#/components/schemas/Subscription"
                 }
               }
             }
@@ -7607,7 +9080,7 @@
         ]
       },
       "delete": {
-        "operationId": "CustomerPlansController_remove_v1",
+        "operationId": "SubscriptionsController_remove_v1",
         "parameters": [
           {
             "name": "id",
@@ -8760,6 +10233,92 @@
       }
     },
     "schemas": {
+      "CreateSystemModuleDto": {
+        "type": "object",
+        "properties": {
+          "submodules": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "SystemModule": {
+        "type": "object",
+        "properties": {
+          "submodules": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": false
+          },
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "submodules",
+          "description",
+          "name",
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "InfinityPaginationSystemModuleResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SystemModule"
+            }
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "data",
+          "hasNextPage"
+        ]
+      },
+      "UpdateSystemModuleDto": {
+        "type": "object",
+        "properties": {
+          "submodules": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "CreateAuditLogDto": {
         "type": "object",
         "properties": {
@@ -15244,7 +16803,7 @@
           "unknown"
         ]
       },
-      "CreateCustomerPlanDto": {
+      "CreateSubscriptionDto": {
         "type": "object",
         "properties": {
           "tenant": {
@@ -15315,7 +16874,7 @@
           "customer"
         ]
       },
-      "CustomerPlan": {
+      "Subscription": {
         "type": "object",
         "properties": {
           "tenant": {
@@ -15418,13 +16977,13 @@
           "updatedAt"
         ]
       },
-      "InfinityPaginationCustomerPlanResponseDto": {
+      "InfinityPaginationSubscriptionResponseDto": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CustomerPlan"
+              "$ref": "#/components/schemas/Subscription"
             }
           },
           "hasNextPage": {
@@ -15437,7 +16996,7 @@
           "hasNextPage"
         ]
       },
-      "UpdateCustomerPlanDto": {
+      "UpdateSubscriptionDto": {
         "type": "object",
         "properties": {
           "tenant": {

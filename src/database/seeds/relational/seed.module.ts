@@ -32,7 +32,7 @@ import { AccountsReceivableSeedModule } from './accounts-receivable/accounts-rec
 
 import { CreditBalanceSeedModule } from './credit-balance/credit-balance-seed.module';
 
-import { CustomerPlanSeedModule } from './customer-plan/customer-plan-seed.module';
+import { SubscriptionSeedModule } from './subscription/subscription-seed.module';
 
 import { DiscountSeedModule } from './discount/discount-seed.module';
 
@@ -75,7 +75,7 @@ import { VendorSeedModule } from './vendor/vendor-seed.module';
     InventorySeedModule,
     ExemptionSeedModule,
     DiscountSeedModule,
-    CustomerPlanSeedModule,
+    SubscriptionSeedModule,
     CreditBalanceSeedModule,
     AccountsReceivableSeedModule,
     AccountsPayableSeedModule,

@@ -76,7 +76,7 @@ import { InvoicesModule } from './invoices/invoices.module';
 
 import { PaymentPlansModule } from './payment-plans/payment-plans.module';
 
-import { CustomerPlansModule } from './customer-plans/customer-plans.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 import { VendorsModule } from './vendors/vendors.module';
 
@@ -103,8 +103,14 @@ import { OnboardingsModule } from './onboardings/onboardings.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { TenantDataSource } from './database/tenant-data-source';
 
+import { SystemModulesModule } from './system-modules/system-modules.module';
+
+import { ReportsModule } from './reports/reports.module';
+
 @Module({
   imports: [
+    ReportsModule,
+    SystemModulesModule,
     AuditLogsModule,
     OnboardingsModule,
     PaymentNotificationsModule,
@@ -118,7 +124,7 @@ import { TenantDataSource } from './database/tenant-data-source';
     PaymentsModule,
     VendorBillsModule,
     VendorsModule,
-    CustomerPlansModule,
+    SubscriptionsModule,
     PaymentPlansModule,
     InvoicesModule,
     TransactionsModule,

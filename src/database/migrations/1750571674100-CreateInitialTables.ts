@@ -185,10 +185,10 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
       `CREATE TABLE "inventory" ("unitOfMeasure" character varying, "materialType" character varying, "accountType" character varying NOT NULL, "salePrice" integer, "purchasePrice" integer NOT NULL, "quantity" integer NOT NULL, "itemDescription" character varying, "itemName" character varying, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, CONSTRAINT "PK_82aa5da437c5bbfb80703b08309" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."customer_plan_status_enum" AS ENUM('trial', 'active', 'suspended', 'inactive', 'cancelled', 'pending', 'expired', 'completed', 'archived', 'deleted', 'unknown')`,
+      `CREATE TYPE "public"."subscription_status_enum" AS ENUM('trial', 'active', 'suspended', 'inactive', 'cancelled', 'pending', 'expired', 'completed', 'archived', 'deleted', 'unknown')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "customer_plan" ("customSchedule" jsonb, "nextPaymentDate" TIMESTAMP, "status" "public"."customer_plan_status_enum" NOT NULL DEFAULT 'active', "customRates" jsonb, "endDate" TIMESTAMP, "startDate" TIMESTAMP NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "assignedById" integer, CONSTRAINT "PK_8f8e7240de887aae547688903ae" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "subscription" ("customSchedule" jsonb, "nextPaymentDate" TIMESTAMP, "status" "public"."subscription_status_enum" NOT NULL DEFAULT 'active', "customRates" jsonb, "endDate" TIMESTAMP, "startDate" TIMESTAMP NOT NULL, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "tenantId" uuid NOT NULL, "assignedById" integer, CONSTRAINT "PK_8f8e7240de887aae547688903ae" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."audit_log_action_enum" AS ENUM('create', 'read', 'update', 'delete', 'complete_step', 'skip_step', 'restart_step', 'login', 'logout', 'password_change', 'password_reset_request', 'password_reset_complete', 'assign_role', 'remove_role', 'update_permissions', 'invite_user', 'activate_user', 'deactivate_user', 'create_tenant', 'update_tenant', 'delete_tenant', 'switch_tenant', 'upload', 'download', 'export', 'import', 'update_settings', 'reset_settings', 'view_audit_log', 'export_audit_log', 'system_start', 'system_shutdown', 'system_error', 'send_notification', 'read_notification', 'archive', 'restore', 'tag', 'untag')`,
@@ -287,22 +287,22 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
       `CREATE INDEX "IDX_348674af7bbd6a1cd1cc9bf301" ON "transaction_debit_account_account" ("accountId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "customer_plan_plan_payment_plan" ("customerPlanId" uuid NOT NULL, "paymentPlanId" uuid NOT NULL, CONSTRAINT "PK_9e90c112d6f296603816d3cf461" PRIMARY KEY ("customerPlanId", "paymentPlanId"))`,
+      `CREATE TABLE "subscription_plan_payment_plan" ("customerPlanId" uuid NOT NULL, "paymentPlanId" uuid NOT NULL, CONSTRAINT "PK_9e90c112d6f296603816d3cf461" PRIMARY KEY ("customerPlanId", "paymentPlanId"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_7d1d518fa7f0913ae20309662b" ON "customer_plan_plan_payment_plan" ("customerPlanId") `,
+      `CREATE INDEX "IDX_7d1d518fa7f0913ae20309662b" ON "subscription_plan_payment_plan" ("customerPlanId") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_cca9ae196a37fae65a7484ff30" ON "customer_plan_plan_payment_plan" ("paymentPlanId") `,
+      `CREATE INDEX "IDX_cca9ae196a37fae65a7484ff30" ON "subscription_plan_payment_plan" ("paymentPlanId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "customer_plan_customer_user" ("customerPlanId" uuid NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_b9e7be567ccd307c37aaa898b92" PRIMARY KEY ("customerPlanId", "userId"))`,
+      `CREATE TABLE "subscription_customer_user" ("customerPlanId" uuid NOT NULL, "userId" integer NOT NULL, CONSTRAINT "PK_b9e7be567ccd307c37aaa898b92" PRIMARY KEY ("customerPlanId", "userId"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_ca52d375966a365db7b2db6c7c" ON "customer_plan_customer_user" ("customerPlanId") `,
+      `CREATE INDEX "IDX_ca52d375966a365db7b2db6c7c" ON "subscription_customer_user" ("customerPlanId") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_60d8ef9796c33640fabde40a54" ON "customer_plan_customer_user" ("userId") `,
+      `CREATE INDEX "IDX_60d8ef9796c33640fabde40a54" ON "subscription_customer_user" ("userId") `,
     );
     await queryRunner.query(
       `ALTER TABLE "region" ADD CONSTRAINT "FK_aaf7ebdc7470c865314f414b241" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -479,10 +479,10 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
       `ALTER TABLE "inventory" ADD CONSTRAINT "FK_e2bdaec9ee21465752bb01cd040" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan" ADD CONSTRAINT "FK_9b1f0e98868dc1f495884f15f77" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "subscription" ADD CONSTRAINT "FK_9b1f0e98868dc1f495884f15f77" FOREIGN KEY ("tenantId") REFERENCES "tenant"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan" ADD CONSTRAINT "FK_7f18a5fdf060737c35c1d587345" FOREIGN KEY ("assignedById") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "subscription" ADD CONSTRAINT "FK_7f18a5fdf060737c35c1d587345" FOREIGN KEY ("assignedById") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "audit_log" ADD CONSTRAINT "FK_6d4b82b8ac14815d3d270f6a21a" FOREIGN KEY ("performedByUserId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -551,31 +551,31 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
       `ALTER TABLE "transaction_debit_account_account" ADD CONSTRAINT "FK_348674af7bbd6a1cd1cc9bf3012" FOREIGN KEY ("accountId") REFERENCES "account"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_plan_payment_plan" ADD CONSTRAINT "FK_7d1d518fa7f0913ae20309662b1" FOREIGN KEY ("customerPlanId") REFERENCES "customer_plan"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "subscription_plan_payment_plan" ADD CONSTRAINT "FK_7d1d518fa7f0913ae20309662b1" FOREIGN KEY ("customerPlanId") REFERENCES "subscription"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_plan_payment_plan" ADD CONSTRAINT "FK_cca9ae196a37fae65a7484ff30d" FOREIGN KEY ("paymentPlanId") REFERENCES "payment_plan"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "subscription_plan_payment_plan" ADD CONSTRAINT "FK_cca9ae196a37fae65a7484ff30d" FOREIGN KEY ("paymentPlanId") REFERENCES "payment_plan"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_customer_user" ADD CONSTRAINT "FK_ca52d375966a365db7b2db6c7cf" FOREIGN KEY ("customerPlanId") REFERENCES "customer_plan"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "subscription_customer_user" ADD CONSTRAINT "FK_ca52d375966a365db7b2db6c7cf" FOREIGN KEY ("customerPlanId") REFERENCES "subscription"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_customer_user" ADD CONSTRAINT "FK_60d8ef9796c33640fabde40a54a" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "subscription_customer_user" ADD CONSTRAINT "FK_60d8ef9796c33640fabde40a54a" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_customer_user" DROP CONSTRAINT "FK_60d8ef9796c33640fabde40a54a"`,
+      `ALTER TABLE "subscription_customer_user" DROP CONSTRAINT "FK_60d8ef9796c33640fabde40a54a"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_customer_user" DROP CONSTRAINT "FK_ca52d375966a365db7b2db6c7cf"`,
+      `ALTER TABLE "subscription_customer_user" DROP CONSTRAINT "FK_ca52d375966a365db7b2db6c7cf"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_plan_payment_plan" DROP CONSTRAINT "FK_cca9ae196a37fae65a7484ff30d"`,
+      `ALTER TABLE "subscription_plan_payment_plan" DROP CONSTRAINT "FK_cca9ae196a37fae65a7484ff30d"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan_plan_payment_plan" DROP CONSTRAINT "FK_7d1d518fa7f0913ae20309662b1"`,
+      `ALTER TABLE "subscription_plan_payment_plan" DROP CONSTRAINT "FK_7d1d518fa7f0913ae20309662b1"`,
     );
     await queryRunner.query(
       `ALTER TABLE "transaction_debit_account_account" DROP CONSTRAINT "FK_348674af7bbd6a1cd1cc9bf3012"`,
@@ -644,10 +644,10 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
       `ALTER TABLE "audit_log" DROP CONSTRAINT "FK_6d4b82b8ac14815d3d270f6a21a"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan" DROP CONSTRAINT "FK_7f18a5fdf060737c35c1d587345"`,
+      `ALTER TABLE "subscription" DROP CONSTRAINT "FK_7f18a5fdf060737c35c1d587345"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_plan" DROP CONSTRAINT "FK_9b1f0e98868dc1f495884f15f77"`,
+      `ALTER TABLE "subscription" DROP CONSTRAINT "FK_9b1f0e98868dc1f495884f15f77"`,
     );
     await queryRunner.query(
       `ALTER TABLE "inventory" DROP CONSTRAINT "FK_e2bdaec9ee21465752bb01cd040"`,
@@ -829,14 +829,14 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
     await queryRunner.query(
       `DROP INDEX "public"."IDX_ca52d375966a365db7b2db6c7c"`,
     );
-    await queryRunner.query(`DROP TABLE "customer_plan_customer_user"`);
+    await queryRunner.query(`DROP TABLE "subscription_customer_user"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_cca9ae196a37fae65a7484ff30"`,
     );
     await queryRunner.query(
       `DROP INDEX "public"."IDX_7d1d518fa7f0913ae20309662b"`,
     );
-    await queryRunner.query(`DROP TABLE "customer_plan_plan_payment_plan"`);
+    await queryRunner.query(`DROP TABLE "subscription_plan_payment_plan"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_348674af7bbd6a1cd1cc9bf301"`,
     );
@@ -909,8 +909,8 @@ export class CreateInitialTables1750571674100 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "user_regions_region"`);
     await queryRunner.query(`DROP TABLE "audit_log"`);
     await queryRunner.query(`DROP TYPE "public"."audit_log_action_enum"`);
-    await queryRunner.query(`DROP TABLE "customer_plan"`);
-    await queryRunner.query(`DROP TYPE "public"."customer_plan_status_enum"`);
+    await queryRunner.query(`DROP TABLE "subscription"`);
+    await queryRunner.query(`DROP TYPE "public"."subscription_status_enum"`);
     await queryRunner.query(`DROP TABLE "inventory"`);
     await queryRunner.query(`DROP TABLE "reminder"`);
     await queryRunner.query(`DROP TYPE "public"."reminder_status_enum"`);
