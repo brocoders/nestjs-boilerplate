@@ -105,7 +105,7 @@
     "@types/facebook-js-sdk": "3.3.12",
     "@types/jest": "30.0.0",
     "@types/ms": "2.1.0",
-    "@types/multer": "1.4.13",
+    "@types/multer": "2.0.0",
     "@types/node": "22.15.33",
     "@types/passport-anonymous": "1.0.5",
     "@types/passport-jwt": "4.0.1",
