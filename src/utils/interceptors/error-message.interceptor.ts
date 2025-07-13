@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ErrorTypeMessage } from '../types/message.type';
+import { TypeMessage } from '../types/message.type';
 
 @Injectable()
 export class ErrorMessageInterceptor implements NestInterceptor {
@@ -17,9 +17,9 @@ export class ErrorMessageInterceptor implements NestInterceptor {
         if (
           response?.statusCode &&
           !response?.message &&
-          ErrorTypeMessage.getMessageByStatus(response.statusCode)
+          TypeMessage.getMessageByStatus(response.statusCode)
         ) {
-          response.message = ErrorTypeMessage.getMessageByStatus(
+          response.message = TypeMessage.getMessageByStatus(
             response.statusCode,
           );
         }

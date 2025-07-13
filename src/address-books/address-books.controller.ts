@@ -13,16 +13,16 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AddressBooksService } from './address-books.service';
-import { CreateAddressBookDto } from './dto/create-address-book.dto';
-import { CreateAddressBookUserDto } from './dto/create-address-book-user.dto';
+import {
+  CreateAddressBookDto,
+  CreateAddressBookUserDto,
+} from './dto/create-address-book.dto';
 import { UpdateAddressBookDto } from './dto/update-address-book.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiParam,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { AddressBook } from './domain/address-book';
@@ -34,9 +34,17 @@ import {
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllAddressBooksDto } from './dto/find-all-address-books.dto';
 import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
-import { ErrorTypeMessage } from '../utils/types/message.type';
+import { TypeMessage } from '../utils/types/message.type';
+import {
+  IdParamDto,
+  UserIdAssetTypeParamDto,
+  UserIdLabelParamDto,
+  UserIdParamDto,
+} from './dto/address-book-param.dto';
+import { FilterAddressBooksDto } from './dto/address-book-query.dto';
+import { RequestWithUser } from '../utils/types/object.type';
 
-@ApiTags('Addressbooks')
+@ApiTags('AddressBooks')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
@@ -79,7 +87,7 @@ export class AddressBooksController {
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({ type: AddressBook })
   async createByUser(
-    @Request() request,
+    @Request() request: RequestWithUser,
     @Body() createAddressBookUserDto: CreateAddressBookUserDto,
   ) {
     return this.addressBooksService.createByUser(
@@ -101,86 +109,79 @@ export class AddressBooksController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          devices: ErrorTypeMessage.getMessageByStatus(
+          devices: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
       },
     },
   })
-  async findAllByMe(@Request() request): Promise<AddressBookUserResponseDto[]> {
-    return this.addressBooksService.findByme(request.user);
+  async findAllByMe(
+    @Request() request: RequestWithUser,
+  ): Promise<AddressBookUserResponseDto[]> {
+    return this.addressBooksService.findByMe(request.user);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: String, required: true })
   @ApiOkResponse({ type: AddressBook })
-  findById(@Param('id') id: string) {
-    return this.addressBooksService.findById(id);
+  findById(@Param() params: IdParamDto) {
+    return this.addressBooksService.findById(params.id);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: String, required: true })
   @ApiOkResponse({ type: AddressBook })
   update(
-    @Param('id') id: string,
+    @Param() params: IdParamDto,
     @Body() updateAddressBookDto: UpdateAddressBookDto,
   ) {
-    return this.addressBooksService.update(id, updateAddressBookDto);
+    return this.addressBooksService.update(params.id, updateAddressBookDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiParam({ name: 'id', type: String, required: true })
-  remove(@Param('id') id: string) {
-    return this.addressBooksService.remove(id);
+  remove(@Param() params: IdParamDto) {
+    return this.addressBooksService.remove(params.id);
   }
 
   @Get('/user/:userId')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'userId', type: Number })
-  findAllByUser(@Param('userId') userId: number) {
-    return this.addressBooksService.findAllByUser(userId);
+  findAllByUser(@Param() params: UserIdParamDto) {
+    return this.addressBooksService.findAllByUser(params.userId);
   }
 
   @Get('/user/:userId/label/:label')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'userId', type: Number })
-  @ApiParam({ name: 'label', type: String })
-  findByLabel(@Param('userId') userId: number, @Param('label') label: string) {
-    return this.addressBooksService.findByLabel(userId, label);
+  findByLabel(@Param() params: UserIdLabelParamDto) {
+    return this.addressBooksService.findByLabel(params.userId, params.label);
   }
 
   @Get('/user/:userId/favorites')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'userId', type: Number })
-  findFavorites(@Param('userId') userId: number) {
-    return this.addressBooksService.findFavorites(userId);
+  findFavorites(@Param() params: UserIdParamDto) {
+    return this.addressBooksService.findFavorites(params.userId);
   }
 
   @Get('/user/:userId/asset-type/:assetType')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'userId', type: Number })
-  @ApiParam({ name: 'assetType', type: String })
-  findByAssetType(
-    @Param('userId') userId: number,
-    @Param('assetType') assetType: string,
-  ) {
-    return this.addressBooksService.findByAssetType(userId, assetType);
+  findByAssetType(@Param() params: UserIdAssetTypeParamDto) {
+    return this.addressBooksService.findByAssetType(
+      params.userId,
+      params.assetType,
+    );
   }
 
   @Get('/user/:userId/filter')
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'userId', type: Number })
-  @ApiQuery({ name: 'blockchain', required: false })
-  @ApiQuery({ name: 'assetType', required: false })
   filter(
-    @Param('userId') userId: number,
-    @Query('blockchain') blockchain?: string,
-    @Query('assetType') assetType?: string,
+    @Param() params: UserIdParamDto,
+    @Query() query: FilterAddressBooksDto,
   ) {
-    return this.addressBooksService.filter(userId, blockchain, assetType);
+    return this.addressBooksService.filter(
+      params.userId,
+      query.blockchain,
+      query.assetType,
+    );
   }
 }

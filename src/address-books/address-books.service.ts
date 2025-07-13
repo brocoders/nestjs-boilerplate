@@ -8,15 +8,19 @@ import {
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
 import { AddressBookRepository } from './infrastructure/persistence/address-book.repository';
-import { CreateAddressBookDto } from './dto/create-address-book.dto';
+import {
+  CreateAddressBookDto,
+  CreateAddressBookUserDto,
+} from './dto/create-address-book.dto';
 import { UpdateAddressBookDto } from './dto/update-address-book.dto';
-import { CreateAddressBookUserDto } from './dto/create-address-book-user.dto';
 import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AddressBook } from './domain/address-book';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import { plainToInstance } from 'class-transformer';
 import { validate as isUUID } from 'uuid';
+import { TypeMessage } from '../utils/types/message.type';
+
 
 @Injectable()
 export class AddressBooksService {
@@ -30,7 +34,10 @@ export class AddressBooksService {
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: { user: 'User does not exist' },
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
+        errors: { user: 'UserNotExist' },
       });
     }
 
@@ -47,7 +54,12 @@ export class AddressBooksService {
         label: createAddressBookDto.label,
       });
     } catch {
-      throw new InternalServerErrorException('Failed to create address book');
+      throw new InternalServerErrorException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
+      });
     }
   }
 
@@ -68,7 +80,9 @@ export class AddressBooksService {
     if (!isUUID(id)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid ID format. Expected UUID.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -76,7 +90,7 @@ export class AddressBooksService {
     if (!addressBook) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `Address book with ID '${id}' not found`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -88,7 +102,7 @@ export class AddressBooksService {
     if (!results?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: 'No address books found for given IDs',
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
     return results;
@@ -101,7 +115,9 @@ export class AddressBooksService {
     if (!isUUID(id)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid ID format. Expected UUID.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -113,7 +129,10 @@ export class AddressBooksService {
       if (!userObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: { user: 'User does not exist' },
+          message: TypeMessage.getMessageByStatus(
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          ),
+          errors: { user: 'UserNotExist' },
         });
       }
       user = userObject;
@@ -132,7 +151,12 @@ export class AddressBooksService {
     });
 
     if (!updated) {
-      throw new InternalServerErrorException('Failed to update address book');
+      throw new InternalServerErrorException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
+      });
     }
 
     return updated;
@@ -142,7 +166,9 @@ export class AddressBooksService {
     if (!isUUID(id)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid ID format. Expected UUID.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -150,14 +176,14 @@ export class AddressBooksService {
     if (!addressBook) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: 'Address book not found',
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
     await this.addressBookRepository.remove(id);
     return {
       status: HttpStatus.OK,
-      message: 'Address book deleted successfully',
+      message: TypeMessage.getMessageByStatus(HttpStatus.OK),
     };
   }
 
@@ -165,7 +191,9 @@ export class AddressBooksService {
     if (isNaN(userId)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid userId. Expected number.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -173,7 +201,7 @@ export class AddressBooksService {
     if (!results?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `No address books found for user ID ${userId}`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -184,7 +212,9 @@ export class AddressBooksService {
     if (isNaN(userId)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid userId. Expected number.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -192,7 +222,7 @@ export class AddressBooksService {
     if (!result) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `No address book found with label '${label}' for user ID ${userId}`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -203,7 +233,9 @@ export class AddressBooksService {
     if (isNaN(userId)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid userId. Expected number.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -211,7 +243,7 @@ export class AddressBooksService {
     if (!results?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `No favorite address books found for user ID ${userId}`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -225,7 +257,9 @@ export class AddressBooksService {
     if (isNaN(userId)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid userId. Expected number.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -236,7 +270,7 @@ export class AddressBooksService {
     if (!results?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `No address books with asset type '${assetType}' found for user ID ${userId}`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -251,7 +285,9 @@ export class AddressBooksService {
     if (isNaN(userId)) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: 'Invalid userId. Expected number.',
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
       });
     }
 
@@ -263,7 +299,7 @@ export class AddressBooksService {
     if (!results?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: `No address books found for user ID ${userId} with given filters`,
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 
@@ -278,6 +314,9 @@ export class AddressBooksService {
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
+        message: TypeMessage.getMessageByStatus(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        ),
         errors: { user: 'User does not exist' },
       });
     }
@@ -295,7 +334,7 @@ export class AddressBooksService {
     });
   }
 
-  async findByme(
+  async findByMe(
     userJwtPayload: JwtPayloadType,
   ): Promise<AddressBookUserResponseDto[]> {
     const addressBooks = await this.addressBookRepository.findByUserId(
@@ -304,7 +343,7 @@ export class AddressBooksService {
     if (!addressBooks?.length) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
-        message: 'No address books found for the user',
+        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
       });
     }
 

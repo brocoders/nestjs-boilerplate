@@ -108,7 +108,8 @@
     "source-map-support": "0.5.21",
     "swagger-themes": "^1.4.3",
     "swagger-ui-express": "5.0.1",
-    "typeorm": "0.3.24"
+    "typeorm": "0.3.24",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.1",

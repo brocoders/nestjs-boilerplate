@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-export class ErrorTypeMessage {
+export class TypeMessage {
   static readonly MESSAGES: Record<number, string> = {
     // Informational responses
     [HttpStatus.CONTINUE]: 'continue',

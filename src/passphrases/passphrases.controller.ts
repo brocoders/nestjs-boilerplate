@@ -38,7 +38,7 @@ import {
   FindAllPassphrasesUserDto,
 } from './dto/find-all-passphrases.dto';
 import { PassphraseUserResponseDto } from './dto/passphrase-response.dto';
-import { ErrorTypeMessage } from '../utils/types/message.type';
+import { TypeMessage } from '../utils/types/message.type';
 import { QueryPassphraseDto } from './dto/query-passphrase.dto';
 import { ApiInfinityPaginatedResponse } from '../utils/decorators/paginated-response.decorator';
 
@@ -136,7 +136,7 @@ export class PassphrasesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          passphrases: ErrorTypeMessage.getMessageByStatus(
+          passphrases: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
@@ -177,7 +177,7 @@ export class PassphrasesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          passphrases: ErrorTypeMessage.getMessageByStatus(
+          passphrases: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
@@ -213,7 +213,7 @@ export class PassphrasesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          passphrases: ErrorTypeMessage.getMessageByStatus(
+          passphrases: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },

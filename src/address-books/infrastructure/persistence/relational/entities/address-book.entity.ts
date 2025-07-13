@@ -18,8 +18,9 @@ export class AddressBookEntity extends EntityRelationalHelper {
   user: UserEntity;
 
   @Column({
-    nullable: true,
     type: Boolean,
+    nullable: true,
+    default: false,
   })
   isFavorite?: boolean | null;
 

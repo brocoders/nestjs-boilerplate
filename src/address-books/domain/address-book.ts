@@ -11,6 +11,7 @@ export class AddressBook {
   @ApiProperty({
     type: () => Boolean,
     nullable: true,
+    default: false,
   })
   isFavorite?: boolean | null;
 

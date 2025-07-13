@@ -35,7 +35,7 @@ import {
   FindAllDevicesDto,
   FindAllDevicesUserDto,
 } from './dto/find-all-devices.dto';
-import { ErrorTypeMessage } from '../utils/types/message.type';
+import { TypeMessage } from '../utils/types/message.type';
 import { DeviceUserResponseDto } from './dto/device-response.dto';
 import { QueryDeviceDto } from './dto/query-device.dto';
 
@@ -141,7 +141,7 @@ export class DevicesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          devices: ErrorTypeMessage.getMessageByStatus(
+          devices: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
@@ -183,7 +183,7 @@ export class DevicesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          devices: ErrorTypeMessage.getMessageByStatus(
+          devices: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
@@ -219,7 +219,7 @@ export class DevicesController {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          devices: ErrorTypeMessage.getMessageByStatus(
+          devices: TypeMessage.getMessageByStatus(
             HttpStatus.UNPROCESSABLE_ENTITY,
           ),
         },
