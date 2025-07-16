@@ -7,7 +7,7 @@ import {
   IsNotEmptyObject,
   MaxLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { UserDto } from '../../users/dto/user.dto';
 
 export class BaseCreateAddressBookDto {
@@ -15,10 +15,12 @@ export class BaseCreateAddressBookDto {
     description: 'Mark as favorite (optional)',
     type: Boolean,
     example: false,
+    default: false,
   })
   @IsOptional()
   @IsBoolean()
-  isFavorite?: boolean;
+  @Transform(({ value }) => value === 'true' || value === true)
+  isFavorite?: boolean = false;
 
   @ApiPropertyOptional({
     description: 'Optional notes for this address',
@@ -71,7 +73,7 @@ export class BaseCreateAddressBookDto {
   @ApiProperty({
     description: 'Blockchain address',
     type: String,
-    example: '0x89Ab32156e46F46D02ade3FEcbe5Fc4243B9AAeD',
+    example: '0x89Ab32156e46F46D02ade3FEce5Fc4243B9AAeD',
   })
   @IsString()
   @MaxLength(255)
@@ -86,6 +88,7 @@ export class BaseCreateAddressBookDto {
   @MaxLength(255)
   label: string;
 }
+
 export class CreateAddressBookUserDto extends BaseCreateAddressBookDto {}
 
 export class CreateAddressBookDto extends BaseCreateAddressBookDto {

@@ -25,7 +25,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AddressBook } from './domain/address-book';
+import { AddressBookDto } from './dto/address-book.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
@@ -33,47 +33,42 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllAddressBooksDto } from './dto/find-all-address-books.dto';
-import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
 import { TypeMessage } from '../utils/types/message.type';
-import {
-  IdParamDto,
-  UserIdAssetTypeParamDto,
-  UserIdLabelParamDto,
-  UserIdParamDto,
-} from './dto/address-book-param.dto';
-import { FilterAddressBooksDto } from './dto/address-book-query.dto';
+import { IdParamDto, UserIdParamDto } from './dto/param-address-book.dto';
+import { FilterAddressBooksDto } from './dto/query-address-book.dto';
 import { RequestWithUser } from '../utils/types/object.type';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
+import { RoleEnum } from '../roles/roles.enum';
+import { ApiOperationRoles } from '../utils/decorators/swagger.decorator';
 
-@ApiTags('AddressBooks')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
-@Controller({
-  path: 'address-books',
-  version: '1',
-})
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@ApiTags('AddressBooks')
+@Controller({ path: 'address-books', version: '1' })
 export class AddressBooksController {
   constructor(private readonly addressBooksService: AddressBooksService) {}
 
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('create address book entry', [RoleEnum.admin])
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ type: AddressBook })
+  @ApiCreatedResponse({ type: AddressBookDto })
   create(@Body() createAddressBookDto: CreateAddressBookDto) {
     return this.addressBooksService.create(createAddressBookDto);
   }
 
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('List all address books with pagination', [RoleEnum.admin])
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(AddressBook),
-  })
+  @ApiOkResponse({ type: InfinityPaginationResponse(AddressBookDto) })
   async findAll(
     @Query() query: FindAllAddressBooksDto,
-  ): Promise<InfinityPaginationResponseDto<AddressBook>> {
+  ): Promise<InfinityPaginationResponseDto<AddressBookDto>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+    if (limit > 50) limit = 50;
 
     return infinityPagination(
       await this.addressBooksService.findAllWithPagination({
@@ -83,28 +78,23 @@ export class AddressBooksController {
     );
   }
 
+  @ApiOperationRoles('Create address book entry')
   @Post('me')
   @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ type: AddressBook })
-  async createByUser(
+  @ApiCreatedResponse({ type: AddressBookDto })
+  async createByMe(
     @Request() request: RequestWithUser,
-    @Body() createAddressBookUserDto: CreateAddressBookUserDto,
+    @Body() dto: CreateAddressBookUserDto,
   ) {
-    return this.addressBooksService.createByUser(
-      createAddressBookUserDto,
-      request.user,
-    );
+    return this.addressBooksService.createByMe(dto, request.user.id);
   }
 
+  @ApiOperationRoles('Get all address books')
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    type: AddressBookUserResponseDto,
-    description: 'Successfully retrieved Address Book for the user',
-    isArray: true,
-  })
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
   @ApiNotFoundResponse({
-    description: 'No Devices found for the user',
+    description: 'No address book entries found',
     schema: {
       example: {
         status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -117,63 +107,78 @@ export class AddressBooksController {
     },
   })
   async findAllByMe(
-    @Request() request: RequestWithUser,
-  ): Promise<AddressBookUserResponseDto[]> {
-    return this.addressBooksService.findByMe(request.user);
+    @Request() req: RequestWithUser,
+  ): Promise<AddressBookDto[]> {
+    return this.addressBooksService.findAllByUserId(req.user.id);
   }
 
-  @Get(':id')
+  @ApiOperationRoles('Get favorite address books')
+  @Get('me/favorites')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: AddressBook })
-  findById(@Param() params: IdParamDto) {
-    return this.addressBooksService.findById(params.id);
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
+  async findFavoritesByMe(
+    @Request() req: RequestWithUser,
+  ): Promise<AddressBookDto[]> {
+    return this.addressBooksService.findFavoritesByMe(req.user.id);
   }
 
-  @Patch(':id')
+  @ApiOperationRoles('Filter address books')
+  @Get('me/filter')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: AddressBook })
-  update(
-    @Param() params: IdParamDto,
-    @Body() updateAddressBookDto: UpdateAddressBookDto,
-  ) {
-    return this.addressBooksService.update(params.id, updateAddressBookDto);
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
+  async filterByMe(
+    @Request() req: RequestWithUser,
+    @Query() query: FilterAddressBooksDto,
+  ): Promise<AddressBookDto[]> {
+    return this.addressBooksService.filterByMe(
+      req.user.id,
+      query.blockchain,
+      query.assetType,
+      query.isFavorite,
+    );
   }
 
-  @Delete(':id')
+  @ApiOperationRoles('Get address book by ID')
+  @Get('me/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AddressBookDto })
+  async findByMe(@Param() params: IdParamDto, @Request() req: RequestWithUser) {
+    return this.addressBooksService.findByMe(params.id, req.user.id);
+  }
+
+  @ApiOperationRoles('Delete address book entry')
+  @Delete('me/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() params: IdParamDto) {
-    return this.addressBooksService.remove(params.id);
+  async removeByMe(
+    @Param() params: IdParamDto,
+    @Request() req: RequestWithUser,
+  ): Promise<void> {
+    await this.addressBooksService.remove(params.id, req.user.id);
   }
 
-  @Get('/user/:userId')
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Get all address books by user ID', [RoleEnum.admin])
+  @Get('user/:userId')
   @HttpCode(HttpStatus.OK)
-  findAllByUser(@Param() params: UserIdParamDto) {
-    return this.addressBooksService.findAllByUser(params.userId);
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
+  findAllByUserId(@Param() params: UserIdParamDto) {
+    return this.addressBooksService.findAllByUserId(params.userId);
   }
 
-  @Get('/user/:userId/label/:label')
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Get favorite address books by user ID', [RoleEnum.admin])
+  @Get('user/:userId/favorites')
   @HttpCode(HttpStatus.OK)
-  findByLabel(@Param() params: UserIdLabelParamDto) {
-    return this.addressBooksService.findByLabel(params.userId, params.label);
-  }
-
-  @Get('/user/:userId/favorites')
-  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
   findFavorites(@Param() params: UserIdParamDto) {
     return this.addressBooksService.findFavorites(params.userId);
   }
 
-  @Get('/user/:userId/asset-type/:assetType')
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Filter address books by user ID', [RoleEnum.admin])
+  @Get('user/:userId/filter')
   @HttpCode(HttpStatus.OK)
-  findByAssetType(@Param() params: UserIdAssetTypeParamDto) {
-    return this.addressBooksService.findByAssetType(
-      params.userId,
-      params.assetType,
-    );
-  }
-
-  @Get('/user/:userId/filter')
-  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AddressBookDto, isArray: true })
   filter(
     @Param() params: UserIdParamDto,
     @Query() query: FilterAddressBooksDto,
@@ -182,6 +187,33 @@ export class AddressBooksController {
       params.userId,
       query.blockchain,
       query.assetType,
+      query.isFavorite,
     );
+  }
+
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Get address book by ID', [RoleEnum.admin])
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AddressBookDto })
+  findById(@Param() params: IdParamDto) {
+    return this.addressBooksService.findById(params.id);
+  }
+
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Update address book by ID', [RoleEnum.admin])
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AddressBookDto })
+  update(@Param() params: IdParamDto, @Body() dto: UpdateAddressBookDto) {
+    return this.addressBooksService.update(params.id, dto);
+  }
+
+  @Roles(RoleEnum.admin)
+  @ApiOperationRoles('Delete address book by ID', [RoleEnum.admin])
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() params: IdParamDto) {
+    return this.addressBooksService.remove(params.id);
   }
 }

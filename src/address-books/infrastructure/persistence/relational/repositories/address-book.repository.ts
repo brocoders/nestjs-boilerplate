@@ -7,6 +7,7 @@ import { AddressBook } from '../../../../domain/address-book';
 import { AddressBookRepository } from '../../address-book.repository';
 import { AddressBookMapper } from '../mappers/address-book.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { User } from '../../../../../users/domain/user';
 
 @Injectable()
 export class AddressBookRelationalRepository implements AddressBookRepository {
@@ -36,9 +37,15 @@ export class AddressBookRelationalRepository implements AddressBookRepository {
     return entities.map((entity) => AddressBookMapper.toDomain(entity));
   }
 
-  async findById(id: AddressBook['id']): Promise<NullableType<AddressBook>> {
+  async findById(
+    id: AddressBook['id'],
+    userId?: User['id'],
+  ): Promise<NullableType<AddressBook>> {
+    const where = userId ? { id, user: { id: Number(userId) } } : { id };
+
     const entity = await this.addressBookRepository.findOne({
-      where: { id },
+      where,
+      relations: ['user'],
     });
 
     return entity ? AddressBookMapper.toDomain(entity) : null;
@@ -47,6 +54,7 @@ export class AddressBookRelationalRepository implements AddressBookRepository {
   async findByIds(ids: AddressBook['id'][]): Promise<AddressBook[]> {
     const entities = await this.addressBookRepository.find({
       where: { id: In(ids) },
+      relations: ['user'],
     });
 
     return entities.map((entity) => AddressBookMapper.toDomain(entity));
@@ -58,6 +66,7 @@ export class AddressBookRelationalRepository implements AddressBookRepository {
   ): Promise<AddressBook> {
     const entity = await this.addressBookRepository.findOne({
       where: { id },
+      relations: ['user'],
     });
 
     if (!entity) {
@@ -76,83 +85,71 @@ export class AddressBookRelationalRepository implements AddressBookRepository {
     return AddressBookMapper.toDomain(updatedEntity);
   }
 
-  async remove(id: AddressBook['id']): Promise<void> {
-    await this.addressBookRepository.delete(id);
-  }
+  async remove(id: AddressBook['id'], userId?: User['id']): Promise<void> {
+    const whereCondition: any = { id: Number(id) };
 
-  async findByUserId(userId: number): Promise<AddressBook[]> {
-    const entities = await this.addressBookRepository.find({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-      relations: ['user'],
-    });
-    return entities.map((entity) => AddressBookMapper.toDomain(entity));
-  }
+    if (userId) {
+      whereCondition.user = { id: Number(userId) };
+    }
 
-  async findByLabel(
-    userId: number,
-    label: string,
-  ): Promise<NullableType<AddressBook>> {
     const entity = await this.addressBookRepository.findOne({
-      where: {
-        user: {
-          id: userId,
-        },
-        label,
-      },
+      where: whereCondition,
       relations: ['user'],
     });
-    return entity ? AddressBookMapper.toDomain(entity) : null;
+
+    if (entity) {
+      await this.addressBookRepository.remove(entity);
+    }
   }
 
-  async findFavorites(userId: number): Promise<AddressBook[]> {
+  async findAllByUserId(userId: User['id']): Promise<AddressBook[]> {
     const entities = await this.addressBookRepository.find({
       where: {
         user: {
-          id: userId,
+          id: Number(userId),
         },
-        isFavorite: true,
       },
       relations: ['user'],
     });
     return entities.map((entity) => AddressBookMapper.toDomain(entity));
   }
 
-  async findByAssetType(
-    userId: number,
-    assetType: string,
-  ): Promise<AddressBook[]> {
+  async findFavorites(userId?: User['id']): Promise<AddressBook[]> {
+    const where: any = { isFavorite: true };
+    if (userId !== undefined) {
+      where.user = { id: Number(userId) };
+    }
+
     const entities = await this.addressBookRepository.find({
-      where: {
-        user: {
-          id: userId,
-        },
-        assetType,
-      },
+      where,
       relations: ['user'],
     });
     return entities.map((entity) => AddressBookMapper.toDomain(entity));
   }
 
   async filter(
-    userId: number,
-    blockchain?: string,
-    assetType?: string,
+    userId?: User['id'],
+    blockchain?: AddressBook['blockchain'],
+    assetType?: AddressBook['assetType'],
+    isFavorite?: AddressBook['isFavorite'],
+    label?: AddressBook['label'],
   ): Promise<AddressBook[]> {
-    const where: any = {
-      user: {
-        id: userId,
-      },
-    };
+    const where: any = {};
 
-    if (blockchain) {
+    if (userId !== undefined) {
+      where.user = { id: Number(userId) };
+    }
+    if (blockchain !== undefined) {
       where.blockchain = blockchain;
     }
-    if (assetType) {
+    if (assetType !== undefined) {
       where.assetType = assetType;
+    }
+    if (isFavorite !== undefined) {
+      where.isFavorite = isFavorite;
+    }
+    if (label !== undefined) {
+      where.label = label;
     }
 
     const entities = await this.addressBookRepository.find({

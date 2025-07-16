@@ -1,9 +1,7 @@
 import {
-  Injectable,
   HttpStatus,
-  NotFoundException,
+  Injectable,
   UnprocessableEntityException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
@@ -13,14 +11,16 @@ import {
   CreateAddressBookUserDto,
 } from './dto/create-address-book.dto';
 import { UpdateAddressBookDto } from './dto/update-address-book.dto';
-import { AddressBookUserResponseDto } from './dto/address-book-user-response.dto';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { AddressBook } from './domain/address-book';
-import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import { plainToInstance } from 'class-transformer';
-import { validate as isUUID } from 'uuid';
 import { TypeMessage } from '../utils/types/message.type';
-
+import { NullableType } from '../utils/types/nullable.type';
+import { AddressBookDto } from './dto/address-book.dto';
+import { RoleEnum } from '../roles/roles.enum';
+import {
+  GroupPlainToInstance,
+  GroupPlainToInstances,
+} from '../utils/transformers/class.transformer';
 
 @Injectable()
 export class AddressBooksService {
@@ -29,7 +29,9 @@ export class AddressBooksService {
     private readonly addressBookRepository: AddressBookRepository,
   ) {}
 
-  async create(createAddressBookDto: CreateAddressBookDto) {
+  async create(
+    createAddressBookDto: CreateAddressBookDto,
+  ): Promise<AddressBookDto> {
     const user = await this.userService.findById(createAddressBookDto.user.id);
     if (!user) {
       throw new UnprocessableEntityException({
@@ -41,86 +43,51 @@ export class AddressBooksService {
       });
     }
 
-    try {
-      return await this.addressBookRepository.create({
-        user,
-        isFavorite: createAddressBookDto.isFavorite,
-        notes: createAddressBookDto.notes,
-        memo: createAddressBookDto.memo,
-        tag: createAddressBookDto.tag,
-        assetType: createAddressBookDto.assetType,
-        blockchain: createAddressBookDto.blockchain,
-        address: createAddressBookDto.address,
-        label: createAddressBookDto.label,
-      });
-    } catch {
-      throw new InternalServerErrorException({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        ),
-      });
-    }
+    const addressBook = await this.addressBookRepository.create({
+      user,
+      isFavorite: createAddressBookDto.isFavorite,
+      notes: createAddressBookDto.notes,
+      memo: createAddressBookDto.memo,
+      tag: createAddressBookDto.tag,
+      assetType: createAddressBookDto.assetType,
+      blockchain: createAddressBookDto.blockchain,
+      address: createAddressBookDto.address,
+      label: createAddressBookDto.label,
+    });
+
+    return GroupPlainToInstance(AddressBookDto, addressBook, [RoleEnum.admin]);
   }
 
   async findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }) {
-    return this.addressBookRepository.findAllWithPagination({
+  }): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
     });
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.admin]);
   }
 
-  async findById(id: AddressBook['id']) {
-    if (!isUUID(id)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
+  async findById(id: AddressBook['id']): Promise<NullableType<AddressBookDto>> {
     const addressBook = await this.addressBookRepository.findById(id);
-    if (!addressBook) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return addressBook;
+    return addressBook
+      ? GroupPlainToInstance(AddressBookDto, addressBook, [RoleEnum.admin])
+      : null;
   }
 
-  async findByIds(ids: AddressBook['id'][]) {
-    const results = await this.addressBookRepository.findByIds(ids);
-    if (!results?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-    return results;
+  async findByIds(ids: AddressBook['id'][]): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.findByIds(ids);
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.admin]);
   }
 
   async update(
     id: AddressBook['id'],
     updateAddressBookDto: UpdateAddressBookDto,
-  ) {
-    if (!isUUID(id)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
+  ): Promise<NullableType<AddressBookDto>> {
     let user: User | undefined = undefined;
     if (updateAddressBookDto.user) {
       const userObject = await this.userService.findById(
@@ -150,178 +117,51 @@ export class AddressBooksService {
       label: updateAddressBookDto.label,
     });
 
-    if (!updated) {
-      throw new InternalServerErrorException({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        ),
-      });
-    }
-
-    return updated;
+    return updated
+      ? GroupPlainToInstance(AddressBookDto, updated, [RoleEnum.admin])
+      : null;
   }
 
-  async remove(id: AddressBook['id']) {
-    if (!isUUID(id)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const addressBook = await this.addressBookRepository.findById(id);
-    if (!addressBook) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    await this.addressBookRepository.remove(id);
-    return {
-      status: HttpStatus.OK,
-      message: TypeMessage.getMessageByStatus(HttpStatus.OK),
-    };
+  async remove(id: AddressBook['id'], userId?: User['id']): Promise<void> {
+    await this.addressBookRepository.remove(id, userId);
   }
 
-  async findAllByUser(userId: number): Promise<AddressBook[]> {
-    if (isNaN(userId)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const results = await this.addressBookRepository.findByUserId(userId);
-    if (!results?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return results;
-  }
-
-  async findByLabel(userId: number, label: string): Promise<AddressBook> {
-    if (isNaN(userId)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const result = await this.addressBookRepository.findByLabel(userId, label);
-    if (!result) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return result;
-  }
-
-  async findFavorites(userId: number): Promise<AddressBook[]> {
-    if (isNaN(userId)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const results = await this.addressBookRepository.findFavorites(userId);
-    if (!results?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return results;
-  }
-
-  async findByAssetType(
-    userId: number,
-    assetType: string,
-  ): Promise<AddressBook[]> {
-    if (isNaN(userId)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const results = await this.addressBookRepository.findByAssetType(
-      userId,
-      assetType,
-    );
-    if (!results?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return results;
+  async findFavorites(userId: User['id']): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.findFavorites(userId);
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
   }
 
   async filter(
-    userId: number,
-    blockchain?: string,
-    assetType?: string,
-  ): Promise<AddressBook[]> {
-    if (isNaN(userId)) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        message: TypeMessage.getMessageByStatus(
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        ),
-      });
-    }
-
-    const results = await this.addressBookRepository.filter(
+    userId: User['id'],
+    blockchain?: AddressBook['blockchain'],
+    assetType?: AddressBook['assetType'],
+    isFavorite?: AddressBook['isFavorite'],
+  ): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.filter(
       userId,
       blockchain,
       assetType,
+      isFavorite,
     );
-    if (!results?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return results;
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
   }
 
-  async createByUser(
+  async createByMe(
     createAddressBookUserDto: CreateAddressBookUserDto,
-    userJwtPayload: JwtPayloadType,
-  ) {
-    const user = await this.userService.findById(userJwtPayload.id);
+    userId: User['id'],
+  ): Promise<AddressBookDto> {
+    const user = await this.userService.findById(userId);
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         message: TypeMessage.getMessageByStatus(
           HttpStatus.UNPROCESSABLE_ENTITY,
         ),
-        errors: { user: 'User does not exist' },
+        errors: { user: 'UserNotExist' },
       });
     }
 
-    return this.addressBookRepository.create({
+    const created = await this.addressBookRepository.create({
       user,
       isFavorite: createAddressBookUserDto.isFavorite,
       notes: createAddressBookUserDto.notes,
@@ -332,23 +172,42 @@ export class AddressBooksService {
       address: createAddressBookUserDto.address,
       label: createAddressBookUserDto.label,
     });
+
+    return GroupPlainToInstance(AddressBookDto, created, [RoleEnum.user]);
+  }
+
+  async findAllByUserId(userId: User['id']): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.findAllByUserId(userId);
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
+  }
+
+  async findFavoritesByMe(userId: User['id']): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.findFavorites(userId);
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
+  }
+
+  async filterByMe(
+    userId: User['id'],
+    blockchain?: AddressBook['blockchain'],
+    assetType?: AddressBook['assetType'],
+    isFavorite?: AddressBook['isFavorite'],
+  ): Promise<AddressBookDto[]> {
+    const result = await this.addressBookRepository.filter(
+      userId,
+      blockchain,
+      assetType,
+      isFavorite,
+    );
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
   }
 
   async findByMe(
-    userJwtPayload: JwtPayloadType,
-  ): Promise<AddressBookUserResponseDto[]> {
-    const addressBooks = await this.addressBookRepository.findByUserId(
-      Number(userJwtPayload.id),
-    );
-    if (!addressBooks?.length) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        message: TypeMessage.getMessageByStatus(HttpStatus.NOT_FOUND),
-      });
-    }
-
-    return addressBooks.map((item) =>
-      plainToInstance(AddressBookUserResponseDto, item),
-    );
+    id: AddressBook['id'],
+    userId: User['id'],
+  ): Promise<NullableType<AddressBookDto>> {
+    const addressBook = await this.addressBookRepository.findById(id, userId);
+    return addressBook
+      ? GroupPlainToInstance(AddressBookDto, addressBook, [RoleEnum.user])
+      : null;
   }
 }

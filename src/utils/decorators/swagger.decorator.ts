@@ -1,5 +1,13 @@
-import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { applyDecorators } from '@nestjs/common';
+import { RoleEnum } from '../../roles/roles.enum';
+import { RoleGroupsDict } from '../types/const.type';
+import { capitalizeFirst } from '../transformers/text.transformer';
 
 interface ApiCustomResponseOptions {
   type: any;
@@ -40,6 +48,34 @@ export function ApiOkCustomResponse({
             items: filteredSchema,
           }
         : filteredSchema, // Support both array and single object
+    }),
+  );
+}
+
+export function ApiOperationRoles(
+  summary: string,
+  roles?: RoleEnum[],
+  extraDescription?: string,
+) {
+  const selectedRoles =
+    roles && roles.length > 0
+      ? roles
+      : (Object.keys(RoleGroupsDict).map(Number) as RoleEnum[]);
+
+  const rolesText = selectedRoles
+    .map((r) => `**${capitalizeFirst(RoleGroupsDict[r])}**`)
+    .join(', ');
+
+  const descriptionLines = [`**Allowed Roles:** ${rolesText}`];
+
+  if (extraDescription) {
+    descriptionLines.push(capitalizeFirst(extraDescription));
+  }
+
+  return applyDecorators(
+    ApiOperation({
+      summary,
+      description: descriptionLines.join('\n\n'),
     }),
   );
 }
