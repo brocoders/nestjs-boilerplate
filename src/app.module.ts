@@ -50,8 +50,17 @@ import { MessagesModule } from './messages/messages.module';
 
 import { AddressBooksModule } from './address-books/address-books.module';
 
+import { WalletsModule } from './wallets/wallets.module';
+
+import { FireblocksCwWalletsModule } from './fireblocks-cw-wallets/fireblocks-cw-wallets.module';
+
+import { FireblocksNcwWalletsModule } from './fireblocks-ncw-wallets/fireblocks-ncw-wallets.module';
+
 @Module({
   imports: [
+    FireblocksNcwWalletsModule,
+    FireblocksCwWalletsModule,
+    WalletsModule,
     MessagesModule,
     PassphrasesModule,
     AddressBooksModule,

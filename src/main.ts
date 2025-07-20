@@ -16,6 +16,7 @@ import { RabbitMQService } from './communication/rabbitMQ/rabbitmq.service';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { LoggerService } from './common/logger/logger.service';
 import { LoggerExceptionFilter } from './common/logger/logger-exception.filter';
+import { SwaggerTagRegistry } from './common/api-docs/swagger-tag.registry';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -46,7 +47,7 @@ async function bootstrap() {
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
 
-  const options = new DocumentBuilder()
+  const builder = new DocumentBuilder()
     .setTitle('API')
     .setDescription(
       'API docs ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) ![ReadTheDocs](https://img.shields.io/badge/Readthedocs-%23000000.svg?style=for-the-badge&logo=readthedocs&logoColor=white)',
@@ -56,16 +57,20 @@ async function bootstrap() {
     .addGlobalParameters({
       in: 'header',
       required: false,
-      name: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
+      name: configService.getOrThrow('app.headerLanguage', 'x-custom-lang', {
+        infer: true,
+      }),
       schema: {
         example: 'en',
       },
-    })
+    });
+  const options = SwaggerTagRegistry.getInstance()
+    .registerToBuilder(builder)
     .build();
-
-  await APIDocs.setup(app, options); // doesent need use swagger SwaggerModule.setup
+  await APIDocs.setup(app, options); // doesn't need use swagger SwaggerModule.setup
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
+
   rabbitMQService.initialize(app);
   await app.startAllMicroservices();
   app.enableCors(); // <- Allow all CORS requests (default)

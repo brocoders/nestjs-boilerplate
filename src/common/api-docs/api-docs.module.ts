@@ -99,7 +99,7 @@ export class APIDocs {
       }),
     );
 
-    // Dummy await to satisfy the ESLint rule.
+    // Fake awaits to satisfy the ESLint rule.
     await Promise.resolve();
   }
 

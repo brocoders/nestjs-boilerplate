@@ -75,6 +75,7 @@
     "@scalar/nestjs-api-reference": "^0.4.11",
     "@types/multer-s3": "3.0.3",
     "@types/prompts": "2.4.9",
+    "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.8",
     "apple-signin-auth": "1.7.9",
     "axios": "^1.9.0",
