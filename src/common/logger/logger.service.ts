@@ -14,6 +14,7 @@ export class LoggerService implements NestLoggerService {
       context,
       undefined,
       loadTime,
+      LogLevel.LOG,
     );
     console.log(formatted);
   }
@@ -25,6 +26,7 @@ export class LoggerService implements NestLoggerService {
       context,
       trace,
       loadTime,
+      LogLevel.ERROR,
     );
     console.error(formatted);
   }
@@ -36,6 +38,7 @@ export class LoggerService implements NestLoggerService {
       context,
       undefined,
       loadTime,
+      LogLevel.WARN,
     );
     console.warn(formatted);
   }
@@ -47,6 +50,7 @@ export class LoggerService implements NestLoggerService {
       context,
       undefined,
       loadTime,
+      LogLevel.DEBUG,
     );
     console.debug(formatted);
   }
@@ -58,6 +62,7 @@ export class LoggerService implements NestLoggerService {
       context,
       undefined,
       loadTime,
+      LogLevel.TRACE,
     );
     console.trace(formatted);
   }
@@ -67,8 +72,8 @@ export class LoggerService implements NestLoggerService {
     message: any,
     context?: string,
     trace?: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadTime?: number,
+    level?: LogLevel, // <- added
   ): string {
     const timestamp = format(new Date(), 'MM/dd/yyyy, h:mm:ss a');
     const ctx = context ?? '';
@@ -81,7 +86,8 @@ export class LoggerService implements NestLoggerService {
     const deltaTime = now - this.lastLogTime;
     this.lastLogTime = now;
     const durationStr = ` +${deltaTime}ms`;
-    const logLevel = type === LoggerType.SYSTEM ? LogLevel.LOG : LogLevel.DEBUG;
+    const logLevel =
+      level ?? (type === LoggerType.SYSTEM ? LogLevel.LOG : LogLevel.DEBUG);
     const header = formatNestHeader(timestamp, logLevel, ctx, type);
 
     return `${header} ${msg}${traceStr}${durationStr}`;
