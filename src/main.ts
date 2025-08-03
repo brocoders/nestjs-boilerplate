@@ -17,6 +17,7 @@ import { DocumentBuilder } from '@nestjs/swagger';
 import { LoggerService } from './common/logger/logger.service';
 import { LoggerExceptionFilter } from './common/logger/logger-exception.filter';
 import { SwaggerTagRegistry } from './common/api-docs/swagger-tag.registry';
+import { registerTestWebhookListeners } from './webhooks/register-test-webhooks';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -70,6 +71,8 @@ async function bootstrap() {
   await APIDocs.setup(app, options); // doesn't need use swagger SwaggerModule.setup
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
   await APIDocs.info(app);
+
+  registerTestWebhookListeners(app);
 
   rabbitMQService.initialize(app);
   await app.startAllMicroservices();

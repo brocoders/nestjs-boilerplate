@@ -55,6 +55,7 @@ import { WalletsModule } from './wallets/wallets.module';
 import { FireblocksCwWalletsModule } from './fireblocks-cw-wallets/fireblocks-cw-wallets.module';
 
 import { FireblocksNcwWalletsModule } from './fireblocks-ncw-wallets/fireblocks-ncw-wallets.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { FireblocksNcwWalletsModule } from './fireblocks-ncw-wallets/fireblocks-
     AddressBooksModule,
     DevicesModule,
     NotificationsModule,
+    WebhooksModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
