@@ -1,5 +1,4 @@
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
-
 import {
   CreateDateColumn,
   Entity,
@@ -15,10 +14,11 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 })
 export class WalletEntity extends EntityRelationalHelper {
   @Column({
-    nullable: false,
+    nullable: true,
     type: Boolean,
+    default: false,
   })
-  active?: boolean;
+  active?: boolean | null;
 
   @Column({
     nullable: true,

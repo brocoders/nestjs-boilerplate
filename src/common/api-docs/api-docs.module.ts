@@ -62,7 +62,7 @@ export class APIDocs {
 
     SwaggerModule.setup('/docs', app, document, {
       customCss: customCss, // Apply theme styles
-      explorer: false,
+      explorer: true,
       customSiteTitle: 'Vault API Docs',
     });
 

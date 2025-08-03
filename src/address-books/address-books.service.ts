@@ -132,7 +132,7 @@ export class AddressBooksService {
   }
 
   async filter(
-    userId: User['id'],
+    userId?: User['id'],
     blockchain?: AddressBook['blockchain'],
     assetType?: AddressBook['assetType'],
     isFavorite?: AddressBook['isFavorite'],
@@ -143,7 +143,7 @@ export class AddressBooksService {
       assetType,
       isFavorite,
     );
-    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
+    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.admin]);
   }
 
   async createByMe(
@@ -183,21 +183,6 @@ export class AddressBooksService {
 
   async findFavoritesByMe(userId: User['id']): Promise<AddressBookDto[]> {
     const result = await this.addressBookRepository.findFavorites(userId);
-    return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
-  }
-
-  async filterByMe(
-    userId: User['id'],
-    blockchain?: AddressBook['blockchain'],
-    assetType?: AddressBook['assetType'],
-    isFavorite?: AddressBook['isFavorite'],
-  ): Promise<AddressBookDto[]> {
-    const result = await this.addressBookRepository.filter(
-      userId,
-      blockchain,
-      assetType,
-      isFavorite,
-    );
     return GroupPlainToInstances(AddressBookDto, result, [RoleEnum.user]);
   }
 

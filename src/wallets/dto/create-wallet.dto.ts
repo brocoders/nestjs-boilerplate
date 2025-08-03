@@ -1,57 +1,62 @@
-import { UserDto } from '../../users/dto/user.dto';
-
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  // decorators here
-  Type,
-} from 'class-transformer';
-
-import {
-  // decorators here
-
+  IsBoolean,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
   ValidateNested,
   IsNotEmptyObject,
-  IsString,
-  IsOptional,
-  IsBoolean,
 } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
+import { UserDto } from '../../users/dto/user.dto';
 
-import {
-  // decorators here
-  ApiProperty,
-} from '@nestjs/swagger';
-
-export class CreateWalletDto {
-  @ApiProperty({
-    required: false,
-    type: () => Boolean,
+export class BaseCreateWalletDto {
+  @ApiPropertyOptional({
+    description: 'Whether the wallet is active',
+    type: Boolean,
+    example: true,
+    default: false,
   })
   @IsOptional()
   @IsBoolean()
-  active?: boolean;
+  @Transform(({ value }) => value === 'true' || value === true)
+  active?: boolean = false;
 
-  @ApiProperty({
-    required: false,
-    type: () => String,
+  @ApiPropertyOptional({
+    description: 'Label for the wallet',
+    type: String,
+    example: 'Fireblocks Vault A',
   })
   @IsOptional()
   @IsString()
+  @MaxLength(255)
   label?: string | null;
 
   @ApiProperty({
-    required: true,
-    type: () => String,
+    description: 'Wallet provider name',
+    type: String,
+    example: 'fireblocks',
   })
   @IsString()
+  @MaxLength(100)
   provider: string;
 
   @ApiProperty({
-    required: true,
-    type: () => String,
+    description: 'Lockup ID associated with this wallet',
+    type: String,
+    format: 'uuid',
+    example: 'f7c3bc1d-404f-4b7a-9c34-b517e35ad9d5',
   })
-  @IsString()
+  @IsUUID()
   lockupId: string;
+}
 
+export class CreateWalletUserDto extends BaseCreateWalletDto {}
+
+export class CreateWalletDto extends BaseCreateWalletDto {
   @ApiProperty({
+    description: 'User who owns this wallet',
     required: true,
     type: () => UserDto,
   })
@@ -59,6 +64,4 @@ export class CreateWalletDto {
   @Type(() => UserDto)
   @IsNotEmptyObject()
   user: UserDto;
-
-  // Don't forget to use the class-validator decorators in the DTO properties.
 }

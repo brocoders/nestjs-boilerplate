@@ -1,12 +1,14 @@
 import { User } from '../../users/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
 
+
 export class Wallet {
   @ApiProperty({
     type: () => Boolean,
-    nullable: false,
+    nullable: true,
+    default: false,
   })
-  active?: boolean;
+  active?: boolean | null;
 
   @ApiProperty({
     type: () => String,
