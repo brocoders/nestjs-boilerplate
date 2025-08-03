@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsNumberString, IsOptional } from 'class-validator';
+import { IsUUID, IsNumberString } from 'class-validator';
 
 export class IdParamDto {
   @ApiProperty({ description: 'AddressBook ID (UUID)' })
@@ -7,11 +7,12 @@ export class IdParamDto {
   id: string;
 }
 
-export class BaseUserIdParamDto {
-  @ApiProperty({ description: 'User ID (numeric)' })
+export class UserIdParamDto {
+  @ApiProperty({
+    description: 'User ID (numeric)',
+    type: String, // explicitly define as string for Swagger
+    example: '123',
+  })
   @IsNumberString()
-  @IsOptional()
-  userId: number | string;
+  userId: string;
 }
-
-export class UserIdParamDto extends BaseUserIdParamDto {}
