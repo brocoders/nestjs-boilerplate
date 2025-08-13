@@ -121,7 +121,7 @@
     "jest": "30.0.3",
     "prettier": "3.6.2",
     "prompts": "2.4.2",
-    "release-it": "19.0.3",
+    "release-it": "19.0.4",
     "supertest": "7.1.4",
     "ts-jest": "29.4.0",
     "ts-loader": "9.5.2",
