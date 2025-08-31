@@ -1,3 +1,14 @@
+export function coerceEnumValue(input: unknown): string | number | undefined {
+  if (input === null || input === undefined) return undefined;
+  if (typeof input === 'string' || typeof input === 'number') return input;
+  if (typeof input === 'object') {
+    const maybeId = (input as any)?.id;
+    if (typeof maybeId === 'string' || typeof maybeId === 'number')
+      return maybeId;
+  }
+  return undefined;
+}
+
 export function getEnumErrorMessage(
   enumType: object,
   fieldName: string,
@@ -26,4 +37,35 @@ export function createEnumNameMap<T extends Record<string, string | number>>(
         {} as Record<T[keyof T], string>,
       )
   );
+}
+
+export function getEnumKeyByValue<T extends Record<string, string | number>>(
+  enumType: T,
+  value: string | number,
+): string | undefined {
+  return Object.keys(enumType).find((key) => enumType[key] === value);
+}
+
+export function getEnumText<T extends Record<string, string | number>>(
+  enumType: T,
+  value: unknown,
+): string | undefined {
+  const coerced = coerceEnumValue(value);
+  if (coerced === undefined) return undefined;
+  const key = getEnumKeyByValue(enumType, coerced);
+  if (!key) return undefined;
+  return key;
+}
+
+export function mapEnumToText<T extends Record<string, string | number>>(
+  enumType: T,
+): Record<T[keyof T], string> {
+  const result = {} as Record<T[keyof T], string>;
+  Object.values(enumType).forEach((value) => {
+    const text = getEnumText(enumType, value);
+    if (text !== undefined) {
+      result[value as T[keyof T]] = text;
+    }
+  });
+  return result;
 }

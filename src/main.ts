@@ -18,6 +18,7 @@ import { LoggerService } from './common/logger/logger.service';
 import { LoggerExceptionFilter } from './common/logger/logger-exception.filter';
 import { SwaggerTagRegistry } from './common/api-docs/swagger-tag.registry';
 import { registerTestWebhookListeners } from './webhooks/register-test-webhooks';
+import { bootstrapSocketIoRedis } from './communication/socketio/adapters/socketio-redis.boostrap';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -32,6 +33,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);
 
+  // Enable shutdown hooks (ensures close() is called)
   app.enableShutdownHooks();
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
@@ -73,6 +75,13 @@ async function bootstrap() {
   await APIDocs.info(app);
 
   registerTestWebhookListeners(app);
+  //
+  // // Bootstrap Redis adapter for Socket.IO
+  // const adapter = await bootstrapSocketIoRedis(app);
+  // app.useWebSocketAdapter(adapter);
+
+  // // Close adapter when HTTP server closes
+  // app.getHttpServer().on('close', () => adapter.close());
 
   rabbitMQService.initialize(app);
   await app.startAllMicroservices();
