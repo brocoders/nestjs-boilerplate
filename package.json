@@ -76,7 +76,7 @@
     "multer": "2.0.2",
     "multer-s3": "3.0.1",
     "nestjs-i18n": "10.5.1",
-    "nodemailer": "7.0.5",
+    "nodemailer": "7.0.6",
     "passport": "0.7.0",
     "passport-anonymous": "1.0.1",
     "passport-jwt": "4.0.1",
