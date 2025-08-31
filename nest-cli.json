@@ -6,6 +6,7 @@
     "assets": [
       {
         "include": "i18n/**/*",
+        "outDir": "dist/src/i18n",
         "watchAssets": true
       },
       {

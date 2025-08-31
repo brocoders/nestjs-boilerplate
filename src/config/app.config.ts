@@ -10,6 +10,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import appPkg from '../../package.json';
 
 enum Environment {
   Development = 'development',
@@ -47,6 +48,14 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   APP_HEADER_LANGUAGE: string;
+
+  @IsString()
+  @IsOptional()
+  APP_VERSION: string;
+
+  @IsString()
+  @IsOptional()
+  DATABASE_TYPE: string;
 }
 
 export default registerAs<AppConfig>('app', () => {
@@ -55,6 +64,7 @@ export default registerAs<AppConfig>('app', () => {
   return {
     nodeEnv: process.env.NODE_ENV || 'development',
     name: process.env.APP_NAME || 'app',
+    version: process.env.APP_VERSION || (appPkg as any).version,
     workingDirectory: process.env.PWD || process.cwd(),
     frontendDomain: process.env.FRONTEND_DOMAIN,
     backendDomain: process.env.BACKEND_DOMAIN ?? 'http://localhost',
@@ -66,5 +76,9 @@ export default registerAs<AppConfig>('app', () => {
     apiPrefix: process.env.API_PREFIX || 'api',
     fallbackLanguage: process.env.APP_FALLBACK_LANGUAGE || 'en',
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
+    dbType: process.env.DATABASE_TYPE || 'postgres',
+    monitorSampleMs: process.env.MONITOR_SAMPLE_MS
+      ? parseInt(process.env.MONITOR_SAMPLE_MS, 10)
+      : 10000,
   };
 });
