@@ -57,7 +57,7 @@ export class SocketIoRoomsDto {
 }
 
 @Exclude()
-export class SocketUserMiniDto {
+export class SocketUserDto {
   @ApiProperty({ description: 'User identifier' })
   @Expose()
   @IsString()
@@ -89,13 +89,13 @@ export class SocketSummaryDto {
 
   @ApiPropertyOptional({
     description: 'Resolved user bound to this socket',
-    type: () => SocketUserMiniDto,
+    type: () => SocketUserDto,
   })
   @Expose()
   @IsOptional()
   @ValidateNested()
-  @Type(() => SocketUserMiniDto)
-  user?: SocketUserMiniDto | null;
+  @Type(() => SocketUserDto)
+  user?: SocketUserDto | null;
 
   @ApiPropertyOptional({ description: 'Client IP address' })
   @Expose()

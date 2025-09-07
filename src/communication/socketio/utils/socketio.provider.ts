@@ -6,7 +6,8 @@ import type { Server } from 'socket.io';
  * --------------------
  * Holds the live Socket.IO Server instance so you can inject it anywhere
  * (without importing the Gateway). The Gateway should call setServer() in
- * afterInit(). Other services can access the instance via the `server` getter.
+ * afterInit(). Other services (like BaseMarketFeedService) can access it
+ * via `getServer()` safely.
  */
 @Injectable()
 export class SocketServerProvider {
@@ -17,7 +18,10 @@ export class SocketServerProvider {
     this._server = server;
   }
 
-  /** Retrieve the live Server instance or throw if not initialized yet. */
+  /**
+   * Strict getter. Throws if not initialized.
+   * Use only if you *require* the server to exist.
+   */
   get server(): Server {
     if (!this._server) {
       throw new Error(
@@ -25,5 +29,22 @@ export class SocketServerProvider {
       );
     }
     return this._server;
+  }
+
+  /**
+   * Safe accessor.
+   * Returns the live server instance if available, otherwise undefined.
+   * Use this in background services (like market feeds) that may emit
+   * conditionally, without crashing the app if the server isn’t ready yet.
+   */
+  getServer(): Server | undefined {
+    return this._server;
+  }
+
+  /**
+   * Quick check if the server is initialized.
+   */
+  get isReady(): boolean {
+    return !!this._server;
   }
 }

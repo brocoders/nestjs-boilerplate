@@ -13,14 +13,16 @@ import {
 import {
   ApiBearerAuth,
   ApiOkResponse,
-  ApiTags,
-  ApiOperation,
+  ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
+import { ApiOperationRoles } from '../../utils/decorators/swagger.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../roles/roles.guard';
 import { Roles } from '../../roles/roles.decorator';
 import { RoleEnum } from '../../roles/roles.enum';
-
 import { SocketIoService } from './socketio.service';
 import { QueryNamespaceDto } from './dto/query-socketio.dto';
 import {
@@ -28,116 +30,164 @@ import {
   EmitRoomDto,
   EmitUserDto,
 } from './dto/emit-socketio.dto';
+import {
+  HealthDto,
+  NamespacesDto,
+  RoomsDto,
+  SocketsDto,
+  EmitNamespaceResultDto,
+  EmitRoomResultDto,
+  EmitUserResultDto,
+} from './dto/response-socketio.dto';
+import { RegisterApiTag } from '../../common/api-docs/decorators/register-api-tag.decorator';
+import { UserPresenceDto } from './dto/user-socketio.dto';
 
+@RegisterApiTag(
+  'SocketIO',
+  'A Realtime gateway in NestJS for handling real-time WebSocket events,Base on Http Controller.',
+  'https://docs.nestjs.com/websockets/gateways',
+)
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@ApiTags('SocketIO')
+@Roles(RoleEnum.admin)
 @Controller({ path: 'socketio', version: '1' })
 export class SocketIoController {
   constructor(private readonly socketio: SocketIoService) {}
-
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'Health/status (basic), Redis bootstrap flag' })
+  @ApiOperationRoles('Health/status (basic), Redis bootstrap flag', [
+    RoleEnum.admin,
+  ])
   @Get('health')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    schema: {
-      example: {
-        ok: true,
-        bootstrapped: true,
-        namespaces: ['/ws'],
-      },
-    },
-  })
+  @ApiOkResponse({ type: HealthDto })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   health() {
     return this.socketio.health();
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'List namespaces' })
+  @ApiOperationRoles('List namespaces', [RoleEnum.admin])
   @Get('namespaces')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ schema: { example: { namespaces: ['/ws', '/binance'] } } })
+  @ApiOkResponse({ type: NamespacesDto })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   namespaces() {
     return this.socketio.namespaces();
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'List rooms in a namespace (default: /ws)' })
+  @ApiOperationRoles('List rooms in a namespace (default: /ws)', [
+    RoleEnum.admin,
+  ])
   @Get('rooms')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    schema: {
-      example: { namespace: '/ws', rooms: ['user:123', 'orders:open'] },
-    },
+  @ApiOkResponse({ type: RoomsDto })
+  @ApiBadRequestResponse({
+    description: 'Validation error for query parameters.',
   })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   rooms(@Query() query: QueryNamespaceDto) {
     return this.socketio.rooms(query);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'List sockets in a namespace (default: /ws)' })
+  @ApiOperationRoles('List sockets in a namespace (default: /ws)', [
+    RoleEnum.admin,
+  ])
   @Get('sockets')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    schema: {
-      example: {
-        namespace: '/ws',
-        sockets: [
-          {
-            id: 'abc123',
-            rooms: ['abc123', 'user:123'],
-            user: { id: '123', email: 'a@b.com' },
-          },
-        ],
-      },
-    },
+  @ApiOkResponse({ type: SocketsDto })
+  @ApiBadRequestResponse({
+    description: 'Validation error for query parameters.',
   })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   sockets(@Query() query: QueryNamespaceDto) {
     return this.socketio.sockets(query);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'Broadcast event to a namespace (default: /ws)' })
+  @ApiOperationRoles('Broadcast event to a namespace (default: /ws)', [
+    RoleEnum.admin,
+  ])
   @Post('broadcast')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ schema: { example: { ok: true } } })
+  @ApiOkResponse({ type: EmitNamespaceResultDto })
+  @ApiBadRequestResponse({
+    description: 'Invalid payload (body validation failed).',
+  })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   broadcast(@Body() dto: EmitBroadcastDto) {
     return this.socketio.broadcast(dto);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'Emit to a room in a namespace (default: /ws)' })
+  @ApiOperationRoles('Emit to a room in a namespace (default: /ws)', [
+    RoleEnum.admin,
+  ])
   @Post('emit/room')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ schema: { example: { ok: true } } })
+  @ApiOkResponse({ type: EmitRoomResultDto })
+  @ApiBadRequestResponse({
+    description: 'Invalid payload (body validation failed).',
+  })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   emitToRoom(@Body() dto: EmitRoomDto) {
     return this.socketio.emitToRoom(dto);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'Emit to a user’s personal room (user:{id})' })
+  @ApiOperationRoles('Emit to a user’s personal room (user:{id})', [
+    RoleEnum.admin,
+  ])
   @Post('emit/user')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ schema: { example: { ok: true } } })
+  @ApiOkResponse({ type: EmitUserResultDto })
+  @ApiBadRequestResponse({
+    description: 'Invalid payload (body validation failed).',
+  })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   emitToUser(@Body() dto: EmitUserDto) {
     return this.socketio.emitToUser(dto);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({ summary: 'Disconnect a socket by ID (in a namespace)' })
+  @ApiOperationRoles('Check if a user is connected and get presence info', [
+    RoleEnum.admin,
+  ])
+  @Get('presence/user/:userId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: UserPresenceDto })
+  @ApiBadRequestResponse({ description: 'Invalid user ID or namespace.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
+  userPresence(
+    @Param('userId') userId: string,
+    @Query() query: QueryNamespaceDto,
+  ) {
+    return this.socketio.userPresence(userId, query);
+  }
+
+  @ApiOperationRoles('Disconnect a socket by ID (in a namespace)', [
+    RoleEnum.admin,
+  ])
   @Delete('disconnect/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({ description: 'Socket disconnected.' })
+  @ApiBadRequestResponse({ description: 'Invalid socket ID or namespace.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   disconnect(@Param('id') id: string, @Query() query: QueryNamespaceDto) {
     return this.socketio.disconnectSocket(id, query);
   }
 
-  @Roles(RoleEnum.admin)
-  @ApiOperation({
-    summary: 'Kick a user (disconnect all sockets in user:{id})',
-  })
-  @Delete('kick/user/:userId')
+  @ApiOperationRoles('Kick a user (disconnect all sockets in user:{id})', [
+    RoleEnum.admin,
+  ])
+  @Delete('unsubscribe/user/:userId')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({ description: 'All user sockets disconnected.' })
+  @ApiBadRequestResponse({ description: 'Invalid user ID or namespace.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT.' })
+  @ApiForbiddenResponse({ description: 'Requires admin role.' })
   kickUser(@Param('userId') userId: string, @Query() query: QueryNamespaceDto) {
     return this.socketio.kickUser(userId, query);
   }

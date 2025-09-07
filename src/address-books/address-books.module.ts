@@ -10,7 +10,6 @@ import { RelationalAddressBookPersistenceModule } from './infrastructure/persist
 @Module({
   imports: [
     UsersModule,
-
     // do not remove this comment
     RelationalAddressBookPersistenceModule,
   ],
