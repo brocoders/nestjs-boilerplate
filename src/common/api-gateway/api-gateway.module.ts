@@ -1,11 +1,11 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { ApiGatewayService } from './api-gateway.service';
 import { ApiClientFactory } from './api-client.factory';
-import { ApiGatewayConfig } from './api-gateway-config';
+import { AnyApiGatewayConfig } from './types/api-gateway.type';
 
 @Module({})
 export class ApiGatewayModule {
-  static register(configs: ApiGatewayConfig[]): DynamicModule {
+  static register(configs: AnyApiGatewayConfig[]): DynamicModule {
     const configProvider: Provider = {
       provide: 'API_GATEWAY_CONFIGS',
       useValue: configs,

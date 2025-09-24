@@ -10,6 +10,7 @@ import { GorushConfig } from 'src/providers/gorush/config/gorush-config.type';
 import { RabbitMQConfig } from 'src/communication/rabbitMQ/config/rabbitmq-config.type';
 import { MinIOConfig } from '../providers/minio/config/minio-config.type';
 import { SocketIOConfig } from '../communication/socketio/config/socketio-config.type';
+import { CmcConfig } from '../providers/cmc/config/cmc-config.type';
 
 export type AllConfigType = {
   app: AppConfig;
@@ -24,4 +25,5 @@ export type AllConfigType = {
   rabbitMQ: RabbitMQConfig;
   minIO: MinIOConfig;
   socketIO: SocketIOConfig;
+  cmc: CmcConfig;
 };

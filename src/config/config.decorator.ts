@@ -7,7 +7,10 @@ const logger = new Logger('ConfigService');
  * Example: apiKeyAdmin -> API_KEY_ADMIN
  */
 function camelToSnakeCase(key: string): string {
-  return key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+  return key
+    .replace(/\./g, '_') // convert dot notation to underscores
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .toUpperCase();
 }
 
 /**

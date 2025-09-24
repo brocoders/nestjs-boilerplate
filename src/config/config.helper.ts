@@ -57,3 +57,31 @@ function parseEnvValue(originalValue: any, envValue: string) {
   }
   return envValue;
 }
+
+// Helper: parse a string into a boolean
+export function parseBool(
+  value: string | undefined,
+  defaultValue = false,
+): boolean {
+  if (!value) return defaultValue;
+  switch (value.toLowerCase().trim()) {
+    case 'true':
+    case '1':
+    case 'yes':
+    case 'y':
+      return true;
+    case 'false':
+    case '0':
+    case 'no':
+    case 'n':
+      return false;
+    default:
+      return defaultValue;
+  }
+}
+
+// Helper: capitalize the first character of a string
+export function capitalize(value: string): string {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}

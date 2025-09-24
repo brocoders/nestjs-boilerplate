@@ -59,4 +59,26 @@ export class ApiGatewayService {
       this.logger.error(`Failed to update API client after base URL change.`);
     }
   }
+
+  updateHeaders(name: string, newHeaders: Record<string, string>) {
+    if (!this.configs.has(name)) {
+      this.logger.error(`API SDK Config "${name}" not found.`);
+      return;
+    }
+
+    const config = this.configs.get(name);
+    if (!config) {
+      this.logger.error(`Failed to retrieve API SDK Config for "${name}".`);
+      return;
+    }
+
+    config.headers = { ...config.headers, ...newHeaders };
+    this.registerClient(config);
+
+    if (this.sdkClients.has(name)) {
+      this.logger.debug(`Successfully updated headers for ${name}`);
+    } else {
+      this.logger.error(`Failed to update API client after headers change.`);
+    }
+  }
 }

@@ -1,4 +1,6 @@
+import { ConfigurableApiGatewayConfig } from '../../../config/config.service';
 import { HttpMethod } from './api-gateway.enum';
+import { ApiGatewayConfig } from './api-gateway.interfaces';
 
 // function type for API calls
 export type ApiFunction<TParams = any, TResponse = any> = (
@@ -14,3 +16,7 @@ export class EndpointDefinition {
     public url: string,
   ) {}
 }
+
+export type AnyApiGatewayConfig =
+  | ApiGatewayConfig
+  | ConfigurableApiGatewayConfig<any>;

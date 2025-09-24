@@ -1,12 +1,14 @@
-export type CmcConfig = {
+import { CmcEnvironmenType } from '../types/cmc-enum.type';
+
+export interface CmcConfig {
   /** Whether CMC integration is enabled */
   enable: boolean;
 
   /** API key for authenticating with CMC Pro API */
   apiKey: string;
 
-  /** Base URL for the CMC Pro API */
-  baseUrl: string;
+  /** Environment type for CMC (e.g., prod, sandbox, dev) */
+  envType: CmcEnvironmenType;
 
   /** Time-to-live for cached responses in milliseconds */
   ttlMs: number;
@@ -20,6 +22,6 @@ export type CmcConfig = {
   /** Default fiat currency for quotes (e.g., "USD") */
   defaultFiatCurrency: string;
 
-  /** Default symbols for spot markets (comma-separated, e.g., "BTC,ETH,USDT") */
+  /** Default symbols for spot markets (comma-separated string, e.g., "BTC,ETH,USDT") */
   defaultSymbols: string;
-};
+}

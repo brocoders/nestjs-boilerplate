@@ -56,6 +56,8 @@ import { FireblocksCwWalletsModule } from './fireblocks-cw-wallets/fireblocks-cw
 
 import { FireblocksNcwWalletsModule } from './fireblocks-ncw-wallets/fireblocks-ncw-wallets.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
+import { CmcModule } from './providers/cmc/cmc.module';
+import cmcConfig from './providers/cmc/config/cmc-config';
 
 @Module({
   imports: [
@@ -82,6 +84,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
         gorushConfig,
         rabbitmqConfig,
         minioConfig,
+        cmcConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -124,6 +127,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     MinioModule,
     LoggerModule,
     SocketIoModule,
+    CmcModule,
   ],
   providers: [RabbitMQService],
 })
