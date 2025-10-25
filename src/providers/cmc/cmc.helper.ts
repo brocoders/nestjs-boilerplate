@@ -1,6 +1,6 @@
+import { CmcCategoryInfo } from './types/cmc-base.type';
 import { CMC_PRO_BASE_URL, CMC_SANDBOX_BASE_URL } from './types/cmc-const.type';
 import { CmcEnvironmenType, CmcCategory } from './types/cmc-enum.type';
-import { CmcCategoryInfo } from './types/cmc-category-info';
 
 /**
  * Resolve the base URL for CoinMarketCap API given the environment type.
@@ -57,7 +57,7 @@ const ENV_VAR_MAP: Record<CmcCategory, string> = {
 export function getCmcSectionVersion(
   section: CmcCategory,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  envType: CmcEnvironmenType,
+  _envType: CmcEnvironmenType,
 ): string {
   const envVar = ENV_VAR_MAP[section];
   const override = process.env[envVar as keyof NodeJS.ProcessEnv];

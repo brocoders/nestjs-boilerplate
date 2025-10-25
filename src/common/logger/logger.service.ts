@@ -1,70 +1,76 @@
 import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
 import { format } from 'date-fns';
 import { LoggerType, LogLevel } from './types/logger-enum.type';
-import { stringifyJson, formatNestHeader } from './logger.helper';
+import { stringifyJson, formatNestHeader } from './utils/logger.helper';
+import chalk from 'chalk';
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
   private lastLogTime = Date.now();
 
   log(message: any, context?: string, loadTime?: number) {
-    const formatted = this.format(
-      LoggerType.SYSTEM,
-      message,
-      context,
-      undefined,
-      loadTime,
-      LogLevel.LOG,
+    console.log(
+      this.format(
+        LoggerType.SYSTEM,
+        message,
+        context,
+        undefined,
+        loadTime,
+        LogLevel.LOG,
+      ),
     );
-    console.log(formatted);
   }
 
   error(message: any, trace?: string, context?: string, loadTime?: number) {
-    const formatted = this.format(
-      LoggerType.SYSTEM,
-      message,
-      context,
-      trace,
-      loadTime,
-      LogLevel.ERROR,
+    console.error(
+      this.format(
+        LoggerType.SYSTEM,
+        message,
+        context,
+        trace,
+        loadTime,
+        LogLevel.ERROR,
+      ),
     );
-    console.error(formatted);
   }
 
   warn(message: any, context?: string, loadTime?: number) {
-    const formatted = this.format(
-      LoggerType.SYSTEM,
-      message,
-      context,
-      undefined,
-      loadTime,
-      LogLevel.WARN,
+    console.warn(
+      this.format(
+        LoggerType.SYSTEM,
+        message,
+        context,
+        undefined,
+        loadTime,
+        LogLevel.WARN,
+      ),
     );
-    console.warn(formatted);
   }
 
   debug(message: any, context?: string, loadTime?: number) {
-    const formatted = this.format(
-      LoggerType.DEV,
-      message,
-      context,
-      undefined,
-      loadTime,
-      LogLevel.DEBUG,
+    console.debug(
+      this.format(
+        LoggerType.DEV,
+        message,
+        context,
+        undefined,
+        loadTime,
+        LogLevel.DEBUG,
+      ),
     );
-    console.debug(formatted);
   }
 
   verbose(message: any, context?: string, loadTime?: number) {
-    const formatted = this.format(
-      LoggerType.DEV,
-      message,
-      context,
-      undefined,
-      loadTime,
-      LogLevel.TRACE,
+    console.trace(
+      this.format(
+        LoggerType.DEV,
+        message,
+        context,
+        undefined,
+        loadTime,
+        LogLevel.TRACE,
+      ),
     );
-    console.trace(formatted);
   }
 
   private format(
@@ -73,7 +79,7 @@ export class LoggerService implements NestLoggerService {
     context?: string,
     trace?: string,
     loadTime?: number,
-    level?: LogLevel, // <- added
+    level?: LogLevel,
   ): string {
     const timestamp = format(new Date(), 'MM/dd/yyyy, h:mm:ss a');
     const ctx = context ?? '';
@@ -86,9 +92,31 @@ export class LoggerService implements NestLoggerService {
     const deltaTime = now - this.lastLogTime;
     this.lastLogTime = now;
     const durationStr = ` +${deltaTime}ms`;
-    const logLevel =
-      level ?? (type === LoggerType.SYSTEM ? LogLevel.LOG : LogLevel.DEBUG);
-    const header = formatNestHeader(timestamp, logLevel, ctx, type);
+
+    const rawLevel = (level ?? LogLevel.LOG).toUpperCase();
+    let coloredLevel: string;
+    switch (rawLevel) {
+      case LogLevel.ERROR.toUpperCase():
+        coloredLevel = chalk.redBright(rawLevel);
+        break;
+      case LogLevel.WARN.toUpperCase():
+        coloredLevel = chalk.yellowBright(rawLevel);
+        break;
+      case LogLevel.DEBUG.toUpperCase():
+        coloredLevel = chalk.cyanBright(rawLevel);
+        break;
+      case LogLevel.TRACE.toUpperCase():
+        coloredLevel = chalk.magentaBright(rawLevel);
+        break;
+      case LogLevel.FATAL.toUpperCase():
+        coloredLevel = chalk.bgRed.whiteBright(rawLevel);
+        break;
+      default:
+        coloredLevel = chalk.greenBright(rawLevel);
+        break;
+    }
+
+    const header = formatNestHeader(timestamp, coloredLevel, ctx, type);
 
     return `${header} ${msg}${traceStr}${durationStr}`;
   }

@@ -4,6 +4,13 @@ import { ServiceUnavailableException, Logger } from '@nestjs/common';
  * Base class for services that can be toggled enabled/disabled.
  */
 export abstract class BaseToggleableService {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setEnabled(enabled: boolean) {
+    throw new Error('Method not implemented.');
+  }
+  getEnabled(): boolean {
+    throw new Error('Method not implemented.');
+  }
   protected readonly logger: Logger;
   protected readonly isEnabled: boolean;
 

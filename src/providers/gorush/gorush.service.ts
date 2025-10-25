@@ -24,12 +24,13 @@ import { AllConfigType } from '../../config/config.type';
 import { ApiFunction } from 'src/common/api-gateway/types/api-gateway.type';
 import { ApiGatewayService } from '../../common/api-gateway/api-gateway.service';
 import { parseMetrics } from './gorush.helper';
-import { stringifyJson } from '../../common/logger/logger.helper';
+
 import {
   mapPushNotificationRequest,
   mapPushNotificationResponse,
 } from './infrastructure/persistence/relational/mappers/gorush.mapper';
 import { BaseToggleableService } from 'src/common/base/base-toggleable.service';
+import { stringifyJson } from '../../common/logger/utils/logger.helper';
 
 @SerializeOptions({
   groups: ['admin'],
@@ -161,7 +162,12 @@ export class GorushService
 
     try {
       const mappedPayload = mapPushNotificationRequest(payload);
-      const response = await this.apiClient.sendPushNotification(mappedPayload);
+
+      // NEW: pass body using RequestInput
+      const response = await this.apiClient.sendPushNotification({
+        body: mappedPayload,
+      });
+
       const mappedResponse = mapPushNotificationResponse(response);
 
       this.logger.verbose(

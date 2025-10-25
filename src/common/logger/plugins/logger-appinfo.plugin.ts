@@ -1,5 +1,5 @@
 import { LoggerService } from '../logger.service';
-import { stringifyJson } from '../logger.helper';
+import { stringifyJson } from '../utils/logger.helper';
 
 export type LogLevel = 'log' | 'debug' | 'warn' | 'error' | 'verbose';
 
@@ -57,7 +57,9 @@ export function logAppSummary(
       break;
     case 'verbose':
       // if your LoggerService supports verbose
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (logger as any).verbose?.(line, context) ?? logger.log(line, context);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (logger as any).verbose?.(payload, context) ??
         logger.log(payload, context);
       break;

@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import './common/globals/runtime/app-info.global';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
@@ -18,20 +19,24 @@ import { LoggerService } from './common/logger/logger.service';
 import { LoggerExceptionFilter } from './common/logger/logger-exception.filter';
 import { SwaggerTagRegistry } from './common/api-docs/swagger-tag.registry';
 import { registerTestWebhookListeners } from './webhooks/register-test-webhooks';
-import { bootstrapSocketIoRedis } from './communication/socketio/adapters/socketio-redis.boostrap';
+// import { bootstrapSocketIoRedis } from './communication/socketio/adapters/socketio-redis.boostrap';
+import { StandardResponseInterceptor } from './utils/interceptors/message-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
     bufferLogs: true,
   });
-  const logger = app.get(LoggerService);
-  app.useLogger(logger);
-  app.useGlobalFilters(new LoggerExceptionFilter(app.get(LoggerService)));
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
   const rabbitMQService = app.get(RabbitMQService);
+
+  const logger = app.get(LoggerService);
+  app.useLogger(logger);
+  app.useGlobalFilters(
+    new LoggerExceptionFilter(app.get(LoggerService), configService),
+  );
 
   // Enable shutdown hooks (ensures close() is called)
   app.enableShutdownHooks();
@@ -48,14 +53,31 @@ async function bootstrap() {
   app.useGlobalInterceptors(
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
+    new StandardResponseInterceptor(),
   );
 
   const builder = new DocumentBuilder()
-    .setTitle('API')
+    .setTitle(APP.name)
     .setDescription(
       '![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) ![ReadTheDocs](https://img.shields.io/badge/Readthedocs-%23000000.svg?style=for-the-badge&logo=readthedocs&logoColor=white)',
     )
-    .setVersion('1.2.0')
+    .setLicense('MIT', 'https://opensource.org/license/mit/')
+    .setBasePath(
+      `/${configService.getOrThrow('app.apiPrefix', {
+        infer: true,
+      })}`,
+    )
+    .setExternalDoc(
+      'Documentation',
+      configService.get(
+        'app.docsUrl',
+        `http://localhost:${APP.port}/apps/docs`,
+        {
+          infer: true,
+        },
+      ),
+    )
+    .setVersion(APP.version)
     .addBearerAuth()
     .addGlobalParameters({
       in: 'header',

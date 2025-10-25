@@ -58,6 +58,7 @@ import { FireblocksNcwWalletsModule } from './fireblocks-ncw-wallets/fireblocks-
 import { WebhooksModule } from './webhooks/webhooks.module';
 import { CmcModule } from './providers/cmc/cmc.module';
 import cmcConfig from './providers/cmc/config/cmc-config';
+import { ProvidersModule } from './providers/providers.module';
 
 @Module({
   imports: [
@@ -128,6 +129,7 @@ import cmcConfig from './providers/cmc/config/cmc-config';
     LoggerModule,
     SocketIoModule,
     CmcModule,
+    ProvidersModule,
   ],
   providers: [RabbitMQService],
 })

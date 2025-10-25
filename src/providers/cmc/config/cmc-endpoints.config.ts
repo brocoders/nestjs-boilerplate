@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------------
+// CoinMarketCap Pro API endpoints
+
 import { ApiGatewayConfig } from 'src/common/api-gateway/api-gateway-config';
 import { HttpMethod } from 'src/common/api-gateway/types/api-gateway.enum';
 import {
@@ -7,29 +10,17 @@ import {
 } from '../cmc.helper';
 import { CmcCategory } from '../types/cmc-enum.type';
 import { CMC_ENV_TYPE } from '../types/cmc-const.type';
+import { unwrapData } from '../utils/cmc-helper';
 
-/**
- * CoinMarketCap Pro API endpoints (spot only).
- * Docs: https://coinmarketcap.com/api/documentation/v1/
- *
- * Notes:
- * - Pass header: 'X-CMC_PRO_API_KEY': <apiKey>
- * - We derive base URL and section versions from envType + env overrides.
- */
 export class CmcApiConfig extends ApiGatewayConfig {
   constructor() {
     const defaultBaseUrl = getCmcBaseUrl(CMC_ENV_TYPE);
 
-    super(defaultBaseUrl, {
-      // API key header can be set later via update()
-      Accept: 'application/json',
-    });
+    super(defaultBaseUrl, { Accept: 'application/json' });
     this.name = 'CMC';
 
-    // Resolve versions per section using default env type constant
     const envType = CMC_ENV_TYPE;
 
-    // Resolve versions per section (with env overrides)
     const vCrypto = getCmcSectionVersion(CmcCategory.CRYPTOCURRENCY, envType);
     const vGlobal = getCmcSectionVersion(CmcCategory.GLOBAL_METRICS, envType);
     const vExchange = getCmcSectionVersion(CmcCategory.EXCHANGE, envType);
@@ -38,123 +29,124 @@ export class CmcApiConfig extends ApiGatewayConfig {
     const vFiat = getCmcSectionVersion(CmcCategory.FIAT, envType);
     const vKey = getCmcSectionVersion(CmcCategory.KEY, envType);
 
+    // Small helper to always attach unwrapData
+    const add = (name: string, method: HttpMethod, path: string) => {
+      // Adjust the option key to what your ApiGatewayConfig expects:
+      // e.g. { mapResponse: unwrapData } or { after: unwrapData } or { transform: unwrapData }
+      this.addEndpoint(name, method, path, { mapResponse: unwrapData });
+    };
+
     // --- Cryptocurrency ----------------------------------------------------
     const cryptoBase = `/${vCrypto}${getCmcCategoryPath(CmcCategory.CRYPTOCURRENCY)}`;
-
-    this.addEndpoint('getCryptoMap', HttpMethod.GET, `${cryptoBase}/map`);
-    this.addEndpoint('getCryptoInfo', HttpMethod.GET, `${cryptoBase}/info`);
-
-    this.addEndpoint(
+    add('getCryptoMap', HttpMethod.GET, `${cryptoBase}/map`);
+    add('getCryptoInfo', HttpMethod.GET, `${cryptoBase}/info`);
+    add(
       'getCryptoListingsLatest',
       HttpMethod.GET,
       `${cryptoBase}/listings/latest`,
     );
-    this.addEndpoint(
+    add(
       'getCryptoListingsHistorical',
       HttpMethod.GET,
       `${cryptoBase}/listings/historical`,
     );
-
-    this.addEndpoint(
-      'getQuotesLatest',
-      HttpMethod.GET,
-      `${cryptoBase}/quotes/latest`,
-    );
-    this.addEndpoint(
+    add('getQuotesLatest', HttpMethod.GET, `${cryptoBase}/quotes/latest`);
+    add(
       'getQuotesHistorical',
       HttpMethod.GET,
       `${cryptoBase}/quotes/historical`,
     );
-
-    this.addEndpoint(
+    add(
       'getMarketPairsLatest',
       HttpMethod.GET,
       `${cryptoBase}/market-pairs/latest`,
     );
-
-    this.addEndpoint(
-      'getOhlcvLatest',
-      HttpMethod.GET,
-      `${cryptoBase}/ohlcv/latest`,
-    );
-    this.addEndpoint(
-      'getOhlcvHistorical',
-      HttpMethod.GET,
-      `${cryptoBase}/ohlcv/historical`,
-    );
-
-    this.addEndpoint(
+    add('getOhlcvLatest', HttpMethod.GET, `${cryptoBase}/ohlcv/latest`);
+    add('getOhlcvHistorical', HttpMethod.GET, `${cryptoBase}/ohlcv/historical`);
+    add(
       'getPricePerformanceStatsLatest',
       HttpMethod.GET,
       `${cryptoBase}/price-performance-stats/latest`,
     );
-
-    this.addEndpoint(
-      'getCategories',
-      HttpMethod.GET,
-      `${cryptoBase}/categories`,
-    );
-
-    this.addEndpoint('getCategory', HttpMethod.GET, `${cryptoBase}/category`);
-    this.addEndpoint('getAirdrops', HttpMethod.GET, `${cryptoBase}/airdrops`);
-    this.addEndpoint('getAirdrop', HttpMethod.GET, `${cryptoBase}/airdrop`);
-
-    this.addEndpoint(
-      'getTrendingLatest',
-      HttpMethod.GET,
-      `${cryptoBase}/trending/latest`,
-    );
-    this.addEndpoint(
+    add('getCategories', HttpMethod.GET, `${cryptoBase}/categories`);
+    add('getCategory', HttpMethod.GET, `${cryptoBase}/category`);
+    add('getAirdrops', HttpMethod.GET, `${cryptoBase}/airdrops`);
+    add('getAirdrop', HttpMethod.GET, `${cryptoBase}/airdrop`);
+    add('getTrendingLatest', HttpMethod.GET, `${cryptoBase}/trending/latest`);
+    add(
       'getTrendingMostVisited',
       HttpMethod.GET,
       `${cryptoBase}/trending/most-visited`,
     );
-    this.addEndpoint(
+    add(
       'getTrendingGainersLosers',
       HttpMethod.GET,
       `${cryptoBase}/trending/gainers-losers`,
     );
 
+    // ---- Explicit v2/v3 CRYPTO -------------------------------------------
+    add(
+      'getQuotesLatestV2',
+      HttpMethod.GET,
+      `/v2/cryptocurrency/quotes/latest`,
+    );
+    add(
+      'getQuotesHistoricalV2',
+      HttpMethod.GET,
+      `/v2/cryptocurrency/quotes/historical`,
+    );
+    add(
+      'getQuotesHistoricalV3',
+      HttpMethod.GET,
+      `/v3/cryptocurrency/quotes/historical`,
+    );
+    add(
+      'getMarketPairsLatestV2',
+      HttpMethod.GET,
+      `/v2/cryptocurrency/market-pairs/latest`,
+    );
+    add('getOhlcvLatestV2', HttpMethod.GET, `/v2/cryptocurrency/ohlcv/latest`);
+    add(
+      'getOhlcvHistoricalV2',
+      HttpMethod.GET,
+      `/v2/cryptocurrency/ohlcv/historical`,
+    );
+    add(
+      'getPricePerformanceStatsLatestV2',
+      HttpMethod.GET,
+      `/v2/cryptocurrency/price-performance-stats/latest`,
+    );
+
     // --- Exchange ----------------------------------------------------------
     const exchangeBase = `/${vExchange}${getCmcCategoryPath(CmcCategory.EXCHANGE)}`;
-
-    this.addEndpoint('getExchangeMap', HttpMethod.GET, `${exchangeBase}/map`);
-    this.addEndpoint('getExchangeInfo', HttpMethod.GET, `${exchangeBase}/info`);
-    this.addEndpoint(
+    add('getExchangeMap', HttpMethod.GET, `${exchangeBase}/map`);
+    add('getExchangeInfo', HttpMethod.GET, `${exchangeBase}/info`);
+    add(
       'getExchangeListingsLatest',
       HttpMethod.GET,
       `${exchangeBase}/listings/latest`,
     );
-    this.addEndpoint(
+    add(
       'getExchangeQuotesLatest',
       HttpMethod.GET,
       `${exchangeBase}/quotes/latest`,
     );
-    this.addEndpoint(
+    add(
       'getExchangeQuotesHistorical',
       HttpMethod.GET,
       `${exchangeBase}/quotes/historical`,
     );
-    this.addEndpoint(
+    add(
       'getExchangeMarketPairsLatest',
       HttpMethod.GET,
       `${exchangeBase}/market-pairs/latest`,
     );
-    this.addEndpoint(
-      'getExchangeAssets',
-      HttpMethod.GET,
-      `${exchangeBase}/assets`,
-    );
+    add('getExchangeAssets', HttpMethod.GET, `${exchangeBase}/assets`);
 
     // --- Global Metrics ----------------------------------------------------
     const globalBase = `/${vGlobal}${getCmcCategoryPath(CmcCategory.GLOBAL_METRICS)}`;
-
-    this.addEndpoint(
-      'getGlobalMetrics',
-      HttpMethod.GET,
-      `${globalBase}/quotes/latest`,
-    );
-    this.addEndpoint(
+    add('getGlobalMetrics', HttpMethod.GET, `${globalBase}/quotes/latest`);
+    add(
       'getGlobalMetricsHistorical',
       HttpMethod.GET,
       `${globalBase}/quotes/historical`,
@@ -162,18 +154,14 @@ export class CmcApiConfig extends ApiGatewayConfig {
 
     // --- Tools -------------------------------------------------------------
     const toolsBase = `/${vTools}${getCmcCategoryPath(CmcCategory.TOOLS)}`;
-
-    this.addEndpoint(
-      'priceConversion',
-      HttpMethod.GET,
-      `${toolsBase}/price-conversion`,
-    );
-    this.addEndpoint('postman', HttpMethod.GET, `${toolsBase}/postman`);
+    add('priceConversion', HttpMethod.GET, `${toolsBase}/price-conversion`);
+    add('postman', HttpMethod.GET, `${toolsBase}/postman`);
+    add('priceConversionV1', HttpMethod.GET, `/v1/tools/price-conversion`);
+    add('priceConversionV2', HttpMethod.GET, `/v2/tools/price-conversion`);
 
     // --- Blockchain --------------------------------------------------------
     const blockchainBase = `/${vBlockchain}${getCmcCategoryPath(CmcCategory.BLOCKCHAIN)}`;
-
-    this.addEndpoint(
+    add(
       'getBlockchainStatisticsLatest',
       HttpMethod.GET,
       `${blockchainBase}/statistics/latest`,
@@ -181,11 +169,32 @@ export class CmcApiConfig extends ApiGatewayConfig {
 
     // --- Fiat --------------------------------------------------------------
     const fiatBase = `/${vFiat}${getCmcCategoryPath(CmcCategory.FIAT)}`;
+    add('getFiatMap', HttpMethod.GET, `${fiatBase}/map`);
 
-    this.addEndpoint('getFiatMap', HttpMethod.GET, `${fiatBase}/map`);
-
-    // --- Key Info ---------------------------------------------------------
+    // --- Key Info ----------------------------------------------------------
     const keyBase = `/${vKey}${getCmcCategoryPath(CmcCategory.KEY)}`;
-    this.addEndpoint('getKeyInfo', HttpMethod.GET, `${keyBase}/info`);
+    add('getKeyInfo', HttpMethod.GET, `${keyBase}/info`);
+
+    // --- Fear & Greed (v3 explicit) ---------------------------------------
+    add('getFearAndGreedLatest', HttpMethod.GET, `/v3/fear-and-greed/latest`);
+    add(
+      'getFearAndGreedHistorical',
+      HttpMethod.GET,
+      `/v3/fear-and-greed/historical`,
+    );
+
+    // --- Indexes (v3 explicit) --------------------------------------------
+    add('getIndexCmc20Latest', HttpMethod.GET, `/v3/index/cmc20-latest`);
+    add(
+      'getIndexCmc20Historical',
+      HttpMethod.GET,
+      `/v3/index/cmc20-historical`,
+    );
+    add('getIndexCmc100Latest', HttpMethod.GET, `/v3/index/cmc100-latest`);
+    add(
+      'getIndexCmc100Historical',
+      HttpMethod.GET,
+      `/v3/index/cmc100-historical`,
+    );
   }
 }

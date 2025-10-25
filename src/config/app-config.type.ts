@@ -11,4 +11,5 @@ export type AppConfig = {
   fallbackLanguage: string;
   headerLanguage: string;
   monitorSampleMs: number;
+  docsUrl: string;
 };

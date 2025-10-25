@@ -30,13 +30,6 @@ export class HomeService {
     private configService: ConfigService<AllConfigType>,
     private loggerService: LoggerService,
   ) {
-    this._name =
-      this.configService.get('app.name', { infer: true }) ?? appPkg.name;
-    this._version =
-      this.configService.get('app.version', { infer: true }) ?? appPkg.version;
-    this._nodeEnv = this.configService.get('app.nodeEnv', 'development', {
-      infer: true,
-    });
     this._databaseType = this.configService.get('database.type', 'postgres', {
       infer: true,
     });
@@ -154,9 +147,9 @@ export class HomeService {
 
   appSummary() {
     return {
-      name: this._name,
-      version: this._version,
-      env: this._nodeEnv,
+      name: APP.name,
+      version: APP.version,
+      env: APP.nodeEnv,
       databaseType: this._databaseType,
       nodeVersion: this._nodeVersion,
       frameworkVersion: this._frameworkVersion,

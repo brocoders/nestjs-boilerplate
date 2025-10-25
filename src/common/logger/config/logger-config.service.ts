@@ -2,6 +2,8 @@ import { registerAs } from '@nestjs/config';
 import { IsString, IsBoolean, IsOptional } from 'class-validator';
 import { LoggerConfig } from './logger.config';
 import validateConfig from '../../../utils/validate-config';
+import { NodeEnv } from '../../../utils/types/gobal.type';
+
 
 class LoggerEnvironmentValidator {
   @IsOptional()
@@ -36,13 +38,13 @@ class LoggerEnvironmentValidator {
 export default registerAs<LoggerConfig>('logger', (): LoggerConfig => {
   validateConfig(process.env, LoggerEnvironmentValidator);
 
-  const nodeEnv = process.env.NODE_ENV || 'development';
+  const nodeEnv = process.env.NODE_ENV || NodeEnv.DEVELOPMENT;
   const levelFromEnv = process.env.LOG_LEVEL;
 
   const defaultLogLevel =
     levelFromEnv && levelFromEnv !== 'auto'
       ? levelFromEnv
-      : nodeEnv === 'production'
+      : nodeEnv === NodeEnv.PRODUCTION
         ? 'info'
         : 'debug';
 

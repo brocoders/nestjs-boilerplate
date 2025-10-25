@@ -12,8 +12,6 @@ import { GorushService } from './gorush.service';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { ServiceEnabledGuard } from 'src/common/guards/service-enabled.guard';
-import { SetMetadata } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -41,11 +39,17 @@ import {
   GoRushVersionResponseDto,
 } from './dto/gorush-info.dto';
 import { GORUSH_SDK_VERSION } from './types/gorush-const.type';
+import { EnableGuard } from 'src/common/guards/service-enabled.guard';
+import {
+  RequireEnabled,
+  RequireServiceReady,
+} from 'src/utils/decorators/service-toggleable.decorators';
 
+@UseGuards(AuthGuard('jwt'), RolesGuard, EnableGuard)
+@RequireEnabled('gorush.enable') // config-based toggle
+@RequireServiceReady(GorushService) // service readiness check
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard, ServiceEnabledGuard)
-@SetMetadata('configPath', 'gorush.enable')
 @ApiTags('GoRush')
 @Controller({
   path: 'gorush',

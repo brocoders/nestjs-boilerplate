@@ -64,7 +64,3 @@ export interface FeedOptions {
   verboseLifecycleLogs?: boolean; // Emit lifecycle logs to admins
   channelDomain?: string; // Event domain segment (e.g. "market", "news")
 }
-
-import { Injectable } from '@nestjs/common';
-import { LoggerService } from '../../../common/logger/logger.service';
-import { SocketServerProvider } from '../utils/socketio.provider';

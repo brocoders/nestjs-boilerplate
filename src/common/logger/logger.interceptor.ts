@@ -9,6 +9,10 @@ import { LoggerService } from './logger.service';
 import { Request, Response } from 'express';
 import { LoggerPlugin } from './plugins/logger-http.plugin';
 import { LoggerType } from './types/logger-enum.type';
+import {
+  getReadableClientIpSync,
+  getClientAgentName,
+} from 'src/utils/helpers/ip-agent.helper';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
@@ -16,6 +20,7 @@ export class LoggerInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const start = Date.now();
+
     return next.handle().pipe(
       tap(() => {
         const ctx = context.switchToHttp();
@@ -24,21 +29,32 @@ export class LoggerInterceptor implements NestInterceptor {
         const handlerName = handler?.name ?? 'anonymous';
         const request = ctx.getRequest<Request>();
         const response = ctx.getResponse<Response>();
-        const user = request.user as any;
+
+        const user = (request as any).user as any;
         const userId = user?.id ?? 'anonymous';
         const role = user?.role?.name ?? 'guest';
-        const log = LoggerPlugin.formatHttpLogContext(
-          `${className}::${handlerName}`,
-          request.method ?? '',
-          response.statusCode ?? 0,
-          request.url ?? '',
-          request.ip ?? '',
-          userId,
-          role,
-          response?.statusMessage ?? 'Unknown Message',
-          Date.now() - start,
+
+        const ip = getReadableClientIpSync(request);
+        const agent = getClientAgentName(request);
+
+        const duration = Date.now() - start;
+        const statusCode = response.statusCode ?? 0;
+
+        // We pass parameters in the desired order:
+        const line = LoggerPlugin.formatHttpLogContext(
+          `${className}::${handlerName}`, // source
+          request.method ?? '', // method
+          statusCode, // statusCode
+          request.url ?? '', // url
+          role, // role
+          userId, // userId
+          ip, // ip
+          agent, // agent
+          response?.statusMessage ?? '', // message
+          duration, // duration
         );
-        this.logger.debug(log, LoggerType.HTTP);
+
+        this.logger.log(line, LoggerType.HTTP);
       }),
     );
   }

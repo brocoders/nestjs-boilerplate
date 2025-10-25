@@ -36,15 +36,20 @@ import {
   ListBucketsResponseDto,
 } from './dto/response.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ServiceEnabledGuard } from 'src/common/guards/service-enabled.guard';
-import { SetMetadata } from '@nestjs/common';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { DownloadFileDto } from './dto/download-file.dto';
 import { DeleteFileDto } from './dto/delete-file.dto';
 import { ListFilesDto } from './dto/list-files.dto';
+import {
+  RequireEnabled,
+  RequireServiceReady,
+} from 'src/utils/decorators/service-toggleable.decorators';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { EnableGuard } from 'src/common/guards/service-enabled.guard';
 
-@UseGuards(AuthGuard('jwt'), ServiceEnabledGuard)
-@SetMetadata('configPath', 'minIO.enable')
+@UseGuards(AuthGuard('jwt'), RolesGuard, EnableGuard)
+@RequireEnabled('minIO.enable') // config-based toggle
+@RequireServiceReady(MinioService) // service readiness check
 @ApiTags('MinIO')
 @ApiBearerAuth()
 @Controller('minio')

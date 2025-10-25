@@ -13,10 +13,10 @@ export enum LoggerScope {
 }
 
 export enum LogLevel {
-  FATAL = 'FATAL',
-  ERROR = 'ERROR',
-  WARN = 'WARN',
-  LOG = 'LOG',
-  DEBUG = 'DEBUG',
-  TRACE = 'TRACE',
+  FATAL = 'fatal',
+  ERROR = 'error',
+  WARN = 'warn',
+  LOG = 'log',
+  DEBUG = 'debug',
+  TRACE = 'trace',
 }
