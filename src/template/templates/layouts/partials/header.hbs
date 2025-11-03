@@ -1,0 +1,36 @@
+<header>
+  <div class="header-container">
+    <a href="/" class="logo">
+      <img id="logo-img" src="/themes/default/img/gelap.png" alt="Logo svt">
+      <h1>{{name}}</h1>
+    </a>
+
+    {{> nav-grid }}
+
+    <div class="theme-toggle">
+      <button onclick="setTheme('light')">Light</button>
+      <button onclick="setTheme('dark')">Dark</button>
+    </div>
+
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  </div>
+   <script>
+    function toggleMenu() {
+      const nav = document.getElementById('nav-menu');
+      nav.classList.toggle('show');
+    }
+
+    function setTheme(mode) {
+    const themeLink = document.getElementById('theme-style');
+    const logoImg = document.getElementById('logo-img');
+
+    themeLink.href = `/themes/default/partials/${mode}-theme.css`;
+
+    if (mode === 'dark') {
+      logoImg.src = '/themes/default/img/gelap.png';
+    } else {
+      logoImg.src = '/themes/default/img/terang.png';
+    }
+  }
+  </script>
+</header>

@@ -1,0 +1,81 @@
+{{> header }}
+
+<section class="hero hero-company" id="hero">
+  <div class="hero-content">
+    <img src="/themes/default/img/gelap.png" alt="ChoreCorp Logo" class="hero-logo" />
+    <h1><span class="white">Chore</span><span class="yellow">Corp.</span></h1>
+    <p class="tagline">COMPANY PROFILE PRESENTATION</p>
+    <a href="#about-section" class="btn primary">Pelajari lebih lanjut</a>
+  </div>
+</section>
+
+<section class="about-section" id="about-section">
+  <div class="about-card">
+    <div class="about-text">
+      <h2>Tentang Kami</h2>
+      <p>Far Company adalah tim kreatif yang fokus pada solusi digital, pengembangan teknologi, dan strategi bisnis. Kami percaya bahwa inovasi dimulai dari kolaborasi yang kuat dan visi yang jelas.</p>
+    </div>
+    <div class="about-image">
+      <img src="/themes/default/img/opening-real.jpeg" alt="Foto Perusahaan">
+    </div>
+  </div>
+</section>
+
+<section class="struktur-section" id="struktur-section">
+  <h2>Struktur Organisasi</h2>
+  <div class="card-container">
+    {{#each strukturOrganisasi}}
+      <div class="card">
+        {{#if image}}
+          <img src="{{image}}" alt="{{title}}" class="card-img">
+        {{/if}}
+        <div class="card-body">
+          <h3>{{title}}</h3>
+          <p>{{description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+<section class="produk-section" id="produk-section">
+  <h2>Produk dan Layanan</h2>
+  {{> produkCards produkList }}
+</section>
+
+<section class="feature-section" id="feature-section">
+  <h2>Fitur Unggulan</h2>
+  <div class="feature-grid">
+    {{#each fiturList}}
+      <div class="card">
+        <div class="card-body">
+          <h3>{{title}}</h3>
+          <p>{{description}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+<section class="pricing-section" id="pricing-section">
+  <h2>Paket Harga</h2>
+  <div class="pricing-grid">
+    {{#each pricingList}}
+      <div class="card">
+        <div class="card-body">
+          <h3>{{title}}</h3>
+          <p class="price">{{price}}</p>
+          <ul>
+            {{#each features}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+          <button>Beli Sekarang</button>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+
+{{> footer }}

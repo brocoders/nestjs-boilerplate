@@ -27,6 +27,12 @@ import { MailerModule } from './mailer/mailer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
+import { FrontendController } from './frontend/frontend.controller';
+import { ProductsModule } from './products/products.module';
+import { OrganizationMembersModule } from './organization-members/organization-members.module';
+import { FeaturesModule } from './features/features.module';
+import { PricingsModule } from './pricings/pricings.module';
+import { CompanyProfileModule } from './company-profile/company-profile.module';
 
 // <database-block>
 const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
@@ -43,6 +49,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
 // </database-block>
 
 @Module({
+  controllers: [FrontendController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -92,6 +99,11 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     MailModule,
     MailerModule,
     HomeModule,
+    ProductsModule,
+    OrganizationMembersModule,
+    FeaturesModule,
+    PricingsModule,
+    CompanyProfileModule,
   ],
 })
 export class AppModule {}
