@@ -2,11 +2,23 @@
  * The app's standard HTTP envelope.
  * All providers should end up normalized to this shape.
  */
+export interface ProviderErrorResponse {
+  providerCode?: number | string;
+  providerMessage?: string;
+  hint?: string;
+  rateLimit?: {
+    perMinute?: number;
+    remaining?: number;
+    resetAt?: string;
+  };
+  details?: unknown;
+}
+
 export interface AppEnvelope<T = any> {
   statusCode: number; // HttpStatus code
   success: boolean;
   message?: string | null;
-  error?: { code?: string | number; details?: unknown } | null;
+  error?: ProviderErrorResponse | null;
   data?: T | null;
   hasNextPage?: boolean;
 }

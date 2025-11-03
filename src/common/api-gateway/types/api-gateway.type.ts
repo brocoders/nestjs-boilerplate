@@ -63,3 +63,17 @@ export type AnyApiGatewayConfig = {
   headers?: Record<string, string>;
   endpoints: EndpointDefinition[];
 };
+
+
+//TODO: apply to all provider responses in the api-gateway module
+export type ProviderErrorResponse = {
+  providerCode?: number | string;
+  providerMessage?: string;
+  hint?: string;
+  rateLimit?: {
+    perMinute?: number;
+    remaining?: number;
+    resetAt?: string;
+  };
+  details?: unknown; // <-- free slot for provider-specific extras (reason, constraints, etc.)
+};

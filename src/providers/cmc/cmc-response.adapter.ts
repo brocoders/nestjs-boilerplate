@@ -1,3 +1,5 @@
+//BUGFIX: Response adapter was not handling non-200 CMC error codes correctly
+
 import { TypeMessage } from '../../utils/types/message.type';
 import { Injectable, HttpStatus } from '@nestjs/common';
 import {
@@ -6,6 +8,7 @@ import {
   AdapterContext,
 } from '../../common/api-gateway/response/interfaces/provider-response.interface';
 import { CmcEnvelope, CmcStatus } from './types/cmc-base.type';
+import { ProviderErrorResponse } from '../../common/api-gateway/types/api-gateway.type';
 
 /**
  * CMC Response Adapter
@@ -83,6 +86,54 @@ export class CmcResponseAdapter
     return undefined;
   }
 
+  private extractRateLimit(
+    e: any,
+  ): { perMinute?: number; remaining?: number; resetAt?: string } | undefined {
+    const h = e?.response?.headers;
+    if (!h || typeof h !== 'object') return undefined;
+
+    const getNum = (v: any) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : undefined;
+    };
+
+    // Common CMC headers (case-insensitive)
+    const perMinute =
+      getNum(h['x-ratelimit-limit-minute']) ??
+      getNum(h['x-rate-limit-minute']) ??
+      getNum(h['x-ratelimit-minute']);
+
+    const remaining =
+      getNum(h['x-ratelimit-remaining-minute']) ??
+      getNum(h['x-rate-limit-remaining-minute']) ??
+      getNum(h['x-ratelimit-remaining']);
+
+    // Reset can be a unix ts or ISO string depending on proxy/CDN
+    const resetHeader =
+      h['x-ratelimit-reset'] ??
+      h['x-rate-limit-reset'] ??
+      h['ratelimit-reset'] ??
+      undefined;
+
+    let resetAt: string | undefined = undefined;
+    if (typeof resetHeader === 'string' || typeof resetHeader === 'number') {
+      const ts = Number(resetHeader);
+      if (Number.isFinite(ts) && ts > 0) {
+        // seconds or ms — normalize to ms if it looks like seconds
+        const ms = ts < 10_000_000_000 ? ts * 1000 : ts;
+        resetAt = new Date(ms).toISOString();
+      } else {
+        const d = new Date(resetHeader);
+        if (!Number.isNaN(d.getTime())) resetAt = d.toISOString();
+      }
+    }
+
+    if (perMinute ?? remaining ?? resetAt) {
+      return { perMinute, remaining, resetAt };
+    }
+    return undefined;
+  }
+
   toSuccess(raw: CmcEnvelope, ctx?: AdapterContext): AppEnvelope {
     // Defensive: if CMC sent a non-zero error_code, route through error handler
     const s = raw?.status as CmcStatus;
@@ -138,19 +189,21 @@ export class CmcResponseAdapter
 
     const message = TypeMessage.getMessageByStatus(status);
 
+    const errorBody: ProviderErrorResponse = {
+      providerCode: providerCode ?? status,
+      providerMessage:
+        (typeof s?.error_message === 'string' ? s.error_message : undefined) ??
+        (typeof e?.message === 'string' ? e.message : undefined),
+      hint: undefined,
+      rateLimit: this.extractRateLimit(e),
+      details: { status: s, raw: providerEnvelope ?? e, ctx },
+    };
+
     return {
       statusCode: status,
       success: false,
       message,
-      error: {
-        code: providerCode ?? status,
-        details: {
-          provider: this.provider,
-          ctx,
-          status: s,
-          raw: providerEnvelope ?? e,
-        },
-      },
+      error: errorBody,
       data: null,
       hasNextPage: false,
     };
