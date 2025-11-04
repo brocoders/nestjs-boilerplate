@@ -1,0 +1,32 @@
+name: Sync master → private repo
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out latest public main
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Rewrite commit author and remote info to hide origin
+      - name: Prepare anonymous mirror
+        run: |
+          git config user.name  "build-sync"
+          git config user.email "build-sync@users.noreply.github.com"
+          git remote remove origin
+          git remote add target https://x-access-token:${{secrets.PRIVATE_VERO_REPO_TOKEN}}@github.com/<org-or-user>/<private-repo>.git
+
+      # 3. Push as plain code snapshot
+      - name: Push to private repository
+        run: |
+          # Create a detached copy of main tree as a new commit
+          git switch --detach
+          SNAPSHOT_BRANCH="sync-$(date +%Y%m%d%H%M%S)"
+          git checkout -b "$SNAPSHOT_BRANCH"
+          git commit --allow-empty -m "Automated build sync"
+          git push --force-with-lease target HEAD:refs/heads/main
