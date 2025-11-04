@@ -1,4 +1,4 @@
-name: Sync master → private repo
+name: sync-private-repo
 on:
   push:
     branches: [main]
