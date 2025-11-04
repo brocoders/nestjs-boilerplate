@@ -64,7 +64,6 @@ export type AnyApiGatewayConfig = {
   endpoints: EndpointDefinition[];
 };
 
-
 //TODO: apply to all provider responses in the api-gateway module
 export type ProviderErrorResponse = {
   providerCode?: number | string;

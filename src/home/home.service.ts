@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '../common/logger/logger.service';
 import nestPkg from '@nestjs/core/package.json';
-import appPkg from '../../package.json';
 import { AllConfigType } from '../config/config.type';
 import { getHumanReadableOSName } from '../utils/helpers/os.helper';
 import { LoggerAppPlugin } from '../common/logger/plugins/logger-appinfo.plugin';

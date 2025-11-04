@@ -4,7 +4,6 @@ import { LoggerConfig } from './logger.config';
 import validateConfig from '../../../utils/validate-config';
 import { NodeEnv } from '../../../utils/types/gobal.type';
 
-
 class LoggerEnvironmentValidator {
   @IsOptional()
   @IsString()

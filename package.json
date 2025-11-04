@@ -34,7 +34,6 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "test:e2e:relational:docker": "docker compose -f docker-compose.relational.test.yaml --env-file env-example-relational -p tests up -d --build && docker compose -f docker-compose.relational.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3000 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.relational.test.yaml -p tests down && docker compose -p tests rm -svf",
-    "prepare": "is-ci || husky",
     "release": "release-it",
     "generate:secret-key": "ts-node -r tsconfig-paths/register ./src/utils/scripts/generator.script.ts secret",
     "generate:password": "ts-node -r tsconfig-paths/register ./src/utils/scripts/generator.script.ts password",
@@ -53,7 +52,8 @@
     "git:rebase:main": "git fetch origin main && git rebase origin/main",
     "git:rebase:continue": "git rebase --continue",
     "commands": "npx ntl",
-    "app:kill": "sudo kill -9 $(sudo lsof -t -i:3000)"
+    "app:kill": "sudo kill -9 $(sudo lsof -t -i:3000)",
+    "postinstall": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.758.0",
@@ -118,8 +118,8 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.8.1",
-    "@commitlint/config-conventional": "19.8.1",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.20.0",
     "@nestjs/cli": "11.0.7",
@@ -147,10 +147,11 @@
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.2.6",
     "globals": "^16.0.0",
-    "husky": "9.1.7",
+    "husky": "^9.1.7",
     "hygen": "6.2.11",
     "is-ci": "4.1.0",
     "jest": "29.7.0",
+    "lint-staged": "^16.2.6",
     "ntl": "^5.1.0",
     "prettier": "3.5.3",
     "prompts": "2.4.2",
@@ -243,6 +244,11 @@
           ]
         }
       }
+    }
+  },
+  "lint-staged": {
+    "*": {
+      "{ts,js}": "[\"eslint --fix\",\"prettier -w\"]"
     }
   }
 }
