@@ -1,0 +1,20 @@
+name: behind-main
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: git fetch origin main
+      - name: Fail if PR branch is behind main
+        run: |
+          BASE=$(git merge-base HEAD origin/main)
+          BEHIND=$(git rev-list --left-right --count ${BASE}...origin/main | awk '{print $2}')
+          if [ "$BEHIND" -gt 0 ]; then
+            echo "::error title=Out of date with main::Rebase/merge origin/main, then push."
+            exit 1
+          fi
