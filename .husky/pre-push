@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+git fetch origin main >/dev/null 2>&1
+
+BASE=$(git merge-base HEAD origin/main)
+BEHIND=$(git rev-list --left-right --count ${BASE}...origin/main | awk '{print $2}')
+
+if [ "$BEHIND" -gt 0 ]; then
+  echo "Your branch is $BEHIND commit(s) behind main."
+  echo "Please update your branch before pushing:"
+  echo "  git pull --rebase origin main"
+  echo "  # or"
+  echo "  git merge origin/main"
+  exit 1
+fi
