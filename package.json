@@ -247,8 +247,9 @@
     }
   },
   "lint-staged": {
-    "*": {
-      "{ts,js}": "[\"eslint --fix\",\"prettier -w\"]"
-    }
+    "\"*.{ts,js}\"": [
+      "\"eslint --fix\"",
+      "\"prettier -w\""
+    ]
   }
 }
