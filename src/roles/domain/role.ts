@@ -1,13 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
-import databaseConfig from '../../database/config/database.config';
-import { DatabaseConfig } from '../../database/config/database-config.type';
 
-// <database-block>
-const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
-  ? String
-  : Number;
-// </database-block>
+const idType = Number;
 
 export class Role {
   @Allow()
