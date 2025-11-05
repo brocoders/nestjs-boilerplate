@@ -4,7 +4,6 @@
 export type { AppConfig as AppInfo } from '../../../config/app-config.type';
 
 declare global {
-  // eslint-disable-next-line no-var
   var APP: Readonly<import('../../../config/app-config.type').AppConfig>;
 }
 

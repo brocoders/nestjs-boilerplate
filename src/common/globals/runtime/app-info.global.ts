@@ -30,7 +30,6 @@ const frozen = Object.freeze(
 
 // Declare a global variable once
 declare global {
-  // eslint-disable-next-line no-var
   var APP: Readonly<AppConfig>;
 }
 
