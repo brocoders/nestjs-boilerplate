@@ -13,13 +13,13 @@ type HardwareSnapshot = ReturnType<HomeService['computeHardwareSnapshot']>;
 
 @Injectable()
 export class HomeService {
+  //TODO: write dto for app info
   private readonly _name: string;
   private readonly _version: string;
   private readonly _nodeEnv: string;
   private readonly _databaseType: string;
   private readonly _nodeVersion: string;
   private readonly _frameworkVersion: string;
-
   private readonly _sampleMs: number;
   private _osSnapshot: OsSnapshot | null = null;
   private _hwSnapshot: HardwareSnapshot | null = null;
