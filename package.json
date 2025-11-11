@@ -100,7 +100,7 @@
     "@swc/cli": "0.7.8",
     "@swc/core": "1.13.4",
     "@types/bcryptjs": "3.0.0",
-    "@types/express": "5.0.3",
+    "@types/express": "5.0.5",
     "@types/jest": "30.0.0",
     "@types/ms": "2.1.0",
     "@types/multer": "2.0.0",
