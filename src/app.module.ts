@@ -27,6 +27,9 @@ import { MailerModule } from './mailer/mailer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
+import { LogsFilter } from './error-logs/logs.filter';
+import { APP_FILTER } from '@nestjs/core';
+import { LogsModule } from './error-logs/logs.module';
 
 // <database-block>
 const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
@@ -91,7 +94,14 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     SessionModule,
     MailModule,
     MailerModule,
+    LogsModule,
     HomeModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: LogsFilter,
+    },
   ],
 })
 export class AppModule {}
