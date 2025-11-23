@@ -82,6 +82,17 @@ export class UsersRelationalRepository implements UserRepository {
 
     return entity ? UserMapper.toDomain(entity) : null;
   }
+  
+  async findByEmailIncludingDeleted(email: User['email']): Promise<NullableType<User>> {
+    if (!email) return null;
+
+    const entity = await this.usersRepository.findOne({
+      withDeleted: true,
+      where: { email },
+    });
+
+    return entity ? UserMapper.toDomain(entity) : null;
+  }
 
   async findBySocialIdAndProvider({
     socialId,
@@ -122,5 +133,13 @@ export class UsersRelationalRepository implements UserRepository {
 
   async remove(id: User['id']): Promise<void> {
     await this.usersRepository.softDelete(id);
+  }
+  
+  async removePermanently(id: User['id']): Promise<void> {
+    await this.usersRepository.delete(id);
+  }
+
+  async restore(id: User['id']): Promise<void> {
+    await this.usersRepository.restore(id);
   }
 }
