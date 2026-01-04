@@ -3,7 +3,7 @@ import { NullableType } from '../../../../../utils/types/nullable.type';
 import { SessionRepository } from '../../session.repository';
 import { Session } from '../../../../domain/session';
 import { SessionSchemaClass } from '../entities/session.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SessionMapper } from '../mappers/session.mapper';
 import { User } from '../../../../../users/domain/user';
@@ -61,7 +61,9 @@ export class SessionDocumentRepository implements SessionRepository {
   }
 
   async deleteByUserId({ userId }: { userId: User['id'] }): Promise<void> {
-    await this.sessionModel.deleteMany({ user: userId.toString() });
+    await this.sessionModel.deleteMany({
+      user: new Types.ObjectId(userId.toString()),
+    });
   }
 
   async deleteByUserIdWithExclude({
@@ -71,10 +73,9 @@ export class SessionDocumentRepository implements SessionRepository {
     userId: User['id'];
     excludeSessionId: Session['id'];
   }): Promise<void> {
-    const transformedCriteria = {
-      user: userId.toString(),
-      _id: { $not: { $eq: excludeSessionId.toString() } },
-    };
-    await this.sessionModel.deleteMany(transformedCriteria);
+    await this.sessionModel.deleteMany({
+      user: new Types.ObjectId(userId.toString()),
+      _id: { $ne: excludeSessionId.toString() },
+    });
   }
 }
