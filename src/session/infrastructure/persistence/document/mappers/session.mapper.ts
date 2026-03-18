@@ -1,5 +1,4 @@
-import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
-import { UserMapper } from '../../../../../users/infrastructure/persistence/document/mappers/user.mapper';
+import { User } from '../../../../../users/domain/user';
 import { Session } from '../../../../domain/session';
 import { SessionSchemaClass } from '../entities/session.schema';
 
@@ -9,7 +8,9 @@ export class SessionMapper {
     domainEntity.id = raw._id.toString();
 
     if (raw.user) {
-      domainEntity.user = UserMapper.toDomain(raw.user);
+      const user = new User();
+      user.id = raw.user.toString();
+      domainEntity.user = user;
     }
 
     domainEntity.hash = raw.hash;
@@ -18,14 +19,13 @@ export class SessionMapper {
     domainEntity.deletedAt = raw.deletedAt;
     return domainEntity;
   }
+
   static toPersistence(domainEntity: Session): SessionSchemaClass {
-    const persistenceSchema = new UserSchemaClass();
-    persistenceSchema._id = domainEntity.user.id.toString();
     const sessionEntity = new SessionSchemaClass();
     if (domainEntity.id && typeof domainEntity.id === 'string') {
       sessionEntity._id = domainEntity.id;
     }
-    sessionEntity.user = persistenceSchema;
+    sessionEntity.user = domainEntity.user.id.toString();
     sessionEntity.hash = domainEntity.hash;
     sessionEntity.createdAt = domainEntity.createdAt;
     sessionEntity.updatedAt = domainEntity.updatedAt;

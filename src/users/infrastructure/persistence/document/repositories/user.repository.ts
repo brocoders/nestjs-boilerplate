@@ -6,7 +6,7 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { QueryFilter, Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
@@ -33,7 +33,7 @@ export class UsersDocumentRepository implements UserRepository {
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<User[]> {
-    const where: FilterQuery<UserSchemaClass> = {};
+    const where: QueryFilter<UserSchemaClass> = {};
     if (filterOptions?.roles?.length) {
       where['role._id'] = {
         $in: filterOptions.roles.map((role) => role.id.toString()),
@@ -64,7 +64,9 @@ export class UsersDocumentRepository implements UserRepository {
   }
 
   async findByIds(ids: User['id'][]): Promise<User[]> {
-    const userObjects = await this.usersModel.find({ _id: { $in: ids } });
+    const userObjects = await this.usersModel.find({
+      _id: { $in: ids.map((id) => id.toString()) },
+    });
     return userObjects.map((userObject) => UserMapper.toDomain(userObject));
   }
 
