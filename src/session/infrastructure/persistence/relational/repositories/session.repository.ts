@@ -60,6 +60,28 @@ export class SessionRelationalRepository implements SessionRepository {
     return SessionMapper.toDomain(updatedEntity);
   }
 
+  async updateByHash(
+    conditions: { id: Session['id']; hash: Session['hash'] },
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null> {
+    const result = await this.sessionRepository.update(
+      { id: Number(conditions.id), hash: conditions.hash },
+      { hash: payload.hash },
+    );
+
+    if (!result.affected) {
+      return null;
+    }
+
+    const entity = await this.sessionRepository.findOne({
+      where: { id: Number(conditions.id) },
+    });
+
+    return entity ? SessionMapper.toDomain(entity) : null;
+  }
+
   async deleteById(id: Session['id']): Promise<void> {
     await this.sessionRepository.softDelete({
       id: Number(id),

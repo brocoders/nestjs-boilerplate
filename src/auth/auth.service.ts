@@ -495,30 +495,25 @@ export class AuthService {
   async refreshToken(
     data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
   ): Promise<Omit<LoginResponseDto, 'user'>> {
-    const session = await this.sessionService.findById(data.sessionId);
-
-    if (!session) {
-      throw new UnauthorizedException();
-    }
-
-    if (session.hash !== data.hash) {
-      throw new UnauthorizedException();
-    }
-
     const hash = crypto
       .createHash('sha256')
       .update(randomStringGenerator())
       .digest('hex');
+
+    const session = await this.sessionService.updateByHash(
+      { id: data.sessionId, hash: data.hash },
+      { hash },
+    );
+
+    if (!session) {
+      throw new UnauthorizedException();
+    }
 
     const user = await this.usersService.findById(session.user.id);
 
     if (!user?.role) {
       throw new UnauthorizedException();
     }
-
-    await this.sessionService.update(session.id, {
-      hash,
-    });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: session.user.id,
