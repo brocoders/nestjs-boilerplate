@@ -54,7 +54,7 @@
     "@aws-sdk/s3-request-presigner": "3.1011.0",
     "@nestjs/common": "11.1.17",
     "@nestjs/config": "4.0.3",
-    "@nestjs/core": "11.1.17",
+    "@nestjs/core": "11.1.18",
     "@nestjs/jwt": "11.0.2",
     "@nestjs/mongoose": "11.0.4",
     "@nestjs/passport": "11.0.5",
