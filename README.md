@@ -46,6 +46,7 @@ Belongs to the [bc boilerplates](https://bcboilerplates.com/) ecosystem
 - [x] E2E and units tests.
 - [x] Docker.
 - [x] CI (Github Actions).
+- [x] Static analysis. Support [nestjs-doctor](https://github.com/RoloBits/nestjs-doctor).
 
 ## Contributors
 
