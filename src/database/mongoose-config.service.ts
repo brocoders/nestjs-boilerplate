@@ -9,7 +9,7 @@ import mongooseAutoPopulate from 'mongoose-autopopulate';
 
 @Injectable()
 export class MongooseConfigService implements MongooseOptionsFactory {
-  constructor(private configService: ConfigService<AllConfigType>) {}
+  constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   createMongooseOptions(): MongooseModuleOptions {
     return {

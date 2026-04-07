@@ -13,7 +13,7 @@ import { NullableType } from '../../../../../utils/types/nullable.type';
 export class FileDocumentRepository implements FileRepository {
   constructor(
     @InjectModel(FileSchemaClass.name)
-    private fileModel: Model<FileSchemaClass>,
+    private readonly fileModel: Model<FileSchemaClass>,
   ) {}
 
   async create(data: Omit<FileType, 'id'>): Promise<FileType> {
