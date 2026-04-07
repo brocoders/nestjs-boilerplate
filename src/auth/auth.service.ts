@@ -32,11 +32,11 @@ import { User } from '../users/domain/user';
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    private usersService: UsersService,
-    private sessionService: SessionService,
-    private mailService: MailService,
-    private configService: ConfigService<AllConfigType>,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly sessionService: SessionService,
+    private readonly mailService: MailService,
+    private readonly configService: ConfigService<AllConfigType>,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {

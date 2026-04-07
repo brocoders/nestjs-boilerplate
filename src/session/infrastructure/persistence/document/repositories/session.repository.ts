@@ -12,7 +12,7 @@ import { User } from '../../../../../users/domain/user';
 export class SessionDocumentRepository implements SessionRepository {
   constructor(
     @InjectModel(SessionSchemaClass.name)
-    private sessionModel: Model<SessionSchemaClass>,
+    private readonly sessionModel: Model<SessionSchemaClass>,
   ) {}
 
   async findById(id: Session['id']): Promise<NullableType<Session>> {

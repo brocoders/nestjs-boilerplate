@@ -11,7 +11,7 @@ export class AuthFacebookService {
   private readonly baseUrl = 'https://graph.facebook.com';
   private readonly apiVersion = 'v23.0';
 
-  constructor(private configService: ConfigService<AllConfigType>) {}
+  constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   /**
    * Retrieves a Facebook user profile using the provided access token.

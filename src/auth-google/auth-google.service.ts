@@ -13,7 +13,7 @@ import { AllConfigType } from '../config/config.type';
 export class AuthGoogleService {
   private google: OAuth2Client;
 
-  constructor(private configService: ConfigService<AllConfigType>) {
+  constructor(private readonly configService: ConfigService<AllConfigType>) {
     this.google = new OAuth2Client(
       configService.get('google.clientId', { infer: true }),
       configService.get('google.clientSecret', { infer: true }),
