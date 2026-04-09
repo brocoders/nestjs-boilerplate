@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.9-alpine
+    image: postgres:18.3-alpine
     ports:
       - ${DATABASE_PORT}:5432
     volumes:
