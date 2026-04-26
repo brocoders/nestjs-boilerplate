@@ -26,6 +26,7 @@ import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
 import { RedisModule } from './redis/redis.module';
+import { LocalesModule } from './locales/locales.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -86,6 +87,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     MailerModule,
     HomeModule,
     RedisModule,
+    LocalesModule,
   ],
 })
 export class AppModule {}

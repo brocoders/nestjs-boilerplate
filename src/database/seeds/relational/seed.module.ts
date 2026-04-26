@@ -7,6 +7,7 @@ import { TypeOrmConfigService } from '../../typeorm-config.service';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
+import { LocaleSeedModule } from './locale/locale-seed.module';
 import databaseConfig from '../../config/database.config';
 import appConfig from '../../../config/app.config';
 
@@ -15,6 +16,7 @@ import appConfig from '../../../config/app.config';
     RoleSeedModule,
     StatusSeedModule,
     UserSeedModule,
+    LocaleSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
