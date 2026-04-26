@@ -33,7 +33,7 @@ Belongs to the [bc boilerplates](https://bcboilerplates.com/) ecosystem
 
 ## Features
 
-- [x] Database. Support [TypeORM](https://www.npmjs.com/package/typeorm) and [Mongoose](https://www.npmjs.com/package/mongoose).
+- [x] Database: [TypeORM](https://www.npmjs.com/package/typeorm) with PostgreSQL.
 - [x] Seeding.
 - [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
 - [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer)).

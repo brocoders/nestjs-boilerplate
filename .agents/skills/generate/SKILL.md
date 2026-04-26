@@ -13,14 +13,9 @@ The user provides a natural language description of what they want to build (e.g
 
 ## Workflow
 
-### 1. Ask for database type
+### 1. Design the entity schema
 
-Before generating anything, ask the user which database type to use:
-- `relational` — PostgreSQL with TypeORM
-- `document` — MongoDB
-- `all-db` — Both databases
-
-### 2. Design the entity schema
+This project is Postgres-only. All generators use the `relational` flavor (TypeORM).
 
 Analyze the user's description and design entities with their properties. Follow these rules strictly:
 
@@ -43,17 +38,17 @@ Analyze the user's description and design entities with their properties. Follow
 - `reference` — relationship to another entity
 - `duplication` — data duplication from another entity
 
-### 3. Present the schema to the user
+### 2. Present the schema to the user
 
 Before running commands, show the designed schema as a table or structured list so the user can review and approve it. Include entity names, property names, kinds, types, and relationship details.
 
-### 4. Show all commands for verification
+### 3. Show all commands for verification
 
 Once the schema is approved, list **all** commands that will be executed — first the resource generation commands, then the property commands. Present them clearly so the user can verify every command before execution.
 
 **Always ask the user for explicit confirmation before running any commands.**
 
-### 5. Run the commands
+### 4. Run the commands
 
 Only after the user confirms the commands, execute them in this exact order:
 
@@ -62,10 +57,8 @@ Only after the user confirms the commands, execute them in this exact order:
 For each new entity (excluding User and File), run:
 
 ```bash
-npm run generate:resource:{db} -- --name {EntityName}
+npm run generate:resource:relational -- --name {EntityName}
 ```
-
-Where `{db}` is `relational`, `document`, or `all-db` based on the user's choice.
 
 Run these sequentially, one at a time.
 
@@ -74,7 +67,7 @@ Run these sequentially, one at a time.
 For each property on each entity, run:
 
 ```bash
-npm run add:property:to-{db} -- --name {EntityName} --property {propertyName} --kind {kind} --type {type} --referenceType {referenceType} --propertyInReference {propertyInReference} --isAddToDto {isAddToDto} --isOptional {isOptional} --isNullable {isNullable}
+npm run add:property:to-relational -- --name {EntityName} --property {propertyName} --kind {kind} --type {type} --referenceType {referenceType} --propertyInReference {propertyInReference} --isAddToDto {isAddToDto} --isOptional {isOptional} --isNullable {isNullable}
 ```
 
 **Argument rules:**
@@ -95,8 +88,6 @@ Run these sequentially, one at a time.
 ## Example
 
 User: "I need a blog with posts and categories. Posts belong to a category and can have a cover image."
-
-Database: `relational`
 
 **Commands:**
 ```bash

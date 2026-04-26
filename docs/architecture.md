@@ -37,14 +37,6 @@ The main reason for using Hexagonal Architecture is to separate the business log
 │   └── update.dto.ts
 ├── infrastructure
 │   └── persistence
-│       ├── document
-│       │   ├── document-persistence.module.ts
-│       │   ├── entities
-│       │   │   └── [SCHEMA].ts
-│       │   ├── mappers
-│       │   │   └── [MAPPER].ts
-│       │   └── repositories
-│       │       └── [ADAPTER].repository.ts
 │       ├── relational
 │       │   ├── entities
 │       │   │   └── [ENTITY].ts
@@ -60,8 +52,6 @@ The main reason for using Hexagonal Architecture is to separate the business log
 ```
 
 `[DOMAIN ENTITY].ts` represents an entity used in the business logic. Domain entity has no dependencies on the database or any other infrastructure.
-
-`[SCHEMA].ts` represents the **database structure**. It is used in the document-oriented database (MongoDB).
 
 `[ENTITY].ts` represents the **database structure**. It is used in the relational database (PostgreSQL).
 
