@@ -61,3 +61,8 @@ WORKER_HOST=redis://redis:6379/1
 
 REDIS_HOST=redis
 REDIS_PORT=6379
+
+# Host-side ports for docker-compose only.
+# Override these to dodge collisions with other local projects sharing default ports.
+MAIL_HOST_PORT=1080
+MAIL_HOST_SMTP_PORT=1025

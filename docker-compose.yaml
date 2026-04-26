@@ -20,8 +20,8 @@ services:
       context: .
       dockerfile: maildev.Dockerfile
     ports:
-      - ${MAIL_CLIENT_PORT}:1080
-      - ${MAIL_PORT}:1025
+      - ${MAIL_HOST_PORT:-1080}:1080
+      - ${MAIL_HOST_SMTP_PORT:-1025}:1025
 
   adminer:
     image: adminer
