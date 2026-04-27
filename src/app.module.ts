@@ -10,6 +10,7 @@ import fileConfig from './files/config/file.config';
 import facebookConfig from './auth-facebook/config/facebook.config';
 import googleConfig from './auth-google/config/google.config';
 import appleConfig from './auth-apple/config/apple.config';
+import redisConfig from './redis/config/redis.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -24,23 +25,20 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './database/mongoose-config.service';
-import { DatabaseConfig } from './database/config/database-config.type';
+import { RedisModule } from './redis/redis.module';
+import { LocalesModule } from './locales/locales.module';
+import { CurrenciesModule } from './currencies/currencies.module';
+import { RegionsModule } from './regions/regions.module';
+import { SettingsModule } from './settings/settings.module';
+import { RequestContextModule } from './request-context/request-context.module';
+import { FxRatesModule } from './fx-rates/fx-rates.module';
 
-// <database-block>
-const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
-  ? MongooseModule.forRootAsync({
-      useClass: MongooseConfigService,
-    })
-  : TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService,
-      dataSourceFactory: async (options: DataSourceOptions) => {
-        return new DataSource(options).initialize();
-      },
-    });
-// </database-block>
+const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
+  useClass: TypeOrmConfigService,
+  dataSourceFactory: async (options: DataSourceOptions) => {
+    return new DataSource(options).initialize();
+  },
+});
 
 @Module({
   imports: [
@@ -55,6 +53,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
         facebookConfig,
         googleConfig,
         appleConfig,
+        redisConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -92,6 +91,13 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     MailModule,
     MailerModule,
     HomeModule,
+    RedisModule,
+    LocalesModule,
+    CurrenciesModule,
+    RegionsModule,
+    SettingsModule,
+    RequestContextModule,
+    FxRatesModule,
   ],
 })
 export class AppModule {}
