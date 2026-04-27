@@ -31,6 +31,7 @@ import { CurrenciesModule } from './currencies/currencies.module';
 import { RegionsModule } from './regions/regions.module';
 import { SettingsModule } from './settings/settings.module';
 import { RequestContextModule } from './request-context/request-context.module';
+import { FxRatesModule } from './fx-rates/fx-rates.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -96,6 +97,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     RegionsModule,
     SettingsModule,
     RequestContextModule,
+    FxRatesModule,
   ],
 })
 export class AppModule {}
