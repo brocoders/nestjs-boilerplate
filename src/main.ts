@@ -15,9 +15,30 @@ import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import { RequestContextInterceptor } from './request-context/request-context.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
+
+  const corsOrigins = (
+    configService.get('app.frontendDomain', { infer: true }) ??
+    'http://localhost:3001'
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  app.enableCors({
+    origin: corsOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Authorization',
+      'Content-Type',
+      'X-Region',
+      'Accept-Language',
+      'Idempotency-Key',
+    ],
+  });
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(
