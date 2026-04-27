@@ -9,6 +9,7 @@ import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { LocaleSeedModule } from './locale/locale-seed.module';
 import { CurrencySeedModule } from './currency/currency-seed.module';
+import { RegionSeedModule } from './region/region-seed.module';
 import databaseConfig from '../../config/database.config';
 import appConfig from '../../../config/app.config';
 
@@ -19,6 +20,7 @@ import appConfig from '../../../config/app.config';
     UserSeedModule,
     LocaleSeedModule,
     CurrencySeedModule,
+    RegionSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
