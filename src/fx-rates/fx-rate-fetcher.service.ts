@@ -6,6 +6,7 @@ export interface FxHttp {
     base: string;
     rates: Record<string, string>;
     date: string;
+    source: string;
   }>;
 }
 
@@ -19,16 +20,18 @@ export class FxRateFetcherService {
   ) {}
 
   async fetchAndStore(): Promise<void> {
-    const { base, rates, date } = await this.http.fetchUsdRates();
+    const { base, rates, date, source } = await this.http.fetchUsdRates();
     for (const [quote, rate] of Object.entries(rates)) {
       await this.repo.upsertDaily({
         base,
         quote,
         rate: String(rate),
         day: date,
-        source: 'exchangerate.host',
+        source,
       });
     }
-    this.log.log(`Stored ${Object.keys(rates).length} FX rates for ${date}`);
+    this.log.log(
+      `Stored ${Object.keys(rates).length} FX rates for ${date} from ${source}`,
+    );
   }
 }
