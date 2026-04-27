@@ -38,22 +38,38 @@ async function bootstrap() {
     app.get(RequestContextInterceptor),
   );
 
-  const options = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('API docs')
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Ecommerce API')
+    .setDescription(
+      'Multi-vendor e-commerce platform API. ' +
+        'All endpoints prefixed /api/v1. ' +
+        'Pass Authorization: Bearer <jwt>, X-Region: <ISO country>, Accept-Language: <locale>.',
+    )
     .setVersion('1.0')
-    .addBearerAuth()
-    .addGlobalParameters({
-      in: 'header',
-      required: false,
-      name: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
-      schema: {
-        example: 'en',
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'jwt',
+    )
+    .addGlobalParameters(
+      {
+        name: 'X-Region',
+        in: 'header',
+        required: false,
+        schema: { type: 'string', example: 'SA' },
+        description:
+          'ISO country code; ignored when multi_region_enabled=false (returns default region)',
       },
-    })
+      {
+        name: 'Accept-Language',
+        in: 'header',
+        required: false,
+        schema: { type: 'string', example: 'en' },
+        description: 'Preferred locale; one of: en, ar (default: ar)',
+      },
+    )
     .build();
 
-  const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
