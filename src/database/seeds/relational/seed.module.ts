@@ -8,6 +8,7 @@ import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { LocaleSeedModule } from './locale/locale-seed.module';
+import { CurrencySeedModule } from './currency/currency-seed.module';
 import databaseConfig from '../../config/database.config';
 import appConfig from '../../../config/app.config';
 
@@ -17,6 +18,7 @@ import appConfig from '../../../config/app.config';
     StatusSeedModule,
     UserSeedModule,
     LocaleSeedModule,
+    CurrencySeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
