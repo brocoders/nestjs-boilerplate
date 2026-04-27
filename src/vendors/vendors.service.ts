@@ -85,6 +85,10 @@ export class VendorsService {
     return this.repo.findByUserId(userId);
   }
 
+  async findBySlug(slug: string): Promise<Vendor | null> {
+    return this.repo.findBySlug(slug);
+  }
+
   async list(opts: { status?: VendorStatus; page?: number; limit?: number }) {
     return this.repo.findAll({
       status: opts.status,
