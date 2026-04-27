@@ -26,6 +26,11 @@ export class RegionRelationalRepository implements RegionAbstractRepository {
     return row ? RegionMapper.toDomain(row) : null;
   }
 
+  async findById(id: string): Promise<Region | null> {
+    const row = await this.repo.findOne({ where: { id } });
+    return row ? RegionMapper.toDomain(row) : null;
+  }
+
   async findDefault(): Promise<Region | null> {
     const row = await this.repo.findOne({ where: { isDefault: true } });
     return row ? RegionMapper.toDomain(row) : null;
