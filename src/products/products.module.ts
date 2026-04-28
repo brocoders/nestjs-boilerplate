@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProductsPublicController } from './products-public.controller';
 import { ProductsVendorController } from './products-vendor.controller';
+import { ProductsVariantsVendorController } from './products-variants-vendor.controller';
 import { ProductsService } from './products.service';
 import { RelationalProductPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 import { VendorsModule } from '../vendors/vendors.module';
@@ -14,7 +15,11 @@ import { RegionsModule } from '../regions/regions.module';
     CategoriesModule,
     RegionsModule,
   ],
-  controllers: [ProductsPublicController, ProductsVendorController],
+  controllers: [
+    ProductsPublicController,
+    ProductsVendorController,
+    ProductsVariantsVendorController,
+  ],
   providers: [ProductsService],
   exports: [ProductsService],
 })

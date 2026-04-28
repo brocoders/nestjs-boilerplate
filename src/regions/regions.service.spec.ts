@@ -28,6 +28,7 @@ describe('RegionsService', () => {
           useValue: {
             findAllEnabled: jest.fn(),
             findByCode: jest.fn(),
+            findById: jest.fn(),
             findDefault: jest.fn(),
           },
         },

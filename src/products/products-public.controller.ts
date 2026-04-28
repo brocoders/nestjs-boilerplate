@@ -42,7 +42,9 @@ export class ProductsPublicController {
   getBySlug(
     @Param('vendorSlug') vendorSlug: string,
     @Param('productSlug') productSlug: string,
-  ): Promise<Product> {
-    return this.service.getBySlugForPublic(vendorSlug, productSlug);
+    @Query('region') regionParam?: string,
+  ) {
+    const region = regionParam ?? this.ctx.getCurrent()?.regionCode;
+    return this.service.getBySlugForPublic(vendorSlug, productSlug, region);
   }
 }

@@ -14,6 +14,10 @@ export class RegionsService {
     return this.repo.findByCode(code);
   }
 
+  findById(id: string): Promise<Region | null> {
+    return this.repo.findById(id);
+  }
+
   async getDefault(): Promise<Region> {
     const r = await this.repo.findDefault();
     if (!r)
