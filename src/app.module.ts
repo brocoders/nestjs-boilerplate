@@ -34,6 +34,7 @@ import { RequestContextModule } from './request-context/request-context.module';
 import { FxRatesModule } from './fx-rates/fx-rates.module';
 import { VendorsModule } from './vendors/vendors.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -102,6 +103,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     FxRatesModule,
     VendorsModule,
     CategoriesModule,
+    ProductsModule,
   ],
 })
 export class AppModule {}
