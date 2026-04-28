@@ -186,6 +186,16 @@ describe('Products flow (e2e)', () => {
     expect(found.status).toBe('ACTIVE');
   });
 
+  it('should expose vendorSlug on each public list item', async () => {
+    if (!productId) return;
+    const res = await request(APP_URL).get('/api/v1/products');
+    expect(res.status).toBe(200);
+    const found = res.body.data.find((p: { id: string }) => p.id === productId);
+    expect(found).toBeTruthy();
+    expect(typeof found.vendorSlug).toBe('string');
+    expect(found.vendorSlug).toBe(vendorSlug);
+  });
+
   it('should fetch product by /products/:vendorSlug/:productSlug', async () => {
     if (!productId) return;
     const res = await request(APP_URL).get(
@@ -194,6 +204,8 @@ describe('Products flow (e2e)', () => {
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(productId);
     expect(res.body.status).toBe('ACTIVE');
+    expect(res.body.vendorSlug).toBe(vendorSlug);
+    expect(Array.isArray(res.body.optionTypes)).toBe(true);
   });
 
   it('should filter public list by category slug', async () => {

@@ -282,6 +282,38 @@ describe('Variants flow (e2e)', () => {
     }
   });
 
+  it('should expose vendorSlug + hydrated optionTypes on public detail', async () => {
+    if (!productId) return;
+    const res = await request(APP_URL).get(
+      `/api/v1/products/${vendorSlug}/${productSlug}?region=SA`,
+    );
+    expect(res.status).toBe(200);
+    expect(res.body.vendorSlug).toBe(vendorSlug);
+    expect(Array.isArray(res.body.optionTypes)).toBe(true);
+    // Two types were generated: color, size — each with values + translations.
+    expect(res.body.optionTypes).toHaveLength(2);
+    const slugs = (res.body.optionTypes as Array<{ slug: string }>).map(
+      (t) => t.slug,
+    );
+    expect(slugs).toEqual(expect.arrayContaining(['color', 'size']));
+    for (const t of res.body.optionTypes as Array<{
+      slug: string;
+      nameTranslations: Record<string, string>;
+      values: Array<{
+        slug: string;
+        valueTranslations: Record<string, string>;
+      }>;
+    }>) {
+      expect(typeof t.nameTranslations.en).toBe('string');
+      expect(Array.isArray(t.values)).toBe(true);
+      expect(t.values.length).toBeGreaterThan(0);
+      for (const v of t.values) {
+        expect(typeof v.slug).toBe('string');
+        expect(typeof v.valueTranslations.en).toBe('string');
+      }
+    }
+  });
+
   it('should fall back to default region context when no override is given', async () => {
     if (!productId) return;
     // Default region is SA per the seed; expect 4 variants without any params.
