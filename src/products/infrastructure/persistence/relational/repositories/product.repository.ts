@@ -35,6 +35,7 @@ export class ProductRelationalRepository implements ProductAbstractRepository {
     const { region, categoryId, q, page, limit } = opts;
     const qb = this.repo
       .createQueryBuilder('p')
+      .leftJoinAndSelect('p.vendor', 'vendor')
       .where('p.status = :status', { status: ProductStatus.ACTIVE });
 
     if (categoryId) {
@@ -64,7 +65,7 @@ export class ProductRelationalRepository implements ProductAbstractRepository {
       );
     }
 
-    qb.orderBy('p.created_at', 'DESC')
+    qb.orderBy('p.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
@@ -81,7 +82,10 @@ export class ProductRelationalRepository implements ProductAbstractRepository {
     vendorId: string,
     slug: string,
   ): Promise<Product | null> {
-    const row = await this.repo.findOne({ where: { vendorId, slug } });
+    const row = await this.repo.findOne({
+      where: { vendorId, slug },
+      relations: { vendor: true },
+    });
     return row ? ProductMapper.toDomain(row) : null;
   }
 

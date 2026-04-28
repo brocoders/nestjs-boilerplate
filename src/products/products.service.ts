@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { uuidv7Generate } from '../utils/uuid';
 import { Product, ProductStatus } from './domain/product';
+import { ProductOptionType } from './domain/product-option-type';
 import { ProductVariant } from './domain/product-variant';
 import { VariantPrice } from './domain/variant-price';
 import { VariantStock } from './domain/variant-stock';
@@ -73,6 +74,7 @@ export interface SetVariantStockInput {
 
 export interface PublicProductDetail extends Product {
   variants: ProductVariant[];
+  optionTypes: ProductOptionType[];
 }
 
 @Injectable()
@@ -137,8 +139,13 @@ export class ProductsService {
       }
     }
 
+    const optionTypes = await this.variants.findOptionTypesForProduct(
+      product.id,
+    );
+
     return Object.assign(new Product(), product, {
       variants: resolvedVariants,
+      optionTypes,
     }) as PublicProductDetail;
   }
 

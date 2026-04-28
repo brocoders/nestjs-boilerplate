@@ -13,6 +13,9 @@ export class Product {
   @ApiProperty({ example: '0190a4d5-3d23-7c2a-bb50-9c0f3a59c1a0' })
   vendorId!: string;
 
+  @ApiProperty({ example: 'sample-shop', nullable: true, required: false })
+  vendorSlug?: string;
+
   @ApiProperty({
     example: '0190a4d5-3d23-7c2a-bb50-9c0f3a59c1a0',
     nullable: true,

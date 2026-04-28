@@ -1,11 +1,20 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { Product } from './domain/product';
+import { ProductOptionType } from './domain/product-option-type';
+import { ProductOptionValue } from './domain/product-option-value';
+import { ProductVariant } from './domain/product-variant';
 import { ProductsService } from './products.service';
 import { PublicProductListQueryDto } from './dto/product-list-query.dto';
 import { RequestContextService } from '../request-context/request-context.service';
 
 @ApiTags('Products')
+@ApiExtraModels(Product, ProductVariant, ProductOptionType, ProductOptionValue)
 @Controller({ path: 'products', version: '1' })
 export class ProductsPublicController {
   constructor(
@@ -38,7 +47,26 @@ export class ProductsPublicController {
   }
 
   @Get(':vendorSlug/:productSlug')
-  @ApiOkResponse({ type: Product })
+  @ApiOkResponse({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(Product) },
+        {
+          type: 'object',
+          properties: {
+            variants: {
+              type: 'array',
+              items: { $ref: getSchemaPath(ProductVariant) },
+            },
+            optionTypes: {
+              type: 'array',
+              items: { $ref: getSchemaPath(ProductOptionType) },
+            },
+          },
+        },
+      ],
+    },
+  })
   getBySlug(
     @Param('vendorSlug') vendorSlug: string,
     @Param('productSlug') productSlug: string,

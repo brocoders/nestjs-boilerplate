@@ -6,6 +6,9 @@ export class ProductMapper {
     const d = new Product();
     d.id = entity.id;
     d.vendorId = entity.vendorId;
+    if (entity.vendor && entity.vendor.slug) {
+      d.vendorSlug = entity.vendor.slug;
+    }
     d.categoryId = entity.categoryId;
     d.slug = entity.slug;
     d.nameTranslations = entity.nameTranslations;
