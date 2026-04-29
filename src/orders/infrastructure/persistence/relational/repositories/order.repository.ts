@@ -120,19 +120,37 @@ export class OrderRelationalRepository implements OrderAbstractRepository {
 
   async listForBuyer(opts: ListOrdersOptions): Promise<ListOrdersResult> {
     const offset = (opts.page - 1) * opts.limit;
-    const [rows, total] = await this.orderRepo
+    // Two-pass: paginate the order ids first (cheap), then hydrate.
+    const [pageRows, total] = await this.orderRepo
       .createQueryBuilder('o')
-      .leftJoinAndSelect('o.subOrders', 'so')
-      .leftJoinAndSelect('so.items', 'oi')
       .where('o.buyer_id = :buyerId', { buyerId: opts.buyerId })
       .orderBy('o.placed_at', 'DESC')
-      .addOrderBy('so.created_at', 'ASC')
-      .addOrderBy('oi.created_at', 'ASC')
       .skip(offset)
       .take(opts.limit)
       .getManyAndCount();
+
+    if (pageRows.length === 0) {
+      return { data: [], total };
+    }
+
+    const ids = pageRows.map((r) => r.id);
+    const hydrated = await this.orderRepo
+      .createQueryBuilder('o')
+      .leftJoinAndSelect('o.subOrders', 'so')
+      .leftJoinAndSelect('so.items', 'oi')
+      .where('o.id IN (:...ids)', { ids })
+      .orderBy('o.placed_at', 'DESC')
+      .addOrderBy('so.created_at', 'ASC')
+      .addOrderBy('oi.created_at', 'ASC')
+      .getMany();
+
+    const byId = new Map(hydrated.map((h) => [h.id, h]));
+    const ordered = ids
+      .map((id) => byId.get(id))
+      .filter((r): r is NonNullable<typeof r> => !!r);
+
     return {
-      data: rows.map(OrderMapper.toDomain),
+      data: ordered.map(OrderMapper.toDomain),
       total,
     };
   }
