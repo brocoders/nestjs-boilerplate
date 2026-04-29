@@ -37,6 +37,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { ShippingZonesModule } from './shipping-zones/shipping-zones.module';
 import { CartModule } from './cart/cart.module';
+import { OrdersModule } from './orders/orders.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -108,6 +109,7 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     ProductsModule,
     ShippingZonesModule,
     CartModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
