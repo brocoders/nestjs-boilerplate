@@ -6,6 +6,7 @@ import {
   OrderPaymentStatus,
   SubOrderFulfillmentStatus,
 } from '../../domain/order-enums';
+import { SubOrder } from '../../domain/sub-order';
 
 export interface CreateOrderRow {
   id: string;
@@ -56,6 +57,43 @@ export interface ListOrdersResult {
   total: number;
 }
 
+// ── Vendor-side incoming orders ──────────────────────────────────────
+
+export interface VendorOrderListItem {
+  subOrder: SubOrder;
+  order: {
+    publicCode: string;
+    placedAt: Date;
+    buyerName: string;
+    city: string;
+    country: string;
+  };
+  itemCount: number;
+}
+
+export interface VendorOrderListResult {
+  data: VendorOrderListItem[];
+  total: number;
+}
+
+export interface ListSubOrdersForVendorOptions {
+  vendorId: string;
+  status?: SubOrderFulfillmentStatus;
+  page: number;
+  limit: number;
+}
+
+export interface VendorOrderDetail {
+  subOrder: SubOrder;
+  order: {
+    publicCode: string;
+    placedAt: Date;
+    addressSnapshot: AddressSnapshot;
+    paymentStatus: OrderPaymentStatus;
+    currencyCode: string;
+  };
+}
+
 export abstract class OrderAbstractRepository {
   abstract isPublicCodeTaken(publicCode: string): Promise<boolean>;
   abstract createOrderTransaction(input: {
@@ -66,6 +104,13 @@ export abstract class OrderAbstractRepository {
   }): Promise<string>;
   abstract findHydratedById(orderId: string): Promise<Order | null>;
   abstract listForBuyer(opts: ListOrdersOptions): Promise<ListOrdersResult>;
+  abstract listSubOrdersForVendor(
+    opts: ListSubOrdersForVendorOptions,
+  ): Promise<VendorOrderListResult>;
+  abstract findSubOrderForVendor(
+    vendorId: string,
+    subOrderId: string,
+  ): Promise<VendorOrderDetail | null>;
   /** Used by the placeOrder transaction internally for re-loading the cart. */
   abstract entityManager(): EntityManager;
 }

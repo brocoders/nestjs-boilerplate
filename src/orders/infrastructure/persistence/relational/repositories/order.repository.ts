@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, Repository } from 'typeorm';
+import { AddressSnapshot } from '../../../../domain/address-snapshot';
 import { Order } from '../../../../domain/order';
 import {
   CreateOrderItemRow,
@@ -8,12 +9,16 @@ import {
   CreateSubOrderRow,
   ListOrdersOptions,
   ListOrdersResult,
+  ListSubOrdersForVendorOptions,
   OrderAbstractRepository,
+  VendorOrderDetail,
+  VendorOrderListResult,
 } from '../../order.abstract.repository';
 import { OrderEntity } from '../entities/order.entity';
 import { OrderItemEntity } from '../entities/order-item.entity';
 import { SubOrderEntity } from '../entities/sub-order.entity';
 import { OrderMapper } from '../mappers/order.mapper';
+import { SubOrderMapper } from '../mappers/sub-order.mapper';
 import { CartItemEntity } from '../../../../../cart/infrastructure/persistence/relational/entities/cart-item.entity';
 
 @Injectable()
@@ -152,6 +157,103 @@ export class OrderRelationalRepository implements OrderAbstractRepository {
     return {
       data: ordered.map(OrderMapper.toDomain),
       total,
+    };
+  }
+
+  async listSubOrdersForVendor(
+    opts: ListSubOrdersForVendorOptions,
+  ): Promise<VendorOrderListResult> {
+    const offset = (opts.page - 1) * opts.limit;
+    const subOrderRepo = this.dataSource.getRepository(SubOrderEntity);
+
+    // Two-pass: paginate ids first (no joins, no .skip-with-relation footgun),
+    // then hydrate the page with the joined Order in one shot.
+    const idPageQb = subOrderRepo
+      .createQueryBuilder('so')
+      .where('so.vendor_id = :vendorId', { vendorId: opts.vendorId });
+    if (opts.status) {
+      idPageQb.andWhere('so.fulfillment_status = :status', {
+        status: opts.status,
+      });
+    }
+    const [idRows, total] = await idPageQb
+      .orderBy('so.created_at', 'DESC')
+      .skip(offset)
+      .take(opts.limit)
+      .getManyAndCount();
+
+    if (idRows.length === 0) {
+      return { data: [], total };
+    }
+
+    const pageIds = idRows.map((r) => r.id);
+    const rowsUnordered = await subOrderRepo
+      .createQueryBuilder('so')
+      .innerJoinAndSelect('so.order', 'o')
+      .where('so.id IN (:...ids)', { ids: pageIds })
+      .getMany();
+    const byId = new Map(rowsUnordered.map((r) => [r.id, r]));
+    const rows = pageIds
+      .map((id) => byId.get(id))
+      .filter((r): r is NonNullable<typeof r> => !!r);
+
+    // Pull item counts for these sub_order ids in one round-trip.
+    const subOrderIds = rows.map((r) => r.id);
+    const counts = await this.dataSource
+      .getRepository(OrderItemEntity)
+      .createQueryBuilder('oi')
+      .select('oi.sub_order_id', 'subOrderId')
+      .addSelect('COALESCE(SUM(oi.quantity), 0)', 'total')
+      .where('oi.sub_order_id IN (:...ids)', { ids: subOrderIds })
+      .groupBy('oi.sub_order_id')
+      .getRawMany<{ subOrderId: string; total: string }>();
+    const countById = new Map<string, number>(
+      counts.map((c) => [c.subOrderId, Number(c.total)]),
+    );
+
+    const data = rows.map((r) => {
+      const addr = r.order.addressSnapshot as AddressSnapshot;
+      return {
+        subOrder: SubOrderMapper.toDomain(r),
+        order: {
+          publicCode: r.order.publicCode,
+          placedAt: r.order.placedAt,
+          buyerName: addr.fullName,
+          city: addr.city,
+          country: addr.country,
+        },
+        itemCount: countById.get(r.id) ?? 0,
+      };
+    });
+
+    return { data, total };
+  }
+
+  async findSubOrderForVendor(
+    vendorId: string,
+    subOrderId: string,
+  ): Promise<VendorOrderDetail | null> {
+    const row = await this.dataSource
+      .getRepository(SubOrderEntity)
+      .createQueryBuilder('so')
+      .innerJoinAndSelect('so.order', 'o')
+      .leftJoinAndSelect('so.items', 'oi')
+      .where('so.id = :id', { id: subOrderId })
+      .andWhere('so.vendor_id = :vendorId', { vendorId })
+      .orderBy('oi.created_at', 'ASC')
+      .getOne();
+
+    if (!row) return null;
+
+    return {
+      subOrder: SubOrderMapper.toDomain(row),
+      order: {
+        publicCode: row.order.publicCode,
+        placedAt: row.order.placedAt,
+        addressSnapshot: row.order.addressSnapshot as AddressSnapshot,
+        paymentStatus: row.order.paymentStatus,
+        currencyCode: row.order.currencyCode,
+      },
     };
   }
 }

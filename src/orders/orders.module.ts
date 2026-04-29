@@ -10,6 +10,7 @@ import { CheckoutService } from './checkout.service';
 import { IdempotencyHelper } from './idempotency.helper';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
+import { VendorOrdersController } from './vendor-orders.controller';
 import { RelationalOrderPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
 @Module({
@@ -22,7 +23,7 @@ import { RelationalOrderPersistenceModule } from './infrastructure/persistence/r
     ProductsModule,
     RegionsModule,
   ],
-  controllers: [CheckoutController, OrdersController],
+  controllers: [CheckoutController, OrdersController, VendorOrdersController],
   providers: [CheckoutService, OrdersService, IdempotencyHelper],
   exports: [CheckoutService, OrdersService],
 })
