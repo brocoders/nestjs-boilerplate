@@ -35,6 +35,8 @@ import { FxRatesModule } from './fx-rates/fx-rates.module';
 import { VendorsModule } from './vendors/vendors.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { ShippingZonesModule } from './shipping-zones/shipping-zones.module';
+import { CartModule } from './cart/cart.module';
 
 const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
   useClass: TypeOrmConfigService,
@@ -104,6 +106,8 @@ const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
     VendorsModule,
     CategoriesModule,
     ProductsModule,
+    ShippingZonesModule,
+    CartModule,
   ],
 })
 export class AppModule {}
