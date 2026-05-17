@@ -2,7 +2,7 @@ import replace from '../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removeInstallScripts = async () => {
+const removeInstallScripts = () => {
   replace({
     path: path.join(process.cwd(), 'package.json'),
     actions: [

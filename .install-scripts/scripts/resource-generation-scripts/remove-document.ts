@@ -2,7 +2,7 @@ import replace from '../../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removeDocumentResourceGeneration = async () => {
+const removeDocumentResourceGeneration = () => {
   const filesToRemove = [
     path.join(process.cwd(), '.hygen', 'generate', 'document-resource'),
   ];

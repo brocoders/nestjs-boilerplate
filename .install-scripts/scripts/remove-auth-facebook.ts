@@ -2,7 +2,7 @@ import replace from '../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removeFacebookAuth = async () => {
+const removeFacebookAuth = () => {
   replace({
     path: path.join(process.cwd(), 'src', 'app.module.ts'),
     actions: [

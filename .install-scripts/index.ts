@@ -12,7 +12,7 @@ import removeAllDbPropertyGeneration from './scripts/property-generation-scripts
 import removeDocumentPropertyGeneration from './scripts/property-generation-scripts/remove-document';
 import removeRelationalPropertyGeneration from './scripts/property-generation-scripts/remove-relational';
 
-(async () => {
+void (async () => {
   const response = await prompts(
     [
       {

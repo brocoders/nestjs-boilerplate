@@ -2,7 +2,7 @@ import replace from '../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removeMongoDb = async () => {
+const removeMongoDb = () => {
   const filesToRemove = [
     path.join(
       process.cwd(),

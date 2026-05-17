@@ -2,7 +2,7 @@ import replace from '../../helpers/replace';
 import path from 'path';
 import fs from 'fs';
 
-const removeAllDbPropertyGeneration = async () => {
+const removeAllDbPropertyGeneration = () => {
   const filesToRemove = [
     path.join(process.cwd(), '.hygen', 'property', 'add-to-all-db'),
   ];
