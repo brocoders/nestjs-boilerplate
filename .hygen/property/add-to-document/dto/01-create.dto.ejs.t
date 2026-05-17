@@ -18,7 +18,7 @@ after: export class Create<%= name %>Dto
         <% } else if (type === 'Date') { -%>
           Date,
         <% } -%>
-      <% } else if (kind === 'reference' || kind === 'duplication') { -%>
+      <% } else if (kind === 'reference' || kind === 'denormalized') { -%>
         <% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
           [<%= type %>Dto],
         <% } else { -%>
@@ -43,7 +43,7 @@ after: export class Create<%= name %>Dto
       @Transform(({ value }) => new Date(value))
       @IsDate()
     <% } -%>
-  <% } else if (kind === 'reference' || kind === 'duplication') { -%>
+  <% } else if (kind === 'reference' || kind === 'denormalized') { -%>
     @ValidateNested()
     @Type(() => <%= type %>Dto)
     <% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
@@ -54,7 +54,7 @@ after: export class Create<%= name %>Dto
   <% } -%>
 <% } -%>
 
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>Dto<% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;
 <% } else { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %> <% if (isNullable) { -%> | null<% } -%>;

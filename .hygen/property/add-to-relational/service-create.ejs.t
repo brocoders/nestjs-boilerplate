@@ -4,7 +4,7 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 after: \<creating\-property \/\>
 ---
 <% if (isAddToDto && !isOptional && !isNullable) { -%>
-  <% if (kind === 'reference' || kind === 'duplication') { -%>
+  <% if (kind === 'reference' || kind === 'denormalized') { -%>
     <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
       const <%= property %>Object = await this.<%= h.inflection.camelize(type, true) %>Service.findById(
         create<%= name %>Dto.<%= property %>.id,
@@ -34,7 +34,7 @@ after: \<creating\-property \/\>
     <% } -%>
   <% } -%>
 <% } else { -%>
-  <% if (kind === 'reference' || kind === 'duplication') { -%>
+  <% if (kind === 'reference' || kind === 'denormalized') { -%>
     <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
       let <%= property %>: <%= type %><% if (type === 'File') { -%>Type<% } -%> <% if (isNullable) { -%> | null<% } -%> | undefined = undefined;
 

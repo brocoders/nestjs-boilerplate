@@ -20,6 +20,9 @@ const removeInstallScripts = async () => {
     recursive: true,
     force: true,
   });
+  fs.rmSync(path.join(process.cwd(), '.github', 'workflows', 'cli.yml'), {
+    force: true,
+  });
 };
 
 export default removeInstallScripts;

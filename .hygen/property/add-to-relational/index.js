@@ -71,8 +71,8 @@ module.exports = {
                 },
                 { message: 'Reference to entity', value: 'reference' },
                 {
-                  message: 'Duplication data from entity',
-                  value: 'duplication',
+                  message: 'Denormalized data from entity',
+                  value: 'denormalized',
                 },
               ],
             })
@@ -80,7 +80,7 @@ module.exports = {
               collectPromisesResults((values) => {
                 if (
                   values.kind === 'reference' ||
-                  values.kind === 'duplication'
+                  values.kind === 'denormalized'
                 ) {
                   return prompter
                     .prompt({
@@ -204,7 +204,7 @@ module.exports = {
     }
 
     if (
-      (result.kind === 'reference' || result.kind === 'duplication') &&
+      (result.kind === 'reference' || result.kind === 'denormalized') &&
       result.referenceType === 'oneToMany'
     ) {
       execSync(

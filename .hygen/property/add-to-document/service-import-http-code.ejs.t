@@ -4,7 +4,7 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: from '@nestjs/common'
 skip_if: HttpStatus,
 ---
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   HttpStatus,
   UnprocessableEntityException,
 <% } -%>

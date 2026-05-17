@@ -20,7 +20,7 @@ after: export class <%= name %>Entity
   })
 <% } -%>
 
-<% if (kind === 'duplication') { -%>
+<% if (kind === 'denormalized') { -%>
   @Column({
     nullable: <%= isNullable %>,
     type: 'jsonb',
@@ -53,7 +53,7 @@ after: export class <%= name %>Entity
   <% } -%>
 
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>Entity<% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;
-<% } else if (kind === 'duplication') { -%>
+<% } else if (kind === 'denormalized') { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>Entity<% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;
 <% } else { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %> <% if (isNullable) { -%> | null<% } -%>;

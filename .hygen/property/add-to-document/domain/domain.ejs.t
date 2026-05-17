@@ -16,7 +16,7 @@ after: export class <%= name %> {
       <% } else if (type === 'Date') { -%>
         Date,
       <% } -%>
-    <% } else if (kind === 'reference' || kind === 'duplication') { -%>
+    <% } else if (kind === 'reference' || kind === 'denormalized') { -%>
       <% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
         [<%= type %><% if (type === 'File') { -%>Type<% } -%>],
       <% } else { -%>
@@ -26,7 +26,7 @@ after: export class <%= name %> {
   nullable: <%= isNullable %>,
 })
 
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %><% if (type === 'File') { -%>Type<% } -%><% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;
 <% } else { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %> <% if (isNullable) { -%> | null<% } -%>;

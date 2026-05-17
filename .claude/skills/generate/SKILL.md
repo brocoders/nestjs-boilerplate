@@ -40,7 +40,7 @@ Run sequentially, one entity at a time.
 **Property kinds:**
 - `primitive` — basic types: `string`, `number`, `boolean`, `Date`
 - `reference` — relationship to another entity
-- `duplication` — data duplication from another entity
+- `denormalized` — denormalized copy of another entity's data (stored inline instead of referenced)
 
 **Relationship rules:**
 - When creating a property with `referenceType: "oneToMany"`, **do NOT** create the corresponding `manyToOne` in the referenced entity — the generator creates it automatically.
@@ -57,9 +57,9 @@ npm run add:property:to-{db} -- --name {EntityName} --property {propertyName} --
 **Argument rules:**
 - `--name` (required): Entity name, PascalCase
 - `--property` (required): Property name, camelCase
-- `--kind` (required): `primitive` | `reference` | `duplication`
-- `--type` (required): For primitive: `string` | `number` | `boolean` | `Date`. For reference/duplication: the referenced entity name (e.g., `User`, `File`, `Category`)
-- `--referenceType`: Only for reference/duplication kind. Values: `oneToOne` | `oneToMany` | `manyToOne` | `manyToMany`
+- `--kind` (required): `primitive` | `reference` | `denormalized`
+- `--type` (required): For primitive: `string` | `number` | `boolean` | `Date`. For reference/denormalized: the referenced entity name (e.g., `User`, `File`, `Category`)
+- `--referenceType`: Only for reference/denormalized kind. Values: `oneToOne` | `oneToMany` | `manyToOne` | `manyToMany`
 - `--propertyInReference`: Only when `referenceType` is `oneToMany`. The property name on the referenced entity.
 - `--isAddToDto`: `true` | `false` — whether the property can be set via HTTP request
 - `--isOptional`: `true` | `false`
