@@ -5,7 +5,7 @@ after: new <%= name %>SchemaClass\(\)
 ---
 <% if (kind === 'primitive') { -%>
   persistenceSchema.<%= property %> = domainEntity.<%= property %>;
-<% } else if (kind === 'reference' || kind === 'duplication') { -%>
+<% } else if (kind === 'reference' || kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     if (domainEntity.<%= property %>) {
       persistenceSchema.<%= property %> = <%= type %>Mapper.toPersistence(domainEntity.<%= property %>);

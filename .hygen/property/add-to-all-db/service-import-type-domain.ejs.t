@@ -4,6 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 at_line: 0
 skip_if: import { <%= type %><% if (type === 'File') { -%>Type<% } -%>
 ---
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   import { <%= type %><% if (type === 'File') { -%>Type<% } -%> } from '../<%= h.inflection.transform(type, ['pluralize', 'underscore', 'dasherize']) %>/domain/<%= h.inflection.transform(type, ['underscore', 'dasherize']) %>';
 <% } -%>

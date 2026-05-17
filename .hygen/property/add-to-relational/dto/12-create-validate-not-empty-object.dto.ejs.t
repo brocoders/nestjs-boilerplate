@@ -4,6 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: "} from 'class-validator'"
 skip_if: \IsNotEmptyObject,
 ---
-<% if (isAddToDto && ((kind === 'reference' || kind === 'duplication') && (referenceType === 'oneToOne' || referenceType === 'manyToOne'))) { -%>
+<% if (isAddToDto && ((kind === 'reference' || kind === 'denormalized') && (referenceType === 'oneToOne' || referenceType === 'manyToOne'))) { -%>
   IsNotEmptyObject,
 <% } -%>

@@ -5,7 +5,7 @@ after: new <%= name %>Entity\(\)
 ---
 <% if (kind === 'primitive') { -%>
   persistenceEntity.<%= property %> = domainEntity.<%= property %>;
-<% } else if (kind === 'reference' || kind === 'duplication') { -%>
+<% } else if (kind === 'reference' || kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     if (domainEntity.<%= property %>) {
       persistenceEntity.<%= property %> = <%= type %>Mapper.toPersistence(domainEntity.<%= property %>);

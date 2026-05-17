@@ -22,7 +22,7 @@ after: export class <%= name %>SchemaClass
     })
     <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass[] <% if (isNullable) { -%> | null<% } -%>;
   <% } -%>
-<% } else if (kind === 'duplication') { -%>
+<% } else if (kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     @Prop({
       type: <%= type %>SchemaClass,

@@ -4,6 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: "} from 'class-validator'"
 skip_if: \ValidateNested,
 ---
-<% if (isAddToDto && (kind === 'reference' || kind === 'duplication')) { -%>
+<% if (isAddToDto && (kind === 'reference' || kind === 'denormalized')) { -%>
   ValidateNested,
 <% } -%>

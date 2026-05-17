@@ -3,7 +3,7 @@ inject: true
 to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.service.ts
 after: \<updating\-property \/\>
 ---
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     let <%= property %>: <%= type %><% if (type === 'File') { -%>Type<% } -%> <% if (isNullable) { -%> | null<% } -%> | undefined = undefined;
 

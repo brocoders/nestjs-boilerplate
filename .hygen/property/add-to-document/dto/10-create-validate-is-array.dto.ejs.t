@@ -4,6 +4,6 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 before: "} from 'class-validator'"
 skip_if: \IsArray,
 ---
-<% if (isAddToDto && (kind === 'reference' || kind === 'duplication') && (referenceType === 'oneToMany' || referenceType === 'manyToMany')) { -%>
+<% if (isAddToDto && (kind === 'reference' || kind === 'denormalized') && (referenceType === 'oneToMany' || referenceType === 'manyToMany')) { -%>
   IsArray,
 <% } -%>

@@ -4,7 +4,7 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 after: \<creating\-property\-payload \/\>
 ---
 
-<% if (kind === 'reference' || kind === 'duplication') { -%>
+<% if (kind === 'reference' || kind === 'denormalized') { -%>
   <%= property %>,
 <% } else { -%>
   <%= property %>: create<%= name %>Dto.<%= property %>,

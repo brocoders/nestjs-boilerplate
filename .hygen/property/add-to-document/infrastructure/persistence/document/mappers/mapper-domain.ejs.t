@@ -5,7 +5,7 @@ after: new <%= name %>\(\)
 ---
 <% if (kind === 'primitive') { -%>
   domainEntity.<%= property %> = raw.<%= property %>;
-<% } else if (kind === 'reference' || kind === 'duplication') { -%>
+<% } else if (kind === 'reference' || kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     if (raw.<%= property %>) {
       domainEntity.<%= property %> = <%= type %>Mapper.toDomain(raw.<%= property %>);
