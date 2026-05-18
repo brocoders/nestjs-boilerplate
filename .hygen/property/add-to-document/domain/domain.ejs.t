@@ -4,8 +4,9 @@ to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize'
 after: export class <%= name %> {
 ---
 
+<% if (isAddToDto) { -%>
 @ApiProperty({
-  type: () => 
+  type: () =>
     <% if (kind === 'primitive') { -%>
       <% if (type === 'string') { -%>
         String,
@@ -25,6 +26,9 @@ after: export class <%= name %> {
     <% } -%>
   nullable: <%= isNullable %>,
 })
+<% } else { -%>
+@Exclude({ toPlainOnly: true })
+<% } -%>
 
 <% if (kind === 'reference' || kind === 'denormalized') { -%>
   <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %><% if (type === 'File') { -%>Type<% } -%><% if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>[]<% } -%> <% if (isNullable) { -%> | null<% } -%>;

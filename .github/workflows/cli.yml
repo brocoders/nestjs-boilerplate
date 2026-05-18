@@ -5,54 +5,54 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  test-relational:
-    timeout-minutes: 60
+  static-relational:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - name: Check out backend
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v5
         with:
           node-version: 24
       - name: Install dependencies
         run: npm ci
-      - name: Generate resources and properties (relational)
-        run: npm run generate:resource:relational -- --name Department
-      - run: npm run generate:resource:relational -- --name People
-      - run: npm run add:property:to-relational -- --name Department --property name --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-relational -- --name People --property profilePicture --kind reference --referenceType oneToOne --type File --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-relational -- --name People --property firstName --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-relational -- --name People --property lastName --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-relational -- --name People --property department --kind reference --referenceType manyToOne --type Department --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-relational -- --name People --property isActive --kind primitive --type boolean --isAddToDto true --isOptional false
-      - run: npm run add:property:to-relational -- --name People --property birthDate --kind primitive --type Date --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-relational -- --name People --property hireDate --kind primitive --type Date --isAddToDto true --isOptional false
-      - run: npm run add:property:to-relational -- --name People --property salary --kind primitive --type number --isAddToDto true --isOptional false
-      - name: Build
-        run: npm run build
+      - name: Run static generator suite (relational)
+        run: npm run test:generators:relational
 
-  test-document:
-    timeout-minutes: 60
+  static-document:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - name: Check out backend
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v5
         with:
           node-version: 24
       - name: Install dependencies
         run: npm ci
-      - name: Generate resources and properties (document)
-        run: npm run generate:resource:document -- --name Department
-      - run: npm run generate:resource:document -- --name People
-      - run: npm run add:property:to-document -- --name Department --property name --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-document -- --name People --property profilePicture --kind reference --referenceType oneToOne --type File --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-document -- --name People --property firstName --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-document -- --name People --property lastName --kind primitive --type string --isAddToDto true --isOptional false
-      - run: npm run add:property:to-document -- --name People --property department --kind reference --referenceType manyToOne --type Department --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-document -- --name People --property isActive --kind primitive --type boolean --isAddToDto true --isOptional false
-      - run: npm run add:property:to-document -- --name People --property birthDate --kind primitive --type Date --isAddToDto true --isOptional true --isNullable true
-      - run: npm run add:property:to-document -- --name People --property hireDate --kind primitive --type Date --isAddToDto true --isOptional false
-      - run: npm run add:property:to-document -- --name People --property salary --kind primitive --type number --isAddToDto true --isOptional false
-      - name: Build
-        run: npm run build
+      - name: Run static generator suite (document)
+        run: npm run test:generators:document
+
+  crud-relational:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci
+      - name: Run CRUD generator suite (relational)
+        run: npm run test:e2e:generators:relational:docker
+
+  crud-document:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci
+      - name: Run CRUD generator suite (document)
+        run: npm run test:e2e:generators:document:docker

@@ -14,6 +14,22 @@ const removeInstallScripts = () => {
         find: /\s*\"@types\/prompts\"\:.*/g,
         replace: '',
       },
+      {
+        find: /\s*\"test:generators:relational\".*/g,
+        replace: '',
+      },
+      {
+        find: /\s*\"test:generators:document\".*/g,
+        replace: '',
+      },
+      {
+        find: /\s*\"test:e2e:generators:relational:docker\".*/g,
+        replace: '',
+      },
+      {
+        find: /\s*\"test:e2e:generators:document:docker\".*/g,
+        replace: '',
+      },
     ],
   });
   fs.rmSync(path.join(process.cwd(), '.install-scripts'), {
@@ -23,6 +39,16 @@ const removeInstallScripts = () => {
   fs.rmSync(path.join(process.cwd(), '.github', 'workflows', 'cli.yml'), {
     force: true,
   });
+  fs.rmSync(path.join(process.cwd(), 'test', 'generators'), {
+    recursive: true,
+    force: true,
+  });
+  fs.rmSync(
+    path.join(process.cwd(), 'docker-compose.generators-relational.test.yaml'),
+    {
+      force: true,
+    },
+  );
 };
 
 export default removeInstallScripts;
