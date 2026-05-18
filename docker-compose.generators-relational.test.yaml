@@ -11,7 +11,7 @@
 # collections lazily on first write and needs no migration step.
 services:
   postgres:
-    image: postgres:17.9-alpine
+    image: postgres:18.4-alpine
     expose:
       - 5432
     environment:
