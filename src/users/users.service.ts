@@ -40,16 +40,20 @@ export class UsersService {
     let email: string | null = null;
 
     if (createUserDto.email) {
-      const userObject = await this.usersRepository.findByEmail(
+      const userObject = await this.usersRepository.findByEmailIncludingDeleted(
         createUserDto.email,
       );
       if (userObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            email: 'emailAlreadyExists',
-          },
-        });
+        if (userObject.deletedAt) {
+          await this.usersRepository.removePermanently(userObject.id);
+        } else {
+          throw new UnprocessableEntityException({
+            status: HttpStatus.UNPROCESSABLE_ENTITY,
+            errors: {
+              email: 'emailAlreadyExists',
+            },
+          });
+        }
       }
       email = createUserDto.email;
     }
