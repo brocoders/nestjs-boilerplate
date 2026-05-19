@@ -5,6 +5,26 @@ after: new <%= name %>SchemaClass\(\)
 ---
 <% if (kind === 'primitive') { -%>
   persistenceSchema.<%= property %> = domainEntity.<%= property %>;
+<% } else if (kind === 'reference' && !shouldAutoLoad) { -%>
+  <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
+    if (domainEntity.<%= property %>) {
+      persistenceSchema.<%= property %> = domainEntity.<%= property %>.id.toString();
+    }
+    <% if (isNullable) { -%>
+      else if (domainEntity.<%= property %> === null) {
+        persistenceSchema.<%= property %> = null;
+      }
+    <% } -%>
+  <% } else if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
+    if (domainEntity.<%= property %>) {
+      persistenceSchema.<%= property %> = domainEntity.<%= property %>.map((item) => item.id.toString());
+    }
+    <% if (isNullable) { -%>
+      else if (domainEntity.<%= property %> === null) {
+        persistenceSchema.<%= property %> = null;
+      }
+    <% } -%>
+  <% } -%>
 <% } else if (kind === 'reference' || kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
     if (domainEntity.<%= property %>) {

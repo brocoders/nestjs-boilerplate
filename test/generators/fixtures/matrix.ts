@@ -23,6 +23,7 @@ export interface ReferenceProperty {
   isAddToDto: boolean;
   isOptional: boolean;
   isNullable: boolean;
+  shouldAutoLoad?: boolean;
 }
 
 export type GeneratedProperty = PrimitiveProperty | ReferenceProperty;
@@ -148,6 +149,16 @@ const articleProperties: GeneratedProperty[] = [
     isNullable: false,
   },
   {
+    property: 'editor',
+    kind: 'reference',
+    type: 'User',
+    referenceType: 'manyToOne',
+    isAddToDto: true,
+    isOptional: true,
+    isNullable: false,
+    shouldAutoLoad: false,
+  },
+  {
     property: 'internalNote',
     kind: 'primitive',
     type: 'string',
@@ -209,6 +220,8 @@ export interface EntityPaths {
   module: string;
   controller: string;
   service: string;
+  relationalEntity: string;
+  documentSchema: string;
 }
 
 export function pluralKebab(name: string): string {
@@ -236,5 +249,7 @@ export function entityPaths(name: string, srcRoot: string): EntityPaths {
     module: `${base}/${dir}.module.ts`,
     controller: `${base}/${dir}.controller.ts`,
     service: `${base}/${dir}.service.ts`,
+    relationalEntity: `${base}/infrastructure/persistence/relational/entities/${file}.entity.ts`,
+    documentSchema: `${base}/infrastructure/persistence/document/entities/${file}.schema.ts`,
   };
 }

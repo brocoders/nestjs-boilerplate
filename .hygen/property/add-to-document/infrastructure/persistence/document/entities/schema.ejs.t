@@ -6,21 +6,39 @@ after: export class <%= name %>SchemaClass
 
 <% if (kind === 'reference') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>
-    @Prop({
-      type: mongoose.Schema.Types.ObjectId,
-      ref: '<%= type %>SchemaClass',
-      autopopulate: <% if (propertyInReference) { -%>false<% } else { -%>true<% } -%>,
-    })
-    <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass <% if (isNullable) { -%> | null<% } -%>;
-  <% } else if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
-    @Prop({
-      type: [{
+    <% if (shouldAutoLoad) { -%>
+      @Prop({
         type: mongoose.Schema.Types.ObjectId,
         ref: '<%= type %>SchemaClass',
         autopopulate: true,
-      }]
-    })
-    <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass[] <% if (isNullable) { -%> | null<% } -%>;
+      })
+      <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass <% if (isNullable) { -%> | null<% } -%>;
+    <% } else { -%>
+      @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: '<%= type %>SchemaClass',
+      })
+      <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: string <% if (isNullable) { -%> | null<% } -%>;
+    <% } -%>
+  <% } else if (referenceType === 'oneToMany' || referenceType === 'manyToMany') { -%>
+    <% if (shouldAutoLoad) { -%>
+      @Prop({
+        type: [{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: '<%= type %>SchemaClass',
+          autopopulate: true,
+        }]
+      })
+      <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: <%= type %>SchemaClass[] <% if (isNullable) { -%> | null<% } -%>;
+    <% } else { -%>
+      @Prop({
+        type: [{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: '<%= type %>SchemaClass',
+        }]
+      })
+      <%= property %><% if (!isAddToDto || isOptional) { -%>?<% } -%>: string[] <% if (isNullable) { -%> | null<% } -%>;
+    <% } -%>
   <% } -%>
 <% } else if (kind === 'denormalized') { -%>
   <% if (referenceType === 'oneToOne' || referenceType === 'manyToOne') { -%>

@@ -34,5 +34,7 @@ run_matrix() {
 
   npm run "$ADD_PROP" -- --name Article --property denormalizedAuthor --kind denormalized --type User --referenceType manyToOne --isAddToDto true --isOptional false --isNullable false
 
+  npm run "$ADD_PROP" -- --name Article --property editor --kind reference --type User --referenceType manyToOne --isAddToDto true --isOptional true --isNullable false --shouldAutoLoad false
+
   npm run "$ADD_PROP" -- --name Article --property internalNote --kind primitive --type string --isAddToDto false --isOptional true --isNullable true
 }

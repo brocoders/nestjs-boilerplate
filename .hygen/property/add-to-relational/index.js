@@ -21,6 +21,7 @@ module.exports = {
         isAddToDto: args.isAddToDto === 'true',
         isOptional: args.isOptional === 'true',
         isNullable: args.isNullable === 'true',
+        shouldAutoLoad: args.shouldAutoLoad !== 'false',
       };
     } else {
       result = await prompter
@@ -200,6 +201,21 @@ module.exports = {
               initial: true,
             });
           }),
+        )
+        .then(
+          collectPromisesResults((values) => {
+            if (values.kind !== 'reference') {
+              return { shouldAutoLoad: true };
+            }
+
+            return prompter.prompt({
+              type: 'confirm',
+              name: 'shouldAutoLoad',
+              message:
+                'Auto-load the related entity (eager)? Choose No to store only the id.',
+              initial: true,
+            });
+          }),
         );
     }
 
@@ -212,7 +228,7 @@ module.exports = {
       result.referenceType === 'oneToMany'
     ) {
       execSync(
-        `npm run add:property:to-relational -- --name ${result.type} --property ${result.propertyInReference} --propertyInReference ${result.property} --kind ${result.kind} --type ${result.name} --referenceType manyToOne --isAddToDto ${result.isAddToDto} --isOptional false --isNullable false`,
+        `npm run add:property:to-relational -- --name ${result.type} --property ${result.propertyInReference} --propertyInReference ${result.property} --kind ${result.kind} --type ${result.name} --referenceType manyToOne --isAddToDto ${result.isAddToDto} --isOptional false --isNullable false --shouldAutoLoad false`,
         {
           stdio: 'inherit',
         },

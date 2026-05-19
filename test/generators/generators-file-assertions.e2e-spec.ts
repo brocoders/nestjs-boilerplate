@@ -1,7 +1,11 @@
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
-import type { GeneratedEntity, GeneratedProperty } from './fixtures/matrix';
+import type {
+  GeneratedEntity,
+  GeneratedProperty,
+  ReferenceProperty,
+} from './fixtures/matrix';
 import { entityPaths, matrix } from './fixtures/matrix';
 
 const REPO_ROOT = resolve(__dirname, '..', '..');
@@ -133,5 +137,70 @@ describe('Generators — file-level assertions', () => {
         expect(appModule).toContain(`${plural}Module`);
       },
     );
+  });
+
+  describe('reference auto-load flag', () => {
+    const referenceCases: Array<{
+      entity: string;
+      property: ReferenceProperty;
+    }> = matrix.entities.flatMap((entity) =>
+      entity.properties
+        .filter(
+          (p): p is ReferenceProperty =>
+            p.kind === 'reference' && !p.propertyInReference,
+        )
+        .map((property) => ({ entity: entity.name, property })),
+    );
+
+    function decoratorBlockAbove(
+      content: string,
+      property: string,
+    ): string | null {
+      const lines = content.split('\n');
+      const idx = findPropertyLineIndex(content, property);
+      if (idx < 0) return null;
+      let start = idx;
+      for (let i = idx - 1; i >= 0; i--) {
+        const trimmed = lines[i].trim();
+        if (trimmed === '' || trimmed.endsWith(';')) break;
+        start = i;
+      }
+      return lines.slice(start, idx + 1).join('\n');
+    }
+
+    if (referenceCases.length > 0) {
+      it.each(referenceCases)(
+        'relational entity for $entity.$property.property reflects shouldAutoLoad',
+        ({ entity, property }) => {
+          const paths = entityPaths(entity, SRC);
+          if (!existsSync(paths.relationalEntity)) return;
+          const block = decoratorBlockAbove(
+            readFile(paths.relationalEntity),
+            property.property,
+          );
+          expect(block).not.toBeNull();
+          const expected = property.shouldAutoLoad === false ? 'false' : 'true';
+          expect(block).toContain(`eager: ${expected}`);
+        },
+      );
+
+      it.each(referenceCases)(
+        'document schema for $entity.$property.property reflects shouldAutoLoad',
+        ({ entity, property }) => {
+          const paths = entityPaths(entity, SRC);
+          if (!existsSync(paths.documentSchema)) return;
+          const block = decoratorBlockAbove(
+            readFile(paths.documentSchema),
+            property.property,
+          );
+          expect(block).not.toBeNull();
+          if (property.shouldAutoLoad === false) {
+            expect(block).not.toContain('autopopulate: true');
+          } else {
+            expect(block).toContain('autopopulate: true');
+          }
+        },
+      );
+    }
   });
 });
