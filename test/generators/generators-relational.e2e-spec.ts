@@ -55,6 +55,7 @@ describe('Generators — relational CRUD on /api/v1/articles', () => {
     expect(response.body.id).toEqual(articleId);
     expect(response.body.author?.id).toBeDefined();
     expect(Array.isArray(response.body.tags)).toBe(true);
+    expect(response.body.editor).toBeUndefined();
   });
 
   it('should list articles via paginated find-all endpoint', async () => {

@@ -51,7 +51,7 @@ Run sequentially, one entity at a time.
 **Command:**
 
 ```bash
-npm run add:property:to-{db} -- --name {EntityName} --property {propertyName} --kind {kind} --type {type} --referenceType {referenceType} --propertyInReference {propertyInReference} --isAddToDto {isAddToDto} --isOptional {isOptional} --isNullable {isNullable}
+npm run add:property:to-{db} -- --name {EntityName} --property {propertyName} --kind {kind} --type {type} --referenceType {referenceType} --propertyInReference {propertyInReference} --isAddToDto {isAddToDto} --isOptional {isOptional} --isNullable {isNullable} --shouldAutoLoad {shouldAutoLoad}
 ```
 
 **Argument rules:**
@@ -64,6 +64,7 @@ npm run add:property:to-{db} -- --name {EntityName} --property {propertyName} --
 - `--isAddToDto`: `true` | `false` — whether the property can be set via HTTP request
 - `--isOptional`: `true` | `false`
 - `--isNullable`: `true` | `false` — only meaningful when `isOptional` is `true`
+- `--shouldAutoLoad`: `true` (default) | `false`. Only meaningful for `kind=reference`. `true` emits `eager: true` (TypeORM) and `autopopulate: true` (Mongoose). `false` stores only the related entity's id (Mongoose: `string` field + ObjectId; TypeORM: `eager: false`). No effect for `primitive`/`denormalized`.
 
 **Omit arguments that don't apply** (e.g., omit `--referenceType` for primitive properties, omit `--propertyInReference` unless `referenceType` is `oneToMany`).
 

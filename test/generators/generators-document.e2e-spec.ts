@@ -53,6 +53,10 @@ describe('Generators — document CRUD on /api/v1/articles', () => {
     expect(response.body.id).toEqual(articleId);
     expect(response.body.author?.id).toBeDefined();
     expect(Array.isArray(response.body.tags)).toBe(true);
+
+    const editor = response.body.editor;
+    expect(editor?.id ?? editor).toBeTruthy();
+    expect(editor?.email).toBeUndefined();
   });
 
   it('should partially update an article with PATCH', async () => {

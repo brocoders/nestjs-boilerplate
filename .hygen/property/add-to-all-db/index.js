@@ -8,8 +8,10 @@ const collectPromisesResults = (callback) => async (prevValues) => {
 
 module.exports = {
   prompt: async ({ prompter, args }) => {
+    let result;
+
     if (Object.keys(args).length) {
-      return Promise.resolve({
+      result = {
         name: args.name,
         property: args.property,
         kind: args.kind,
@@ -19,10 +21,10 @@ module.exports = {
         isAddToDto: args.isAddToDto === 'true',
         isOptional: args.isOptional === 'true',
         isNullable: args.isNullable === 'true',
-      });
-    }
-
-    const result = await prompter
+        shouldAutoLoad: args.shouldAutoLoad !== 'false',
+      };
+    } else {
+      result = await prompter
       .prompt({
         type: 'input',
         name: 'name',
@@ -197,7 +199,23 @@ module.exports = {
             initial: true,
           });
         }),
+      )
+      .then(
+        collectPromisesResults((values) => {
+          if (values.kind !== 'reference') {
+            return { shouldAutoLoad: true };
+          }
+
+          return prompter.prompt({
+            type: 'confirm',
+            name: 'shouldAutoLoad',
+            message:
+              'Auto-load the related entity (eager / autopopulate)? Choose No to store only the id.',
+            initial: true,
+          });
+        }),
       );
+    }
 
     if (!result.propertyInReference) {
       result.propertyInReference = '';
@@ -208,7 +226,7 @@ module.exports = {
       result.referenceType === 'oneToMany'
     ) {
       execSync(
-        `npm run add:property:to-all-db -- --name ${result.type} --property ${result.propertyInReference} --propertyInReference ${result.property} --kind ${result.kind} --type ${result.name} --referenceType manyToOne --isAddToDto ${result.isAddToDto} --isOptional false --isNullable false`,
+        `npm run add:property:to-all-db -- --name ${result.type} --property ${result.propertyInReference} --propertyInReference ${result.property} --kind ${result.kind} --type ${result.name} --referenceType manyToOne --isAddToDto ${result.isAddToDto} --isOptional false --isNullable false --shouldAutoLoad false`,
         {
           stdio: 'inherit',
         },

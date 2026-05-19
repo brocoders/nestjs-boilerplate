@@ -14,6 +14,7 @@ export interface CreateArticlePayload {
   author: { id: string | number };
   tags?: Array<{ id: string | number }>;
   denormalizedAuthor: { id: string | number };
+  editor?: { id: string | number };
 }
 
 export function buildArticlePayload(args: {
@@ -33,5 +34,6 @@ export function buildArticlePayload(args: {
     author: { id: args.adminId },
     tags: [{ id: args.tagId }],
     denormalizedAuthor: { id: args.adminId },
+    editor: { id: args.adminId },
   };
 }
