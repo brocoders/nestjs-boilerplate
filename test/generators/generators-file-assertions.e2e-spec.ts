@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
