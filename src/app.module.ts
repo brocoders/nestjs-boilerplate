@@ -13,7 +13,6 @@ import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { MailModule } from './mail/mail.module';
 import { HomeModule } from './home/home.module';
-import { SessionModule } from './session/session.module';
 import { PrismaModule } from './database/prisma.module';
 
 @Module({
@@ -36,7 +35,6 @@ import { PrismaModule } from './database/prisma.module';
     AuthModule,
     AuthFacebookModule,
     AuthGoogleModule,
-    SessionModule,
     MailModule,
     HomeModule,
   ],
