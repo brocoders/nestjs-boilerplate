@@ -12,7 +12,7 @@ import multerS3 from 'multer-s3';
 
 import { FilesS3Service } from './files.service';
 import { PrismaFilePersistenceModule } from '../../persistence/prisma/prisma-persistence.module';
-import { AllConfigType } from '../../../../config/config.type';
+import { AllConfigType } from '../../../../common/config/config.type';
 
 const infrastructurePersistenceModule = PrismaFilePersistenceModule;
 

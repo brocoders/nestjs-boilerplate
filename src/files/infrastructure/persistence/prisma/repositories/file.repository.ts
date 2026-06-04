@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../../../../database/prisma.service';
 import { FileType } from '../../../../domain/file';
-import { NullableType } from '../../../../../utils/types/nullable.type';
+import { NullableType } from '../../../../../common/utils/types/nullable.type';
 import { FileRepository } from '../../file.repository';
 import { FilePrismaMapper } from '../mappers/file.mapper';
 

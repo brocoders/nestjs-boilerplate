@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 
 import { IsEnum, IsString, ValidateIf } from 'class-validator';
-import validateConfig from '../../utils/validate-config';
+import validateConfig from '../../common/utils/validate-config';
 import { FileDriver, FileConfig } from './file-config.type';
 
 class EnvironmentVariablesValidator {

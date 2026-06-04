@@ -4,19 +4,16 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { NullableType } from '../utils/types/nullable.type';
+import { NullableType } from '../common/utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
 import { User } from './domain/user';
 import bcrypt from 'bcryptjs';
 import { AuthProvidersEnum } from '../auth/auth-providers.enum';
 import { FilesService } from '../files/files.service';
-import { RoleEnum } from '../roles/roles.enum';
-import { StatusEnum } from '../statuses/statuses.enum';
-import { IPaginationOptions } from '../utils/types/pagination-options';
+import { RoleEnum } from '../auth/roles.enum';
+import { IPaginationOptions } from '../common/utils/types/pagination-options';
 import { FileType } from '../files/domain/file';
-import { Role } from '../roles/domain/role';
-import { Status } from '../statuses/domain/status';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -73,12 +70,12 @@ export class UsersService {
       photo = null;
     }
 
-    let role: Role | undefined = undefined;
+    let role: RoleEnum = RoleEnum.user;
 
-    if (createUserDto.role?.id) {
+    if (createUserDto.role) {
       const roleObject = Object.values(RoleEnum)
         .map(String)
-        .includes(String(createUserDto.role.id));
+        .includes(String(createUserDto.role));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -88,29 +85,7 @@ export class UsersService {
         });
       }
 
-      role = {
-        id: createUserDto.role.id,
-      };
-    }
-
-    let status: Status | undefined = undefined;
-
-    if (createUserDto.status?.id) {
-      const statusObject = Object.values(StatusEnum)
-        .map(String)
-        .includes(String(createUserDto.status.id));
-      if (!statusObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            status: 'statusNotExists',
-          },
-        });
-      }
-
-      status = {
-        id: createUserDto.status.id,
-      };
+      role = createUserDto.role;
     }
 
     return this.usersRepository.create({
@@ -121,8 +96,8 @@ export class UsersService {
       email: email,
       password: password,
       photo: photo,
-      role: role,
-      status: status,
+      role,
+      emailVerified: createUserDto.emailVerified ?? false,
       provider: createUserDto.provider ?? AuthProvidersEnum.email,
       socialId: createUserDto.socialId,
     });
@@ -227,12 +202,12 @@ export class UsersService {
       photo = null;
     }
 
-    let role: Role | undefined = undefined;
+    let role: RoleEnum | undefined = undefined;
 
-    if (updateUserDto.role?.id) {
+    if (updateUserDto.role) {
       const roleObject = Object.values(RoleEnum)
         .map(String)
-        .includes(String(updateUserDto.role.id));
+        .includes(String(updateUserDto.role));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -242,29 +217,7 @@ export class UsersService {
         });
       }
 
-      role = {
-        id: updateUserDto.role.id,
-      };
-    }
-
-    let status: Status | undefined = undefined;
-
-    if (updateUserDto.status?.id) {
-      const statusObject = Object.values(StatusEnum)
-        .map(String)
-        .includes(String(updateUserDto.status.id));
-      if (!statusObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            status: 'statusNotExists',
-          },
-        });
-      }
-
-      status = {
-        id: updateUserDto.status.id,
-      };
+      role = updateUserDto.role;
     }
 
     return this.usersRepository.update(id, {
@@ -276,7 +229,7 @@ export class UsersService {
       password,
       photo,
       role,
-      status,
+      emailVerified: updateUserDto.emailVerified,
       provider: updateUserDto.provider,
       socialId: updateUserDto.socialId,
     });

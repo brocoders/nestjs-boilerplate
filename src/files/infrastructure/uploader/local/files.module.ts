@@ -11,7 +11,7 @@ import { randomStringGenerator } from '@nestjs/common/utils/random-string-genera
 
 import { FilesLocalService } from './files.service';
 import { PrismaFilePersistenceModule } from '../../persistence/prisma/prisma-persistence.module';
-import { AllConfigType } from '../../../../config/config.type';
+import { AllConfigType } from '../../../../common/config/config.type';
 
 const infrastructurePersistenceModule = PrismaFilePersistenceModule;
 

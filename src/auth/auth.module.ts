@@ -7,8 +7,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { AnonymousStrategy } from './strategies/anonymous.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { MailModule } from '../mail/mail.module';
-import { PrismaSessionPersistenceModule } from '../session/infrastructure/persistence/prisma/prisma-persistence.module';
-import { SessionService } from '../session/session.service';
+import { AuthEmailController } from './providers/email/auth-email.controller';
+import { AuthEmailService } from './providers/email/auth-email.service';
+import { AuthFacebookController } from './providers/facebook/auth-facebook.controller';
+import { AuthFacebookService } from './providers/facebook/auth-facebook.service';
+import { AuthGoogleController } from './providers/google/auth-google.controller';
+import { AuthGoogleService } from './providers/google/auth-google.service';
+import { PrismaSessionPersistenceModule } from './session/infrastructure/persistence/prisma/prisma-persistence.module';
+import { SessionService } from './session/session.service';
 import { UsersModule } from '../users/users.module';
 
 @Module({
@@ -19,9 +25,17 @@ import { UsersModule } from '../users/users.module';
     MailModule,
     JwtModule.register({}),
   ],
-  controllers: [AuthController],
+  controllers: [
+    AuthController,
+    AuthEmailController,
+    AuthFacebookController,
+    AuthGoogleController,
+  ],
   providers: [
     AuthService,
+    AuthEmailService,
+    AuthFacebookService,
+    AuthGoogleService,
     SessionService,
     JwtStrategy,
     JwtRefreshStrategy,

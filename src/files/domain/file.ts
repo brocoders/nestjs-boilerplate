@@ -6,8 +6,8 @@ import { FileConfig, FileDriver } from '../config/file-config.type';
 
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { AppConfig } from '../../config/app-config.type';
-import appConfig from '../../config/app.config';
+import { AppConfig } from '../../common/config/app-config.type';
+import appConfig from '../../common/config/app.config';
 
 export class FileType {
   @ApiProperty({

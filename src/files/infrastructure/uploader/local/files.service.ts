@@ -6,7 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 
 import { FileRepository } from '../../persistence/file.repository';
-import { AllConfigType } from '../../../../config/config.type';
+import { AllConfigType } from '../../../../common/config/config.type';
 import { FileType } from '../../../domain/file';
 
 @Injectable()

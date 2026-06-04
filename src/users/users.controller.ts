@@ -21,20 +21,20 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { Roles } from '../roles/roles.decorator';
-import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../auth/roles.decorator';
+import { RoleEnum } from '../auth/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { NullableType } from '../utils/types/nullable.type';
+} from '../common/utils/dto/infinity-pagination-response.dto';
+import { NullableType } from '../common/utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
 import { UsersService } from './users.service';
-import { RolesGuard } from '../roles/roles.guard';
-import { infinityPagination } from '../utils/infinity-pagination';
+import { RolesGuard } from '../auth/roles.guard';
+import { infinityPagination } from '../common/utils/infinity-pagination';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)

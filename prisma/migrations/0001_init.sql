@@ -1,16 +1,4 @@
 -- CreateTable
-CREATE TABLE "role" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "status" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
-);
-
--- CreateTable
 CREATE TABLE "file" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "path" TEXT NOT NULL
@@ -20,8 +8,10 @@ CREATE TABLE "file" (
 CREATE TABLE "user" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "email" TEXT,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT,
     "provider" TEXT NOT NULL DEFAULT 'email',
+    "role" TEXT NOT NULL DEFAULT 'user',
     "socialId" TEXT,
     "firstName" TEXT,
     "lastName" TEXT,
@@ -29,11 +19,7 @@ CREATE TABLE "user" (
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" DATETIME,
     "photoId" TEXT,
-    "roleId" INTEGER,
-    "statusId" INTEGER,
-    CONSTRAINT "user_photoId_fkey" FOREIGN KEY ("photoId") REFERENCES "file" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "user_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "role" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "user_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "status" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "user_photoId_fkey" FOREIGN KEY ("photoId") REFERENCES "file" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable

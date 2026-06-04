@@ -1,55 +1,47 @@
-INSERT INTO "role" ("id", "name")
-VALUES (1, 'Admin'), (2, 'User')
-ON CONFLICT("id") DO UPDATE SET "name" = excluded."name";
-
-INSERT INTO "status" ("id", "name")
-VALUES (1, 'Active'), (2, 'Inactive')
-ON CONFLICT("id") DO UPDATE SET "name" = excluded."name";
-
 INSERT INTO "user" (
   "email",
+  "emailVerified",
   "password",
   "provider",
+  "role",
   "firstName",
-  "lastName",
-  "roleId",
-  "statusId"
+  "lastName"
 )
 VALUES (
   'admin@example.com',
+  true,
   '$2b$10$KKFvX.unAeLTP9GnYgu2LOINta71s.09Be/JiQBlO8G3mtl4xz8fS',
   'email',
+  'admin',
   'Super',
-  'Admin',
-  1,
-  1
+  'Admin'
 )
 ON CONFLICT("email") DO UPDATE SET
   "password" = excluded."password",
-  "roleId" = excluded."roleId",
-  "statusId" = excluded."statusId",
+  "role" = excluded."role",
+  "emailVerified" = excluded."emailVerified",
   "deletedAt" = NULL;
 
 INSERT INTO "user" (
   "email",
+  "emailVerified",
   "password",
   "provider",
+  "role",
   "firstName",
-  "lastName",
-  "roleId",
-  "statusId"
+  "lastName"
 )
 VALUES (
   'john.doe@example.com',
+  true,
   '$2b$10$KKFvX.unAeLTP9GnYgu2LOINta71s.09Be/JiQBlO8G3mtl4xz8fS',
   'email',
+  'user',
   'John',
-  'Doe',
-  2,
-  1
+  'Doe'
 )
 ON CONFLICT("email") DO UPDATE SET
   "password" = excluded."password",
-  "roleId" = excluded."roleId",
-  "statusId" = excluded."statusId",
+  "role" = excluded."role",
+  "emailVerified" = excluded."emailVerified",
   "deletedAt" = NULL;

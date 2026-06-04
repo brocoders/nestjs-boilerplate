@@ -56,10 +56,16 @@ async function main() {
     return;
   }
 
+  const migrationFile = process.argv[3] ?? '0001_init.sql';
   const sqlFile =
     command === 'seed'
       ? join(process.cwd(), 'prisma', 'seed.sql')
-      : join(process.cwd(), 'prisma', 'migrations', '0001_init.sql');
+      : join(
+          process.cwd(),
+          'prisma',
+          'migrations',
+          migrationFile.endsWith('.sql') ? migrationFile : `${migrationFile}.sql`,
+        );
 
   const sql = readFileSync(sqlFile, 'utf8');
   const response = await fetch(

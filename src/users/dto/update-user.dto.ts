@@ -1,12 +1,17 @@
 import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
-import { Transform, Type } from 'class-transformer';
-import { IsEmail, IsOptional, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
 import { FileDto } from '../../files/dto/file.dto';
-import { RoleDto } from '../../roles/dto/role.dto';
-import { StatusDto } from '../../statuses/dto/status.dto';
-import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
+import { RoleEnum } from '../../auth/roles.enum';
+import { lowerCaseTransformer } from '../../common/utils/transformers/lower-case.transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiPropertyOptional({ example: 'test1@example.com', type: String })
@@ -36,13 +41,13 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   photo?: FileDto | null;
 
-  @ApiPropertyOptional({ type: () => RoleDto })
+  @ApiPropertyOptional({ enum: RoleEnum })
+  @IsEnum(RoleEnum)
   @IsOptional()
-  @Type(() => RoleDto)
-  role?: RoleDto | null;
+  role?: RoleEnum | null;
 
-  @ApiPropertyOptional({ type: () => StatusDto })
+  @ApiPropertyOptional({ type: Boolean })
+  @IsBoolean()
   @IsOptional()
-  @Type(() => StatusDto)
-  status?: StatusDto;
+  emailVerified?: boolean;
 }

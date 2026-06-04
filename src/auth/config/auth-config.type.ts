@@ -5,8 +5,4 @@ export type AuthConfig = {
   expires?: ms.StringValue;
   refreshSecret?: string;
   refreshExpires?: ms.StringValue;
-  forgotSecret?: string;
-  forgotExpires?: ms.StringValue;
-  confirmEmailSecret?: string;
-  confirmEmailExpires?: ms.StringValue;
 };

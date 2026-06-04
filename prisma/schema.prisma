@@ -6,22 +6,6 @@ datasource db {
   provider = "sqlite"
 }
 
-model Role {
-  id    Int    @id
-  name  String
-  users User[]
-
-  @@map("role")
-}
-
-model Status {
-  id    Int    @id
-  name  String
-  users User[]
-
-  @@map("status")
-}
-
 model File {
   id   String @id @default(uuid())
   path String
@@ -31,23 +15,21 @@ model File {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String?   @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22")
-  password  String?
-  provider  String    @default("email")
-  socialId  String?
-  firstName String?
-  lastName  String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  deletedAt DateTime?
-  photoId   String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374")
-  roleId    Int?
-  statusId  Int?
-  photo     File?     @relation(fields: [photoId], references: [id])
-  role      Role?     @relation(fields: [roleId], references: [id])
-  status    Status?   @relation(fields: [statusId], references: [id])
-  sessions  Session[]
+  id            Int       @id @default(autoincrement())
+  email         String?   @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22")
+  emailVerified Boolean   @default(false)
+  password      String?
+  provider      String    @default("email")
+  role          String    @default("user")
+  socialId      String?
+  firstName     String?
+  lastName      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  deletedAt     DateTime?
+  photoId       String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374")
+  photo         File?     @relation(fields: [photoId], references: [id])
+  sessions      Session[]
 
   @@index([socialId], map: "IDX_9bd2fe7a8e694dedc4ec2f666f")
   @@index([firstName], map: "IDX_58e4dbff0e1a32a9bdc861bb29")

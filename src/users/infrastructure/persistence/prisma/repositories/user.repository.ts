@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '../../../../../database/prisma.service';
-import { NullableType } from '../../../../../utils/types/nullable.type';
-import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { NullableType } from '../../../../../common/utils/types/nullable.type';
+import { IPaginationOptions } from '../../../../../common/utils/types/pagination-options';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
@@ -11,8 +11,6 @@ import { UserPrismaMapper } from '../mappers/user.mapper';
 
 const includeUserRelations = {
   photo: true,
-  role: true,
-  status: true,
 } satisfies Prisma.UserInclude;
 
 @Injectable()
@@ -44,8 +42,8 @@ export class UsersPrismaRepository implements UserRepository {
     };
 
     if (filterOptions?.roles?.length) {
-      where.roleId = {
-        in: filterOptions.roles.map((role) => Number(role.id)),
+      where.role = {
+        in: filterOptions.roles,
       };
     }
 
@@ -162,8 +160,10 @@ export class UsersPrismaRepository implements UserRepository {
   ): Prisma.UserCreateInput {
     return {
       email: data.email,
+      emailVerified: data.emailVerified,
       password: data.password,
       provider: data.provider,
+      role: data.role,
       socialId: data.socialId,
       firstName: this.toNullableString(data.firstName),
       lastName: this.toNullableString(data.lastName),
@@ -174,20 +174,6 @@ export class UsersPrismaRepository implements UserRepository {
             },
           }
         : undefined,
-      role: data.role
-        ? {
-            connect: {
-              id: Number(data.role.id),
-            },
-          }
-        : undefined,
-      status: data.status
-        ? {
-            connect: {
-              id: Number(data.status.id),
-            },
-          }
-        : undefined,
     };
   }
 
@@ -195,8 +181,12 @@ export class UsersPrismaRepository implements UserRepository {
     const data: Prisma.UserUpdateInput = {};
 
     if (payload.email !== undefined) data.email = payload.email;
+    if (payload.emailVerified !== undefined) {
+      data.emailVerified = payload.emailVerified;
+    }
     if (payload.password !== undefined) data.password = payload.password;
     if (payload.provider !== undefined) data.provider = payload.provider;
+    if (payload.role !== undefined) data.role = payload.role;
     if (payload.socialId !== undefined) data.socialId = payload.socialId;
     if (payload.firstName !== undefined) {
       data.firstName = this.toNullableString(payload.firstName);
@@ -211,30 +201,6 @@ export class UsersPrismaRepository implements UserRepository {
         ? {
             connect: {
               id: payload.photo.id,
-            },
-          }
-        : {
-            disconnect: true,
-          };
-    }
-
-    if (payload.role !== undefined) {
-      data.role = payload.role
-        ? {
-            connect: {
-              id: Number(payload.role.id),
-            },
-          }
-        : {
-            disconnect: true,
-          };
-    }
-
-    if (payload.status !== undefined) {
-      data.status = payload.status
-        ? {
-            connect: {
-              id: Number(payload.status.id),
             },
           }
         : {

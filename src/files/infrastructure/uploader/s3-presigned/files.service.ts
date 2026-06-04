@@ -12,7 +12,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { ConfigService } from '@nestjs/config';
 import { FileType } from '../../../domain/file';
-import { AllConfigType } from '../../../../config/config.type';
+import { AllConfigType } from '../../../../common/config/config.type';
 
 @Injectable()
 export class FilesS3PresignedService {

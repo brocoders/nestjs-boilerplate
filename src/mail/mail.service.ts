@@ -4,7 +4,7 @@ import { MailData } from './interfaces/mail-data.interface';
 
 import { MailerService } from './mailer.service';
 import path from 'path';
-import { AllConfigType } from '../config/config.type';
+import { AllConfigType } from '../common/config/config.type';
 
 @Injectable()
 export class MailService {
