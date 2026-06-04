@@ -13,5 +13,3 @@ ab -n 100 -c 100 -T application/json -H "Authorization: Bearer USER_TOKEN" -v 2 
 ---
 
 Previous: [Tests](tests.md)
-
-Next: [Translations](translations.md)

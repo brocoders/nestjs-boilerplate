@@ -6,6 +6,4 @@ export type AppConfig = {
   backendDomain: string;
   port: number;
   apiPrefix: string;
-  fallbackLanguage: string;
-  headerLanguage: string;
 };

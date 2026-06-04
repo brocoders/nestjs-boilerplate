@@ -14,4 +14,3 @@
 - [File uploading](file-uploading.md)
 - [Tests](tests.md)
 - [Benchmarking](benchmarking.md)
-- [Translations](translations.md)

@@ -12,7 +12,6 @@
     "migration:generate": "prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output prisma/migrations/0001_init.sql",
     "migration:run": "node prisma/d1-command.js migration-run",
     "d1:seed:remote": "node prisma/d1-command.js seed",
-    "seed:run:relational": "npm run d1:seed:remote",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -52,7 +51,6 @@
     "ms": "2.1.3",
     "multer": "2.1.1",
     "multer-s3": "3.0.1",
-    "nestjs-i18n": "10.6.0",
     "nodemailer": "8.0.2",
     "passport": "0.7.0",
     "passport-anonymous": "1.0.1",
@@ -103,8 +101,7 @@
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "tslib": "2.8.1",
-    "typescript": "5.9.3",
-    "wrangler": "^4.98.0"
+    "typescript": "5.9.3"
   },
   "jest": {
     "moduleFileExtensions": [
