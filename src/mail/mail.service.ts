@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailData } from './interfaces/mail-data.interface';
 
-import { MailerService } from '../mailer/mailer.service';
+import { MailerService } from './mailer.service';
 import path from 'path';
 import { AllConfigType } from '../config/config.type';
 
