@@ -6,10 +6,10 @@ import {
 import { UsersController } from './users.controller';
 
 import { UsersService } from './users.service';
-import { RelationalUserPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { PrismaUserPersistenceModule } from './infrastructure/persistence/prisma/prisma-persistence.module';
 import { FilesModule } from '../files/files.module';
 
-const infrastructurePersistenceModule = RelationalUserPersistenceModule;
+const infrastructurePersistenceModule = PrismaUserPersistenceModule;
 
 @Module({
   imports: [

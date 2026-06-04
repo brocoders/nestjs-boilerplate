@@ -11,10 +11,10 @@ import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
 
 import { FilesS3Service } from './files.service';
-import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
+import { PrismaFilePersistenceModule } from '../../persistence/prisma/prisma-persistence.module';
 import { AllConfigType } from '../../../../config/config.type';
 
-const infrastructurePersistenceModule = RelationalFilePersistenceModule;
+const infrastructurePersistenceModule = PrismaFilePersistenceModule;
 
 @Module({
   imports: [

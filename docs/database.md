@@ -2,333 +2,68 @@
 
 ## Table of Contents <!-- omit in toc -->
 
-- [About databases](#about-databases)
-- [Working with database schema (TypeORM)](#working-with-database-schema-typeorm)
-  - [Generate migration](#generate-migration)
+- [About database](#about-database)
+- [Working with database schema](#working-with-database-schema)
+  - [Generate Prisma Client](#generate-prisma-client)
+  - [Create migration](#create-migration)
   - [Run migration](#run-migration)
-  - [Revert migration](#revert-migration)
-  - [Drop all tables in database](#drop-all-tables-in-database)
-- [Working with database schema (Mongoose)](#working-with-database-schema-mongoose)
-  - [Create schema](#create-schema)
-- [Seeding (TypeORM)](#seeding-typeorm)
-  - [Creating seeds (TypeORM)](#creating-seeds-typeorm)
-  - [Run seed (TypeORM)](#run-seed-typeorm)
-  - [Factory and Faker (TypeORM)](#factory-and-faker-typeorm)
-- [Seeding (Mongoose)](#seeding-mongoose)
-  - [Creating seeds (Mongoose)](#creating-seeds-mongoose)
-  - [Run seed (Mongoose)](#run-seed-mongoose)
-- [Performance optimization (PostgreSQL + TypeORM)](#performance-optimization-postgresql--typeorm)
+  - [Reset schema](#reset-schema)
+- [Seeding](#seeding)
+- [Performance optimization](#performance-optimization)
   - [Indexes and Foreign Keys](#indexes-and-foreign-keys)
   - [Max connections](#max-connections)
-- [Performance optimization (MongoDB + Mongoose)](#performance-optimization-mongodb--mongoose)
-  - [Design schema](#design-schema)
-- [Switch PostgreSQL to MySQL](#switch-postgresql-to-mysql)
 
 ---
 
-## About databases
+## About database
 
-Boilerplate supports two types of databases: PostgreSQL with TypeORM and MongoDB with Mongoose. You can choose one of them or use both in your project. The choice of database depends on the requirements of your project.
+This project uses PostgreSQL with Prisma.
 
-For support of both databases used [Hexagonal Architecture](architecture.md#hexagonal-architecture).
+The Prisma schema lives in `prisma/schema.prisma`, migrations live in `prisma/migrations`, and application database access goes through repository interfaces in each module.
 
-## Working with database schema (TypeORM)
+## Working with database schema
 
-### Generate migration
+### Generate Prisma Client
 
-1. Create entity file with extension `.entity.ts`. For example `post.entity.ts`:
+```bash
+npm run prisma:generate
+```
 
-   ```ts
-   // /src/posts/infrastructure/persistence/relational/entities/post.entity.ts
+Run this after changing `prisma/schema.prisma` or after installing dependencies.
 
-   import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-   import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+### Create migration
 
-   @Entity()
-   export class Post extends EntityRelationalHelper {
-     @PrimaryGeneratedColumn()
-     id: number;
+Create a migration without applying it:
 
-     @Column()
-     title: string;
+```bash
+npm run migration:create
+```
 
-     @Column()
-     body: string;
+Create and apply a migration in development:
 
-     // Here any fields that you need
-   }
-   ```
-
-1. Next, generate migration file:
-
-   ```bash
-   npm run migration:generate -- src/database/migrations/CreatePostTable
-   ```
-
-1. Apply this migration to database via [npm run migration:run](#run-migration).
+```bash
+npm run migration:generate
+```
 
 ### Run migration
 
+Apply committed migrations:
+
 ```bash
 npm run migration:run
 ```
 
-### Revert migration
+### Reset schema
+
+Drop and recreate the local database schema:
 
 ```bash
-npm run migration:revert
+npm run migration:reset
 ```
 
-### Drop all tables in database
+## Seeding
 
-```bash
-npm run schema:drop
-```
-
----
-
-## Working with database schema (Mongoose)
-
-### Create schema
-
-1. Create entity file with extension `.schema.ts`. For example `post.schema.ts`:
-
-   ```ts
-   // /src/posts/infrastructure/persistence/document/entities/post.schema.ts
-
-   import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-   import { HydratedDocument } from 'mongoose';
-
-   export type PostSchemaDocument = HydratedDocument<PostSchemaClass>;
-
-   @Schema({
-     timestamps: true,
-     toJSON: {
-       virtuals: true,
-       getters: true,
-     },
-   })
-   export class PostSchemaClass extends EntityDocumentHelper {
-     @Prop()
-     title: string;
-
-     @Prop()
-     body: string;
-
-     // Here any fields that you need
-   }
-
-   export const PostSchema = SchemaFactory.createForClass(PostSchemaClass);
-   ```
-
----
-
-## Seeding (TypeORM)
-
-### Creating seeds (TypeORM)
-
-1. Create seed file with `npm run seed:create:relational -- --name Post`. Where `Post` is name of entity.
-1. Go to `src/database/seeds/relational/post/post-seed.service.ts`.
-1. In `run` method extend your logic.
-1. Run [npm run seed:run:relational](#run-seed-typeorm)
-
-### Run seed (TypeORM)
-
-```bash
-npm run seed:run:relational
-```
-
-### Factory and Faker (TypeORM)
-
-1. Install faker:
-
-    ```bash
-    npm i --save-dev @faker-js/faker
-    ```
-
-1. Create `src/database/seeds/relational/user/user.factory.ts`:
-
-    ```ts
-    import { faker } from '@faker-js/faker';
-    import { RoleEnum } from '../../../../roles/roles.enum';
-    import { StatusEnum } from '../../../../statuses/statuses.enum';
-    import { Injectable } from '@nestjs/common';
-    import { InjectRepository } from '@nestjs/typeorm';
-    import { Repository } from 'typeorm';
-    import { RoleEntity } from '../../../../roles/infrastructure/persistence/relational/entities/role.entity';
-    import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
-    import { StatusEntity } from '../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
-
-    @Injectable()
-    export class UserFactory {
-      constructor(
-        @InjectRepository(UserEntity)
-        private repositoryUser: Repository<UserEntity>,
-        @InjectRepository(RoleEntity)
-        private repositoryRole: Repository<RoleEntity>,
-        @InjectRepository(StatusEntity)
-        private repositoryStatus: Repository<StatusEntity>,
-      ) {}
-
-      createRandomUser() {
-        // Need for saving "this" context
-        return () => {
-          return this.repositoryUser.create({
-            firstName: faker.person.firstName(),
-            lastName: faker.person.lastName(),
-            email: faker.internet.email(),
-            password: faker.internet.password(),
-            role: this.repositoryRole.create({
-              id: RoleEnum.user,
-              name: 'User',
-            }),
-            status: this.repositoryStatus.create({
-              id: StatusEnum.active,
-              name: 'Active',
-            }),
-          });
-        };
-      }
-    }
-    ```
-
-1. Make changes in `src/database/seeds/relational/user/user-seed.service.ts`:
-
-    ```ts
-    // Some code here...
-    import { UserFactory } from './user.factory';
-    import { faker } from '@faker-js/faker';
-
-    @Injectable()
-    export class UserSeedService {
-      constructor(
-        // Some code here...
-        private userFactory: UserFactory,
-      ) {}
-
-      async run() {
-        // Some code here...
-
-        await this.repository.save(
-          faker.helpers.multiple(this.userFactory.createRandomUser(), {
-            count: 5,
-          }),
-        );
-      }
-    }
-    ```
-
-1. Make changes in `src/database/seeds/relational/user/user-seed.module.ts`:
-
-    ```ts
-    import { Module } from '@nestjs/common';
-    import { TypeOrmModule } from '@nestjs/typeorm';
-    
-    import { UserSeedService } from './user-seed.service';
-    import { UserFactory } from './user.factory';
-
-    import { UserEntity } from '../../../../users/infrastructure/persistence/relational/entities/user.entity';
-    import { RoleEntity } from '../../../../roles/infrastructure/persistence/relational/entities/role.entity';
-    import { StatusEntity } from '../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
-
-    @Module({
-      imports: [TypeOrmModule.forFeature([UserEntity, Role, Status])],
-      providers: [UserSeedService, UserFactory],
-      exports: [UserSeedService, UserFactory],
-    })
-    export class UserSeedModule {}
-
-    ```
-
-1. Run seed:
-
-    ```bash
-    npm run seed:run
-    ```
-
----
-
-## Seeding (Mongoose)
-
-### Creating seeds (Mongoose)
-
-1. Create seed file with `npm run seed:create:document -- --name Post`. Where `Post` is name of entity.
-1. Go to `src/database/seeds/document/post/post-seed.service.ts`.
-1. In `run` method extend your logic.
-1. Run [npm run seed:run:document](#run-seed-mongoose)
-
-### Run seed (Mongoose)
-
-```bash
-npm run seed:run:document
-```
-
----
-
-## Performance optimization (PostgreSQL + TypeORM)
-
-### Indexes and Foreign Keys
-
-Don't forget to create `indexes` on the Foreign Keys (FK) columns (if needed), because by default PostgreSQL [does not automatically add indexes to FK](https://stackoverflow.com/a/970605/18140714).
-
-### Max connections
-
-Set the optimal number of [max connections](https://node-postgres.com/apis/pool) to database for your application in `/.env`:
-
-```txt
-DATABASE_MAX_CONNECTIONS=100
-```
-
-You can think of this parameter as how many concurrent database connections your application can handle.
-
-## Performance optimization (MongoDB + Mongoose)
-
-### Design schema
-
-Designing schema for MongoDB is completely different from designing schema for relational databases. For best performance, you should design your schema according to:
-
-1. [MongoDB Schema Design Anti-Patterns](https://www.mongodb.com/developer/products/mongodb/schema-design-anti-pattern-massive-arrays)
-1. [MongoDB Schema Design Best Practices](https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/)
-
-## Switch PostgreSQL to MySQL
-
-If you want to use `MySQL` instead of `PostgreSQL`, you can make the changes after following the complete guide given [here](installing-and-running.md).
-
-Once you have completed all the steps, you should have a running app.
-![image](https://github.com/user-attachments/assets/ec60b61a-65e6-43e2-9bcf-72dad4c8a9fa)
-
-If you've made it this far, it only requires a few changes to switch from `PostgreSQL` to `MySQL`.
-
-**Change the `.env` file to the following:**
-
-```env
-DATABASE_TYPE=mysql
-DATABASE_HOST=localhost
-DATABASE_PORT=3306
-DATABASE_USERNAME=root
-DATABASE_PASSWORD=secret
-DATABASE_NAME=app
-```
-
-Ensure MySQL is running locally with the credentials from your `.env` file.
-
-Now install the MySQL client:
-
-```bash
-npm i mysql2 --save
-```
-
-**Delete the existing migration file and generate a new one with the following script:**
-
-```bash
-npm run migration:generate -- src/database/migrations/newMigration --pretty=true
-```
-
-Run migrations:
-
-```bash
-npm run migration:run
-```
+Seeds are defined in `src/database/seeds/relational/run-seed.ts`.
 
 Run seeds:
 
@@ -336,17 +71,21 @@ Run seeds:
 npm run seed:run:relational
 ```
 
-Run the app in dev mode:
+Current seeds create default roles, statuses, and example admin/user accounts.
 
-```bash
-npm run start:dev
+## Performance optimization
+
+### Indexes and Foreign Keys
+
+Keep indexes on frequently filtered columns and foreign keys. PostgreSQL does not automatically add indexes to foreign key columns.
+
+### Max connections
+
+Set the optimal number of database connections in `.env`:
+
+```txt
+DATABASE_MAX_CONNECTIONS=100
 ```
-
-Open <http://localhost:3000>
-
-Running App:
-![image](https://github.com/user-attachments/assets/5dc0609d-5f6d-4176-918d-1744906f4f88)
-![image](https://github.com/user-attachments/assets/ff2201a6-d834-4c8b-9ab7-b9413a0a95c1)
 
 ---
 

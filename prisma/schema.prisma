@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Role {
+  id    Int    @id
+  name  String
+  users User[]
+
+  @@map("role")
+}
+
+model Status {
+  id    Int    @id
+  name  String
+  users User[]
+
+  @@map("status")
+}
+
+model File {
+  id   String @id @default(uuid()) @db.Uuid
+  path String
+  user User?
+
+  @@map("file")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String?   @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22")
+  password  String?
+  provider  String    @default("email")
+  socialId  String?
+  firstName String?
+  lastName  String?
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  photoId   String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374") @db.Uuid
+  roleId    Int?
+  statusId  Int?
+  photo     File?     @relation(fields: [photoId], references: [id])
+  role      Role?     @relation(fields: [roleId], references: [id])
+  status    Status?   @relation(fields: [statusId], references: [id])
+  sessions  Session[]
+
+  @@index([socialId], map: "IDX_9bd2fe7a8e694dedc4ec2f666f")
+  @@index([firstName], map: "IDX_58e4dbff0e1a32a9bdc861bb29")
+  @@index([lastName], map: "IDX_f0e1b4ecdca13b177e2e3a0613")
+  @@map("user")
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  userId    Int?
+  hash      String
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "IDX_3d2f174ef04fb312fdebd0ddc5")
+  @@map("session")
+}

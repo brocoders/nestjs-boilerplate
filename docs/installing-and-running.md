@@ -1,21 +1,17 @@
 # Installation
 
-NestJS Boilerplate supports [TypeORM](https://www.npmjs.com/package/typeorm) and [Mongoose](https://www.npmjs.com/package/mongoose) for working with databases. By default, TypeORM uses [PostgreSQL](https://www.postgresql.org/) as the main database, but you can use any relational database.
-
-Switching between TypeORM and Mongoose is implemented based on the [Hexagonal Architecture](architecture.md#hexagonal-architecture). This makes it easy to choose the right database for your application.
+This project uses PostgreSQL with Prisma.
 
 ---
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Comfortable development (PostgreSQL + TypeORM)](#comfortable-development-postgresql--typeorm)
-  - [Video guideline (PostgreSQL + TypeORM)](#video-guideline-postgresql--typeorm)
-- [Comfortable development (MongoDB + Mongoose)](#comfortable-development-mongodb--mongoose)
+- [Comfortable development](#comfortable-development)
 - [Links](#links)
 
 ---
 
-## Comfortable development (PostgreSQL + TypeORM)
+## Comfortable development
 
 1. Clone repository
 
@@ -23,109 +19,52 @@ Switching between TypeORM and Mongoose is implemented based on the [Hexagonal Ar
    git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
    ```
 
-1. Go to folder, and copy `env-example-relational` as `.env`.
+1. Go to folder, and copy `env.example` as `.env`.
 
    ```bash
    cd my-app/
-   cp env-example-relational .env
+   cp env.example .env
    ```
 
-1. Ensure PostgreSQL is running locally and `DATABASE_HOST=localhost`.
+1. Ensure PostgreSQL is running locally and `DATABASE_URL` points to it.
 
-   If you use email during development, ensure your SMTP service is running locally and `MAIL_HOST=localhost`.
-
-1. Install dependency
+1. Install dependencies.
 
    ```bash
    npm install
    ```
 
-1. Run app configuration
-
-   > You should run this command only the first time on initialization of your project, all next time skip it.
-
-   > If you want to contribute to the boilerplate, you should NOT run this command.
+1. Generate Prisma Client.
 
    ```bash
-   npm run app:config
+   npm run prisma:generate
    ```
 
-1. Run migrations
+1. Run migrations.
 
    ```bash
    npm run migration:run
    ```
 
-1. Run seeds
+1. Run seeds.
 
    ```bash
    npm run seed:run:relational
    ```
 
-1. Run app in dev mode
+1. Run app in dev mode.
 
    ```bash
    npm run start:dev
    ```
 
 1. Open <http://localhost:3000>
-
-### Video guideline (PostgreSQL + TypeORM)
-
-<https://github.com/user-attachments/assets/136a16aa-f94a-4b20-8eaf-6b4262964315>
 
 ---
 
-## Comfortable development (MongoDB + Mongoose)
-
-1. Clone repository
-
-   ```bash
-   git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
-   ```
-
-1. Go to folder, and copy `env-example-document` as `.env`.
-
-   ```bash
-   cd my-app/
-   cp env-example-document .env
-   ```
-
-1. Ensure MongoDB is running locally and `DATABASE_URL=mongodb://localhost:27017`.
-
-1. Install dependency
-
-   ```bash
-   npm install
-   ```
-
-1. Run app configuration
-
-   > You should run this command only the first time on initialization of your project, all next time skip it.
-
-   > If you want to contribute to the boilerplate, you should NOT run this command.
-
-   ```bash
-   npm run app:config
-   ```
-
-1. Run seeds
-
-   ```bash
-   npm run seed:run:document
-   ```
-
-1. Run app in dev mode
-
-   ```bash
-   npm run start:dev
-   ```
-
-1. Open <http://localhost:3000>
-
 ## Links
 
-- Swagger (API docs): <http://localhost:3000/docs>
+- Swagger: <http://localhost:3000/docs>
 
 ---
 

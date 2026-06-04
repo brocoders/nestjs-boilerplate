@@ -13,20 +13,18 @@ For serialization boilerplate use [class-transformer](https://www.npmjs.com/pack
 
 ## Hide private property
 
-If you need to hide some property in the entity you can use `@Exclude({ toPlainOnly: true })` on the column.
+If you need to hide some property in the response model you can use `@Exclude({ toPlainOnly: true })`.
 
 ```ts
-// /src/users/entities/user.entity.ts
+// /src/users/domain/user.ts
 
 import { Exclude } from 'class-transformer';
 
-@Entity()
-export class User extends EntityRelationalHelper {
+export class User {
   // Some code here...
 
-  @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
-  password: string;
+  password?: string;
 
   // Some code here...
 }
@@ -66,20 +64,18 @@ export class User extends EntityRelationalHelper {
    }
    ```
 
-1. In the entity add `@Expose({ groups: ['admin'] })` to the column that should be exposed for admin:
+1. In the response model add `@Expose({ groups: ['admin'] })` to the property that should be exposed for admin:
 
    ```ts
-   // /src/users/entities/user.entity.ts
+   // /src/users/domain/user.ts
 
    // Some code here...
 
    import { Expose } from 'class-transformer';
 
-   @Entity()
-   export class User extends EntityRelationalHelper {
+   export class User {
      // Some code here...
 
-     @Column({ unique: true, nullable: true })
      @Expose({ groups: ['admin'] })
      email: string | null;
 

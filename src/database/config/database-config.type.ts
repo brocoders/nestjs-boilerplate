@@ -1,5 +1,4 @@
 export type DatabaseConfig = {
-  isDocumentDatabase: boolean;
   url?: string;
   type?: string;
   host?: string;
