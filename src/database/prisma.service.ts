@@ -1,19 +1,26 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-
-import { AllConfigType } from '../config/config.type';
+import { PrismaD1 } from '@prisma/adapter-d1';
 
 @Injectable()
 export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
-  constructor(configService: ConfigService<AllConfigType>) {
+  constructor() {
     super({
-      adapter: new PrismaPg({
-        connectionString: PrismaService.getDatabaseUrl(configService),
+      adapter: new PrismaD1({
+        CLOUDFLARE_ACCOUNT_ID: PrismaService.getRequiredEnv(
+          'CLOUDFLARE_ACCOUNT_ID',
+        ),
+        CLOUDFLARE_D1_TOKEN: PrismaService.getRequiredEnv(
+          'CLOUDFLARE_D1_TOKEN',
+        ),
+        CLOUDFLARE_DATABASE_ID: PrismaService.getRequiredEnv(
+          'CLOUDFLARE_DATABASE_ID',
+        ),
+        CLOUDFLARE_SHADOW_DATABASE_ID:
+          process.env.CLOUDFLARE_SHADOW_DATABASE_ID,
       }),
     });
   }
@@ -26,27 +33,13 @@ export class PrismaService
     await this.$disconnect();
   }
 
-  private static getDatabaseUrl(
-    configService: ConfigService<AllConfigType>,
-  ): string {
-    const configuredUrl = configService.get('database.url', { infer: true });
+  private static getRequiredEnv(name: string): string {
+    const value = process.env[name];
 
-    if (configuredUrl) {
-      return configuredUrl;
+    if (!value) {
+      throw new Error(`${name} is required for Cloudflare D1 Prisma access`);
     }
 
-    const url = new URL(
-      `postgresql://${configService.getOrThrow('database.host', {
-        infer: true,
-      })}:${configService.get('database.port', { infer: true }) ?? 5432}/${configService.getOrThrow('database.name', { infer: true })}`,
-    );
-
-    url.username = configService.getOrThrow('database.username', {
-      infer: true,
-    });
-    url.password =
-      configService.get('database.password', { infer: true }) ?? '';
-
-    return url.toString();
+    return value;
   }
 }

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model Role {
@@ -23,7 +23,7 @@ model Status {
 }
 
 model File {
-  id   String @id @default(uuid()) @db.Uuid
+  id   String @id @default(uuid())
   path String
   user User?
 
@@ -38,10 +38,10 @@ model User {
   socialId  String?
   firstName String?
   lastName  String?
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
-  deletedAt DateTime? @db.Timestamp(6)
-  photoId   String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374") @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+  photoId   String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374")
   roleId    Int?
   statusId  Int?
   photo     File?     @relation(fields: [photoId], references: [id])
@@ -59,9 +59,9 @@ model Session {
   id        Int       @id @default(autoincrement())
   userId    Int?
   hash      String
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
-  deletedAt DateTime? @db.Timestamp(6)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
   user      User?     @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "IDX_3d2f174ef04fb312fdebd0ddc5")

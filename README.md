@@ -31,7 +31,7 @@ Belongs to the [bc boilerplates](https://bcboilerplates.com/) ecosystem
 
 ## Features
 
-- [x] Database. Support PostgreSQL with [Prisma](https://www.prisma.io/).
+- [x] Database. Support Cloudflare D1 with [Prisma](https://www.prisma.io/).
 - [x] Seeding.
 - [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
 - [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer)).

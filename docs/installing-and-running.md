@@ -1,6 +1,6 @@
 # Installation
 
-This project uses PostgreSQL with Prisma.
+This branch uses Cloudflare D1 with Prisma.
 
 ---
 
@@ -13,7 +13,7 @@ This project uses PostgreSQL with Prisma.
 
 ## Comfortable development
 
-1. Clone repository
+1. Clone repository.
 
    ```bash
    git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
@@ -26,13 +26,19 @@ This project uses PostgreSQL with Prisma.
    cp env.example .env
    ```
 
-1. Ensure PostgreSQL is running locally and `DATABASE_URL` points to it.
-
 1. Install dependencies.
 
    ```bash
    npm install
    ```
+
+1. Create a D1 database in Cloudflare.
+
+   ```bash
+   CLOUDFLARE_DATABASE_NAME=nestjs-boilerplate-d1 npm run d1:create
+   ```
+
+1. Add `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_D1_TOKEN`, `CLOUDFLARE_DATABASE_ID`, and `CLOUDFLARE_DATABASE_NAME` to `.env`.
 
 1. Generate Prisma Client.
 
@@ -40,16 +46,16 @@ This project uses PostgreSQL with Prisma.
    npm run prisma:generate
    ```
 
-1. Run migrations.
+1. Run remote D1 migrations.
 
    ```bash
    npm run migration:run
    ```
 
-1. Run seeds.
+1. Seed remote D1.
 
    ```bash
-   npm run seed:run:relational
+   npm run d1:seed:remote
    ```
 
 1. Run app in dev mode.
@@ -64,7 +70,7 @@ This project uses PostgreSQL with Prisma.
 
 ## Links
 
-- Swagger: <http://localhost:3000/docs>
+- Cloudflare D1 Prisma tutorial: <https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/>
 
 ---
 
