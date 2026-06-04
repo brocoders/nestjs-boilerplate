@@ -8,4 +8,5 @@ export type MailConfig = {
   ignoreTLS: boolean;
   secure: boolean;
   requireTLS: boolean;
+  disableSend: boolean;
 };

@@ -9,33 +9,17 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
-
-  maildev:
-    build:
-      context: .
-      dockerfile: maildev.Dockerfile
-    ports:
-      - ${MAIL_CLIENT_PORT}:1080
-      - ${MAIL_PORT}:1025
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # Uncomment to use redis
   # redis:
   #   image: redis:7-alpine
   #   ports:
   #     - 6379:6379
-
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - ${APP_PORT}:${APP_PORT}
 
 volumes:
   boilerplate-db:

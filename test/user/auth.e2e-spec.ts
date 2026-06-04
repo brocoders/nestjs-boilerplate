@@ -1,20 +1,35 @@
 import { describe, expect, it, beforeAll } from '@jest/globals';
+import { JwtService } from '@nestjs/jwt';
+import type ms from 'ms';
 import request from 'supertest';
-import {
-  APP_URL,
-  TESTER_EMAIL,
-  TESTER_PASSWORD,
-  MAIL_HOST,
-  MAIL_PORT,
-} from '../utils/constants';
+import { APP_URL, TESTER_EMAIL, TESTER_PASSWORD } from '../utils/constants';
+
+const jwtService = new JwtService();
+
+const createConfirmEmailHash = (
+  confirmEmailUserId: number,
+  newEmail?: string,
+) => {
+  return jwtService.signAsync(
+    {
+      confirmEmailUserId,
+      ...(newEmail ? { newEmail } : {}),
+    },
+    {
+      secret: process.env.AUTH_CONFIRM_EMAIL_SECRET,
+      expiresIn: (process.env.AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN ??
+        '1d') as ms.StringValue,
+    },
+  );
+};
 
 describe('Auth Module', () => {
   const app = APP_URL;
-  const mail = `http://${MAIL_HOST}:${MAIL_PORT}`;
   const newUserFirstName = `Tester${Date.now()}`;
   const newUserLastName = `E2E`;
   const newUserEmail = `User.${Date.now()}@example.com`;
   const newUserPassword = `secret`;
+  let newUserId: number;
 
   describe('Registration', () => {
     it('should fail with exists email: /api/v1/auth/email/register (POST)', () => {
@@ -52,24 +67,14 @@ describe('Auth Module', () => {
           .expect(200)
           .expect(({ body }) => {
             expect(body.token).toBeDefined();
+            newUserId = body.user.id;
           });
       });
     });
 
     describe('Confirm email', () => {
       it('should successfully: /api/v1/auth/email/confirm (POST)', async () => {
-        const hash = await request(mail)
-          .get('/email')
-          .then(({ body }) =>
-            body
-              .find(
-                (letter) =>
-                  letter.to[0].address.toLowerCase() ===
-                    newUserEmail.toLowerCase() &&
-                  /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
-              )
-              ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
-          );
+        const hash = await createConfirmEmailHash(newUserId);
 
         return request(app)
           .post('/api/v1/auth/email/confirm')
@@ -80,18 +85,7 @@ describe('Auth Module', () => {
       });
 
       it('should fail for already confirmed email: /api/v1/auth/email/confirm (POST)', async () => {
-        const hash = await request(mail)
-          .get('/email')
-          .then(({ body }) =>
-            body
-              .find(
-                (letter) =>
-                  letter.to[0].address.toLowerCase() ===
-                    newUserEmail.toLowerCase() &&
-                  /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
-              )
-              ?.text.replace(/.*confirm\-email\?hash\=(\S+).*/g, '$1'),
-          );
+        const hash = await createConfirmEmailHash(newUserId);
 
         return request(app)
           .post('/api/v1/auth/email/confirm')
@@ -261,10 +255,10 @@ describe('Auth Module', () => {
         })
         .expect(204);
 
-      const newUserApiToken = await request(app)
+      const { token: newUserApiToken, user } = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => body.token);
+        .then(({ body }) => body);
 
       await request(app)
         .patch('/api/v1/auth/me')
@@ -276,19 +270,7 @@ describe('Auth Module', () => {
         })
         .expect(200);
 
-      const hash = await request(mail)
-        .get('/email')
-        .then(({ body }) =>
-          body
-            .find((letter) => {
-              return (
-                letter.to[0].address.toLowerCase() ===
-                  newUserNewEmail.toLowerCase() &&
-                /.*confirm\-new\-email\?hash\=(\S+).*/g.test(letter.text)
-              );
-            })
-            ?.text.replace(/.*confirm\-new\-email\?hash\=(\S+).*/g, '$1'),
-        );
+      const hash = await createConfirmEmailHash(user.id, newUserNewEmail);
 
       await request(app)
         .get('/api/v1/auth/me')

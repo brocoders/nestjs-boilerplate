@@ -30,6 +30,10 @@ export class MailerService {
     templatePath: string;
     context: Record<string, unknown>;
   }): Promise<void> {
+    if (this.configService.get('mail.disableSend', { infer: true })) {
+      return;
+    }
+
     let html: string | undefined;
     if (templatePath) {
       const template = await fs.readFile(templatePath, 'utf-8');

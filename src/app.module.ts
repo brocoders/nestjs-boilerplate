@@ -9,11 +9,9 @@ import mailConfig from './mail/config/mail.config';
 import fileConfig from './files/config/file.config';
 import facebookConfig from './auth-facebook/config/facebook.config';
 import googleConfig from './auth-google/config/google.config';
-import appleConfig from './auth-apple/config/apple.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthAppleModule } from './auth-apple/auth-apple.module';
 import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { HeaderResolver, I18nModule } from 'nestjs-i18n';
@@ -24,23 +22,13 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './database/mongoose-config.service';
-import { DatabaseConfig } from './database/config/database-config.type';
 
-// <database-block>
-const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
-  ? MongooseModule.forRootAsync({
-      useClass: MongooseConfigService,
-    })
-  : TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService,
-      dataSourceFactory: async (options: DataSourceOptions) => {
-        return new DataSource(options).initialize();
-      },
-    });
-// </database-block>
+const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
+  useClass: TypeOrmConfigService,
+  dataSourceFactory: async (options: DataSourceOptions) => {
+    return new DataSource(options).initialize();
+  },
+});
 
 @Module({
   imports: [
@@ -54,7 +42,6 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
         fileConfig,
         facebookConfig,
         googleConfig,
-        appleConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -87,7 +74,6 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     AuthModule,
     AuthFacebookModule,
     AuthGoogleModule,
-    AuthAppleModule,
     SessionModule,
     MailModule,
     MailerModule,

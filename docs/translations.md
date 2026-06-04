@@ -42,4 +42,4 @@ export class SomeService {
 
 ---
 
-Previous: [Automatic update of dependencies](automatic-update-dependencies.md)
+Previous: [Benchmarking](benchmarking.md)

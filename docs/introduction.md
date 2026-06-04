@@ -21,7 +21,6 @@ Frontend (React, Next.js): <https://github.com/brocoders/extensive-react-boilerp
 - [x] File uploads. Support local and Amazon S3 drivers.
 - [x] Swagger.
 - [x] Support E2E and units tests.
-- [x] Docker.
 - [x] CI (Github Actions).
 
 ---
