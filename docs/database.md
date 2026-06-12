@@ -377,7 +377,7 @@ Run the app in dev mode:
 npm run start:dev
 ```
 
-Open <http://localhost:3000>
+Open <http://localhost:3001>
 
 To set up Adminer:
 

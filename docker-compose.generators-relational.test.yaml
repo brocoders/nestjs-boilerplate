@@ -33,6 +33,8 @@ services:
       dockerfile: relational.test.Dockerfile
     env_file:
       - env-example-relational
+    ports:
+      - '3001:3001'
     volumes:
       - ./src:/usr/src/app/src
       - ./test:/usr/src/app/test
