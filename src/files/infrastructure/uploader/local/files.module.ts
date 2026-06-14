@@ -6,10 +6,10 @@ import {
 import { FilesLocalController } from './files.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { diskStorage } from 'multer';
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
+import { memoryStorage } from 'multer';
 
 import { FilesLocalService } from './files.service';
+import { FileScanService } from '../scan/file-scan.service';
 
 import { DocumentFilePersistenceModule } from '../../persistence/document/document-persistence.module';
 import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
@@ -44,21 +44,9 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
                 false,
               );
             }
-
             callback(null, true);
           },
-          storage: diskStorage({
-            destination: './files',
-            filename: (request, file, callback) => {
-              callback(
-                null,
-                `${randomStringGenerator()}.${file.originalname
-                  .split('.')
-                  .pop()
-                  ?.toLowerCase()}`,
-              );
-            },
-          }),
+          storage: memoryStorage(),
           limits: {
             fileSize: configService.get('file.maxFileSize', { infer: true }),
           },
@@ -67,7 +55,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
     }),
   ],
   controllers: [FilesLocalController],
-  providers: [ConfigModule, ConfigService, FilesLocalService],
+  providers: [ConfigModule, ConfigService, FilesLocalService, FileScanService],
   exports: [FilesLocalService],
 })
 export class FilesLocalModule {}
