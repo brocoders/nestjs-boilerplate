@@ -11,6 +11,7 @@ import removeAllDbResourceGeneration from './scripts/resource-generation-scripts
 import removeAllDbPropertyGeneration from './scripts/property-generation-scripts/remove-all-db';
 import removeDocumentPropertyGeneration from './scripts/property-generation-scripts/remove-document';
 import removeRelationalPropertyGeneration from './scripts/property-generation-scripts/remove-relational';
+import removeEslintPrettier from './scripts/remove-eslint-prettier';
 
 void (async () => {
   const response = await prompts(
@@ -24,6 +25,16 @@ void (async () => {
           { title: 'PostgreSQL', value: 'pg' },
           { title: 'MongoDB', value: 'mongo' },
         ],
+      },
+      {
+        type: 'select',
+        name: 'linterFormatter',
+        message: 'Which linter and formatter do you want to use?',
+        choices: [
+          { title: 'ESLint & Prettier', value: 'eslint-prettier' },
+          { title: 'Biome', value: 'biome' },
+        ],
+        initial: 0,
       },
       {
         type: 'confirm',
@@ -72,6 +83,10 @@ void (async () => {
     removeDocumentPropertyGeneration();
     removeAllDbResourceGeneration();
     removeAllDbPropertyGeneration();
+  }
+
+  if (response.linterFormatter === 'biome') {
+    removeEslintPrettier();
   }
 
   if (!response.isAuthFacebook) {
