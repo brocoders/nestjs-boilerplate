@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import helmet from 'helmet';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
@@ -14,7 +15,7 @@ import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
 
@@ -28,6 +29,19 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.get('app.corsOrigins', { infer: true })
+      ? configService
+          .getOrThrow('app.corsOrigins', { infer: true })
+          .split(',')
+          .map((origin) => origin.trim())
+      : true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  });
+
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalInterceptors(
     // ResolvePromisesInterceptor is used to resolve promises in responses because class-transformer can't do it

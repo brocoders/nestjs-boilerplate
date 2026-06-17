@@ -27,6 +27,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
+import { LoggerModule } from 'nestjs-pino';
+import { HealthModule } from './health/health.module';
 
 // <database-block>
 const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
@@ -57,6 +59,20 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
         appleConfig,
       ],
       envFilePath: ['.env'],
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? { target: 'pino-pretty', options: { colorize: true } }
+            : undefined,
+        level: process.env.LOG_LEVEL || 'debug',
+        autoLogging: {
+          ignore: (req) =>
+            req.url?.includes('/health') || req.url?.includes('/docs') || false,
+        },
+        redact: ['req.headers.authorization', 'req.headers.cookie'],
+      },
     }),
     infrastructureDatabaseModule,
     I18nModule.forRootAsync({
@@ -92,6 +108,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     MailModule,
     MailerModule,
     HomeModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
