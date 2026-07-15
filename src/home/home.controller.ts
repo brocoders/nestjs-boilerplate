@@ -6,7 +6,7 @@ import { HomeService } from './home.service';
 @ApiTags('Home')
 @Controller()
 export class HomeController {
-  constructor(private service: HomeService) {}
+  constructor(private readonly service: HomeService) {}
 
   @Get()
   appInfo() {

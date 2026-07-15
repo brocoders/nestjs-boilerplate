@@ -1,3 +1,4 @@
+import { describe, expect, it, beforeAll } from '@jest/globals';
 import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from '../utils/constants';
 import request from 'supertest';
 import { RoleEnum } from '../../src/roles/roles.enum';

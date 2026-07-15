@@ -16,6 +16,13 @@ export abstract class SessionRepository {
     >,
   ): Promise<Session | null>;
 
+  abstract updateByHash(
+    conditions: { id: Session['id']; hash: Session['hash'] },
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null>;
+
   abstract deleteById(id: Session['id']): Promise<void>;
 
   abstract deleteByUserId(conditions: { userId: User['id'] }): Promise<void>;

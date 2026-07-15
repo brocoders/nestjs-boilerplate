@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, APP_URL } from '../utils/constants';
 

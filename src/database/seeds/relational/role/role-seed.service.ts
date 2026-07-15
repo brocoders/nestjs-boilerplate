@@ -8,7 +8,7 @@ import { RoleEnum } from '../../../../roles/roles.enum';
 export class RoleSeedService {
   constructor(
     @InjectRepository(RoleEntity)
-    private repository: Repository<RoleEntity>,
+    private readonly repository: Repository<RoleEntity>,
   ) {}
 
   async run() {

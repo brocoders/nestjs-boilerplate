@@ -8,7 +8,7 @@ import { StatusEnum } from '../../../../statuses/statuses.enum';
 export class StatusSeedService {
   constructor(
     @InjectRepository(StatusEntity)
-    private repository: Repository<StatusEntity>,
+    private readonly repository: Repository<StatusEntity>,
   ) {}
 
   async run() {

@@ -11,7 +11,7 @@ import { UserEntity } from '../../../../users/infrastructure/persistence/relatio
 export class UserSeedService {
   constructor(
     @InjectRepository(UserEntity)
-    private repository: Repository<UserEntity>,
+    private readonly repository: Repository<UserEntity>,
   ) {}
 
   async run() {

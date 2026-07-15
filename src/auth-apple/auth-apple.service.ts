@@ -7,7 +7,7 @@ import { AllConfigType } from '../config/config.type';
 
 @Injectable()
 export class AuthAppleService {
-  constructor(private configService: ConfigService<AllConfigType>) {}
+  constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   async getProfileByToken(
     loginDto: AuthAppleLoginDto,

@@ -28,6 +28,15 @@ export class SessionService {
     return this.sessionRepository.update(id, payload);
   }
 
+  updateByHash(
+    conditions: { id: Session['id']; hash: Session['hash'] },
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null> {
+    return this.sessionRepository.updateByHash(conditions, payload);
+  }
+
   deleteById(id: Session['id']): Promise<void> {
     return this.sessionRepository.deleteById(id);
   }
