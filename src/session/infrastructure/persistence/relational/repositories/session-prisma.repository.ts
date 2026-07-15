@@ -98,6 +98,56 @@ export class SessionPrismaRepository implements SessionRepository {
     return SessionPrismaMapper.toDomain(updatedEntity);
   }
 
+  async updateByHash(
+    conditions: { id: Session['id']; hash: Session['hash'] },
+    payload: Partial<
+      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+    >,
+  ): Promise<Session | null> {
+    const entity = await this.prisma.session.findFirst({
+      where: {
+        id: Number(conditions.id),
+        hash: conditions.hash,
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          include: {
+            role: true,
+            status: true,
+            photo: true,
+          },
+        },
+      },
+    });
+
+    if (!entity) {
+      throw new Error('Session not found');
+    }
+
+    const domainEntity = SessionPrismaMapper.toDomain(entity);
+    const updatedData = SessionPrismaMapper.toPersistence({
+      ...domainEntity,
+      ...payload,
+    });
+
+    const updatedEntity = await this.prisma.session.update({
+      where: { id: Number(conditions.id) },
+      data: updatedData,
+      include: {
+        user: {
+          include: {
+            role: true,
+            status: true,
+            photo: true,
+          },
+        },
+      },
+    });
+
+    return SessionPrismaMapper.toDomain(updatedEntity);
+  }
+
   async deleteById(id: Session['id']): Promise<void> {
     await this.prisma.session.update({
       where: { id: Number(id) },

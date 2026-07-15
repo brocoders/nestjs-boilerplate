@@ -6,7 +6,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-<<<<<<< HEAD
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
@@ -16,15 +15,6 @@
     "migration:run": "prisma migrate deploy",
     "schema:push": "prisma db push",
     "schema:pull": "prisma db pull",
-=======
-    "typeorm": "env-cmd -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "npm run typeorm -- --dataSource=src/database/data-source.ts migration:generate",
-    "postmigration:generate": "npm run lint -- --fix",
-    "migration:create": "npm run typeorm -- migration:create",
-    "migration:run": "npm run typeorm -- --dataSource=src/database/data-source.ts migration:run",
-    "migration:revert": "npm run typeorm -- --dataSource=src/database/data-source.ts migration:revert",
-    "schema:drop": "npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
->>>>>>> upstream/main
     "seed:create:relational": "hygen seeds create-relational",
     "generate:resource:relational": "hygen generate relational-resource",
     "postgenerate:resource:relational": "npm run lint -- --fix",
@@ -44,64 +34,30 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-<<<<<<< HEAD
     "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "test:e2e:relational:docker": "docker compose -f docker-compose.relational.test.yaml --env-file env-example-relational -p tests up -d --build && docker compose -f docker-compose.relational.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3000 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.relational.test.yaml -p tests down && docker compose -p tests rm -svf",
-=======
-    "test:e2e": "env-cmd -- jest --config ./test/jest-e2e.json",
-    "test:generators:relational": "bash test/generators/run-static.sh relational",
-    "test:generators:document": "bash test/generators/run-static.sh document",
-    "test:e2e:generators:relational:docker": "bash test/generators/run-crud-relational.sh",
-    "test:e2e:generators:document:docker": "bash test/generators/run-crud-document.sh",
-    "test:e2e:document:docker": "docker compose -f docker-compose.document.test.yaml --env-file env-example-document -p tests up -d --build && docker compose -f docker-compose.document.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3001 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.document.test.yaml -p tests down && docker compose -p tests rm -svf",
-    "test:e2e:relational:docker": "docker compose -f docker-compose.relational.test.yaml --env-file env-example-relational -p tests up -d --build && docker compose -f docker-compose.relational.test.yaml -p tests exec api /opt/wait-for-it.sh -t 0 localhost:3001 -- npm run test:e2e -- --watchAll --runInBand && docker compose -f docker-compose.relational.test.yaml -p tests down && docker compose -p tests rm -svf",
->>>>>>> upstream/main
     "prepare": "is-ci || husky",
     "release": "release-it"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@aws-sdk/client-s3": "3.864.0",
-    "@aws-sdk/s3-request-presigner": "3.864.0",
-    "@nestjs/common": "11.1.6",
-    "@nestjs/config": "4.0.2",
-    "@nestjs/core": "11.1.6",
-    "@nestjs/jwt": "11.0.0",
-    "@nestjs/passport": "11.0.5",
-    "@nestjs/platform-express": "11.1.6",
-    "@nestjs/swagger": "11.2.0",
-    "@nestjs/typeorm": "11.0.0",
-    "@prisma/client": "^5.22.0",
-=======
     "@aws-sdk/client-s3": "3.1011.0",
     "@aws-sdk/s3-request-presigner": "3.1011.0",
     "@nestjs/common": "11.1.18",
     "@nestjs/config": "4.0.3",
     "@nestjs/core": "11.1.18",
     "@nestjs/jwt": "11.0.2",
-    "@nestjs/mongoose": "11.0.4",
     "@nestjs/passport": "11.0.5",
     "@nestjs/platform-express": "11.1.18",
     "@nestjs/swagger": "11.2.6",
-    "@nestjs/typeorm": "11.0.1",
->>>>>>> upstream/main
+    "@prisma/client": "^5.22.0",
     "@types/multer-s3": "3.0.3",
     "apple-signin-auth": "2.0.0",
     "bcryptjs": "3.0.3",
     "class-transformer": "0.5.1",
-<<<<<<< HEAD
-    "class-validator": "0.14.2",
-    "dotenv": "17.2.1",
-    "google-auth-library": "10.3.0",
-    "handlebars": "4.7.8",
-=======
     "class-validator": "0.15.1",
     "dotenv": "17.3.1",
     "google-auth-library": "10.6.2",
     "handlebars": "4.7.9",
-    "mongoose": "9.4.1",
-    "mongoose-autopopulate": "^1.2.1",
->>>>>>> upstream/main
     "ms": "2.1.3",
     "multer": "2.1.1",
     "multer-s3": "3.0.1",
@@ -115,12 +71,7 @@
     "rimraf": "6.1.3",
     "rxjs": "7.8.2",
     "source-map-support": "0.5.21",
-<<<<<<< HEAD
     "swagger-ui-express": "5.0.1"
-=======
-    "swagger-ui-express": "5.0.1",
-    "typeorm": "0.3.28"
->>>>>>> upstream/main
   },
   "devDependencies": {
     "@commitlint/cli": "20.5.0",
@@ -152,14 +103,9 @@
     "husky": "9.1.7",
     "hygen": "6.2.11",
     "is-ci": "4.1.0",
-<<<<<<< HEAD
-    "jest": "30.0.5",
-    "prettier": "3.6.2",
-    "prisma": "^5.22.0",
-=======
     "jest": "30.3.0",
     "prettier": "3.8.1",
->>>>>>> upstream/main
+    "prisma": "^5.22.0",
     "prompts": "2.4.2",
     "release-it": "19.2.4",
     "supertest": "7.2.2",
