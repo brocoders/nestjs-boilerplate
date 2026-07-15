@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id(map: "PK_b36bcfe02fc8de3c57a8b2391c2")
+  name  String @db.VarChar
+  users User[]
+
+  @@map("role")
+}
+
+model Status {
+  id    Int    @id(map: "PK_e12743a7086ec826733f54e1d95")
+  name  String @db.VarChar
+  users User[]
+
+  @@map("status")
+}
+
+model File {
+  id    String @id(map: "PK_36b46d232307066b3a2c9ea3a1d") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  path  String @db.VarChar
+  users User[]
+
+  @@map("file")
+}
+
+model User {
+  id        Int       @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  email     String?   @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
+  password  String?   @db.VarChar
+  provider  String    @default("email") @db.VarChar
+  socialId  String?   @db.VarChar
+  firstName String?   @db.VarChar
+  lastName  String?   @db.VarChar
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  photoId   String?   @unique(map: "REL_75e2be4ce11d447ef43be0e374") @db.Uuid
+  roleId    Int?
+  statusId  Int?
+  
+  photo     File?     @relation(fields: [photoId], references: [id])
+  role      Role?     @relation(fields: [roleId], references: [id])
+  status    Status?   @relation(fields: [statusId], references: [id])
+  sessions  Session[]
+
+  @@index([firstName], map: "IDX_58e4dbff0e1a32a9bdc861bb29")
+  @@index([socialId], map: "IDX_9bd2fe7a8e694dedc4ec2f666f")
+  @@index([lastName], map: "IDX_f0e1b4ecdca13b177e2e3a0613")
+  @@map("user")
+}
+
+model Session {
+  id        Int       @id(map: "PK_f55da76ac1c3ac420f444d2ff11") @default(autoincrement())
+  hash      String    @db.VarChar
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  userId    Int?
+  
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "IDX_3d2f174ef04fb312fdebd0ddc5")
+  @@map("session")
+}

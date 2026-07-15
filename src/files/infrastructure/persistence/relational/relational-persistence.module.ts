@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileEntity } from './entities/file.entity';
+import { PrismaModule } from '../../../../database/prisma.module';
 import { FileRepository } from '../file.repository';
-import { FileRelationalRepository } from './repositories/file.repository';
+import { FilePrismaRepository } from './repositories/file-prisma.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FileEntity])],
+  imports: [PrismaModule],
   providers: [
     {
       provide: FileRepository,
-      useClass: FileRelationalRepository,
+      useClass: FilePrismaRepository,
     },
   ],
   exports: [FileRepository],

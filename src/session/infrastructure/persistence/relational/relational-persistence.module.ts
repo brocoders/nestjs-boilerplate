@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { SessionRepository } from '../session.repository';
-import { SessionRelationalRepository } from './repositories/session.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SessionEntity } from './entities/session.entity';
+import { SessionPrismaRepository } from './repositories/session-prisma.repository';
+import { PrismaModule } from '../../../../database/prisma.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SessionEntity])],
+  imports: [PrismaModule],
   providers: [
     {
       provide: SessionRepository,
-      useClass: SessionRelationalRepository,
+      useClass: SessionPrismaRepository,
     },
   ],
   exports: [SessionRepository],
