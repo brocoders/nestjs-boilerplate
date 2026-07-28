@@ -1,0 +1,17 @@
+name: NestJS Doctor
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  doctor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # required to diff against the merge base
+      - uses: RoloBits/nestjs-doctor@v1
