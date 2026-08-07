@@ -20,6 +20,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FilesLocalService } from './files.service';
 import { FileResponseDto } from './dto/file-response.dto';
+import type { Response as ExpressResponse } from 'express';
 
 @ApiTags('Files')
 @Controller({
@@ -56,7 +57,7 @@ export class FilesLocalController {
 
   @Get(':path')
   @ApiExcludeEndpoint()
-  download(@Param('path') path, @Response() response) {
+  download(@Param('path') path: string, @Response() response: ExpressResponse) {
     return response.sendFile(path, { root: './files' });
   }
 }

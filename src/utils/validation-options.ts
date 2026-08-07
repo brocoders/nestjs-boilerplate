@@ -5,8 +5,12 @@ import {
   ValidationPipeOptions,
 } from '@nestjs/common';
 
-function generateErrors(errors: ValidationError[]) {
-  return errors.reduce(
+type ValidationErrorsTree = {
+  [key: string]: string | ValidationErrorsTree;
+};
+
+function generateErrors(errors: ValidationError[]): ValidationErrorsTree {
+  return errors.reduce<ValidationErrorsTree>(
     (accumulator, currentValue) => ({
       ...accumulator,
       [currentValue.property]:

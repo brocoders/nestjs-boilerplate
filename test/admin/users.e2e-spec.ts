@@ -6,7 +6,7 @@ import { StatusEnum } from '../../src/statuses/statuses.enum';
 
 describe('Users Module', () => {
   const app = APP_URL;
-  let apiToken;
+  let apiToken: string;
 
   beforeAll(async () => {
     await request(app)
@@ -18,7 +18,7 @@ describe('Users Module', () => {
   });
 
   describe('Update', () => {
-    let newUser;
+    let newUser: { id: number | string };
     const newUserEmail = `user-first.${Date.now()}@example.com`;
     const newUserChangedEmail = `user-first-changed.${Date.now()}@example.com`;
     const newUserPassword = `secret`;

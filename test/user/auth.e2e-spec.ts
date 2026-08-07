@@ -7,6 +7,7 @@ import {
   MAIL_HOST,
   MAIL_PORT,
 } from '../utils/constants';
+import type { MailMessage } from '../utils/types/mail-message.type';
 
 describe('Auth Module', () => {
   const app = APP_URL;
@@ -63,7 +64,7 @@ describe('Auth Module', () => {
           .then(({ body }) =>
             body
               .find(
-                (letter) =>
+                (letter: MailMessage) =>
                   letter.to[0].address.toLowerCase() ===
                     newUserEmail.toLowerCase() &&
                   /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
@@ -85,7 +86,7 @@ describe('Auth Module', () => {
           .then(({ body }) =>
             body
               .find(
-                (letter) =>
+                (letter: MailMessage) =>
                   letter.to[0].address.toLowerCase() ===
                     newUserEmail.toLowerCase() &&
                   /.*confirm\-email\?hash\=(\S+).*/g.test(letter.text),
@@ -121,7 +122,7 @@ describe('Auth Module', () => {
   });
 
   describe('Logged in user', () => {
-    let newUserApiToken;
+    let newUserApiToken: string;
 
     beforeAll(async () => {
       await request(app)
@@ -280,7 +281,7 @@ describe('Auth Module', () => {
         .get('/email')
         .then(({ body }) =>
           body
-            .find((letter) => {
+            .find((letter: MailMessage) => {
               return (
                 letter.to[0].address.toLowerCase() ===
                   newUserNewEmail.toLowerCase() &&
