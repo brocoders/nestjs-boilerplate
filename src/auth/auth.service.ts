@@ -531,11 +531,11 @@ export class AuthService {
     };
   }
 
-  async softDelete(user: User): Promise<void> {
-    await this.usersService.remove(user.id);
+  async softDelete(userJwtPayload: JwtPayloadType): Promise<void> {
+    await this.usersService.remove(userJwtPayload.id);
   }
 
-  async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>) {
+  async logout(data: Pick<JwtPayloadType, 'sessionId'>) {
     return this.sessionService.deleteById(data.sessionId);
   }
 

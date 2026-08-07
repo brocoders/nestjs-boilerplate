@@ -10,6 +10,7 @@
 - [Auth via Facebook](#auth-via-facebook)
 - [Auth via Google](#auth-via-google)
 - [About JWT strategy](#about-jwt-strategy)
+- [Accessing the authenticated user](#accessing-the-authenticated-user)
 - [Refresh token flow](#refresh-token-flow)
   - [Video example](#video-example)
   - [Support login for multiple devices / Sessions](#support-login-for-multiple-devices--sessions)
@@ -145,6 +146,57 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 ```
 
 > If you need to get full user information, get it in services.
+
+## Accessing the authenticated user
+
+Whatever a strategy returns from `validate()` is what Passport assigns to `request.user`. To read it in a controller with type safety, annotate the request with `RequestWithUser<T>` from [`src/utils/types/request-with-user.type.ts`](../src/utils/types/request-with-user.type.ts):
+
+```typescript
+export type RequestWithUser<TUser> = Request & {
+  user: TUser;
+};
+```
+
+For routes guarded by `AuthGuard('jwt')`, `T` is `JwtPayloadType` — so `request.user.id`, `request.user.role` and `request.user.sessionId` are all typed:
+
+```typescript
+// src/auth/auth.controller.ts
+
+@Get('me')
+@UseGuards(AuthGuard('jwt'))
+public me(
+  @Request() request: RequestWithUser<JwtPayloadType>,
+): Promise<NullableType<User>> {
+  return this.service.me(request.user);
+}
+```
+
+`POST /api/v1/auth/refresh` is the exception: it is guarded by `AuthGuard('jwt-refresh')`, so a different strategy populates `request.user` and the payload is a `JwtRefreshPayloadType` instead:
+
+```typescript
+@Post('refresh')
+@UseGuards(AuthGuard('jwt-refresh'))
+public refresh(
+  @Request() request: RequestWithUser<JwtRefreshPayloadType>,
+): Promise<RefreshResponseDto> {
+  return this.service.refreshToken({
+    sessionId: request.user.sessionId,
+    hash: request.user.hash,
+  });
+}
+```
+
+Always pass the payload type matching the guard on the route — using `JwtPayloadType` on the refresh route (or vice versa) would describe fields that do not exist at runtime.
+
+The same type works in guards and interceptors, where the request comes from the execution context instead. `RolesGuard` may be applied to routes without an auth guard, so it allows `user` to be absent:
+
+```typescript
+// src/roles/roles.guard.ts
+
+const request = context
+  .switchToHttp()
+  .getRequest<RequestWithUser<JwtPayloadType | undefined>>();
+```
 
 ## Refresh token flow
 
