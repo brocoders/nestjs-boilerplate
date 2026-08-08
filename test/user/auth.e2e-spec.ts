@@ -121,6 +121,67 @@ describe('Auth Module', () => {
     });
   });
 
+  describe('Forgot password', () => {
+    it('should reset password only once per link: /api/v1/auth/reset/password (POST)', async () => {
+      const userEmail = `forgot.${Date.now()}@example.com`;
+      const userOldPassword = `secret`;
+      const userNewPassword = `new-secret-${Date.now()}`;
+
+      await request(app)
+        .post('/api/v1/auth/email/register')
+        .send({
+          email: userEmail,
+          password: userOldPassword,
+          firstName: `Tester${Date.now()}`,
+          lastName: 'E2E',
+        })
+        .expect(204);
+
+      await request(app)
+        .post('/api/v1/auth/forgot/password')
+        .send({ email: userEmail })
+        .expect(204);
+
+      const hash = await request(mail)
+        .get('/email')
+        .then(({ body }) =>
+          body
+            .find(
+              (letter: MailMessage) =>
+                letter.to[0].address.toLowerCase() ===
+                  userEmail.toLowerCase() &&
+                /.*password\-change\?hash\=([^&\s]+).*/g.test(letter.text),
+            )
+            ?.text.replace(/.*password\-change\?hash\=([^&\s]+).*/g, '$1'),
+        );
+
+      await request(app)
+        .post('/api/v1/auth/reset/password')
+        .send({ hash, password: userNewPassword })
+        .expect(204);
+
+      await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: userEmail, password: userNewPassword })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.token).toBeDefined();
+        });
+
+      // The link is single-use: the reset token is bound to the previous
+      // password hash, so replaying it must fail.
+      await request(app)
+        .post('/api/v1/auth/reset/password')
+        .send({ hash, password: 'another-password' })
+        .expect(422);
+
+      await request(app)
+        .post('/api/v1/auth/email/login')
+        .send({ email: userEmail, password: userNewPassword })
+        .expect(200);
+    });
+  });
+
   describe('Logged in user', () => {
     let newUserApiToken: string;
 

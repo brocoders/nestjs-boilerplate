@@ -17,6 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       secretOrKey: configService.getOrThrow('auth.refreshSecret', {
         infer: true,
       }),
+      algorithms: ['HS256'],
     });
   }
 

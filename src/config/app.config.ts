@@ -38,6 +38,10 @@ class EnvironmentVariablesValidator {
 
   @IsString()
   @IsOptional()
+  APP_CORS_ORIGINS: string;
+
+  @IsString()
+  @IsOptional()
   API_PREFIX: string;
 
   @IsString()
@@ -58,6 +62,14 @@ export default registerAs<AppConfig>('app', () => {
     workingDirectory: process.env.PWD || process.cwd(),
     frontendDomain: process.env.FRONTEND_DOMAIN,
     backendDomain: process.env.BACKEND_DOMAIN ?? 'http://localhost',
+    corsOrigins: (
+      process.env.APP_CORS_ORIGINS ||
+      process.env.FRONTEND_DOMAIN ||
+      '*'
+    )
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0),
     port: process.env.APP_PORT
       ? parseInt(process.env.APP_PORT, 10)
       : process.env.PORT

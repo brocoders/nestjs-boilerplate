@@ -43,29 +43,20 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'notFound',
-        },
+      throw this.invalidLoginException({
+        email: 'notFound',
       });
     }
 
     if (user.provider !== AuthProvidersEnum.email) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: `needLoginViaProvider:${user.provider}`,
-        },
+      throw this.invalidLoginException({
+        email: `needLoginViaProvider:${user.provider}`,
       });
     }
 
     if (!user.password) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
+      throw this.invalidLoginException({
+        password: 'incorrectPassword',
       });
     }
 
@@ -75,11 +66,8 @@ export class AuthService {
     );
 
     if (!isValidPassword) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
+      throw this.invalidLoginException({
+        password: 'incorrectPassword',
       });
     }
 
@@ -116,6 +104,15 @@ export class AuthService {
     const socialEmail = socialData.email?.toLowerCase();
     let userByEmail: NullableType<User> = null;
 
+    if (socialEmail && !socialData.emailVerified) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: 'emailNotVerified',
+        },
+      });
+    }
+
     if (socialEmail) {
       userByEmail = await this.usersService.findByEmail(socialEmail);
     }
@@ -134,6 +131,13 @@ export class AuthService {
       await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
+
+      if (user.status?.id?.toString() === StatusEnum.inactive.toString()) {
+        user.provider = authProvider;
+        user.socialId = socialData.id;
+
+        await this.usersService.update(user.id, user);
+      }
     } else if (socialData.id) {
       const role = {
         id: RoleEnum.user,
@@ -237,6 +241,7 @@ export class AuthService {
         secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
           infer: true,
         }),
+        algorithms: ['HS256'],
       });
 
       userId = jwtData.confirmEmailUserId;
@@ -280,6 +285,7 @@ export class AuthService {
         secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
           infer: true,
         }),
+        algorithms: ['HS256'],
       });
 
       userId = jwtData.confirmEmailUserId;
@@ -314,6 +320,17 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
+      const uniformErrors = this.configService.getOrThrow(
+        'auth.uniformErrors',
+        { infer: true },
+      );
+
+      // With uniform errors enabled we do not reveal whether the email is
+      // registered: respond exactly like the success case and skip the mail.
+      if (uniformErrors) {
+        return;
+      }
+
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -333,9 +350,7 @@ export class AuthService {
         forgotUserId: user.id,
       },
       {
-        secret: this.configService.getOrThrow('auth.forgotSecret', {
-          infer: true,
-        }),
+        secret: this.getForgotSecret(user),
         expiresIn: tokenExpiresIn,
       },
     );
@@ -350,19 +365,29 @@ export class AuthService {
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
-    let userId: User['id'];
+    let userId: User['id'] | undefined;
 
     try {
-      const jwtData = await this.jwtService.verifyAsync<{
-        forgotUserId: User['id'];
-      }>(hash, {
-        secret: this.configService.getOrThrow('auth.forgotSecret', {
-          infer: true,
-        }),
-      });
+      const jwtData = this.jwtService.decode<{
+        forgotUserId?: User['id'];
+      } | null>(hash);
 
-      userId = jwtData.forgotUserId;
+      userId = jwtData?.forgotUserId;
     } catch {
+      userId = undefined;
+    }
+
+    let user: NullableType<User> = null;
+
+    if (userId !== undefined && userId !== null) {
+      try {
+        user = await this.usersService.findById(userId);
+      } catch {
+        user = null;
+      }
+    }
+
+    if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -371,13 +396,16 @@ export class AuthService {
       });
     }
 
-    const user = await this.usersService.findById(userId);
-
-    if (!user) {
+    try {
+      await this.jwtService.verifyAsync(hash, {
+        secret: this.getForgotSecret(user),
+        algorithms: ['HS256'],
+      });
+    } catch {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
-          hash: `notFound`,
+          hash: `invalidHash`,
         },
       });
     }
@@ -537,6 +565,35 @@ export class AuthService {
 
   async logout(data: Pick<JwtPayloadType, 'sessionId'>) {
     return this.sessionService.deleteById(data.sessionId);
+  }
+
+  private invalidLoginException(
+    errors: Record<string, string>,
+  ): UnprocessableEntityException {
+    const uniformErrors = this.configService.getOrThrow('auth.uniformErrors', {
+      infer: true,
+    });
+
+    return new UnprocessableEntityException({
+      status: HttpStatus.UNPROCESSABLE_ENTITY,
+      errors: uniformErrors
+        ? {
+            email: 'incorrectEmailOrPassword',
+            password: 'incorrectEmailOrPassword',
+          }
+        : errors,
+    });
+  }
+
+  private getForgotSecret(user: User): string {
+    // The secret embeds the current password hash, so every outstanding
+    // reset link stops verifying as soon as the password changes — this is
+    // what makes reset links single-use without storing anything extra.
+    const forgotSecret = this.configService.getOrThrow('auth.forgotSecret', {
+      infer: true,
+    });
+
+    return `${forgotSecret}${user.password ?? ''}`;
   }
 
   private async getTokensData(data: {

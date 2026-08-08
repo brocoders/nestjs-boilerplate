@@ -76,6 +76,7 @@
     "dotenv": "17.3.1",
     "google-auth-library": "10.6.2",
     "handlebars": "4.7.9",
+    "helmet": "^8.3.0",
     "mongoose": "9.4.1",
     "mongoose-autopopulate": "^1.2.1",
     "ms": "2.1.3",

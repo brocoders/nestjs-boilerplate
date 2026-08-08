@@ -41,9 +41,21 @@ export class AuthGoogleService {
       });
     }
 
+    const emailVerified = data.email_verified === true;
+
+    if (data.email && !emailVerified) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: 'emailNotVerified',
+        },
+      });
+    }
+
     return {
       id: data.sub,
       email: data.email,
+      emailVerified,
       firstName: data.given_name,
       lastName: data.family_name,
     };

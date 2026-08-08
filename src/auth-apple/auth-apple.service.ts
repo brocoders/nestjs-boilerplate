@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import appleSigninAuth from 'apple-signin-auth';
 import { ConfigService } from '@nestjs/config';
 import { SocialInterface } from '../social/interfaces/social.interface';
@@ -16,9 +20,26 @@ export class AuthAppleService {
       audience: this.configService.get('apple.appAudience', { infer: true }),
     });
 
+    // Apple types this claim as `'true' | 'false' | boolean`, so both truthy
+    // forms are matched explicitly and anything else fails closed.
+    const emailVerified =
+      data.email_verified === true || data.email_verified === 'true';
+
+    // An unverified email must never reach validateSocialLogin: it matches
+    // accounts by email, so trusting it would allow account takeover.
+    if (data.email && !emailVerified) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          email: 'emailNotVerified',
+        },
+      });
+    }
+
     return {
       id: data.sub,
       email: data.email,
+      emailVerified,
       firstName: loginDto.firstName,
       lastName: loginDto.lastName,
     };
