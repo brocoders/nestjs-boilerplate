@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import helmet from 'helmet';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
@@ -14,9 +15,23 @@ import { AllConfigType } from './config/config.type';
 import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
+
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
+
+  const corsOrigins = configService.getOrThrow('app.corsOrigins', {
+    infer: true,
+  });
+  app.enableCors({
+    origin: corsOrigins.includes('*') ? '*' : corsOrigins,
+  });
 
   app.enableShutdownHooks();
   app.setGlobalPrefix(

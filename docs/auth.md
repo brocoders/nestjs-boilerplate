@@ -15,6 +15,7 @@
   - [Video example](#video-example)
   - [Support login for multiple devices / Sessions](#support-login-for-multiple-devices--sessions)
 - [Logout](#logout)
+- [Security hardening](#security-hardening)
 - [Q\&A](#qa)
   - [After `POST /api/v1/auth/logout` or removing session from the database, the user can still make requests with an `access token` for some time. Why?](#after-post-apiv1authlogout-or-removing-session-from-the-database-the-user-can-still-make-requests-with-an-access-token-for-some-time-why)
 
@@ -87,6 +88,8 @@ For auth with external services or social networks you need:
    AUTH_JWT_SECRET=HERE_SECRET_KEY_FROM_STEP_1
    AUTH_REFRESH_SECRET=HERE_SECRET_KEY_FROM_STEP_1
    ```
+
+> The app refuses to start with `NODE_ENV=production` while any `AUTH_*_SECRET` still has the placeholder value from `env-example-*`. In development it only logs a warning.
 
 ## Auth via Apple
 
@@ -214,6 +217,8 @@ Boilerplate supports login for multiple devices with a Refresh Token flow. This 
 
 On each `POST /api/v1/auth/refresh` request we check `hash` from the database with `hash` from the Refresh Token. If they are equal, we return new `token`, `tokenExpires`, and `refreshToken`. Then we update `hash` in the database to disallow the use of the previous Refresh Token.
 
+Because every refresh also rotates the `refreshToken`, the `AUTH_REFRESH_TOKEN_EXPIRES_IN` default of `30d` behaves as a rolling idle window: users who return at least once every 30 days never have to log in again, while a stolen or abandoned refresh token expires on its own.
+
 ## Logout
 
 1. Call following endpoint:
@@ -223,6 +228,20 @@ On each `POST /api/v1/auth/refresh` request we check `hash` from the database wi
    ```
 
 2. Remove `access token` and `refresh token` from your client app (cookies, localStorage, etc).
+
+## Security hardening
+
+Security defaults the boilerplate ships with, and what is intentionally left to you:
+
+- **Strong secrets are enforced in production.** Startup fails when `NODE_ENV=production` and any `AUTH_*_SECRET` still contains the placeholder value from `env-example-*` (see [Configure Auth](#configure-auth)).
+- **HTTP security headers** are set by [helmet](https://helmetjs.github.io/) in `src/main.ts`. `Content-Security-Policy` is disabled because Swagger UI on `/docs` relies on inline scripts; enable it if you turn Swagger off.
+- **CORS allow-list.** `APP_CORS_ORIGINS` accepts a comma-separated list of origins (e.g. `https://app.example.com,https://admin.example.com`). When it is not set, `FRONTEND_DOMAIN` is used; when neither is set, any origin is allowed (`*`). Requests without an `Origin` header (mobile apps, curl, server-to-server) are not affected by CORS. Credentials mode stays off because auth uses the `Authorization` header, not cookies — which is also why the `*` fallback does not leak credentials.
+- **Password reset links are single-use.** The reset token is signed with a secret derived from the user's current password hash, so a link stops verifying the moment the password changes. All sessions are also revoked on reset.
+- **Social providers must supply verified emails only.** `validateSocialLogin` links accounts by email, so an unverified provider email would allow taking over an existing account. Every provider service reports an `emailVerified` flag on `SocialInterface` and rejects an unverified address with `emailNotVerified`; `validateSocialLogin` refuses to use an email whose flag is not `true`, so a provider added later fails closed until it sets the flag deliberately. Note that these are equality checks against `true`, not truthiness tests — provider payloads are passed through verbatim and Apple sends `email_verified` as `'true' | 'false' | boolean`.
+- **Social login cannot inherit an unconfirmed account.** An account created by `POST /api/v1/auth/email/register` stays `inactive` until its confirmation link is followed, so its password was chosen by someone who never proved they own the address. When a social login matches such an account by verified email, its `provider` and `socialId` are moved to the social identity rather than the account being handed over as-is — otherwise registering a victim's address ahead of time would let an attacker keep password access to the account the victim later signs into (account pre-hijacking). `validateLogin` rejects any provider other than `email`, so the unproven password stops working. `status` is left untouched, because `inactive` also means "deactivated by an admin".
+- **Uniform auth errors (opt-in).** By default login and forgot-password return field-level errors (`notFound`, `incorrectPassword`, `emailNotExists`) that are convenient during development but reveal whether an email is registered. Set `AUTH_UNIFORM_ERRORS=true` to return a single `incorrectEmailOrPassword` error on login and a silent `204` from forgot-password for unknown emails.
+- **Rate limiting is intentionally not bundled** to keep setup easy (a production-grade limiter needs shared storage such as Redis). Add it at the proxy or platform level — nginx `limit_req`, Cloudflare, or your API gateway — especially for `POST /api/v1/auth/email/login`, `POST /api/v1/auth/forgot/password`, and `POST /api/v1/auth/refresh`. For single-instance deployments, [@nestjs/throttler](https://docs.nestjs.com/security/rate-limiting) with its in-memory storage is an easy opt-in.
+- **Possible future option: HttpOnly cookie sessions.** Tokens are returned in the response body so every client (web, mobile, desktop) can use the same API via the `Authorization` header. A browser-only alternative is issuing tokens as `HttpOnly` cookies, which JavaScript (and therefore XSS) cannot read — at the cost of CSRF protection, CORS-with-credentials, and a second contract for non-browser clients. The boilerplate deliberately keeps the header-based contract.
 
 ## Q&A
 
