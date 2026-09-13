@@ -1,20 +1,29 @@
 ---
-to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/infrastructure/persistence/relational/relational-persistence.module.ts
----
+to: src/<%= (function(n){const p=n.split('/');const e=p.pop();const d=p.map(x=>h.inflection.transform(x, ['underscore','dasherize'])).join('/');return (d?d+'/':'')+h.inflection.transform(e, ['pluralize','underscore','dasherize']) })(name) %>/infrastructure/persistence/relational/relational-persistence.module.ts
+---<%
+const _parts = name.split('/');
+const _entityName = _parts[_parts.length - 1];
+const _dirParts = _parts.slice(0, -1);
+const _resourceDir = (_dirParts.length ? _dirParts.map(p => h.inflection.transform(p, ['underscore','dasherize'])).join('/') + '/' : '') + h.inflection.transform(_entityName, ['pluralize','underscore','dasherize']);
+const _entitySlug = h.inflection.transform(_entityName, ['underscore','dasherize']);
+const _entityPlural = h.inflection.transform(_entityName, ['pluralize']);
+const _entityPluralSlug = h.inflection.transform(_entityName, ['pluralize','underscore','dasherize']);
+%>
+
 import { Module } from '@nestjs/common';
-import { <%= name %>Repository } from '../<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.repository';
-import { <%= name %>RelationalRepository } from './repositories/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.repository';
+import { <%= _entityName %>Repository } from '../<%= _entitySlug %>.repository';
+import { <%= _entityName %>RelationalRepository } from './repositories/<%= _entitySlug %>.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { <%= name %>Entity } from './entities/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.entity';
+import { <%= _entityName %>Entity } from './entities/<%= _entitySlug %>.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([<%= name %>Entity])],
+  imports: [TypeOrmModule.forFeature([<%= _entityName %>Entity])],
   providers: [
     {
-      provide: <%= name %>Repository,
-      useClass: <%= name %>RelationalRepository,
+      provide: <%= _entityName %>Repository,
+      useClass: <%= _entityName %>RelationalRepository,
     },
   ],
-  exports: [<%= name %>Repository],
+  exports: [<%= _entityName %>Repository],
 })
-export class Relational<%= name %>PersistenceModule {}
+export class Relational<%= _entityName %>PersistenceModule {}

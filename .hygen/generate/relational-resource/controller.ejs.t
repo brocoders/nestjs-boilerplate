@@ -1,6 +1,15 @@
 ---
-to: src/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>/<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.controller.ts
----
+to: src/<%= (function(n){const p=n.split('/');const e=p.pop();const d=p.map(x=>h.inflection.transform(x, ['underscore','dasherize'])).join('/');return (d?d+'/':'')+h.inflection.transform(e, ['pluralize','underscore','dasherize']) })(name) %>/<%= h.inflection.transform(name.split('/').pop(), ['pluralize','underscore','dasherize']) %>.controller.ts
+---<%
+const _parts = name.split('/');
+const _entityName = _parts[_parts.length - 1];
+const _dirParts = _parts.slice(0, -1);
+const _resourceDir = (_dirParts.length ? _dirParts.map(p => h.inflection.transform(p, ['underscore','dasherize'])).join('/') + '/' : '') + h.inflection.transform(_entityName, ['pluralize','underscore','dasherize']);
+const _entitySlug = h.inflection.transform(_entityName, ['underscore','dasherize']);
+const _entityPlural = h.inflection.transform(_entityName, ['pluralize']);
+const _entityPluralSlug = h.inflection.transform(_entityName, ['pluralize','underscore','dasherize']);
+%>
+
 import {
   Controller,
   Get,
@@ -12,9 +21,9 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { <%= h.inflection.transform(name, ['pluralize']) %>Service } from './<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.service';
-import { Create<%= name %>Dto } from './dto/create-<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.dto';
-import { Update<%= name %>Dto } from './dto/update-<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.dto';
+import { <%= _entityPlural %>Service } from './<%= _entityPluralSlug %>.service';
+import { Create<%= _entityName %>Dto } from './dto/create-<%= _entitySlug %>.dto';
+import { Update<%= _entityName %>Dto } from './dto/update-<%= _entitySlug %>.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -22,40 +31,40 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { <%= name %> } from './domain/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>';
+import { <%= _entityName %> } from './domain/<%= _entitySlug %>';
 import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAll<%= h.inflection.transform(name, ['pluralize']) %>Dto } from './dto/find-all-<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.dto';
+import { FindAll<%= _entityPlural %>Dto } from './dto/find-all-<%= _entityPluralSlug %>.dto';
 
-@ApiTags('<%= h.inflection.transform(name, ['pluralize', 'humanize']) %>')
+@ApiTags('<%= h.inflection.transform(_entityName, ['pluralize', 'humanize']) %>')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
-  path: '<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>',
+  path: '<%= _resourceDir %>',
   version: '1',
 })
-export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
-  constructor(private readonly <%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service: <%= h.inflection.transform(name, ['pluralize']) %>Service) {}
+export class <%= _entityPlural %>Controller {
+  constructor(private readonly <%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service: <%= _entityPlural %>Service) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: <%= name %>,
+    type: <%= _entityName %>,
   })
-  create(@Body() create<%= name %>Dto: Create<%= name %>Dto) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.create(create<%= name %>Dto);
+  create(@Body() create<%= _entityName %>Dto: Create<%= _entityName %>Dto) {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service.create(create<%= _entityName %>Dto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: InfinityPaginationResponse(<%= name %>),
+    type: InfinityPaginationResponse(<%= _entityName %>),
   })
   async findAll(
-    @Query() query: FindAll<%= h.inflection.transform(name, ['pluralize']) %>Dto,
-  ): Promise<InfinityPaginationResponseDto<<%= name %>>> {
+    @Query() query: FindAll<%= _entityPlural %>Dto,
+  ): Promise<InfinityPaginationResponseDto<<%= _entityName %>>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -63,7 +72,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     }
 
     return infinityPagination(
-      await this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findAllWithPagination({
+      await this.<%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -80,10 +89,10 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     required: true,
   })
   @ApiOkResponse({
-    type: <%= name %>,
+    type: <%= _entityName %>,
   })
   findById(@Param('id') id: string) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findById(id);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service.findById(id);
   }
 
   @Patch(':id')
@@ -93,13 +102,13 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     required: true,
   })
   @ApiOkResponse({
-    type: <%= name %>,
+    type: <%= _entityName %>,
   })
   update(
     @Param('id') id: string,
-    @Body() update<%= name %>Dto: Update<%= name %>Dto,
+    @Body() update<%= _entityName %>Dto: Update<%= _entityName %>Dto,
   ) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.update(id, update<%= name %>Dto);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service.update(id, update<%= _entityName %>Dto);
   }
 
   @Delete(':id')
@@ -109,6 +118,6 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     required: true,
   })
   remove(@Param('id') id: string) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.remove(id);
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(_entityName), true) %>Service.remove(id);
   }
 }
