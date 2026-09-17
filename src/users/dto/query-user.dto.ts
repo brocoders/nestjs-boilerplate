@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsIn,
   IsNumber,
   IsOptional,
   IsString,
@@ -21,10 +22,12 @@ export class SortUserDto {
   @ApiProperty()
   @Type(() => String)
   @IsString()
+  @IsIn(['id', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt'])
   orderBy: keyof User;
 
   @ApiProperty()
   @IsString()
+  @IsIn(['ASC', 'DESC', 'asc', 'desc'])
   order: string;
 }
 
@@ -43,9 +46,18 @@ export class QueryUserDto {
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
-  @Transform(({ value }) =>
-    value ? plainToInstance(FilterUserDto, JSON.parse(value)) : undefined,
-  )
+  @Transform(({ value }) => {
+    try {
+      return value
+        ? plainToInstance(
+            FilterUserDto,
+            typeof value === 'string' ? JSON.parse(value) : value,
+          )
+        : undefined;
+    } catch {
+      return undefined;
+    }
+  })
   @ValidateNested()
   @Type(() => FilterUserDto)
   filters?: FilterUserDto | null;
@@ -53,7 +65,16 @@ export class QueryUserDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) => {
-    return value ? plainToInstance(SortUserDto, JSON.parse(value)) : undefined;
+    try {
+      return value
+        ? plainToInstance(
+            SortUserDto,
+            typeof value === 'string' ? JSON.parse(value) : value,
+          )
+        : undefined;
+    } catch {
+      return undefined;
+    }
   })
   @ValidateNested({ each: true })
   @Type(() => SortUserDto)
